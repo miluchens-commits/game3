@@ -363,7 +363,7 @@ function createEnemy(color,px,pz){
 var enemyColors=[0xff4444,0x44aaff,0xffaa44,0x44ffaa,0xaa44ff,0xff44aa,0x44aaff,0xaaff44,0x44ff88,0xff8844];
 var maxEnemies=10;
 for(var ei=0;ei<maxEnemies;ei++){
-  var sp=getRandomSpawnPos(true);
+  var sp=getRandomSpawnPos(true,pos,8);
   createEnemy(enemyColors[ei%enemyColors.length],sp.x,sp.z);
 }
 var activeCount=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);
@@ -778,17 +778,17 @@ function aabbOverlap(ap,asz,bp,bsz){
          ap.y-asz.y/2<bp.y+bsz.y/2&&ap.y+asz.y/2>bp.y-bsz.y/2&&
          ap.z-asz.z/2<bp.z+bsz.z/2&&ap.z+asz.z/2>bp.z-bsz.z/2;
 }
-function getRandomSpawnPos(forEnemy){
-  var hF=forEnemy?0.5:0.3,hH=forEnemy?0.5:0.6;
+function getRandomSpawnPos(forEnemy,avoidPos,minDist){
+  var hF=forEnemy?0.5:0.3,hH=forEnemy?0.5:0.6,minD=minDist||0;
   for(var att=0;att<50;att++){
     var x=-13+26*Math.random(),z=-13+26*Math.random();
     var y=forEnemy?0.4:0.6;
+    if(avoidPos){var dx=x-avoidPos.x,dz=z-avoidPos.z;if(dx*dx+dz*dz<minD*minD)continue;}
     var ok=true;
     for(var b=0;b<mapBoxes.length;b++){
       var bx=mapBoxes[b];
       if(bx.isPlatform)continue;
-      var dx=Math.abs(x-bx.pos.x),dy=Math.abs(y-bx.pos.y),dz=Math.abs(z-bx.pos.z);
-      if(dx<bx.size.x/2+hF&&dy<bx.size.y/2+hH&&dz<bx.size.z/2+hF){ok=false;break;}
+      if(aabbOverlap(new THREE.Vector3(x,y,z),new THREE.Vector3(hF*2,hH*2,hF*2),bx.pos,bx.size)){ok=false;break;}
     }
     if(ok)return new THREE.Vector3(x,y,z);
   }
@@ -1000,7 +1000,7 @@ function enemyShoot(e){
   var gp=e.pos.clone();gp.y+=0.35;
   var p=new THREE.Mesh(new THREE.SphereGeometry(0.05,6,6),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:0.5}));
   p.position.copy(gp);scene.add(p);
-  projectiles.push({mesh:p,pos:gp,vel:dir.clone().multiplyScalar(14),life:3,dmg:Math.round(wd.dmg*0.6||12)});
+  projectiles.push({mesh:p,pos:gp,vel:dir.clone().multiplyScalar(14),life:3,dmg:Math.round(wd.dmg*0.35||7)});
   var fl=new THREE.Mesh(new THREE.SphereGeometry(0.04,4,4),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:2}));
   fl.position.copy(gp);scene.add(fl);
   setTimeout(function(){scene.remove(fl);},40);
@@ -1254,7 +1254,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
           var e=enemies[ei];
           if(ei<targetCount){
             e.hp=e.maxHp*(1+roundNum*0.2);e.armor=e.maxArmor*(1+roundNum*0.15);
-            var sp=getRandomSpawnPos(true);
+            var sp=getRandomSpawnPos(true,pos,8);
             e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
             if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
             if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
