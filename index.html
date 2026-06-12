@@ -389,8 +389,8 @@ function updateArmoryGunCounts(){
   document.querySelectorAll('.a-gun-btn').forEach(function(b){
     var gun=b.dataset.gun;
     var cnt=weaponInventory[gun]||0;
-    b.textContent=weaponNames[gun]+(cnt>0?' (×'+cnt+')':'');
-    b.style.color=cnt>0?'rgba(255,255,255,.9)':'rgba(100,100,100,.4)';
+    if(gun==='grapple'){b.textContent='勾爪槍 ∞';b.style.color='rgba(255,255,255,.9)';}
+    else{b.textContent=weaponNames[gun]+(cnt>0?' (×'+cnt+')':'');b.style.color=cnt>0?'rgba(255,255,255,.9)':'rgba(100,100,100,.4)';}
   });
 }
 function showShop(){
@@ -558,19 +558,25 @@ document.getElementById('shop-close').onclick=function(){document.getElementById
 document.querySelectorAll('.a-slot').forEach(function(sl){
   sl.onclick=function(){
     var si=parseInt(sl.dataset.slot);
-    if(playerLoadout[si]&&selectedArmorySlot===si&&si>0){playerLoadout[si]=null;updateArmoryUI();document.querySelectorAll('.loadout-slot').forEach(function(s,i){s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name:'─';});}
+    if(playerLoadout[si]&&selectedArmorySlot===si&&si>0){
+      if(playerLoadout[si]!=='grapple'&&weaponInventory[playerLoadout[si]]!==undefined)weaponInventory[playerLoadout[si]]++;
+      playerLoadout[si]=null;updateArmoryUI();updateArmoryGunCounts();
+      document.querySelectorAll('.loadout-slot').forEach(function(s,i){s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name:'─';});
+    }
     else{selectedArmorySlot=si;updateArmoryUI();}
   };
 });
 document.querySelectorAll('.a-gun-btn').forEach(function(b){
   b.onclick=function(){
     var gun=b.dataset.gun;
-    if(!weaponInventory[gun]||weaponInventory[gun]<1)return;
+    var cnt=weaponInventory[gun]||0;
+    if(cnt<1&&gun!=='grapple')return;
+    var prevGun=playerLoadout[selectedArmorySlot];
+    if(prevGun&&prevGun!=='grapple'&&weaponInventory[prevGun]!==undefined)weaponInventory[prevGun]++;
     playerLoadout[selectedArmorySlot]=gun;
-    // If this slot is the active slot in-game, update the gun too
+    if(gun!=='grapple')weaponInventory[gun]--;
     if(currentSlot===selectedArmorySlot)switchToSlot(selectedArmorySlot);
-    updateArmoryUI();
-    // Update menu display
+    updateArmoryUI();updateArmoryGunCounts();
     document.querySelectorAll('.loadout-slot').forEach(function(s,i){
       s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name : '─';
     });
@@ -780,19 +786,20 @@ function aabbOverlap(ap,asz,bp,bsz){
 }
 function getRandomSpawnPos(forEnemy,avoidPos,minDist){
   var hF=forEnemy?0.5:0.3,hH=forEnemy?0.5:0.6,minD=minDist||0;
-  for(var att=0;att<50;att++){
+  for(var att=0;att<100;att++){
     var x=-13+26*Math.random(),z=-13+26*Math.random();
-    var y=forEnemy?0.4:0.6;
+    var y=forEnemy?0:0.6;
     if(avoidPos){var dx=x-avoidPos.x,dz=z-avoidPos.z;if(dx*dx+dz*dz<minD*minD)continue;}
     var ok=true;
     for(var b=0;b<mapBoxes.length;b++){
       var bx=mapBoxes[b];
       if(bx.isPlatform)continue;
+      if(bx.size.x>=29&&bx.size.z>=29)continue;
       if(aabbOverlap(new THREE.Vector3(x,y,z),new THREE.Vector3(hF*2,hH*2,hF*2),bx.pos,bx.size)){ok=false;break;}
     }
     if(ok)return new THREE.Vector3(x,y,z);
   }
-  return new THREE.Vector3(-10,forEnemy?0:0.6,-10);
+  return new THREE.Vector3(-12+24*Math.random(),forEnemy?0:0.6,-12+24*Math.random());
 }
 function resolveCollisions(){
   var gnd=false,wall=false,wN=new THREE.Vector3();
