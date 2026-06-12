@@ -360,8 +360,16 @@ function createEnemy(color,px,pz){
     hBar:hBar,aBar:aBar,knifeHits:0,weaponType:Math.random()<0.5?'ak47':'deagle',investigateTarget:null,searchTimer:0
   });
 }
-createEnemy(0xff4444,-9,-3);
-createEnemy(0x44aaff,-10,8);
+var enemyColors=[0xff4444,0x44aaff,0xffaa44,0x44ffaa,0xaa44ff,0xff44aa,0x44aaff,0xaaff44,0x44ff88,0xff8844];
+var maxEnemies=10;
+for(var ei=0;ei<maxEnemies;ei++){
+  var sp=getRandomSpawnPos(true);
+  createEnemy(enemyColors[ei%enemyColors.length],sp.x,sp.z);
+}
+var activeCount=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);
+for(var ei=0;ei<maxEnemies;ei++){
+  if(ei>=activeCount){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
+}
 var sl=new THREE.SpotLight(0xffffff,3);sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);sl.angle=0.5;sl.penumbra=0.5;sl.decay=1;sl.distance=20;scene.add(sl);scene.add(sl.target);
 // ── Gun system ──
 var knifeSwingCount=0,knifeAnim=0;
@@ -770,6 +778,22 @@ function aabbOverlap(ap,asz,bp,bsz){
          ap.y-asz.y/2<bp.y+bsz.y/2&&ap.y+asz.y/2>bp.y-bsz.y/2&&
          ap.z-asz.z/2<bp.z+bsz.z/2&&ap.z+asz.z/2>bp.z-bsz.z/2;
 }
+function getRandomSpawnPos(forEnemy){
+  var hF=forEnemy?0.5:0.3,hH=forEnemy?0.5:0.6;
+  for(var att=0;att<50;att++){
+    var x=-13+26*Math.random(),z=-13+26*Math.random();
+    var y=forEnemy?0.4:0.6;
+    var ok=true;
+    for(var b=0;b<mapBoxes.length;b++){
+      var bx=mapBoxes[b];
+      if(bx.isPlatform)continue;
+      var dx=Math.abs(x-bx.pos.x),dy=Math.abs(y-bx.pos.y),dz=Math.abs(z-bx.pos.z);
+      if(dx<bx.size.x/2+hF&&dy<bx.size.y/2+hH&&dz<bx.size.z/2+hF){ok=false;break;}
+    }
+    if(ok)return new THREE.Vector3(x,y,z);
+  }
+  return new THREE.Vector3(-10,forEnemy?0:0.6,-10);
+}
 function resolveCollisions(){
   var gnd=false,wall=false,wN=new THREE.Vector3();
   for(var b=0;b<mapBoxes.length;b++){
@@ -855,7 +879,7 @@ function updatePhysics(dt){
   for(var i=0;i<3;i++){var r=resolveCollisions();onGround=r.gnd;if(r.wall&&!onGround&&!wallClinging&&wallJumpCD<=0&&!keys['Space']){wallClinging=true;wallTimer=0;wallNormal.copy(r.wN);}}
   if(pos.y>0&&pos.y<=0.605){pos.y=0.6;vel.y=0;onGround=true;}
   if(pos.y<-5||pos.x<-20||pos.x>20||pos.z<-20||pos.z>20){
-    pos.set(-10,0.6,-10);vel.set(0,0,0);
+    var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
     var fDmg=5;
     if(playerArmor>0){var ad=Math.min(playerArmor,fDmg);playerArmor-=ad;fDmg-=ad;}
     playerHP-=fDmg;
@@ -987,7 +1011,7 @@ function reload(){
 }
 function onPlayerDeath(){
   playerHP=100;playerArmor=100;countdown=3;gameStarted=false;
-  pos.set(-10,0.6,-10);vel.set(0,0,0);
+  var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
   playerLoadout[0]='grapple';for(var si=1;si<5;si++)playerLoadout[si]=null;
   currentSlot=0;switchToSlot(0);
@@ -1224,16 +1248,22 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
         clearTimer=-1;
         roundNum++;
         specialCoins+=10000;roundEarnings+=10000;
-        showDmgNum(new THREE.Vector3(0,2,0),10000,'#fa4');
-        for(var ei=0;ei<enemies.length;ei++){
+        showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10000,'#fa4');
+        var targetCount=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);
+        for(var ei=0;ei<maxEnemies;ei++){
           var e=enemies[ei];
-          e.hp=e.maxHp*(1+roundNum*0.2);e.armor=e.maxArmor*(1+roundNum*0.15);
-          e.mesh.visible=true;
-          var spawnPos=e.pos.clone();
-          spawnPos.x=-12+24*Math.random();spawnPos.z=-12+24*Math.random();
-          spawnPos.x=Math.max(-13,Math.min(13,spawnPos.x));spawnPos.z=Math.max(-13,Math.min(13,spawnPos.z));
-          e.pos.copy(spawnPos);e.mesh.position.copy(spawnPos);
-          if(e.hBar)e.hBar.visible=true;if(e.aBar)e.aBar.visible=true;
+          if(ei<targetCount){
+            e.hp=e.maxHp*(1+roundNum*0.2);e.armor=e.maxArmor*(1+roundNum*0.15);
+            var sp=getRandomSpawnPos(true);
+            e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
+            if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
+            if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
+            e.knifeHits=0;
+          }else{
+            e.hp=0;e.mesh.visible=false;
+            if(e.hBar)e.hBar.visible=false;
+            if(e.aBar)e.aBar.visible=false;
+          }
         }
         document.getElementById('round-clear').style.display='none';
         document.getElementById('round-num').style.display='none';
