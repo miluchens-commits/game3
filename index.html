@@ -384,13 +384,15 @@ function attachFlashlightMesh(){
   detachFlashlightMesh();
   if(!gunGroup||!slotFlashlight[currentSlot]||currentGun==='knife')return;
   var flMat=new THREE.MeshStandardMaterial({color:0x666666,metalness:0.4,roughness:0.5});
-  var body=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.015,0.06,8),flMat);
-  body.rotation.x=Math.PI/2;body.position.set(0,0,-0.36);gunGroup.add(body);
-  var head=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.012,0.015,8),new THREE.MeshStandardMaterial({color:0x888888,metalness:0.6,roughness:0.3}));
-  head.rotation.x=Math.PI/2;head.position.set(0,0,-0.39);gunGroup.add(head);
-  var lens=new THREE.Mesh(new THREE.CircleGeometry(0.016,8),new THREE.MeshBasicMaterial({color:0xffeecc}));
-  lens.position.set(0,0,-0.398);gunGroup.add(lens);
-  flashlightMesh={body:body,head:head,lens:lens};
+  var body=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.015,0.05,8),flMat);
+  body.rotation.x=Math.PI/2;body.position.set(0.035,0.005,-0.14);gunGroup.add(body);
+  var head=new THREE.Mesh(new THREE.CylinderGeometry(0.017,0.012,0.012,8),new THREE.MeshStandardMaterial({color:0x888888,metalness:0.6,roughness:0.3}));
+  head.rotation.x=Math.PI/2;head.position.set(0.035,0.005,-0.165);gunGroup.add(head);
+  var lens=new THREE.Mesh(new THREE.CircleGeometry(0.014,8),new THREE.MeshBasicMaterial({color:0xffeecc}));
+  lens.position.set(0.035,0.005,-0.172);gunGroup.add(lens);
+  var mount=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.006,0.01),new THREE.MeshStandardMaterial({color:0x555555,metalness:0.5,roughness:0.5}));
+  mount.position.set(0.02,0.005,-0.14);gunGroup.add(mount);
+  flashlightMesh={body:body,head:head,lens:lens,mount:mount};
   flashlightLight.visible=true;
 }
 function detachFlashlightMesh(){
@@ -398,6 +400,7 @@ function detachFlashlightMesh(){
     if(flashlightMesh.body&&gunGroup)gunGroup.remove(flashlightMesh.body);
     if(flashlightMesh.head&&gunGroup)gunGroup.remove(flashlightMesh.head);
     if(flashlightMesh.lens&&gunGroup)gunGroup.remove(flashlightMesh.lens);
+    if(flashlightMesh.mount&&gunGroup)gunGroup.remove(flashlightMesh.mount);
     flashlightMesh=null;
   }
   if(flashlightLight)flashlightLight.visible=false;
