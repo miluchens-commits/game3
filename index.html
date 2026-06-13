@@ -141,7 +141,7 @@ canvas{display:block}
   </div>
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="multi-btn">多 人 連 線</button><button id="armory-btn">武 器 庫</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><button id="armory-btn">武 器 庫</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
@@ -738,9 +738,12 @@ document.getElementById('save-exit-btn').onclick=function(){
   saveGame();location.reload();
 };
 document.getElementById('back-menu-btn').onclick=function(){
+  gameStarted=false;isMultiplayer=false;
   document.getElementById('blocker').style.display='none';document.getElementById('menu').style.display='flex';
   updateCoinsDisplay();updateArmoryGunCounts();
   currentMap='base';applyMapSettings();
+  if(window.multiSI)clearInterval(window.multiSI);
+  if(window.multiWS)try{window.multiWS.close()}catch(e){}
 };
 document.getElementById('resume-yes').onclick=function(){
   document.getElementById('resume-prompt').style.display='none';
@@ -811,7 +814,12 @@ document.getElementById('play-btn').onclick=function(){
 document.getElementById('multi-btn').onclick=function(){
   document.getElementById('menu').style.display='none';
   document.getElementById('multi-connecting').style.display='flex';
-  connectMultiplayer();
+  connectMultiplayer(2);
+};
+document.getElementById('multi4-btn').onclick=function(){
+  document.getElementById('menu').style.display='none';
+  document.getElementById('multi-connecting').style.display='flex';
+  connectMultiplayer(4);
 };
 document.getElementById('multi-cancel').onclick=function(){
   if(window.multiPInt)clearInterval(window.multiPInt);
@@ -830,28 +838,41 @@ document.getElementById('multi-cancel').onclick=function(){
   }
 })();
 // ── Multiplayer ──
-var isMultiplayer=false,opponentMesh=null,opponentPos=new THREE.Vector3(0,0,0),opponentRot={yaw:0,pitch:0},opponentGun='ak47',opponentShooting=false,multiStateTimer=0,relayReady=false;
+var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
 var relayIframe=null,httpClientId=null;
-function connectMultiplayer(){
-  isMultiplayer=false;relayReady=false;
+function connectMultiplayer(mode){
+  isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
+  isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   var ip=document.getElementById('server-ip').value.trim()||'localhost';
   if(location.protocol==='file:'){
     document.getElementById('multi-connecting').style.display='none';
     document.getElementById('menu').style.display='flex';
     document.getElementById('multi-status').innerHTML='<span style="color:#f84">無法從 file:// 進行多人連線</span><br><small style="color:rgba(255,255,255,.3)">請改用 http://'+ip+':3000 開啟遊戲</small>';
   }else{
-    connectMultiplayerDirect(ip);
+    document.getElementById('multi-status').innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 '+playerCount+' 位玩家</small>';
+    connectMultiplayerDirect(ip, mode);
   }
+}
+function createOpponentMesh(){
+  var og=new THREE.Group();
+  var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
+  obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
+  var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
+  ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
+  var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
+  var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
+  for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
+  for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
+  return og;
 }
 function processServerMessage(data){
   switch(data.type){
     case 'in_queue':
-      document.getElementById('multi-status').textContent='佇列中 ('+data.position+')...';
-      if(data.position===1)document.getElementById('multi-status').innerHTML='佇列中 (1) — 需要兩個玩家<br><small style="color:rgba(255,255,255,.3)">請再開一個瀏覽器分頁</small>';
+      document.getElementById('multi-status').innerHTML='佇列中 ('+data.position+')...<br><small style="color:rgba(255,255,255,.3)">需要 '+playerCount+' 位玩家</small>';
       break;
     case 'match_found':
       document.getElementById('multi-connecting').style.display='none';
-      isMultiplayer=true;
+      isMultiplayer=true;playerCount=data.playerCount||2;
       document.getElementById('scanlines').style.display='none';
       document.getElementById('scope-overlay').style.display='none';
       isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
@@ -859,40 +880,44 @@ function processServerMessage(data){
       applyMapSettings();
       for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
       playerHP=100;playerArmor=100;
-      if(opponentMesh)scene.remove(opponentMesh);
-      var og=new THREE.Group();
-      var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
-      obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
-      var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
-      ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
-      var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
-      var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
-      for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
-      for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
-      scene.add(og);
-      opponentMesh=og;
+      opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
+      var myId=data.playerId;
+      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];
+      var otherCount=playerCount-1;
+      for(var oi=0;oi<otherCount;oi++){
+        var om=createOpponentMesh();scene.add(om);
+        opponentMeshes.push(om);
+        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true});
+        opponentPlayerIds.push(oi<myId?oi:oi+1);
+      }
       gameStarted=true;
       var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
       document.body.requestPointerLock().catch(function(){});
       break;
     case 'opponent_state':
-      if(data.data){
-        opponentPos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
-        opponentRot.yaw=data.data.yaw||0;
-        opponentRot.pitch=data.data.pitch||0;
-        opponentGun=data.data.gun||'ak47';
-        opponentShooting=data.data.shooting||false;
+      if(data.data&&data.playerId!==undefined){
+        var oid=data.playerId;
+        if(oid>=0&&oid<opponentStates.length){
+          opponentStates[oid].pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
+          opponentStates[oid].yaw=data.data.yaw||0;
+          opponentStates[oid].pitch=data.data.pitch||0;
+          opponentStates[oid].gun=data.data.gun||'ak47';
+          opponentStates[oid].shooting=data.data.shooting||false;
+          if(data.data.hp!==undefined)opponentStates[oid].alive=data.data.hp>0;
+        }
       }
       break;
     case 'enemy_shoot':
-      if(opponentMesh){
+      if(opponentMeshes.length>0){
+        var shooterId=data.playerId!==undefined?data.playerId:0;
+        var op=opponentStates[shooterId]?opponentStates[shooterId].pos:new THREE.Vector3(0,0,0);
         var fl2=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));
-        fl2.position.copy(opponentPos);fl2.position.y+=0.6;scene.add(fl2);
+        fl2.position.copy(op);fl2.position.y+=0.6;scene.add(fl2);
         var fll2=new THREE.PointLight(0xffaa44,3,4);fll2.position.copy(fl2.position);scene.add(fll2);
         setTimeout(function(){scene.remove(fl2);scene.remove(fll2);},60);
         var dmg=data.gun==='knife'?50:(data.gun==='awp'?999:(gunData[data.gun]?gunData[data.gun].dmg:25));
         if(data.gun==='knife'){
-          var dist=pos.distanceTo(opponentPos);
+          var dist=pos.distanceTo(op);
           if(dist<2.5){var od2=dmg;if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}if(playerHP<=0)onPlayerDeath();}
         }else if(data.dir){
           var rd=new THREE.Raycaster(fl2.position,new THREE.Vector3(data.dir[0],data.dir[1],data.dir[2]));
@@ -916,18 +941,28 @@ function processServerMessage(data){
       }
       break;
     case 'opponent_died':
-      document.querySelector('#blocker div').innerHTML='消滅對手！<br><small>點擊繼續</small>';
+      if(data.playerId!==undefined&&data.playerId>=0&&data.playerId<opponentStates.length){
+        opponentStates[data.playerId].alive=false;
+      }
+      var aliveCount=opponentStates.filter(function(s){return s.alive}).length;
+      if(aliveCount===0||playerCount===2){
+        document.querySelector('#blocker div').innerHTML='消滅對手！<br><small>點擊繼續</small>';
+        document.getElementById('blocker').style.display='flex';
+        if(document.pointerLockElement)document.exitPointerLock();
+        isMultiplayer=false;
+      }else{
+        document.querySelector('#blocker div').innerHTML='消滅一名對手！剩餘 '+aliveCount+' 人<br><small>點擊繼續</small>';
+        document.getElementById('blocker').style.display='flex';
+        if(document.pointerLockElement)document.exitPointerLock();
+      }
+      break;
+    case 'opponent_disconnected':
+      if(window.multiSI)clearInterval(window.multiSI);
       document.getElementById('blocker').style.display='flex';
+      document.querySelector('#blocker div').innerHTML='對手已離開對局<br><small>點擊返回</small>';
       if(document.pointerLockElement)document.exitPointerLock();
       isMultiplayer=false;
       break;
-      case 'opponent_disconnected':
-        if(window.multiSI)clearInterval(window.multiSI);
-        document.getElementById('blocker').style.display='flex';
-        document.querySelector('#blocker div').innerHTML='對手已離開對局<br><small>點擊返回</small>';
-        if(document.pointerLockElement)document.exitPointerLock();
-        isMultiplayer=false;
-        break;
   }
 }
 window.addEventListener('message',function(e){
@@ -966,29 +1001,26 @@ function relaySend(payload){
     relayIframe.contentWindow.postMessage({type:'relay_send',payload:payload},'*');
   }
 }
-function connectMultiplayerDirect(ip){
+function connectMultiplayerDirect(ip, mode){
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
-  // Build WebSocket URL
+  mode=mode||2;
   var url;
   if(ip.indexOf('://')!==-1){
-    // Full URL provided (e.g. wss://host)
     url=ip;
   }else if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
-    // Auto-detect from page URL (same server)
     url=(location.protocol==='https:'?'wss:':'ws:')+'//'+location.hostname+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:'');
   }else{
-    // Custom IP/domain (LAN or remote without protocol)
     url='ws://'+ip+':3000';
   }
   window.multiWS=new WebSocket(url+'/game');
   var ws=window.multiWS;
   ws.onopen=function(){
     relayReady=true;
-    document.getElementById('multi-status').textContent='正在尋找其他玩家...';
-    ws.send(JSON.stringify({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000)}));
+    document.getElementById('multi-status').innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 '+mode+' 位玩家</small>';
+    ws.send(JSON.stringify({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000),mode:mode}));
     if(window.multiSI)clearInterval(window.multiSI);
     window.multiSI=setInterval(function(){
-      if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}}));
+      if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP}}));
     },100);
   };
   ws.onmessage=function(e){
@@ -1214,19 +1246,16 @@ function shoot(){
     var rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2(0,0),cam);
     var meshes=[];for(var i=0;i<mapBoxes.length;i++)meshes.push(mapBoxes[i].mesh);
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
-    if(isMultiplayer&&opponentMesh)opponentMesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     var hits=rc.intersectObjects(meshes);
     if(hits.length>0&&hits[0].distance<2.5){
       var hitMesh=hits[0].object;
       // Multiplayer opponent melee hit
-      if(isMultiplayer&&opponentMesh){
-        var hitOp=false;
-        opponentMesh.traverse(function(child){if(child===hitMesh)hitOp=true;});
-        if(hitOp){
-          hitMarkerTimer=0.15;
-          relaySend({type:'hit',hp:50});
-          showDmgNum(hits[0].point,50,'#ff4444');
-        }
+      if(isMultiplayer&&opponentMeshes.length>0){
+        opponentMeshes.forEach(function(om,oidx){
+          if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});showDmgNum(hits[0].point,50,'#ff4444');}});
+        });
       }
       for(var ei=0;ei<enemies.length;ei++){
         var e=enemies[ei];if(e.mesh.visible===false)continue;
@@ -1263,7 +1292,7 @@ function shoot(){
   lastShotPos=bt.clone();
   var meshes=[];for(var i=0;i<mapBoxes.length;i++)meshes.push(mapBoxes[i].mesh);
   if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
-  if(isMultiplayer&&opponentMesh)opponentMesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+  if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
   var hits=rc.intersectObjects(meshes);
   if(hits.length>0){
     var im=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),new THREE.MeshStandardMaterial({color:0xff4422,emissive:0xff4422,emissiveIntensity:0.5}));
@@ -1288,15 +1317,18 @@ function shoot(){
     }
     } // end !isMultiplayer
     // Multiplayer: check opponent hit
-    if(isMultiplayer&&opponentMesh){
-      var hitOp=false;
-      opponentMesh.traverse(function(c){if(c===hitMesh)hitOp=true;});
-      if(hitOp){
-        hitMarkerTimer=0.15;
-        var dmg=currentGun==='awp'?999:gunData[currentGun].dmg;
-        relaySend({type:'hit',hp:dmg});
-        showDmgNum(hits[0].point,dmg,'#ff4444');
-      }
+    if(isMultiplayer&&opponentMeshes.length>0){
+      opponentMeshes.forEach(function(om,oidx){
+        if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
+        var hitOp=false;
+        om.traverse(function(c){if(c===hitMesh)hitOp=true;});
+        if(hitOp){
+          hitMarkerTimer=0.15;
+          var dmg=currentGun==='awp'?999:gunData[currentGun].dmg;
+          relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
+          showDmgNum(hits[0].point,dmg,'#ff4444');
+        }
+      });
     }
     // Damage targets
     for(var ti=0;ti<targets.length;ti++){
@@ -1349,6 +1381,7 @@ function reload(){
   isReloading=true;reloadTimer=2;
 }
 function onPlayerDeath(){
+  if(isMultiplayer)relaySend({type:'player_death'});
   playerHP=100;playerArmor=100;countdown=3;gameStarted=false;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
@@ -1578,13 +1611,18 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     // Enemies
     if(!isMultiplayer)updateEnemies(dt);
     // Update opponent mesh
-    if(opponentMesh){
-      opponentMesh.position.copy(opponentPos);
-      opponentMesh.rotation.order='YXZ';
-      opponentMesh.rotation.y=opponentRot.yaw;
-      opponentMesh.rotation.x=-opponentRot.pitch*0.3;
-      opponentMesh.visible=true;
-    }else if(opponentMesh){opponentMesh.visible=false;}
+    // Update opponent meshes
+    for(var oi=0;oi<opponentMeshes.length;oi++){
+      var om=opponentMeshes[oi];
+      var os=opponentStates[oi];
+      if(om&&os){
+        om.position.copy(os.pos);
+        om.rotation.order='YXZ';
+        om.rotation.y=os.yaw;
+        om.rotation.x=-os.pitch*0.3;
+        om.visible=os.alive;
+      }
+    }
     // Round clear
     if(!isMultiplayer){
     var alive=0;for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].hp>0)alive++}

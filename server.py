@@ -8,48 +8,65 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 # Shared game state
-queue = []          # list of transport dicts: {type, player, room_id}
-rooms = {}          # room_id -> {p1: tp, p2: tp}
+queues = {2: [], 4: []}  # mode -> list of transport dicts: {type, player, room_id, player_id}
+rooms = {}               # room_id -> list of [tp, tp, ...]
 next_room_id = 1
-http_buf = {}       # client_id -> list of pending msg dicts
 TYPE_MAP = {"state":"opponent_state","shoot":"enemy_shoot","hit":"opponent_hit","player_death":"opponent_died"}
 
 async def send_to(tp, msg_dict):
     raw = json.dumps(msg_dict, ensure_ascii=False)
-    if tp["type"] == "ws":
-        try:
-            await tp["player"].send(raw)
-        except Exception:
-            pass
-    else:
-        http_buf.setdefault(tp["player"], []).append(msg_dict)
+    try:
+        await tp["player"].send(raw)
+    except Exception:
+        pass
 
 async def try_match():
-    while len(queue) >= 2:
-        p1, p2 = queue.pop(0), queue.pop(0)
-        def alive(tp):
-            if tp["type"] == "ws":
+    for mode, needed in [(4, 4), (2, 2)]:
+        q = queues[mode]
+        while len(q) >= needed:
+            players = q[:needed]
+            del q[:needed]
+            def alive(tp):
                 try: return tp["player"].state.name == "OPEN"
                 except: return False
-            return True
-        a1, a2 = alive(p1), alive(p2)
-        if not a1 and not a2: continue
-        if not a1: queue.insert(0, p2); continue
-        if not a2: queue.insert(0, p1); continue
-        global next_room_id
-        rid = next_room_id; next_room_id += 1
-        rooms[rid] = {"p1": p1, "p2": p2}
-        p1["room_id"] = rid; p2["room_id"] = rid
-        m = {"type":"match_found","roomId":rid,"opponent":"\u5c0du624b"}
-        print(f"[ROOM] matched roomId={rid}")
-        await send_to(p1, m); await send_to(p2, m)
+            if not all(alive(p) for p in players):
+                for p in players:
+                    if alive(p):
+                        queues[p.get("mode", 2)].append(p)
+                continue
+            global next_room_id
+            rid = next_room_id; next_room_id += 1
+            room = []
+            for i, p in enumerate(players):
+                p["room_id"] = rid
+                p["player_id"] = i
+                room.append(p)
+            rooms[rid] = room
+            for p in players:
+                m = {"type":"match_found","roomId":rid,"playerCount":mode,"playerId":p["player_id"]}
+                print(f"[ROOM] matched roomId={rid} playerId={p['player_id']}")
+                await send_to(p, m)
 
 async def relay(sender, msg_dict):
     rid = sender.get("room_id")
     if not rid or rid not in rooms: return
-    room = rooms[rid]
-    opp = room["p2"] if sender is room["p1"] else room["p1"]
-    await send_to(opp, msg_dict)
+    msg_dict["playerId"] = sender["player_id"]
+    target_id = msg_dict.get("targetPlayerId")
+    if target_id is not None:
+        # Only send to the specific target player (e.g., hit damage)
+        msg_dict.pop("targetPlayerId", None)
+        for tp in rooms[rid]:
+            if tp is not sender and tp.get("player_id") == target_id:
+                await send_to(tp, msg_dict)
+    else:
+        # Broadcast to all other players (state, shoot, death)
+        for tp in rooms[rid]:
+            if tp is not sender:
+                await send_to(tp, msg_dict)
+
+def alive_transport(tp):
+    try: return tp["player"].state.name == "OPEN"
+    except: return False
 
 # ---- HTTP processing ----
 
@@ -59,7 +76,7 @@ async def process_request(connection, request):
         print(f"[REQ] {path}")
         # Version check
         if path == "/version":
-            return Response(200,"OK",Headers({"Content-Type":"text/plain"}),b"game3-server aa9a996")
+            return Response(200,"OK",Headers({"Content-Type":"text/plain"}),b"game3-server 2p4p")
         # WebSocket upgrade path
         if path in ("/game", "/api"):
             return None
@@ -85,14 +102,8 @@ async def process_request(connection, request):
 
 async def handler(ws):
     tp = {"type":"ws","player":ws}
-    queue.append(tp)
     addr = ws.remote_address
     print(f"[WS] connect: {addr}")
-    try:
-        await ws.send(json.dumps({"type":"in_queue","position":len(queue)}))
-    except Exception:
-        pass
-    asyncio.ensure_future(try_match())
     try:
         async for raw in ws:
             try:
@@ -100,25 +111,40 @@ async def handler(ws):
             except Exception:
                 continue
             mt = msg.get("type")
-            if mt in TYPE_MAP:
+            if mt == "join_queue":
+                mode = msg.get("mode", 2)
+                if mode not in queues:
+                    mode = 2
+                tp["mode"] = mode
+                queues[mode].append(tp)
+                try:
+                    pos = len(queues[mode])
+                    await ws.send(json.dumps({"type":"in_queue","position":pos}))
+                except Exception:
+                    pass
+                asyncio.ensure_future(try_match())
+            elif mt in TYPE_MAP:
                 msg["type"] = TYPE_MAP[mt]
                 await relay(tp, msg)
             elif mt == "leave_queue":
-                try: queue.remove(tp)
+                mode = tp.get("mode", 2)
+                try: queues[mode].remove(tp)
                 except ValueError: pass
                 try: await ws.send(json.dumps({"type":"queue_left"}))
                 except: pass
     finally:
         print(f"[WS] disconnect: {addr}")
-        try: queue.remove(tp)
+        mode = tp.get("mode", 2)
+        try: queues[mode].remove(tp)
         except ValueError: pass
         rid = tp.get("room_id")
         if rid and rid in rooms:
             room = rooms[rid]
             del rooms[rid]
-            opp = room["p2"] if tp["player"] is room["p1"]["player"] else room["p1"]
-            print(f"[ROOM] disband roomId={rid}")
-            await send_to(opp, {"type":"opponent_disconnected"})
+            for other in room:
+                if other is not tp and alive_transport(other):
+                    print(f"[ROOM] disband roomId={rid}")
+                    await send_to(other, {"type":"opponent_disconnected"})
 
 async def main():
     port = int(os.environ.get("PORT", "3000"))
