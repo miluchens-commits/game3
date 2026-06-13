@@ -70,7 +70,7 @@ async def handler(ws):
         p1, p2 = rooms[room_id]
         del rooms[room_id]
         opp = p2 if ws is p1 else p1
-        if opp.open:
+        if opp.state.name == 'OPEN':
             try:
                 await opp.send(json.dumps({'type': 'opponent_disconnected'}))
             except Exception:
@@ -82,12 +82,12 @@ async def add_to_queue(ws):
     if len(queue) >= 2:
         p1 = queue.pop(0)
         p2 = queue.pop(0)
-        if p1.open and p2.open:
+        if p1.state.name == 'OPEN' and p2.state.name == 'OPEN':
             await start_match(p1, p2)
         else:
-            if p1.open:
+            if p1.state.name == 'OPEN':
                 queue.insert(0, p1)
-            if p2.open:
+            if p2.state.name == 'OPEN':
                 queue.insert(0, p2)
 
 def remove_from_queue(ws):
@@ -111,7 +111,7 @@ async def relay_to_opponent(ws, room_id, msg):
         return
     p1, p2 = rooms[room_id]
     opp = p2 if ws is p1 else p1
-    if opp.open:
+    if opp.state.name == 'OPEN':
         try:
             await opp.send(json.dumps(msg))
         except Exception:
