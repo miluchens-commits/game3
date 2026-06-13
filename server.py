@@ -52,6 +52,10 @@ async def relay(sender, msg_dict):
 async def process_request(connection, request):
     try:
         path = request.path.split("?")[0]
+        print(f"[REQ] path={repr(path)}")
+        # Version check
+        if path == "/version":
+            return Response(200,"OK",Headers({"Content-Type":"text/plain"}),b"game3-server aa9a996")
         # WebSocket upgrade path
         if path in ("/game", "/api"):
             return None
