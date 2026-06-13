@@ -1,5 +1,6 @@
 <!DOCTYPE html><html><body><script>
-var WS_URL='ws://localhost:3000';
+var srv=new URLSearchParams(location.search).get('server')||'localhost';
+var WS_URL='ws://'+srv+':3000';
 var ws=null;
 function connect(){
   if(ws)try{ws.close()}catch(e){}
@@ -29,6 +30,11 @@ window.addEventListener('message',function(e){
       pendingQueue.push(raw);
     }
   }
+  if(msg.type==='state_data'){
+    var raw=JSON.stringify({type:'state',data:msg.data});
+    if(ws&&ws.readyState===1){ws.send(raw);}
+  }
 });
+setInterval(function(){parent.postMessage({type:'req_state'},'*');},200);
 connect();
 </script></body></html>

@@ -1,2 +1,5 @@
 .godot/
 tools/
+__pycache__/
+*.pyc
+

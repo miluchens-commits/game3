@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
@@ -145,7 +145,11 @@ canvas{display:block}
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
-  <div style="font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:30px">正在尋找其他玩家...</div>
+  <div style="font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:6px" id="multi-status">正在尋找其他玩家...</div>
+  <div style="margin-bottom:18px;display:flex;flex-direction:column;align-items:center">
+    <label style="color:rgba(255,255,255,.25);font-size:11px;letter-spacing:2px;margin-bottom:4px">伺 服 器 位 址</label>
+    <input id="server-ip" value="localhost" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 12px;border-radius:4px;text-align:center;font-size:14px;width:200px;font-family:Arial;outline:none">
+  </div>
   <div style="font-size:12px;color:rgba(255,255,255,.2);letter-spacing:2px;cursor:pointer" id="multi-cancel">取 消</div>
 </div>
 <div id="scope-overlay"><div id="scope-ring"></div><div id="scope-cross"></div><div id="scope-dots"></div></div>
@@ -810,126 +814,209 @@ document.getElementById('multi-btn').onclick=function(){
   connectMultiplayer();
 };
 document.getElementById('multi-cancel').onclick=function(){
+  if(window.multiPInt)clearInterval(window.multiPInt);
+  if(window.multiSI)clearInterval(window.multiSI);
+  if(window.multiWS)try{window.multiWS.close()}catch(e){}
   if(relayIframe){document.body.removeChild(relayIframe);relayIframe=null;}
   document.getElementById('multi-connecting').style.display='none';
   document.getElementById('menu').style.display='flex';
 };
 // ── Multiplayer via iframe relay (works with file://) ──
 var isMultiplayer=false,opponentMesh=null,opponentPos=new THREE.Vector3(0,0,0),opponentRot={yaw:0,pitch:0},opponentGun='ak47',opponentShooting=false,multiStateTimer=0,relayReady=false;
-var relayIframe=null;
+var relayIframe=null,httpClientId=null;
 function connectMultiplayer(){
   isMultiplayer=false;relayReady=false;
-  if(relayIframe){document.body.removeChild(relayIframe);relayIframe=null;}
-  relayIframe=document.createElement('iframe');
-  relayIframe.style.display='none';
-  relayIframe.src='http://localhost:3000/relay.html';
-  document.body.appendChild(relayIframe);
-  var timeout=setTimeout(function(){
-    document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動 (python server.py)</small>';
-  },3000);
-  relayIframe.onload=function(){clearTimeout(timeout);};
-}
-window.addEventListener('message',function(e){
-  var msg=e.data;
-  if(msg.type==='relay_status'){
-    if(msg.connected){
-      relayReady=true;
-      document.querySelector('#multi-connecting div:nth-child(2)').textContent='正在尋找其他玩家...';
-      relaySend({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000)});
-    }else if(msg.error){
-      document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
-    }
+  var ip=document.getElementById('server-ip').value.trim()||'localhost';
+  if(location.protocol==='file:'){
+    document.getElementById('multi-connecting').style.display='none';
+    document.getElementById('menu').style.display='flex';
+    document.getElementById('multi-status').innerHTML='<span style="color:#f84">無法從 file:// 進行多人連線</span><br><small style="color:rgba(255,255,255,.3)">請改用 http://'+ip+':3000 開啟遊戲</small>';
+  }else{
+    connectMultiplayerDirect(ip);
   }
-  if(msg.type==='relay_msg'){
-    try{var data=JSON.parse(msg.data);}catch(ex){return;}
-    switch(data.type){
-      case 'in_queue':
-        document.querySelector('#multi-connecting div:nth-child(2)').textContent='佇列中 ('+data.position+')...';
-        if(data.position===1)document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='佇列中 (1) — 需要兩個玩家<br><small style="color:rgba(255,255,255,.3)">請再開一個瀏覽器分頁</small>';
-        break;
-      case 'match_found':
-        document.getElementById('multi-connecting').style.display='none';
-        isMultiplayer=true;
-        document.getElementById('scanlines').style.display='none';
-        document.getElementById('scope-overlay').style.display='none';
-        isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
-        try{localStorage.removeItem('ocgame_save')}catch(ex){}
-        applyMapSettings();
-        for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
-        playerHP=100;playerArmor=100;
-        if(opponentMesh)scene.remove(opponentMesh);
-        var og=new THREE.Group();
-        var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
-        obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
-        var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
-        ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
-        var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
-        var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
-        for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
-        for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
-        scene.add(og);
-        opponentMesh=og;
-        document.body.requestPointerLock().catch(function(){});
-        break;
-      case 'opponent_state':
-        if(data.data){
-          opponentPos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
-          opponentRot.yaw=data.data.yaw||0;
-          opponentRot.pitch=data.data.pitch||0;
-          opponentGun=data.data.gun||'ak47';
-          opponentShooting=data.data.shooting||false;
-        }
-        break;
-      case 'enemy_shoot':
-        if(opponentMesh){
-          var fl2=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));
-          fl2.position.copy(opponentPos);fl2.position.y+=0.6;scene.add(fl2);
-          var fll2=new THREE.PointLight(0xffaa44,3,4);fll2.position.copy(fl2.position);scene.add(fll2);
-          setTimeout(function(){scene.remove(fl2);scene.remove(fll2);},60);
-          var dmg=data.gun==='knife'?50:(data.gun==='awp'?999:(gunData[data.gun]?gunData[data.gun].dmg:25));
-          if(data.gun==='knife'){
-            var dist=pos.distanceTo(opponentPos);
-            if(dist<2.5){var od2=dmg;if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}if(playerHP<=0)onPlayerDeath();}
-          }else if(data.dir){
-            var rd=new THREE.Raycaster(fl2.position,new THREE.Vector3(data.dir[0],data.dir[1],data.dir[2]));
-            var playerMeshes=[];cam.traverse(function(c){if(c.isMesh)playerMeshes.push(c)});
-            var ph=rd.intersectObjects(playerMeshes);
-            if(ph.length>0&&ph[0].distance<0.8){
-              var od2=dmg;
-              if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}
-              if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}
-              if(playerHP<=0)onPlayerDeath();
-            }
+}
+function processServerMessage(data){
+  switch(data.type){
+    case 'in_queue':
+      document.getElementById('multi-status').textContent='佇列中 ('+data.position+')...';
+      if(data.position===1)document.getElementById('multi-status').innerHTML='佇列中 (1) — 需要兩個玩家<br><small style="color:rgba(255,255,255,.3)">請再開一個瀏覽器分頁</small>';
+      break;
+    case 'match_found':
+      document.getElementById('multi-connecting').style.display='none';
+      isMultiplayer=true;
+      document.getElementById('scanlines').style.display='none';
+      document.getElementById('scope-overlay').style.display='none';
+      isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
+      try{localStorage.removeItem('ocgame_save')}catch(ex){}
+      applyMapSettings();
+      for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
+      playerHP=100;playerArmor=100;
+      if(opponentMesh)scene.remove(opponentMesh);
+      var og=new THREE.Group();
+      var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
+      obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
+      var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
+      ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
+      var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
+      var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
+      for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
+      for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
+      scene.add(og);
+      opponentMesh=og;
+      gameStarted=true;
+      var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
+      document.body.requestPointerLock().catch(function(){});
+      break;
+    case 'opponent_state':
+      if(data.data){
+        opponentPos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
+        opponentRot.yaw=data.data.yaw||0;
+        opponentRot.pitch=data.data.pitch||0;
+        opponentGun=data.data.gun||'ak47';
+        opponentShooting=data.data.shooting||false;
+      }
+      break;
+    case 'enemy_shoot':
+      if(opponentMesh){
+        var fl2=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));
+        fl2.position.copy(opponentPos);fl2.position.y+=0.6;scene.add(fl2);
+        var fll2=new THREE.PointLight(0xffaa44,3,4);fll2.position.copy(fl2.position);scene.add(fll2);
+        setTimeout(function(){scene.remove(fl2);scene.remove(fll2);},60);
+        var dmg=data.gun==='knife'?50:(data.gun==='awp'?999:(gunData[data.gun]?gunData[data.gun].dmg:25));
+        if(data.gun==='knife'){
+          var dist=pos.distanceTo(opponentPos);
+          if(dist<2.5){var od2=dmg;if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}if(playerHP<=0)onPlayerDeath();}
+        }else if(data.dir){
+          var rd=new THREE.Raycaster(fl2.position,new THREE.Vector3(data.dir[0],data.dir[1],data.dir[2]));
+          var playerMeshes=[];cam.traverse(function(c){if(c.isMesh)playerMeshes.push(c)});
+          var ph=rd.intersectObjects(playerMeshes);
+          if(ph.length>0&&ph[0].distance<0.8){
+            var od2=dmg;
+            if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}
+            if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}
+            if(playerHP<=0)onPlayerDeath();
           }
         }
-        break;
-      case 'opponent_hit':
-        if(data.hp){
-          var od=data.hp;
-          if(playerArmor>0){playerArmor-=od;if(playerArmor<0){od=-playerArmor;playerArmor=0}else od=0}
-          if(od>0){playerHP-=od;if(playerHP<0)playerHP=0}
-          if(playerHP<=0)onPlayerDeath();
-        }
-        break;
-      case 'opponent_died':
-        document.querySelector('#blocker div').innerHTML='消滅對手！<br><small>點擊繼續</small>';
-        document.getElementById('blocker').style.display='flex';
-        if(document.pointerLockElement)document.exitPointerLock();
-        isMultiplayer=false;
-        break;
+      }
+      break;
+    case 'opponent_hit':
+      if(data.hp){
+        var od=data.hp;
+        if(playerArmor>0){playerArmor-=od;if(playerArmor<0){od=-playerArmor;playerArmor=0}else od=0}
+        if(od>0){playerHP-=od;if(playerHP<0)playerHP=0}
+        if(playerHP<=0)onPlayerDeath();
+      }
+      break;
+    case 'opponent_died':
+      document.querySelector('#blocker div').innerHTML='消滅對手！<br><small>點擊繼續</small>';
+      document.getElementById('blocker').style.display='flex';
+      if(document.pointerLockElement)document.exitPointerLock();
+      isMultiplayer=false;
+      break;
       case 'opponent_disconnected':
+        if(window.multiSI)clearInterval(window.multiSI);
         document.getElementById('blocker').style.display='flex';
         document.querySelector('#blocker div').innerHTML='對手已離開對局<br><small>點擊返回</small>';
         if(document.pointerLockElement)document.exitPointerLock();
         isMultiplayer=false;
         break;
+  }
+}
+window.addEventListener('message',function(e){
+  var msg=e.data;
+  if(msg.type==='relay_status'){
+    if(msg.connected){
+      if(location.protocol==='file:')return;
+      relayReady=true;
+      document.getElementById('multi-status').textContent='正在尋找其他玩家...';
+      relaySend({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000)});
+    }else if(msg.error){
+      if(location.protocol==='file:')return;
+      document.getElementById('multi-status').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
     }
   }
+  if(msg.type==='relay_msg'){
+    if(location.protocol==='file:')return;
+    try{var data=JSON.parse(msg.data);}catch(ex){return;}
+    processServerMessage(data);
+  }
+  if(msg.type==='req_state'){
+    e.source.postMessage({type:'state_data',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}},'*');
+  }
 });
+function httpSend(payload){
+  var ip=document.getElementById('server-ip').value.trim()||'localhost';
+  fetch('http://'+ip+':3000/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client:httpClientId,msg:payload})});
+}
 function relaySend(payload){
+  if(location.protocol==='file:'){httpSend(payload);return;}
+  if(window.multiWS&&window.multiWS.readyState===1){
+    window.multiWS.send(JSON.stringify(payload));
+    return;
+  }
   if(relayIframe&&relayIframe.contentWindow){
     relayIframe.contentWindow.postMessage({type:'relay_send',payload:payload},'*');
   }
+}
+function connectMultiplayerDirect(ip){
+  if(window.multiWS)try{window.multiWS.close()}catch(e){}
+  var url;
+  if(ip.indexOf('://')!==-1){url=ip;}
+  else if(ip==='localhost'||ip==='127.0.0.1'){url='ws://'+ip+':3000';}
+  else{url='wss://'+ip;}
+  window.multiWS=new WebSocket(url);
+  var ws=window.multiWS;
+  ws.onopen=function(){
+    relayReady=true;
+    document.getElementById('multi-status').textContent='正在尋找其他玩家...';
+    ws.send(JSON.stringify({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000)}));
+    if(window.multiSI)clearInterval(window.multiSI);
+    window.multiSI=setInterval(function(){
+      if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}}));
+    },100);
+  };
+  ws.onmessage=function(e){
+    try{var data=JSON.parse(e.data);processServerMessage(data);}catch(ex){}
+  };
+  ws.onclose=function(){
+    if(window.multiSI)clearInterval(window.multiSI);
+    if(isMultiplayer){
+      try{processServerMessage({type:'opponent_disconnected'});}catch(e){}
+    }else{
+      document.getElementById('multi-status').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
+    }
+  };
+}
+
+function connectMultiplayerHTTP(ip){
+  httpClientId='';
+  var base='http://'+ip+':3000';
+  // Join queue via HTTP
+  fetch(base+'/api/join')
+    .then(function(r){return r.json()})
+    .then(function(data){
+      httpClientId=data.client;
+      // Process any immediate messages (match_found, etc.)
+      if(data.messages&&data.messages.length){
+        data.messages.forEach(function(m){processServerMessage(m);});
+      }
+      // Start polling
+      if(window.multiPInt)clearInterval(window.multiPInt);
+      window.multiPInt=setInterval(function(){
+        fetch(base+'/api/poll?client='+encodeURIComponent(httpClientId))
+          .then(function(r){return r.json()})
+          .then(function(data){
+            if(data.messages&&data.messages.length){
+              data.messages.forEach(function(m){processServerMessage(m);});
+            }
+          });
+      },200);
+      // Set up state send interval
+      if(window.multiSI)clearInterval(window.multiSI);
+      window.multiSI=setInterval(function(){
+        if(isMultiplayer)relaySend({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}});
+      },100);
+    });
 }
 document.addEventListener('pointerlockchange',function(){
   locked=!!document.pointerLockElement;
@@ -937,6 +1024,16 @@ document.addEventListener('pointerlockchange',function(){
   document.getElementById('blocker').style.display=locked||menuShown?'none':'flex';
   document.getElementById('save-exit-btn').style.display=(!locked&&gameStarted&&!menuShown)?'block':'none';
   document.getElementById('back-menu-btn').style.display=(!locked&&gameStarted&&!menuShown)?'block':'none';
+});
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden&&!document.pointerLockElement&&(gameStarted||isMultiplayer)){
+    document.querySelector('#blocker div').innerHTML='點擊繼續遊戲';
+  }
+});
+document.addEventListener('mousedown',function(e){
+  if(!locked&&(gameStarted||isMultiplayer)&&document.getElementById('menu').style.display==='none'&&document.getElementById('resume-prompt').style.display!=='flex'){
+    document.body.requestPointerLock().catch(function(){});
+  }
 });
 document.addEventListener('keydown',function(e){
   keys[e.code]=true;
@@ -1406,7 +1503,7 @@ function updateRain(dt){
   rainDrops.geometry.attributes.position.needsUpdate=true;
 }
 var lastTime=0;
-function animate(time){
+function animate(time){try{
   var dt=Math.min((time-lastTime)/1000,0.05);lastTime=time;
   moveX=0;moveZ=0;
   if(keys['KeyA']||keys['ArrowLeft'])moveX-=1;
@@ -1464,27 +1561,13 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     if(sbActive){sbTimer+=dt;if(sbTimer>1.2){sbActive=false;document.getElementById('sb').style.display='none';}}
     // Enemies
     if(!isMultiplayer)updateEnemies(dt);
-    // Multiplayer state send
-    if(isMultiplayer){
-      multiStateTimer+=dt;
-      if(multiStateTimer>0.05){
-        multiStateTimer=0;
-        relaySend({type:'state',data:{
-          px:pos.x,py:pos.y,pz:pos.z,
-          yaw:document.getElementById('stats').dataset&&document.getElementById('stats').dataset.yaw||0,
-          pitch:document.getElementById('stats').dataset&&document.getElementById('stats').dataset.pitch||0,
-          gun:currentGun,
-          shooting:mouseDown
-        }});
-      }
-      // Update opponent mesh
-      if(opponentMesh){
-        opponentMesh.position.copy(opponentPos);
-        opponentMesh.rotation.order='YXZ';
-        opponentMesh.rotation.y=opponentRot.yaw;
-        opponentMesh.rotation.x=-opponentRot.pitch*0.3;
-        opponentMesh.visible=true;
-      }
+    // Update opponent mesh
+    if(opponentMesh){
+      opponentMesh.position.copy(opponentPos);
+      opponentMesh.rotation.order='YXZ';
+      opponentMesh.rotation.y=opponentRot.yaw;
+      opponentMesh.rotation.x=-opponentRot.pitch*0.3;
+      opponentMesh.visible=true;
     }else if(opponentMesh){opponentMesh.visible=false;}
     // Round clear
     if(!isMultiplayer){
@@ -1612,7 +1695,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
   if(locked&&gameStarted){reEl.textContent='本局收穫 $'+roundEarnings;reEl.style.display='block';}else{reEl.style.display='none';}
   renderer.render(scene,cam);
   requestAnimationFrame(animate);
-}
+}catch(e){console.error(e);document.getElementById("blocker").style.display="flex";document.querySelector("#blocker div").innerHTML="<b style=\"color:#f44\">錯誤：</b>"+e.message+"<br><small style=\"color:#aaa\">"+e.stack+"</small>";requestAnimationFrame(animate);}}
 // Check for saved game
 try{
   var sd=localStorage.getItem('ocgame_save');
