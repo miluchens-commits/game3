@@ -16,7 +16,9 @@ canvas{display:block}
 #awp-scope .ring{position:absolute;top:0;left:0;width:100%;height:100%;border:1px solid rgba(255,255,255,.5);border-radius:50%}
 #awp-scope .dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:#ff0000;border-radius:50%;box-shadow:0 0 8px rgba(255,0,0,.9)}
 #shop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:40;font-family:Arial;display:none;align-items:center;justify-content:center}
-#shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 60%,#1a0e0a,#000);overflow:hidden}
+#shop-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,170,68,.04) 40px,rgba(255,170,68,.04) 41px),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,170,68,.04) 40px,rgba(255,170,68,.04) 41px);pointer-events:none}
+#shop-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 30% 40%,rgba(255,170,68,.06),transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(255,68,68,.04),transparent 50%);pointer-events:none}
 #shop-box{position:relative;background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(255,170,68,.3);border-radius:8px;padding:30px 40px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 60px rgba(255,170,68,.15);max-width:440px;width:90%}
 #shop-title{font-size:26px;font-weight:900;color:#fa4;letter-spacing:8px;margin-bottom:8px;text-shadow:0 0 20px rgba(255,170,68,.3)}
 #shop-coins{font-size:14px;color:#fa4;margin-bottom:20px;letter-spacing:2px}
@@ -81,7 +83,9 @@ canvas{display:block}
 .loadout-slot .slot-num{color:#4af;font-size:10px;font-weight:bold;letter-spacing:2px}
 .loadout-slot .slot-gun{color:#8bf;font-size:12px;font-weight:bold;margin-top:2px}
 #armory{position:fixed;top:0;left:0;width:100%;height:100%;z-index:40;font-family:Arial;display:flex;align-items:center;justify-content:center}
-#armory-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#armory-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 60%,#0d0d1a,#000);overflow:hidden}
+#armory-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(68,170,255,.04) 40px,rgba(68,170,255,.04) 41px),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(68,170,255,.04) 40px,rgba(68,170,255,.04) 41px);pointer-events:none}
+#armory-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 30% 40%,rgba(68,170,255,.06),transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(170,68,255,.04),transparent 50%);pointer-events:none}
 #armory-box{position:relative;background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(68,170,255,.3);border-radius:8px;padding:30px 40px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 60px rgba(68,170,255,.15);max-width:420px;width:90%}
 #armory-title{font-size:28px;font-weight:900;color:#4af;letter-spacing:10px;margin-bottom:24px;text-shadow:0 0 20px rgba(68,170,255,.3)}
 #armory-slots{display:flex;gap:8px;width:100%;justify-content:center;margin-bottom:20px}
