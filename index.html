@@ -845,6 +845,7 @@ window.addEventListener('message',function(e){
     switch(data.type){
       case 'in_queue':
         document.querySelector('#multi-connecting div:nth-child(2)').textContent='佇列中 ('+data.position+')...';
+        if(data.position===1)document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='佇列中 (1) — 需要兩個玩家<br><small style="color:rgba(255,255,255,.3)">請再開一個瀏覽器分頁</small>';
         break;
       case 'match_found':
         document.getElementById('multi-connecting').style.display='none';
@@ -860,8 +861,10 @@ window.addEventListener('message',function(e){
         var og=new THREE.Group();
         var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
         obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
-        var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0xff6666,emissive:0xff4444,emissiveIntensity:0.3}));
+        var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
         ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
+        var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
+        var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
         for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
         for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
         scene.add(og);
