@@ -3,21 +3,28 @@ import json
 import os
 import mimetypes
 import websockets
+from websockets.http11 import Response
+from websockets.datastructures import Headers
 
 queue = []
 rooms = {}
 next_room_id = 1
 
-async def process_request(path, request_headers):
-    if path == '/':
-        path = '/index.html'
-    file_path = path.lstrip('/')
+async def process_request(connection, request):
+    # Let WebSocket upgrade requests pass through
+    upgrade = request.headers.get('Upgrade', '')
+    if upgrade.lower() == 'websocket':
+        return None
+    rpath = request.path
+    if rpath == '/':
+        rpath = '/index.html'
+    file_path = rpath.lstrip('/')
     if not os.path.isfile(file_path):
-        return 404, [('Content-Type', 'text/plain')], b'Not found'
+        return Response(404, 'Not Found', Headers({'Content-Type': 'text/plain'}), b'Not found')
     mime, _ = mimetypes.guess_type(file_path)
     with open(file_path, 'rb') as f:
         content = f.read()
-    return 200, [('Content-Type', mime or 'application/octet-stream')], content
+    return Response(200, 'OK', Headers({'Content-Type': mime or 'application/octet-stream'}), content)
 
 async def handler(ws):
     room_id = None
