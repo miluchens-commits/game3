@@ -903,21 +903,22 @@ function processServerMessage(data){
       break;
     case 'opponent_state':
       if(data.data&&data.playerId!==undefined){
-        var oid=data.playerId;
-        if(oid>=0&&oid<opponentStates.length){
-          opponentStates[oid].pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
-          opponentStates[oid].yaw=data.data.yaw||0;
-          opponentStates[oid].pitch=data.data.pitch||0;
-          opponentStates[oid].gun=data.data.gun||'ak47';
-          opponentStates[oid].shooting=data.data.shooting||false;
-          if(data.data.hp!==undefined)opponentStates[oid].alive=data.data.hp>0;
+        var oidx=opponentPlayerIds.indexOf(data.playerId);
+        if(oidx>=0&&oidx<opponentStates.length){
+          opponentStates[oidx].pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
+          opponentStates[oidx].yaw=data.data.yaw||0;
+          opponentStates[oidx].pitch=data.data.pitch||0;
+          opponentStates[oidx].gun=data.data.gun||'ak47';
+          opponentStates[oidx].shooting=data.data.shooting||false;
+          if(data.data.hp!==undefined)opponentStates[oidx].alive=data.data.hp>0;
         }
       }
       break;
     case 'enemy_shoot':
       if(opponentMeshes.length>0){
-        var shooterId=data.playerId!==undefined?data.playerId:0;
-        var op=opponentStates[shooterId]?opponentStates[shooterId].pos:new THREE.Vector3(0,0,0);
+        var shooterIdx=data.playerId!==undefined?opponentPlayerIds.indexOf(data.playerId):0;
+        if(shooterIdx<0)shooterIdx=0;
+        var op=opponentStates[shooterIdx]?opponentStates[shooterIdx].pos:new THREE.Vector3(0,0,0);
         var fl2=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));
         fl2.position.copy(op);fl2.position.y+=0.6;scene.add(fl2);
         var fll2=new THREE.PointLight(0xffaa44,3,4);fll2.position.copy(fl2.position);scene.add(fll2);
@@ -948,8 +949,9 @@ function processServerMessage(data){
       }
       break;
     case 'opponent_died':
-      if(data.playerId!==undefined&&data.playerId>=0&&data.playerId<opponentStates.length){
-        opponentStates[data.playerId].alive=false;
+      if(data.playerId!==undefined){
+        var oidx=opponentPlayerIds.indexOf(data.playerId);
+        if(oidx>=0&&oidx<opponentStates.length)opponentStates[oidx].alive=false;
       }
       var aliveCount=opponentStates.filter(function(s){return s.alive}).length;
       if(aliveCount===0||playerCount===2){
