@@ -957,54 +957,43 @@ function processServerMessage(data){
       break;
     case 'map_result':
       var chosenMap=data.map||'base';
+      var votedMaps=data.votes||[];
+      var uniqueVotes=[];
+      votedMaps.forEach(function(v){if(uniqueVotes.indexOf(v)===-1)uniqueVotes.push(v);});
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      // Roulette-style map selector
-      var maps=['base','rain','fog'];
       var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧'};
       var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog')};
-      var delay=60,step=0,totalSteps=20;
-      function spinStep(){
-        var idx=step%3;
-        var m=maps[idx];
+      if(uniqueVotes.length<=1){
+        // All votes same — skip animation, start game directly
         Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
-        mapEls[m].style.borderColor='#4af';
-        mapEls[m].style.background='rgba(68,170,255,.2)';
-        step++;
-        if(step<totalSteps){
-          delay+=20;
-          setTimeout(spinStep,delay);
-        }else{
-          // Stop on chosen map
-          var finalIdx=maps.indexOf(chosenMap);
+        mapEls[chosenMap].style.borderColor='#4f4';
+        mapEls[chosenMap].style.background='rgba(68,255,68,.15)';
+        document.getElementById('multi-vote-status').textContent='決定地圖：'+mapLabels[chosenMap];
+        setTimeout(function(){startMultiGame(chosenMap);},800);
+      }else{
+        // Roulette: only flash voted maps
+        var delay=80,step=0,totalSteps=uniqueVotes.length*6+5;
+        function spinStep(){
+          var idx=step%uniqueVotes.length;
+          var m=uniqueVotes[idx];
           Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
-          mapEls[chosenMap].style.borderColor='#4f4';
-          mapEls[chosenMap].style.background='rgba(68,255,68,.15)';
-          document.getElementById('multi-vote-status').textContent='決定地圖：'+mapLabels[chosenMap];
-          setTimeout(function(){
-            document.getElementById('multi-map-vote').style.display='none';
-            currentMap=chosenMap;
-            document.getElementById('scanlines').style.display='none';
-            document.getElementById('scope-overlay').style.display='none';
-            isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
-            try{localStorage.removeItem('ocgame_save')}catch(ex){}
-            applyMapSettings();
-            for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
-            playerHP=100;playerArmor=100;
-            opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
-            opponentMeshes=[];
-            var otherCount=playerCount-1;
-            for(var oi=0;oi<otherCount;oi++){
-              var om=createOpponentMesh();scene.add(om);
-              opponentMeshes.push(om);
-            }
-            gameStarted=true;
-            var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
-            document.body.requestPointerLock().catch(function(){});
-          },800);
+          mapEls[m].style.borderColor='#4af';
+          mapEls[m].style.background='rgba(68,170,255,.2)';
+          step++;
+          if(step<totalSteps){
+            delay+=25;
+            setTimeout(spinStep,delay);
+          }else{
+            Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
+            mapEls[chosenMap].style.borderColor='#4f4';
+            mapEls[chosenMap].style.background='rgba(68,255,68,.15)';
+            document.getElementById('multi-vote-status').textContent='決定地圖：'+mapLabels[chosenMap];
+            setTimeout(function(){startMultiGame(chosenMap);},800);
+          }
         }
+        spinStep();
       }
-      spinStep();
       break;
     case 'opponent_state':
       if(data.data&&data.playerId!==undefined){
@@ -1094,6 +1083,27 @@ function processServerMessage(data){
       isMultiplayer=false;
       break;
   }
+}
+function startMultiGame(mapName){
+  document.getElementById('multi-map-vote').style.display='none';
+  currentMap=mapName||'base';
+  document.getElementById('scanlines').style.display='none';
+  document.getElementById('scope-overlay').style.display='none';
+  isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
+  try{localStorage.removeItem('ocgame_save')}catch(ex){}
+  applyMapSettings();
+  for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
+  playerHP=100;playerArmor=100;
+  opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
+  opponentMeshes=[];
+  var otherCount=playerCount-1;
+  for(var oi=0;oi<otherCount;oi++){
+    var om=createOpponentMesh();scene.add(om);
+    opponentMeshes.push(om);
+  }
+  gameStarted=true;
+  var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
+  document.body.requestPointerLock().catch(function(){});
 }
 window.addEventListener('message',function(e){
   var msg=e.data;

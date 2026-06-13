@@ -76,11 +76,22 @@ async def resolve_map_vote(room_id):
     room = rooms.get(room_id)
     if not room or len(votes) < len(room): return
     unique = list(set(votes))
-    final_map = unique[0] if len(unique) == 1 else unique[int(__import__('random').random() * len(unique))]
+    if len(unique) == 1:
+        final_map = unique[0]
+    elif len(room) == 2:
+        # 2-player: random from voted (only matters if different)
+        final_map = unique[int(__import__('random').random() * len(unique))]
+    else:
+        # 4-player: majority vote
+        counts = {}
+        for v in votes: counts[v] = counts.get(v, 0) + 1
+        max_count = max(counts.values())
+        top_maps = [m for m, c in counts.items() if c == max_count]
+        final_map = top_maps[0] if len(top_maps) == 1 else top_maps[int(__import__('random').random() * len(top_maps))]
     print(f"[ROOM] map result roomId={room_id} map={final_map} votes={votes}")
     del map_votes[room_id]
     for tp in room:
-        await send_to(tp, {"type":"map_result","map":final_map})
+        await send_to(tp, {"type":"map_result","map":final_map,"votes":votes})
 
 # ---- HTTP processing ----
 
