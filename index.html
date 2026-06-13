@@ -821,7 +821,15 @@ document.getElementById('multi-cancel').onclick=function(){
   document.getElementById('multi-connecting').style.display='none';
   document.getElementById('menu').style.display='flex';
 };
-// ── Multiplayer via iframe relay (works with file://) ──
+// Auto-detect server IP
+(function(){
+  var si=document.getElementById('server-ip');
+  if(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'&&location.hostname!==''){
+    si.value=location.hostname;
+    si.placeholder=location.hostname;
+  }
+})();
+// ── Multiplayer ──
 var isMultiplayer=false,opponentMesh=null,opponentPos=new THREE.Vector3(0,0,0),opponentRot={yaw:0,pitch:0},opponentGun='ak47',opponentShooting=false,multiStateTimer=0,relayReady=false;
 var relayIframe=null,httpClientId=null;
 function connectMultiplayer(){
