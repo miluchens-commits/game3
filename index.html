@@ -962,8 +962,17 @@ function connectMultiplayerDirect(ip){
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
   var url;
   if(ip.indexOf('://')!==-1){url=ip;}
-  else if(ip==='localhost'||ip==='127.0.0.1'){url='ws://'+ip+':3000';}
-  else{url='wss://'+ip;}
+  else if(!ip||ip==='localhost'||ip==='127.0.0.1'){
+    // Auto-detect from page URL
+    var proto=location.protocol==='https:'?'wss:':'ws:';
+    if(location.port&&location.port!=='80'&&location.port!=='443'){
+      url=proto+'//'+location.hostname+':'+location.port;
+    }else{
+      url=proto+'//'+location.hostname;
+    }
+  }else{
+    url='ws://'+ip+':3000';
+  }
   window.multiWS=new WebSocket(url);
   var ws=window.multiWS;
   ws.onopen=function(){
