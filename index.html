@@ -1036,7 +1036,7 @@ function shoot(){
         }else{
           t.hp-=dmg;if(t.hp<0)t.hp=0;showDmgNum(hits[0].point,dmg,'#ff4444');
           var pct=t.hp/t.maxHp;
-          var c=t.baseColor;t.mesh.material.color.setRGB(c.r*pct,c.g*pct,c.b*pct);
+          t.mesh.material.color.setHex(t.baseColor).multiplyScalar(pct);
           if(t.hp<=0){t.mesh.visible=false;t.isTarget=false;}
         }
         if(t.isTarget&&t.maxArmor>0){
