@@ -55,6 +55,9 @@ canvas{display:block}
 #play-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,68,170,.12),rgba(68,170,255,.08),rgba(68,255,170,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 @keyframes btnSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 #play-btn:hover{color:#000;border-color:#f4a;box-shadow:0 0 60px rgba(255,68,170,.5),0 0 80px rgba(68,170,255,.3);transform:scale(1.08);background:linear-gradient(135deg,#f4a,#4af)}
+#multi-btn{padding:16px 56px;margin-top:16px;font-size:18px;font-weight:bold;color:#4af;background:transparent;border:2px solid rgba(68,170,255,.5);border-radius:4px;cursor:pointer;letter-spacing:8px;transition:all .3s;box-shadow:0 0 25px rgba(68,170,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
+#multi-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.12),rgba(68,255,170,.08),rgba(255,68,170,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
+#multi-btn:hover{color:#000;border-color:#4af;box-shadow:0 0 60px rgba(68,170,255,.5),0 0 80px rgba(68,255,170,.3);transform:scale(1.08);background:linear-gradient(135deg,#4af,#4fa)}
 #armory-btn{padding:8px 36px;margin-top:10px;font-size:13px;font-weight:bold;color:#4fa;background:transparent;border:1px solid rgba(68,255,170,.3);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
 #armory-btn:hover{opacity:1;border-color:#4fa;box-shadow:0 0 25px rgba(68,255,170,.4);transform:scale(1.04);color:#fff}
 #loadout-display{display:flex;gap:8px;margin-top:14px;z-index:1}
@@ -138,8 +141,13 @@ canvas{display:block}
   </div>
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">開 始 遊 戲</button><button id="armory-btn">武 器 庫</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="multi-btn">多 人 連 線</button><button id="armory-btn">武 器 庫</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
+  <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
+  <div style="font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:30px">正在尋找其他玩家...</div>
+  <div style="font-size:12px;color:rgba(255,255,255,.2);letter-spacing:2px;cursor:pointer" id="multi-cancel">取 消</div>
+</div>
 <div id="scope-overlay"><div id="scope-ring"></div><div id="scope-cross"></div><div id="scope-dots"></div></div>
 <div id="slot-hud"></div>
 <div id="ammo-hud"><span id="ammo-txt">30</span><span id="ammo-sep">/</span><span id="ammo-max">30</span></div>
@@ -795,6 +803,14 @@ document.addEventListener('mousemove',function(e){
 document.getElementById('play-btn').onclick=function(){
   document.getElementById('menu').style.display='none';
   document.getElementById('map-select').style.display='flex';
+};
+document.getElementById('multi-btn').onclick=function(){
+  document.getElementById('menu').style.display='none';
+  document.getElementById('multi-connecting').style.display='flex';
+};
+document.getElementById('multi-cancel').onclick=function(){
+  document.getElementById('multi-connecting').style.display='none';
+  document.getElementById('menu').style.display='flex';
 };
 document.addEventListener('pointerlockchange',function(){
   locked=!!document.pointerLockElement;
