@@ -1,7 +1,11 @@
-import asyncio, json, os, mimetypes
+import asyncio, json, os, mimetypes, sys
 import websockets
 from websockets.http11 import Response
 from websockets.datastructures import Headers
+
+# Ensure UTF-8 output for Render
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 # Shared game state
 queue = []          # list of transport dicts: {type, player, room_id}
@@ -36,8 +40,8 @@ async def try_match():
         rid = next_room_id; next_room_id += 1
         rooms[rid] = {"p1": p1, "p2": p2}
         p1["room_id"] = rid; p2["room_id"] = rid
-        m = {"type":"match_found","roomId":rid,"opponent":"u5c0du624b"}
-        print(f"[ROOM] 配對成功 roomId={rid}")
+        m = {"type":"match_found","roomId":rid,"opponent":"\u5c0du624b"}
+        print(f"[ROOM] matched roomId={rid}")
         await send_to(p1, m); await send_to(p2, m)
 
 async def relay(sender, msg_dict):
@@ -52,7 +56,7 @@ async def relay(sender, msg_dict):
 async def process_request(connection, request):
     try:
         path = request.path.split("?")[0]
-        print(f"[REQ] path={repr(path)}")
+        print(f"[REQ] {path}")
         # Version check
         if path == "/version":
             return Response(200,"OK",Headers({"Content-Type":"text/plain"}),b"game3-server aa9a996")
@@ -83,7 +87,7 @@ async def handler(ws):
     tp = {"type":"ws","player":ws}
     queue.append(tp)
     addr = ws.remote_address
-    print(f"[WS] 連線: {addr}")
+    print(f"[WS] connect: {addr}")
     try:
         await ws.send(json.dumps({"type":"in_queue","position":len(queue)}))
     except Exception:
@@ -105,7 +109,7 @@ async def handler(ws):
                 try: await ws.send(json.dumps({"type":"queue_left"}))
                 except: pass
     finally:
-        print(f"[WS] 斷線: {addr}")
+        print(f"[WS] disconnect: {addr}")
         try: queue.remove(tp)
         except ValueError: pass
         rid = tp.get("room_id")
@@ -113,12 +117,12 @@ async def handler(ws):
             room = rooms[rid]
             del rooms[rid]
             opp = room["p2"] if tp["player"] is room["p1"]["player"] else room["p1"]
-            print(f"[ROOM] 解散 roomId={rid}")
+            print(f"[ROOM] disband roomId={rid}")
             await send_to(opp, {"type":"opponent_disconnected"})
 
 async def main():
     port = int(os.environ.get("PORT", "3000"))
-    print(f"OCGAME server running at http://0.0.0.0:{port}")
+    print(f"OCGAME server running on port {port}")
     async with websockets.serve(handler, "0.0.0.0", port, process_request=process_request):
         await asyncio.Future()
 
