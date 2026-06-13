@@ -920,6 +920,7 @@ function createOpponentMesh(){
   var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
   for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
   for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
+  og.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.renderOrder=1;}});
   return og;
 }
 function processServerMessage(data){
