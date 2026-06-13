@@ -728,7 +728,7 @@ document.getElementById('blocker').style.display='none';
 document.getElementById('blocker').onclick=function(){
   // If resume prompt is showing, don't start game
   if(document.getElementById('resume-prompt').style.display==='flex')return;
-  renderer.domElement.requestPointerLock();
+  document.body.requestPointerLock().catch(function(){});
 };
 document.getElementById('save-exit-btn').onclick=function(){
   saveGame();location.reload();
@@ -746,7 +746,7 @@ document.getElementById('resume-yes').onclick=function(){
   isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
   var sd=JSON.parse(localStorage.getItem('ocgame_save'));
   if(sd){loadGame(sd);gameStarted=true;countdown=0;}
-  renderer.domElement.requestPointerLock();
+  document.body.requestPointerLock().catch(function(){});
 };
 document.getElementById('resume-no').onclick=function(){
   document.getElementById('resume-prompt').style.display='none';
@@ -788,7 +788,7 @@ mapOptions.forEach(function(opt){
     isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
     try{localStorage.removeItem('ocgame_save')}catch(ex){}
     applyMapSettings();
-    renderer.domElement.requestPointerLock();
+    document.body.requestPointerLock().catch(function(){});
   };
 });
 document.getElementById('map-select-bg').onclick=function(){
@@ -869,7 +869,7 @@ window.addEventListener('message',function(e){
         for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
         scene.add(og);
         opponentMesh=og;
-        renderer.domElement.requestPointerLock();
+        document.body.requestPointerLock().catch(function(){});
         break;
       case 'opponent_state':
         if(data.data){
@@ -1640,3 +1640,4 @@ document.head.appendChild(s);
 "></script>
 </body>
 </html>
+
