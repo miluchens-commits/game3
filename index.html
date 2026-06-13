@@ -921,10 +921,10 @@ function connectMultiplayer(){
       }
     };
     multiWs.onerror=function(){
-      document.querySelector('#multi-connecting div:nth-child(2)').textContent='無法連線到伺服器';
+      document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動 (node server.js)</small>';
     };
   }catch(ex){
-    document.querySelector('#multi-connecting div:nth-child(2)').textContent='連線失敗: '+ex.message;
+    document.querySelector('#multi-connecting div:nth-child(2)').innerHTML='連線失敗: '+ex.message+'<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
   }
 }
 document.addEventListener('pointerlockchange',function(){
