@@ -973,7 +973,7 @@ function connectMultiplayerDirect(ip){
   }else{
     url='ws://'+ip+':3000';
   }
-  window.multiWS=new WebSocket(url);
+  window.multiWS=new WebSocket(url+'/game');
   var ws=window.multiWS;
   ws.onopen=function(){
     relayReady=true;

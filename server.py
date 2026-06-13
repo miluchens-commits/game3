@@ -51,29 +51,27 @@ async def relay(sender, msg_dict):
 
 async def process_request(connection, request):
     try:
-        cors = Headers({"Access-Control-Allow-Origin":"*"})
-        upgrade = request.headers.get("Upgrade", "")
-        print(f"[REQ] {request.path} Upgrade={repr(upgrade)} headers={dict(request.headers)}")
-        if upgrade.lower() == "websocket":
-            return None
-
         path = request.path.split("?")[0]
+        # WebSocket upgrade path
+        if path in ("/game", "/api"):
+            return None
+        # Static files
         if path == "/":
             path = "/index.html"
         fp = path.lstrip("/")
-        if not os.path.isfile(fp):
-            return Response(404, "Not Found", cors, b"not found")
-        mime, _ = mimetypes.guess_type(fp)
-        with open(fp, "rb") as f:
-            content = f.read()
-        h = Headers({"Content-Type": mime or "application/octet-stream"})
-        h["Access-Control-Allow-Origin"] = "*"
-        return Response(200, "OK", h, content)
+        if os.path.isfile(fp):
+            mime, _ = mimetypes.guess_type(fp)
+            with open(fp, "rb") as f:
+                content = f.read()
+            h = Headers({"Content-Type": mime or "application/octet-stream"})
+            h["Access-Control-Allow-Origin"] = "*"
+            return Response(200, "OK", h, content)
+        return Response(404, "Not Found", Headers({"Content-Type":"text/plain"}), b"not found")
     except Exception as ex:
         print(f"[HTTP ERROR] {type(ex).__name__}: {ex}")
         import traceback
         traceback.print_exc()
-        return Response(500, "Internal Server Error", Headers({"Content-Type": "text/plain"}), f"Server error: {ex}".encode())
+        return Response(500, "Internal Server Error", Headers({"Content-Type":"text/plain"}), f"Server error: {ex}".encode())
 
 # ---- WebSocket handler ----
 
