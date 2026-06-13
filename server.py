@@ -1,13 +1,25 @@
 import asyncio
 import json
+import os
+import mimetypes
 import websockets
 
 queue = []
 rooms = {}
 next_room_id = 1
 
+async def process_request(path, request_headers):
+    if path == '/':
+        path = '/index.html'
+    file_path = path.lstrip('/')
+    if not os.path.isfile(file_path):
+        return 404, [('Content-Type', 'text/plain')], b'Not found'
+    mime, _ = mimetypes.guess_type(file_path)
+    with open(file_path, 'rb') as f:
+        content = f.read()
+    return 200, [('Content-Type', mime or 'application/octet-stream')], content
+
 async def handler(ws):
-    player_data = None
     room_id = None
 
     async for raw in ws:
@@ -19,8 +31,7 @@ async def handler(ws):
         t = msg.get('type')
 
         if t == 'join_queue':
-            player_data = {'name': msg.get('name', 'Player')}
-            await add_to_queue(ws, player_data)
+            await add_to_queue(ws)
 
         elif t == 'leave_queue':
             remove_from_queue(ws)
@@ -47,13 +58,6 @@ async def handler(ws):
         elif t == 'player_death':
             await relay_to_opponent(ws, room_id, {'type': 'opponent_died'})
 
-        elif t == 'round_clear':
-            await relay_to_opponent(ws, room_id, {
-                'type': 'opponent_cleared',
-                'roundNum': msg.get('roundNum')
-            })
-
-    # disconnect
     remove_from_queue(ws)
     if room_id and room_id in rooms:
         p1, p2 = rooms[room_id]
@@ -62,10 +66,10 @@ async def handler(ws):
         if opp.open:
             try:
                 await opp.send(json.dumps({'type': 'opponent_disconnected'}))
-            except:
+            except Exception:
                 pass
 
-async def add_to_queue(ws, player_data):
+async def add_to_queue(ws):
     queue.append(ws)
     await ws.send(json.dumps({'type': 'in_queue', 'position': len(queue)}))
     if len(queue) >= 2:
@@ -103,12 +107,12 @@ async def relay_to_opponent(ws, room_id, msg):
     if opp.open:
         try:
             await opp.send(json.dumps(msg))
-        except:
+        except Exception:
             pass
 
 async def main():
-    print('OCGAME server running on port 3000')
-    async with websockets.serve(handler, '0.0.0.0', 3000):
+    print('OCGAME server running at http://localhost:3000')
+    async with websockets.serve(handler, '0.0.0.0', 3000, process_request=process_request):
         await asyncio.Future()
 
 if __name__ == '__main__':

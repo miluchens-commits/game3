@@ -816,7 +816,7 @@ document.getElementById('multi-cancel').onclick=function(){
 };
 // ── Multiplayer WebSocket ──
 var multiWs=null,isMultiplayer=false,opponentMesh=null,opponentPos=new THREE.Vector3(0,0,0),opponentRot={yaw:0,pitch:0},opponentGun='ak47',opponentShooting=false,multiStateTimer=0;
-var WS_URL='ws://localhost:3000';
+var WS_URL='ws://'+location.host;
 function connectMultiplayer(){
   if(multiWs)multiWs.close();
   isMultiplayer=false;
