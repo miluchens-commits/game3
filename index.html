@@ -968,17 +968,16 @@ function relaySend(payload){
 }
 function connectMultiplayerDirect(ip){
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
+  // Build WebSocket URL
   var url;
-  if(ip.indexOf('://')!==-1){url=ip;}
-  else if(!ip||ip==='localhost'||ip==='127.0.0.1'){
-    // Auto-detect from page URL
-    var proto=location.protocol==='https:'?'wss:':'ws:';
-    if(location.port&&location.port!=='80'&&location.port!=='443'){
-      url=proto+'//'+location.hostname+':'+location.port;
-    }else{
-      url=proto+'//'+location.hostname;
-    }
+  if(ip.indexOf('://')!==-1){
+    // Full URL provided (e.g. wss://host)
+    url=ip;
+  }else if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
+    // Auto-detect from page URL (same server)
+    url=(location.protocol==='https:'?'wss:':'ws:')+'//'+location.hostname+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:'');
   }else{
+    // Custom IP/domain (LAN or remote without protocol)
     url='ws://'+ip+':3000';
   }
   window.multiWS=new WebSocket(url+'/game');
