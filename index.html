@@ -1383,6 +1383,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
       if(pj.pos.distanceTo(pos)<P_RADIUS+0.15){var pd=pj.dmg||12;playerDamage(pd);slowTimer=0.5;showDmgNum(pos.clone(),pd,'#ff4444');scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
       for(var bi=0;bi<mapBoxes.length;bi++){
         var b=mapBoxes[bi];
+        if(b.isPlatform)continue;
         if(Math.abs(pj.pos.x-b.pos.x)<b.size.x/2+0.05&&Math.abs(pj.pos.y-b.pos.y)<b.size.y/2+0.05&&Math.abs(pj.pos.z-b.pos.z)<b.size.z/2+0.05){
           scene.remove(pj.mesh);projectiles.splice(pi,1);break;
         }
