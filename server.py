@@ -126,6 +126,8 @@ async def handler(ws):
             elif mt in TYPE_MAP:
                 msg["type"] = TYPE_MAP[mt]
                 await relay(tp, msg)
+            elif mt in ("round_continue", "round_quit"):
+                await relay(tp, msg)
             elif mt == "leave_queue":
                 mode = tp.get("mode", 2)
                 try: queues[mode].remove(tp)

@@ -174,6 +174,26 @@ canvas{display:block}
 <div id="round-clear">通關</div>
 <div id="round-num"></div>
 <div id="round-earnings"></div>
+<div id="multi-death-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
+  <div style="font-size:32px;color:#f44;font-weight:900;letter-spacing:6px;margin-bottom:10px">戰 敗</div>
+  <div style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:30px">是否繼續比賽？</div>
+  <div style="display:flex;gap:20px">
+    <button id="multi-continue-btn" style="padding:12px 40px;font-size:16px;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">繼 續</button>
+    <button id="multi-quit-btn" style="padding:12px 40px;font-size:16px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">結 束</button>
+  </div>
+</div>
+<div id="multi-waiting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
+  <div style="font-size:24px;color:#4af;letter-spacing:4px">等待對手決定是否繼續...</div>
+  <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:2px">對手已戰敗</div>
+</div>
+<div id="multi-end-options" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
+  <div style="font-size:28px;color:#fa4;font-weight:900;letter-spacing:6px;margin-bottom:6px">對 戰 結 束</div>
+  <div id="multi-end-reason" style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:30px;letter-spacing:2px"></div>
+  <div style="display:flex;gap:20px">
+    <button id="multi-to-single" style="padding:12px 40px;font-size:16px;color:#f4a;background:transparent;border:1px solid rgba(255,68,170,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">單 人 模 式</button>
+    <button id="multi-to-menu" style="padding:12px 40px;font-size:16px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">回 選 單</button>
+  </div>
+</div>
 <script>
 function bootGame() {
 var THREE = window.THREE;
@@ -836,6 +856,36 @@ document.getElementById('multi-cancel').onclick=function(){
   document.getElementById('multi-connecting').style.display='none';
   document.getElementById('menu').style.display='flex';
 };
+document.getElementById('multi-quit-btn').onclick=function(){
+  document.getElementById('multi-death-prompt').style.display='none';
+  relaySend({type:'round_quit'});
+  isMultiplayer=false;
+  document.getElementById('multi-end-reason').textContent='你選擇結束比賽';
+  document.getElementById('multi-end-options').style.display='flex';
+  if(window.multiSI)clearInterval(window.multiSI);
+};
+document.getElementById('multi-continue-btn').onclick=function(){
+  document.getElementById('multi-death-prompt').style.display='none';
+  playerHP=100;playerArmor=100;
+  var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
+  weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
+  playerLoadout[0]='grapple';for(var si=1;si<5;si++)playerLoadout[si]=null;
+  currentSlot=0;switchToSlot(0);
+  updateCoinsDisplay();updateArmoryGunCounts();
+  document.body.requestPointerLock().catch(function(){});
+  relaySend({type:'round_continue'});
+};
+document.getElementById('multi-to-single').onclick=function(){
+  document.getElementById('multi-end-options').style.display='none';
+  isMultiplayer=false;location.reload();
+};
+document.getElementById('multi-to-menu').onclick=function(){
+  document.getElementById('multi-end-options').style.display='none';
+  isMultiplayer=false;gameStarted=false;
+  document.getElementById('menu').style.display='flex';
+  updateCoinsDisplay();updateArmoryGunCounts();
+  document.getElementById('multi-status').textContent='正在尋找其他玩家...';
+};
 // Auto-detect server IP
 (function(){
   var si=document.getElementById('server-ip');
@@ -955,20 +1005,41 @@ function processServerMessage(data){
       }
       var aliveCount=opponentStates.filter(function(s){return s.alive}).length;
       if(aliveCount===0||playerCount===2){
-        document.querySelector('#blocker div').innerHTML='消滅對手！<br><small>點擊繼續</small>';
-        document.getElementById('blocker').style.display='flex';
-        if(document.pointerLockElement)document.exitPointerLock();
-        isMultiplayer=false;
+        document.getElementById('multi-waiting').style.display='flex';
       }else{
-        document.querySelector('#blocker div').innerHTML='消滅一名對手！剩餘 '+aliveCount+' 人<br><small>點擊繼續</small>';
-        document.getElementById('blocker').style.display='flex';
-        if(document.pointerLockElement)document.exitPointerLock();
+        document.getElementById('multi-waiting').style.display='flex';
+        document.querySelector('#multi-waiting div').innerHTML='消滅一名對手！剩餘 '+aliveCount+' 人<br><small style="font-size:12px;color:rgba(255,255,255,.3)">等待對手決定...</small>';
       }
+      if(document.pointerLockElement)document.exitPointerLock();
+      break;
+    case 'round_continue':
+      document.getElementById('multi-death-prompt').style.display='none';
+      document.getElementById('multi-waiting').style.display='none';
+      // Respawn
+      playerHP=100;playerArmor=100;
+      var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
+      weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
+      playerLoadout[0]='grapple';for(var si=1;si<5;si++)playerLoadout[si]=null;
+      currentSlot=0;switchToSlot(0);
+      updateCoinsDisplay();updateArmoryGunCounts();
+      document.body.requestPointerLock().catch(function(){});
+      // Re-create alive opponents list
+      opponentStates.forEach(function(s){s.alive=true;});
+      break;
+    case 'round_quit':
+      document.getElementById('multi-death-prompt').style.display='none';
+      document.getElementById('multi-waiting').style.display='none';
+      document.getElementById('multi-end-reason').textContent='對手選擇結束比賽';
+      document.getElementById('multi-end-options').style.display='flex';
+      if(document.pointerLockElement)document.exitPointerLock();
+      isMultiplayer=false;
       break;
     case 'opponent_disconnected':
       if(window.multiSI)clearInterval(window.multiSI);
-      document.getElementById('blocker').style.display='flex';
-      document.querySelector('#blocker div').innerHTML='對手已離開對局<br><small>點擊返回</small>';
+      document.getElementById('multi-death-prompt').style.display='none';
+      document.getElementById('multi-waiting').style.display='none';
+      document.getElementById('multi-end-reason').textContent='對手已離開對局';
+      document.getElementById('multi-end-options').style.display='flex';
       if(document.pointerLockElement)document.exitPointerLock();
       isMultiplayer=false;
       break;
@@ -1390,7 +1461,12 @@ function reload(){
   isReloading=true;reloadTimer=2;
 }
 function onPlayerDeath(){
-  if(isMultiplayer)relaySend({type:'player_death'});
+  if(isMultiplayer){
+    relaySend({type:'player_death'});
+    document.getElementById('multi-death-prompt').style.display='flex';
+    if(document.pointerLockElement)document.exitPointerLock();
+    return;
+  }
   playerHP=100;playerArmor=100;countdown=3;gameStarted=false;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
