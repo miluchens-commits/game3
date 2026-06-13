@@ -53,6 +53,7 @@ async def process_request(connection, request):
     try:
         cors = Headers({"Access-Control-Allow-Origin":"*"})
         upgrade = request.headers.get("Upgrade", "")
+        print(f"[REQ] {request.path} Upgrade={repr(upgrade)} headers={dict(request.headers)}")
         if upgrade.lower() == "websocket":
             return None
 
