@@ -98,7 +98,7 @@ canvas{display:block}
 #slot-hud .sh-slot.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.12)}
 #ammo-hud{position:fixed;bottom:30px;right:30px;z-index:5;pointer-events:none;font-family:monospace;color:#fff;font-size:32px;font-weight:bold;text-shadow:0 0 10px rgba(0,0,0,.8)}
 #plat-hud{position:fixed;top:50%;left:50%;transform:translate(-50%,-80px);z-index:6;pointer-events:none;font-family:Arial;font-size:24px;font-weight:bold;color:#4af;text-shadow:0 0 20px rgba(68,170,255,.5);display:none;letter-spacing:2px}
-#flash-hud{position:fixed;bottom:80px;right:30px;z-index:5;pointer-events:none;font-family:monospace;color:#ff4;font-size:14px;font-weight:bold;text-shadow:0 0 10px rgba(0,0,0,.8);opacity:0.7}
+
 #ammo-sep{color:#667;margin:0 4px;font-size:24px}
 #ammo-max{color:#889;font-size:24px}
 #scope-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:8;display:none;font-family:Arial}
@@ -144,7 +144,6 @@ canvas{display:block}
 <div id="slot-hud"></div>
 <div id="ammo-hud"><span id="ammo-txt">30</span><span id="ammo-sep">/</span><span id="ammo-max">30</span></div>
 <div id="plat-hud"></div>
-<div id="flash-hud" style="display:none">🔦 手電筒</div>
 <div id="scanlines"></div>
 <div id="crosshair">+</div>
 <div id="awp-scope"><div class="ring"></div><div class="dot"></div></div>
@@ -374,19 +373,16 @@ for(var ei=0;ei<maxEnemies;ei++){
   if(ei>=activeCount){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
 }
 var sl=new THREE.SpotLight(0xffffff,3);sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);sl.angle=0.5;sl.penumbra=0.5;sl.decay=1;sl.distance=20;scene.add(sl);scene.add(sl.target);
-// ── Flashlight (per-slot binding) ──
-var flashlightOn=false,flashlightLight=null,flashlightCone=null,flashlightMesh=null;
+// ── Flashlight (per-slot binding, always-on) ──
+var flashlightLight=null,flashlightMesh=null;
 (function(){
-  var fl=new THREE.SpotLight(0xffeecc,8);fl.angle=0.3;fl.penumbra=0.4;fl.decay=0.5;fl.distance=25;
+  var fl=new THREE.SpotLight(0xffeecc,6);fl.angle=0.35;fl.penumbra=0.5;fl.decay=0.3;fl.distance=30;
   fl.position.set(0.2,-0.08,-0.35);cam.add(fl);cam.add(fl.target);fl.target.position.set(0,0,-5);
   fl.visible=false;flashlightLight=fl;
-  var coneMat=new THREE.MeshBasicMaterial({color:0xffeecc,transparent:true,opacity:0.05,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending});
-  var cone=new THREE.Mesh(new THREE.CylinderGeometry(0.02,1.6,5,16,1,true),coneMat);
-  cone.position.set(0,0,-2.5);cone.rotation.x=Math.PI/2;cam.add(cone);cone.visible=false;flashlightCone=cone;
 })();
 function attachFlashlightMesh(){
   detachFlashlightMesh();
-  if(!gunGroup||!slotFlashlight[currentSlot])return;
+  if(!gunGroup||!slotFlashlight[currentSlot]||currentGun==='knife')return;
   var flMat=new THREE.MeshStandardMaterial({color:0x666666,metalness:0.4,roughness:0.5});
   var body=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.015,0.06,8),flMat);
   body.rotation.x=Math.PI/2;body.position.set(0,0,-0.36);gunGroup.add(body);
@@ -395,7 +391,7 @@ function attachFlashlightMesh(){
   var lens=new THREE.Mesh(new THREE.CircleGeometry(0.016,8),new THREE.MeshBasicMaterial({color:0xffeecc}));
   lens.position.set(0,0,-0.398);gunGroup.add(lens);
   flashlightMesh={body:body,head:head,lens:lens};
-  if(flashlightOn){flashlightLight.visible=true;flashlightCone.visible=true;}
+  flashlightLight.visible=true;
 }
 function detachFlashlightMesh(){
   if(flashlightMesh){
@@ -404,13 +400,7 @@ function detachFlashlightMesh(){
     if(flashlightMesh.lens&&gunGroup)gunGroup.remove(flashlightMesh.lens);
     flashlightMesh=null;
   }
-  flashlightLight.visible=false;flashlightCone.visible=false;
-}
-function toggleFlashlight(){
-  if(!slotFlashlight[currentSlot])return;
-  flashlightOn=!flashlightOn;
-  flashlightLight.visible=flashlightOn;flashlightCone.visible=flashlightOn;
-  document.getElementById('flash-hud').style.display=flashlightOn?'block':'none';
+  if(flashlightLight)flashlightLight.visible=false;
 }
 function updateSlotFlashlightUI(){
   document.querySelectorAll('.slot-fl-btn').forEach(function(b){
@@ -638,10 +628,10 @@ document.querySelectorAll('.a-gun-btn').forEach(function(b){
 document.querySelectorAll('.slot-fl-btn').forEach(function(b){
   b.onclick=function(){
     var si=parseInt(b.dataset.slot);
-    if(!playerLoadout[si])return;
+    if(!playerLoadout[si]||playerLoadout[si]==='knife')return;
     slotFlashlight[si]=!slotFlashlight[si];
     if(si===currentSlot&&locked&&gameStarted){
-      if(slotFlashlight[si])attachFlashlightMesh();else{detachFlashlightMesh();flashlightOn=false;document.getElementById('flash-hud').style.display='none';}
+      if(slotFlashlight[si])attachFlashlightMesh();else detachFlashlightMesh();
     }
     updateSlotFlashlightUI();
   };
@@ -823,7 +813,6 @@ document.addEventListener('keydown',function(e){
   if(e.code==='Digit5'||e.code==='Numpad5')switchToSlot(4);
   if(e.code==='KeyR')reload();
   if(e.code==='KeyG')fireGrapple();
-  if(e.code==='KeyF')toggleFlashlight();
   if(e.code==='Space'&&grappleActive)releaseGrapple();
 });
 document.addEventListener('keyup',function(e){keys[e.code]=false;});
@@ -1079,7 +1068,7 @@ function enemyShoot(e){
 }
 function reload(){
   if(isReloading||gunAmmo[currentGun]>=gunData[currentGun].mag)return;
-  isReloading=true;reloadTimer=2;autoFire=false;
+  isReloading=true;reloadTimer=2;
 }
 function onPlayerDeath(){
   playerHP=100;playerArmor=100;countdown=3;gameStarted=false;
