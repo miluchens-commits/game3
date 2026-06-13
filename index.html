@@ -194,6 +194,13 @@ canvas{display:block}
     <button id="multi-to-menu" style="padding:12px 40px;font-size:16px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">回 選 單</button>
   </div>
 </div>
+<div id="multi-map-vote" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
+  <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
+  <div style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px;letter-spacing:2px" id="multi-vote-status">請選擇地圖</div>
+  <div class="map-option" data-map="base" id="vote-base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場</div></div>
+  <div class="map-option" data-map="rain" id="vote-rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div>
+  <div class="map-option" data-map="fog" id="vote-fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>
+</div>
 <script>
 function bootGame() {
 var THREE = window.THREE;
@@ -868,10 +875,6 @@ document.getElementById('multi-continue-btn').onclick=function(){
   document.getElementById('multi-death-prompt').style.display='none';
   playerHP=100;playerArmor=100;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
-  weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
-  playerLoadout[0]='grapple';for(var si=1;si<5;si++)playerLoadout[si]=null;
-  currentSlot=0;switchToSlot(0);
-  updateCoinsDisplay();updateArmoryGunCounts();
   document.body.requestPointerLock().catch(function(){});
   relaySend({type:'round_continue'});
 };
@@ -886,6 +889,15 @@ document.getElementById('multi-to-menu').onclick=function(){
   updateCoinsDisplay();updateArmoryGunCounts();
   document.getElementById('multi-status').textContent='正在尋找其他玩家...';
 };
+// Map voting
+document.getElementById('vote-base').onclick=function(){sendMapVote('base');};
+document.getElementById('vote-rain').onclick=function(){sendMapVote('rain');};
+document.getElementById('vote-fog').onclick=function(){sendMapVote('fog');};
+function sendMapVote(map){
+  document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
+  document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
+  relaySend({type:'map_vote',map:map});
+}
 // Auto-detect server IP
 (function(){
   var si=document.getElementById('server-ip');
@@ -931,6 +943,21 @@ function processServerMessage(data){
     case 'match_found':
       document.getElementById('multi-connecting').style.display='none';
       isMultiplayer=true;playerCount=data.playerCount||2;
+      opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
+      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];
+      var myId=data.playerId;
+      var otherCount=playerCount-1;
+      for(var oi=0;oi<otherCount;oi++){
+        opponentMeshes.push(null);
+        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true});
+        opponentPlayerIds.push(oi<myId?oi:oi+1);
+      }
+      document.getElementById('multi-map-vote').style.display='flex';
+      document.getElementById('multi-vote-status').textContent='請選擇地圖';
+      break;
+    case 'map_result':
+      document.getElementById('multi-map-vote').style.display='none';
+      currentMap=data.map||'base';
       document.getElementById('scanlines').style.display='none';
       document.getElementById('scope-overlay').style.display='none';
       isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
@@ -939,14 +966,11 @@ function processServerMessage(data){
       for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
       playerHP=100;playerArmor=100;
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
-      var myId=data.playerId;
-      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];
+      opponentMeshes=[];
       var otherCount=playerCount-1;
       for(var oi=0;oi<otherCount;oi++){
         var om=createOpponentMesh();scene.add(om);
         opponentMeshes.push(om);
-        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true});
-        opponentPlayerIds.push(oi<myId?oi:oi+1);
       }
       gameStarted=true;
       var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
@@ -1019,10 +1043,6 @@ function processServerMessage(data){
       // Respawn
       playerHP=100;playerArmor=100;
       var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
-      weaponInventory.ak47=0;weaponInventory.deagle=0;weaponInventory.awp=0;weaponInventory.knife=0;weaponInventory.grapple=999;
-      playerLoadout[0]='grapple';for(var si=1;si<5;si++)playerLoadout[si]=null;
-      currentSlot=0;switchToSlot(0);
-      updateCoinsDisplay();updateArmoryGunCounts();
       document.body.requestPointerLock().catch(function(){});
       // Re-create alive opponents list
       opponentStates.forEach(function(s){s.alive=true;});
@@ -1160,7 +1180,7 @@ document.addEventListener('visibilitychange',function(){
   }
 });
 document.addEventListener('mousedown',function(e){
-  if(!locked&&(gameStarted||isMultiplayer)&&document.getElementById('menu').style.display==='none'&&document.getElementById('resume-prompt').style.display!=='flex'){
+  if(!locked&&(gameStarted||isMultiplayer)&&document.getElementById('menu').style.display==='none'&&document.getElementById('resume-prompt').style.display!=='flex'&&document.getElementById('multi-death-prompt').style.display!=='flex'&&document.getElementById('multi-waiting').style.display!=='flex'&&document.getElementById('multi-end-options').style.display!=='flex'&&document.getElementById('multi-map-vote').style.display!=='flex'){
     document.body.requestPointerLock().catch(function(){});
   }
 });

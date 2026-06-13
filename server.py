@@ -11,6 +11,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 queues = {2: [], 4: []}  # mode -> list of transport dicts: {type, player, room_id, player_id}
 rooms = {}               # room_id -> list of [tp, tp, ...]
 next_room_id = 1
+map_votes = {}           # room_id -> [vote, vote, ...]
 TYPE_MAP = {"state":"opponent_state","shoot":"enemy_shoot","hit":"opponent_hit","player_death":"opponent_died"}
 
 async def send_to(tp, msg_dict):
@@ -42,6 +43,7 @@ async def try_match():
                 p["player_id"] = i
                 room.append(p)
             rooms[rid] = room
+            map_votes[rid] = []
             for p in players:
                 m = {"type":"match_found","roomId":rid,"playerCount":mode,"playerId":p["player_id"]}
                 print(f"[ROOM] matched roomId={rid} playerId={p['player_id']}")
@@ -67,6 +69,18 @@ async def relay(sender, msg_dict):
 def alive_transport(tp):
     try: return tp["player"].state.name == "OPEN"
     except: return False
+
+async def resolve_map_vote(room_id):
+    if room_id not in map_votes: return
+    votes = map_votes[room_id]
+    room = rooms.get(room_id)
+    if not room or len(votes) < len(room): return
+    unique = list(set(votes))
+    final_map = unique[0] if len(unique) == 1 else unique[int(__import__('random').random() * len(unique))]
+    print(f"[ROOM] map result roomId={room_id} map={final_map} votes={votes}")
+    del map_votes[room_id]
+    for tp in room:
+        await send_to(tp, {"type":"map_result","map":final_map})
 
 # ---- HTTP processing ----
 
@@ -128,6 +142,12 @@ async def handler(ws):
                 await relay(tp, msg)
             elif mt in ("round_continue", "round_quit"):
                 await relay(tp, msg)
+            elif mt == "map_vote":
+                rid = tp.get("room_id")
+                if rid and rid in map_votes:
+                    map_votes[rid].append(msg.get("map", "base"))
+                    print(f"[VOTE] roomId={rid} playerId={tp.get('player_id')} map={msg.get('map')}")
+                    asyncio.ensure_future(resolve_map_vote(rid))
             elif mt == "leave_queue":
                 mode = tp.get("mode", 2)
                 try: queues[mode].remove(tp)
@@ -143,6 +163,7 @@ async def handler(ws):
         if rid and rid in rooms:
             room = rooms[rid]
             del rooms[rid]
+            map_votes.pop(rid, None)
             for other in room:
                 if other is not tp and alive_transport(other):
                     print(f"[ROOM] disband roomId={rid}")
