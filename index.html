@@ -331,9 +331,10 @@ var cc=0x556677;addBox(new THREE.Vector3(15,bh/2,-15),new THREE.Vector3(1.5,bh,1
 addBox(new THREE.Vector3(15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);
 addBox(new THREE.Vector3(-15,bh/2,-15),new THREE.Vector3(1.5,bh,1.5),cc);
 addBox(new THREE.Vector3(-15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);
-addBox(new THREE.Vector3(0,0.75,0),new THREE.Vector3(5,1.5,5),0x8899aa);
-addBox(new THREE.Vector3(0,1.55,0),new THREE.Vector3(3.5,0.8,3.5),0x9999aa);
-addBox(new THREE.Vector3(0,2.15,0),new THREE.Vector3(2,0.5,2),0x6688aa);
+var centerStruct=[];
+addBox(new THREE.Vector3(0,0.75,0),new THREE.Vector3(5,1.5,5),0x8899aa);centerStruct.push(mapBoxes[mapBoxes.length-1]);
+addBox(new THREE.Vector3(0,1.55,0),new THREE.Vector3(3.5,0.8,3.5),0x9999aa);centerStruct.push(mapBoxes[mapBoxes.length-1]);
+addBox(new THREE.Vector3(0,2.15,0),new THREE.Vector3(2,0.5,2),0x6688aa);centerStruct.push(mapBoxes[mapBoxes.length-1]);
 addBox(new THREE.Vector3(-7,0.8,-6),new THREE.Vector3(5,1.6,0.4),0x777777);
 addBox(new THREE.Vector3(4,0.8,-5),new THREE.Vector3(3,1.6,0.4),0x777777);
 addBox(new THREE.Vector3(-5,0.8,7),new THREE.Vector3(4,1.6,0.4),0x777777);
@@ -1132,6 +1133,7 @@ function applyMapSettings(){
   // Toggle dragon boat elements
   if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
   if(lanternLights)lanternLights.forEach(function(l){l.visible=currentMap==='dragonboat';});
+  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat';});
   if(currentMap==='dragonboat'){
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
