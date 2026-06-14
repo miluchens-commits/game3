@@ -2091,11 +2091,13 @@ function randomizeEnemyType(e){
   // Healer staff
   if(isHealer){
     var sg=new THREE.Group();
-    var rod=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.02,0.35,6),new THREE.MeshStandardMaterial({color:0x886644}));
-    rod.position.y=0.17;sg.add(rod);
-    var orb=new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8),new THREE.MeshStandardMaterial({color:0x44ff88,emissive:0x22ff66,emissiveIntensity:0.8}));
-    orb.position.y=0.35;sg.add(orb);
-    sg.position.set(0.22,0.3,0.15);sg.userData={isStaff:true};e.mesh.add(sg);
+    var rod=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,0.45,6),new THREE.MeshStandardMaterial({color:0x886644}));
+    rod.position.y=0.2;sg.add(rod);
+    var orb=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),new THREE.MeshStandardMaterial({color:0x44ff88,emissive:0x22ff66,emissiveIntensity:1.5}));
+    orb.position.y=0.42;sg.add(orb);
+    var orbGlow=new THREE.Mesh(new THREE.SphereGeometry(0.14,8,8),new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:0.2,depthWrite:false}));
+    orbGlow.position.y=0.42;sg.add(orbGlow);
+    sg.position.set(0.3,0.28,0.2);sg.userData={isStaff:true};e.mesh.add(sg);
   }
   // Grenadier backpack
   if(isGrenadier){
@@ -2226,9 +2228,8 @@ function updateEnemies(dt){
       if(isRusher||isSuicider){
         if(d>2.5)desired.add(fwd);
       }else if(isHealer){
-        // Healer: flee from player, stay at 12-17 distance
-        if(d<12)desired.sub(fwd);
-        else if(d>17)desired.add(fwd);
+        // Healer: never approach player, only flee if too close or strafe
+        if(d<14)desired.sub(fwd);
         desired.add(rgt.clone().multiplyScalar(e.strafeDir*0.6));
       }else{
         var idealDist=isGrenadier?10+Math.random()*3:7+Math.random()*4;
@@ -2264,7 +2265,12 @@ function updateEnemies(dt){
             var hd=e.pos.distanceTo(he.pos);
             if(hd<8&&he.hp<he.maxHp&&hd<nearestDist){nearest=he;nearestDist=hd;}
           }
-          if(nearest){nearest.hp=Math.min(nearest.maxHp,nearest.hp+12);nearest.armor=Math.min(nearest.maxArmor,nearest.armor+6);showDmgNum(nearest.pos.clone(),12,'#44ff88');e.shootCD=0.8}
+          if(nearest){nearest.hp=Math.min(nearest.maxHp,nearest.hp+12);nearest.armor=Math.min(nearest.maxArmor,nearest.armor+6);showDmgNum(nearest.pos.clone(),12,'#44ff88');e.shootCD=0.8;
+            // Green glow on healed enemy
+            var hl=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:0.3,depthWrite:false}));
+            hl.position.copy(nearest.pos);hl.position.y=0.4;scene.add(hl);
+            setTimeout(function(){scene.remove(hl);},300);
+          }
         }
       }else{
         if(e.shootCD<=0&&d<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);e.state='shoot'}
@@ -2293,9 +2299,11 @@ function updateEnemies(dt){
       }
     }else if(e.state==='search'){
       var toP3=new THREE.Vector3().copy(pos);toP3.y=0;toP3.sub(e.pos);
-      moveTarget=e.pos.clone().add(toP3.normalize().multiplyScalar(5));
+      if(isHealer)moveTarget=e.pos.clone().sub(toP3.normalize().multiplyScalar(5));
+      else moveTarget=e.pos.clone().add(toP3.normalize().multiplyScalar(5));
     }else if(e.state==='investigate'&&e.investigateTarget){
-      moveTarget=e.investigateTarget;
+      if(isHealer)moveTarget=e.pos.clone().sub(e.investigateTarget.clone().sub(e.pos).normalize().multiplyScalar(5));
+      else moveTarget=e.investigateTarget;
       if(e.pos.distanceTo(e.investigateTarget)<2){e.searchTimer=0;}
     }
     if(moveTarget){
