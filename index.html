@@ -2176,7 +2176,7 @@ function updatePickups(dt){
     if(pk.life<5)pk.mesh.children[0].material.opacity=Math.min(1,pk.life);
     // Player pickup
     if(pos.distanceTo(pk.pos)<1.2){
-      if(pk.type==='health'){playerHP=Math.min(100,playerHP+40);showDmgNum(pos.clone(),40,'#44ff44')}
+      if(pk.type==='health'){playerHP=Math.min(100,playerHP+40);showDmgNum(pos.clone(),40,'#44ff88')}
       else if(pk.type==='atkspeed'){buffTimer=5;buffType='atkspeed';showDmgNum(pos.clone(),1,'#ff6622')}
       else if(pk.type==='infammo'){buffTimer=5;buffType='infammo';showDmgNum(pos.clone(),1,'#44aaff')}
       scene.remove(pk.mesh);pickups.splice(i,1);
@@ -2186,7 +2186,7 @@ function updatePickups(dt){
 function updateEnemies(dt){
   var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++){var bx=mapBoxes[mi];if(!bx.isDragonBoat&&bx.mesh.visible!==false)mapMeshes.push(bx.mesh);}
   for(var i=0;i<enemies.length;i++){
-    var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}if(e.type!=='suicider'){specialCoins+=1000;roundEarnings+=1000;showDmgNum(e.pos.clone(),1000,'#fa4')}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
+    var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);if(e.type!=='suicider'){specialCoins+=1000;roundEarnings+=1000;showDmgNum(e.pos.clone(),1000,'#fa4')}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
     e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
     if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
     if(!e.hitTimer)e.hitTimer=0;else e.hitTimer-=dt;
@@ -2367,7 +2367,7 @@ function showDmgNum(p3d,dmg,clr,shield){
   var v=p3d.clone();v.project(cam);
   var x=(v.x*0.5+0.5)*window.innerWidth,y=(-v.y*0.5+0.5)*window.innerHeight;
   var el=document.createElement('div');
-  var prefix= (clr==='#fa4'||clr==='#44ff88')?'+':'-';
+  var prefix= (clr==='#fa4'||clr==='#44ff88'||clr==='#44ff44')?'+':'-';
   el.textContent=(shield?'🛡 ':'')+prefix+dmg;
   el.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;pointer-events:none;z-index:7;font-size:'+(shield?'28':'22')+'px;font-weight:bold;color:'+clr+';font-family:Arial;text-shadow:0 0 6px #000;opacity:1;transition:all 0.7s ease-out';
   document.body.appendChild(el);
