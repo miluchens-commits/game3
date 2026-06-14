@@ -2300,7 +2300,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
   requestAnimationFrame(animate);
 }catch(e){console.error(e);document.getElementById("blocker").style.display="flex";document.querySelector("#blocker div").innerHTML="<b style=\"color:#f44\">錯誤：</b>"+e.message+"<br><small style=\"color:#aaa\">"+e.stack+"</small>";requestAnimationFrame(animate);}}
 // ── BGM System ──
-var bgmCtx=null,bgmState='',bgmGain=null,bgmMaster=null,bgmTimer=null,bgmBeat=0,bgmBPM=80,bgmVol=0.5,bgmNotePool=[];
+var bgmCtx=null,bgmState='',bgmGain=null,bgmMaster=null,bgmTimer=null,bgmBeat=0,bgmBPM=80,bgmVol=0.6,bgmNotePool=[];
 var pentatonic=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99,880.00];
 var penta5=[261.63,293.66,329.63,392.00,440.00];
 var bassNotes=[65.41,73.42,82.41,98.00,110.00,130.81];
@@ -2335,10 +2335,10 @@ function startBGM(state){
   stopBGM();bgmState=state;bgmBeat=0;
   var now=bgmCtx.currentTime;
   switch(state){
-    case 'menu':bgmBPM=72;bgmMenuLoop(now);break;
-    case 'base':case'rain':case'fog':bgmBPM=80;bgmNormalLoop(now);break;
-    case 'dragonboat':bgmBPM=90;bgmDragonLoop(now);break;
-    case 'multiplayer':bgmBPM=120;bgmMultiLoop(now);break;
+    case 'menu':bgmBPM=80;bgmMenuLoop(now);break;
+    case 'base':case'rain':case'fog':bgmBPM=90;bgmNormalLoop(now);break;
+    case 'dragonboat':bgmBPM=105;bgmDragonLoop(now);break;
+    case 'multiplayer':bgmBPM=135;bgmMultiLoop(now);break;
   }
 }
 function stopBGM(){
@@ -2352,37 +2352,52 @@ function bgmSchedule(cb,interval){
     bgmBeat=(bgmBeat+1)%16;cb(bgmCtx.currentTime+0.05,bgmBeat);
   },interval);
 }
+function bgmChord(freqs,start,dur,gain,type,filterF){
+  freqs.forEach(function(f){bgmPlayNote(f,start,dur,type||'sine',gain||0.06,filterF||f*3);});
+}
 function bgmMenuLoop(now){
-  var notes=[0,2,4,6,4,2,0,-1,0,3,5,7,5,3,0,-1];
+  var notes=[0,2,4,6,7,6,4,2,0,3,5,7,8,7,5,3];
+  var chords=[[0,2,4],[2,4,6],[4,6,7],[6,7,9]];
   function tick(t,b){
     var idx=b%notes.length,ni=notes[idx];
-    if(ni>=0){var f=pentatonic[ni]*(b<8?1:2);bgmPlayNote(f,t,0.3,'sine',0.1,f*2);}
-    if(b%8===3)bgmPlayNote(bassNotes[2+(b/4)%3],t,0.35,'triangle',0.12,150);
+    if(ni>=0){var f=pentatonic[ni]*1.5;bgmPlayNote(f,t,0.2,'sine',0.08,f*2);}
+    // chord pad every 4 beats
+    if(b%4===0){var ci=(b/4)%chords.length;bgmChord(chords[ci].map(function(n){return pentatonic[n]*0.5}),t,1.2,0.04,'sine',200);}
+    if(b%8===2)bgmPlayNote(bassNotes[2+(b/4)%3],t,0.3,'triangle',0.15,120);
   }
   bgmSchedule(tick,60000/bgmBPM/4);
 }
 function bgmNormalLoop(now){
+  var mel=[0,3,2,4,3,5,4,2,0,3,5,7,5,4,2,0];
   function tick(t,b){
-    if(b%4===0)bgmPlayNote(bassNotes[b%3+2],t,0.5,'sine',0.12,120);
-    if(b%8===2||b%8===6)bgmPlayNote(pentatonic[3+b%3],t,0.35,'triangle',0.1,600);
+    if(b%2===0)bgmPlayNote(bassNotes[b%3+2],t,0.35,'sawtooth',0.14,120);
+    var mi=mel[b%mel.length];bgmPlayNote(pentatonic[mi],t,0.25,'triangle',0.1,600);
+    if(b%8===0)bgmPlayNote(pentatonic[mi]*2,t,0.2,'sine',0.06,800);
   }
   bgmSchedule(tick,60000/bgmBPM/4);
 }
 function bgmDragonLoop(now){
-  var mel=[0,2,4,5,4,2,0,2,4,5,6,5,4,2,0,-1];
+  var mel1=[0,2,4,5,4,2,0,2,4,5,6,5,4,2,0,-1];
+  var mel2=[4,5,7,9,7,5,4,5,7,9,10,9,7,5,4,2];
   function tick(t,b){
-    var idx=b%mel.length,ni=mel[idx];
-    if(ni>=0){var f=pentatonic[ni]*1.5;bgmPlayNote(f,t,0.3,'sine',0.12,f*3);}
-    if(b%4===0)bgmPlayNote(bassNotes[(b/2)%3+2],t,0.3,'triangle',0.1,120);
+    var arr=b<16?mel1:mel2,idx=b%arr.length,ni=arr[idx];
+    if(ni>=0){var f=pentatonic[ni]*1.5;bgmPlayNote(f,t,0.25,'sine',0.13,f*3);}
+    if(b%2===0)bgmPlayNote(bassNotes[(b/2)%3+2],t,0.25,'triangle',0.12,100);
+    if(b%4===0){var ci=(b/4)%3;bgmChord([pentatonic[ci]*0.5,pentatonic[ci+2]*0.5],t,0.8,0.04,'sine',150);}
   }
   bgmSchedule(tick,60000/bgmBPM/4);
 }
 function bgmMultiLoop(now){
   var leadM=[0,4,7,5,4,2,0,2,4,7,9,7,5,4,2,0,0,5,8,7,5,3,1,3,5,8,10,8,5,3,1,0];
   function tick(t,b){
-    if(b%2===0)bgmPlayNote(bassNotes[(b/2)%3+1],t,0.25,'sawtooth',0.12,150);
-    var li=leadM[b%leadM.length];bgmPlayNote(pentatonic[li]*2,t,0.15,'square',0.1,1000);
-    if(b%8===0)bgmPlayNote(bassNotes[0]*2.5,t,0.1,'sine',0.2,80);
+    // Bass — more active
+    if(b%2===0)bgmPlayNote(bassNotes[b%4+1]*1.5,t,0.18,'sawtooth',0.15,100);
+    // Lead
+    var li=leadM[b%leadM.length];bgmPlayNote(pentatonic[li]*2.5,t,0.12,'square',0.12,1500);
+    // Power chord accent every 8 beats
+    if(b%8===0){var ci=(b/8)%3;bgmChord([pentatonic[ci]*1.2,pentatonic[ci+2]*1.2],t,0.4,0.08,'sawtooth',300);}
+    // Extra high octave for excitement
+    if(b%4===2)bgmPlayNote(pentatonic[(li+2)%pentatonic.length]*4,t,0.08,'sine',0.06,2000);
   }
   bgmSchedule(tick,60000/bgmBPM/4);
 }
