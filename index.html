@@ -229,6 +229,7 @@ canvas{display:block}
 <div id="sb"></div>
 <div id="slide-prompt"></div>
 <div id="zipline-prompt" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);color:#8f8;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(68,255,68,.5);letter-spacing:2px"></div>
+<div id="boat-prompt" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);color:#c6f;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(204,102,255,.5);letter-spacing:2px"></div>
 <div id="round-clear">通關</div>
 <div id="round-num"></div>
 <div id="round-earnings"></div>
@@ -510,6 +511,7 @@ addDB(new THREE.Vector3(9,2.3,3),new THREE.Vector3(0.4,0.3,0.02),0x44aaff);
 // Zipline data
 var ziplines=[{start:new THREE.Vector3(-9,2.8,-4),end:new THREE.Vector3(-9,2.8,4)},{start:new THREE.Vector3(9,2.3,-4),end:new THREE.Vector3(9,2.3,4)}];
 var ziplineActive=false,ziplineData=null,ziplineProgress=0,ziplineDir=1;
+var boatRideActive=false,boatRideTime=0;
 // Hide dragon boat elements by default
 dragonBoatElements.forEach(function(b){b.mesh.visible=false;});
 // Targets
@@ -1175,6 +1177,38 @@ function releaseZipline(){
   onGround=true;
   document.getElementById('zipline-prompt').style.opacity='0';
 }
+function tryGrabBoat(){
+  if(currentMap!=='dragonboat')return false;
+  document.getElementById('boat-prompt').style.opacity='0';
+  if(pos.distanceTo(new THREE.Vector3(0,0.62,0))<3){
+    boatRideActive=true;boatRideTime=0;
+    pos.set(0,0.8,0);vel.set(0,0,0);onGround=true;
+    document.getElementById('boat-prompt').textContent='按 E 下船';
+    document.getElementById('boat-prompt').style.opacity='1';
+    return true;
+  }
+  return false;
+}
+function releaseBoat(){
+  boatRideActive=false;
+  pos.set(0,1.2,1.5);vel.set(0,0,0);
+  document.getElementById('boat-prompt').style.opacity='0';
+}
+function updateBoatRide(dt){
+  if(!boatRideActive)return;
+  boatRideTime+=dt;
+  var boatX=Math.sin(boatRideTime*0.3)*6;
+  var boatY=0.75+Math.sin(boatRideTime*1.5)*0.03;
+  pos.set(boatX,boatY,0);vel.set(0,0,0);onGround=true;
+  cam.position.set(pos.x,pos.y+EYE_H,pos.z);
+  // Vertical bobbing for dragon boat elements
+  for(var i=0;i<mapBoxes.length;i++){
+    var bx=mapBoxes[i];
+    if(bx.isDragonBoat&&bx.mesh){
+      bx.mesh.position.y=(bx.pos.y||0)+Math.sin(boatRideTime*1.5)*0.03;
+    }
+  }
+}
 function updateZipline(dt){
   if(!ziplineActive||!ziplineData)return;
   var dir=new THREE.Vector3().copy(ziplineData.end).sub(ziplineData.start);
@@ -1724,8 +1758,9 @@ document.addEventListener('keydown',function(e){
   if(e.code==='KeyG')fireGrapple();
   if(e.code==='Space'&&grappleActive)releaseGrapple();
   if(e.code==='KeyE'){
-    if(ziplineActive){releaseZipline();}
-    else{tryGrabZipline();}
+    if(boatRideActive){releaseBoat();}
+    else if(ziplineActive){releaseZipline();}
+    else if(!tryGrabBoat()){tryGrabZipline();}
   }
 });
 document.addEventListener('keyup',function(e){keys[e.code]=false;});
@@ -1760,7 +1795,7 @@ function getRandomSpawnPos(forEnemy,avoidPos,minDist){
     var ok=true;
     for(var b=0;b<mapBoxes.length;b++){
       var bx=mapBoxes[b];
-      if(bx.isPlatform)continue;
+      if(bx.isPlatform||bx.isDragonBoat)continue;
       if(bx.size.x>=29&&bx.size.z>=29)continue;
       if(aabbOverlap(new THREE.Vector3(x,y,z),new THREE.Vector3(hF*2,hH*2,hF*2),bx.pos,bx.size)){ok=false;break;}
     }
@@ -1772,6 +1807,7 @@ function resolveCollisions(){
   var gnd=false,wall=false,wN=new THREE.Vector3();
   for(var b=0;b<mapBoxes.length;b++){
     var bx=mapBoxes[b],hS=bx.size.clone().multiplyScalar(0.5),pH=pSize.clone().multiplyScalar(0.5);
+    if(bx.isDragonBoat)continue;
     // One-way platform: skip when player head is below platform top
     if(bx.isPlatform&&pos.y+0.6<bx.pos.y+bx.size.y/2)continue;
     // On platform top: only push up, never sideways (avoid edge tripping)
@@ -1796,6 +1832,7 @@ function resolveCollisions(){
 function checkWallContact(){
   for(var b=0;b<mapBoxes.length;b++){
     var bx=mapBoxes[b];
+    if(bx.isDragonBoat)continue;
     var hS=bx.size.clone().multiplyScalar(0.5),pH=pSize.clone().multiplyScalar(0.5);
     var dx=Math.abs(pos.x-bx.pos.x),dy=Math.abs(pos.y-bx.pos.y),dz=Math.abs(pos.z-bx.pos.z);
     if(dy<hS.y+pH.y-0.05){
@@ -1807,6 +1844,7 @@ function checkWallContact(){
   return{onWall:false,n:new THREE.Vector3()};
 }
 function updatePhysics(dt){
+  if(boatRideActive)return;
   if(wallJumpCD>0)wallJumpCD-=dt;
   var fwd=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
   var rgt=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
@@ -2082,6 +2120,7 @@ function updateEnemies(dt){
       var avoidDir=new THREE.Vector3();
       for(var bi=0;bi<mapBoxes.length;bi++){
         var bx=mapBoxes[bi];
+        if(bx.isDragonBoat)continue;
         var toBox=new THREE.Vector3().copy(bx.pos).sub(e.pos);var bd=toBox.length();
         if(bd<4&&bd>0.1)avoidDir.sub(toBox.normalize().multiplyScalar(4/bd));
       }
@@ -2124,7 +2163,7 @@ function updateEnemies(dt){
         // Enemy-wall collision
         var eR=0.3;
         for(var bi=0;bi<mapBoxes.length;bi++){
-          var bx=mapBoxes[bi];if(bx.size.y<0.3)continue;
+          var bx=mapBoxes[bi];if(bx.size.y<0.3||bx.isDragonBoat)continue;
           // Only collide if Y ranges overlap (skip floating panels above enemy)
           if(e.pos.y>bx.pos.y+bx.size.y/2||e.pos.y+0.5<bx.pos.y-bx.size.y/2)continue;
           var dx=e.pos.x-bx.pos.x,dz=e.pos.z-bx.pos.z;
@@ -2214,15 +2253,28 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
   var h2=rc2.intersectObjects(meshes2);var sg=true;
   for(var i=0;i<h2.length;i++){if(h2[i].distance<0.6){sg=false;break;}}
   if(gunGroup)gunGroup.visible=sg;
-  // Zipline proximity prompt
-  if(locked&&gameStarted&&!ziplineActive&&currentMap==='dragonboat'){
-    var near=false;
-    for(var zi=0;zi<ziplines.length;zi++){
-      var z=ziplines[zi];
-      if(pos.distanceTo(z.start)<3||pos.distanceTo(z.end)<3){near=true;break;}
+  // Boat ride proximity prompt (higher priority than zipline)
+  if(locked&&gameStarted&&!boatRideActive&&currentMap==='dragonboat'){
+    var nearBoat=pos.distanceTo(new THREE.Vector3(0,0.62,0))<3;
+    if(nearBoat){
+      document.getElementById('boat-prompt').style.opacity='1';
+      document.getElementById('boat-prompt').textContent='按 E 上龍舟';
+      document.getElementById('zipline-prompt').style.opacity='0';
+      document.getElementById('zipline-prompt').textContent='';
+    }else{
+      document.getElementById('boat-prompt').style.opacity='0';
+      document.getElementById('boat-prompt').textContent='';
+      // Zipline proximity prompt (only if not near boat)
+      if(!ziplineActive){
+        var nearZ=false;
+        for(var zi=0;zi<ziplines.length;zi++){
+          var z=ziplines[zi];
+          if(pos.distanceTo(z.start)<3||pos.distanceTo(z.end)<3){nearZ=true;break;}
+        }
+        document.getElementById('zipline-prompt').style.opacity=nearZ?'1':'0';
+        document.getElementById('zipline-prompt').textContent=nearZ?'按 E 使用滑索':'';
+      }
     }
-    document.getElementById('zipline-prompt').style.opacity=near?'1':'0';
-    document.getElementById('zipline-prompt').textContent=near?'按 E 使用滑索':'';
   }
   // Gameplay update gate (pause when ESC is pressed)
   if(locked&&gameStarted){
@@ -2341,6 +2393,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     // Grapple update
     if(grappleActive)updateGrapple(dt);
     // Zipline update
+    if(boatRideActive)updateBoatRide(dt);
     if(ziplineActive)updateZipline(dt);
     // Sky Platform timer
     if(skyPlat&&platActive){
