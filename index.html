@@ -1870,7 +1870,7 @@ function playerDamage(dmg){
 function updateEnemies(dt){
   var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++)mapMeshes.push(mapBoxes[mi].mesh);
   for(var i=0;i<enemies.length;i++){
-    var e=enemies[i];if(e.hp<=0){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}continue}
+    var e=enemies[i];if(e.hp<=0){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}continue}else if(!e.mesh.visible)e.mesh.visible=true;
     e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
     if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
     if(!e.hitTimer)e.hitTimer=0;else e.hitTimer-=dt;
