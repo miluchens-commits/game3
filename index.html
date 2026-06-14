@@ -770,20 +770,52 @@ document.getElementById('armory-confirm').onclick=function(){document.getElement
 document.getElementById('shop-btn').onclick=function(){document.getElementById('menu').style.display='none';showShop();};
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
-// ── Event system ──
+// ── Event system (daily quests) ──
 var eventEndDate=new Date(2026,6,1,0,0,0);
 var questProgress={kill:0,round:0};
 var questTargets={kill:20,round:3};
 var questRewards={kill:5000,round:10000};
 var questClaimed={kill:false,round:false};
+var questDate='';
+function getDateKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function generateDailyQuests(dk){
+  var seed=0;for(var i=0;i<dk.length;i++)seed=(seed*31+dk.charCodeAt(i))%2147483647;
+  function rand(){seed=(seed*1103515245+12345)%2147483647;return seed/2147483647;}
+  return{
+    kill:{target:10+Math.floor(rand()*21),reward:3000+Math.floor(rand()*7000)},
+    round:{target:2+Math.floor(rand()*4),reward:5000+Math.floor(rand()*10000)}
+  };
+}
 (function(){
   try{
     var qd=JSON.parse(localStorage.getItem('oc_event'));
-    if(qd){questProgress=qd.p||questProgress;questClaimed=qd.c||questClaimed;}
+    if(qd){
+      questProgress=qd.p||questProgress;
+      questClaimed=qd.c||questClaimed;
+      var today=getDateKey();
+      questDate=qd.d||'';
+      if(questDate!==today){
+        // New day — reset progress and generate new targets
+        questProgress={kill:0,round:0};
+        questClaimed={kill:false,round:false};
+        questDate=today;
+        var dq=generateDailyQuests(today);
+        questTargets=dq.kill?{kill:dq.kill.target,round:dq.round.target}:questTargets;
+        questRewards=dq.kill?{kill:dq.kill.reward,round:dq.round.reward}:questRewards;
+      }else if(qd.t&&qd.r){
+        questTargets={kill:qd.t.kill||20,round:qd.t.round||3};
+        questRewards={kill:qd.r.kill||5000,round:qd.r.round||10000};
+      }
+    }else{
+      var today=getDateKey();questDate=today;
+      var dq=generateDailyQuests(today);
+      questTargets={kill:dq.kill.target,round:dq.round.target};
+      questRewards={kill:dq.kill.reward,round:dq.round.reward};
+    }
   }catch(e){}
 })();
 function saveEventProgress(){
-  try{localStorage.setItem('oc_event',JSON.stringify({p:questProgress,c:questClaimed}));}catch(e){}
+  try{localStorage.setItem('oc_event',JSON.stringify({p:questProgress,c:questClaimed,d:questDate,t:questTargets,r:questRewards}));}catch(e){}
 }
 document.getElementById('event-btn').onclick=function(){
   document.getElementById('menu').style.display='none';
@@ -812,27 +844,42 @@ function updateEventUI(){
   var days=Math.floor(diff/86400000);
   var hrs=Math.floor((diff%86400000)/3600000);
   var mins=Math.floor((diff%3600000)/60000);
-  cdEl.innerHTML='活動倒數：<span>'+days+'天 '+hrs+'小時 '+mins+'分</span>';
+  cdEl.innerHTML='活動倒數：<span>'+days+'天 '+hrs+'小時 '+mins+'分</span><br><small style="color:rgba(255,255,255,.3);font-size:11px">每日任務每天刷新</small>';
+  // Update quest descriptions
+  var q1Desc=document.querySelector('.event-quest:nth-child(1) .event-quest-desc');
+  if(q1Desc)q1Desc.textContent='擊殺 '+questTargets.kill+' 名敵人 (每日刷新)';
+  var q2Desc=document.querySelector('.event-quest:nth-child(2) .event-quest-desc');
+  if(q2Desc)q2Desc.textContent='累積完成 '+questTargets.round+' 個回合 (每日刷新)';
+  var q1Rew=document.querySelector('.event-quest:nth-child(1) .event-quest-reward');
+  if(q1Rew)q1Rew.textContent='+$'+questRewards.kill.toLocaleString();
+  var q2Rew=document.querySelector('.event-quest:nth-child(2) .event-quest-reward');
+  if(q2Rew)q2Rew.textContent='+$'+questRewards.round.toLocaleString();
   // Quest 1: kill
   var q1Fill=document.getElementById('quest1-fill');
-  var q1Pct=Math.min(100,questProgress.kill/questTargets.kill*100);
-  q1Fill.style.width=q1Pct+'%';
-  q1Fill.className='event-quest-progress-fill '+(questProgress.kill>=questTargets.kill?'done':'pending');
+  if(q1Fill){
+    var q1Pct=Math.min(100,questProgress.kill/questTargets.kill*100);
+    q1Fill.style.width=q1Pct+'%';
+    q1Fill.className='event-quest-progress-fill '+(questProgress.kill>=questTargets.kill?'done':'pending');
+  }
   var q1Icon=document.querySelector('.event-quest:nth-child(1) .event-quest-icon');
-  q1Icon.className='event-quest-icon '+(questClaimed.kill?'done':(questProgress.kill>=questTargets.kill?'done':'pending'));
-  if(questClaimed.kill)q1Icon.textContent='✓';
-  // Show/hide claim button for quest 1
+  if(q1Icon){
+    q1Icon.className='event-quest-icon '+(questClaimed.kill?'done':(questProgress.kill>=questTargets.kill?'done':'pending'));
+    if(questClaimed.kill)q1Icon.textContent='✓';
+  }
   var q1Btn=document.querySelector('.event-quest:nth-child(1) .event-claim-btn');
   if(q1Btn)q1Btn.style.display=(questProgress.kill>=questTargets.kill&&!questClaimed.kill)?'block':'none';
   // Quest 2: round
   var q2Fill=document.getElementById('quest2-fill');
-  var q2Pct=Math.min(100,questProgress.round/questTargets.round*100);
-  q2Fill.style.width=q2Pct+'%';
-  q2Fill.className='event-quest-progress-fill '+(questProgress.round>=questTargets.round?'done':'pending');
+  if(q2Fill){
+    var q2Pct=Math.min(100,questProgress.round/questTargets.round*100);
+    q2Fill.style.width=q2Pct+'%';
+    q2Fill.className='event-quest-progress-fill '+(questProgress.round>=questTargets.round?'done':'pending');
+  }
   var q2Icon=document.querySelector('.event-quest:nth-child(2) .event-quest-icon');
-  q2Icon.className='event-quest-icon '+(questClaimed.round?'done':(questProgress.round>=questTargets.round?'done':'pending'));
-  if(questClaimed.round)q2Icon.textContent='✓';
-  // Show/hide claim button for quest 2
+  if(q2Icon){
+    q2Icon.className='event-quest-icon '+(questClaimed.round?'done':(questProgress.round>=questTargets.round?'done':'pending'));
+    if(questClaimed.round)q2Icon.textContent='✓';
+  }
   var q2Btn=document.querySelector('.event-quest:nth-child(2) .event-claim-btn');
   if(q2Btn)q2Btn.style.display=(questProgress.round>=questTargets.round&&!questClaimed.round)?'block':'none';
 }
