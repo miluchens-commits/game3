@@ -527,7 +527,7 @@ function saveGame(){
   var ed=[];
   for(var i=0;i<enemies.length;i++){
     var e=enemies[i];if(e.hp<=0)continue;
-    ed.push({color:e.color,hp:e.hp,armor:e.armor,maxHp:e.maxHp,maxArmor:e.maxArmor,px:e.pos.x,pz:e.pos.z,weaponType:e.weaponType,state:e.state});
+    ed.push({color:e.color,hp:e.hp,armor:e.armor,maxHp:e.maxHp,maxArmor:e.maxArmor,px:e.pos.x,pz:e.pos.z,weaponType:e.weaponType,state:e.state,type:e.type});
   }
   var save={playerHP:playerHP,playerArmor:playerArmor,px:pos.x,py:pos.y,pz:pos.z,roundNum:roundNum,loadout:playerLoadout,ammo:gunAmmo,enemies:ed,coins:specialCoins,inventory:weaponInventory,map:currentMap,slotFlashlight:slotFlashlight};
   try{localStorage.setItem('ocgame_save',JSON.stringify(save))}catch(ex){}
@@ -547,7 +547,7 @@ function loadGame(data){
       e.pos.set(ed.px,0,ed.pz);e.mesh.position.set(ed.px,0,ed.pz);e.mesh.visible=true;
       if(e.hBar){e.hBar.visible=true;e.hBar.position.set(ed.px,0.95,ed.pz);}
       if(e.aBar){e.aBar.visible=true;e.aBar.position.set(ed.px,0.88,ed.pz);}
-      e.state=ed.state||'patrol';e.weaponType=ed.weaponType||'ak47';e.knifeHits=0;
+      e.state=ed.state||'patrol';e.weaponType=ed.weaponType||'ak47';e.type=ed.type||'normal';e.knifeHits=0;
     }else{e.hp=0;e.mesh.visible=false;if(e.hBar)e.hBar.visible=false;if(e.aBar)e.aBar.visible=false;}
   }
   // Update HUD
@@ -562,27 +562,39 @@ addTarget(-6,0.5,-5,0xff4444);
 addTarget(7,0.5,0,0xff6644);
 addTarget(-8,0.5,6,0xff8844);
 // ── Among Us style enemies ──
-function createEnemy(color,px,pz){
+function createEnemy(color,px,pz,type){
   var g=new THREE.Group();
-  var bodyClr=0x111111;
-  var bd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:bodyClr}));
+  var isRusher=type==='rusher',isGrenadier=type==='grenadier';
+  var bodyClr=isRusher?0xcc2222:(isGrenadier?0xccaa22:0x111111);
+  var bd=new THREE.Mesh(new THREE.SphereGeometry(isRusher?0.6:0.55,12,12),new THREE.MeshStandardMaterial({color:bodyClr}));
   bd.scale.set(0.85,1.0,0.85);bd.position.y=0.4;g.add(bd);
-  // Visor (larger)
-  var vs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x88ddff,emissive:0x66aaff,emissiveIntensity:0.3}));
+  // Visor
+  var vsClr=isRusher?0xff0000:(isGrenadier?0xffcc44:0x88ddff);
+  var vsEm=isRusher?0xff2200:(isGrenadier?0xffaa00:0x66aaff);
+  var vs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:vsClr,emissive:vsEm,emissiveIntensity:isRusher?1.0:0.3}));
   vs.scale.set(1.1,1.5,0.7);vs.position.set(0,0.64,0.44);vs.rotation.x=-0.15;g.add(vs);
   var vh=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));
   vh.position.set(0.07,0.68,0.48);g.add(vh);
   var bp=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));
   bp.position.set(0,0.35,-0.22);g.add(bp);
-  // Hands (chunky spheres sticking out from sides)
+  // Hands
   var hndMat=new THREE.MeshStandardMaterial({color:bodyClr});
   for(var s=-1;s<=1;s+=2){var hnd=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),hndMat);hnd.position.set(s*0.52,0.28,0);g.add(hnd);}
-  // Feet (round, below body)
+  // Feet
   for(var s=-1;s<=1;s+=2){var ft=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),hndMat);ft.position.set(s*0.22,0,0.08);g.add(ft);}
-  var gg=new THREE.Group();
-  var gb=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,0.2),new THREE.MeshStandardMaterial({color:0x333333}));
-  gb.position.set(0,0,0.12);gg.add(gb);
-  gg.position.set(0.18,0.2,0.2);g.add(gg);
+  // Gun (only for non-rushers)
+  var gg=null;
+  if(!isRusher){
+    gg=new THREE.Group();
+    var gb=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,0.2),new THREE.MeshStandardMaterial({color:0x333333}));
+    gb.position.set(0,0,0.12);gg.add(gb);
+    gg.position.set(0.18,0.2,0.2);g.add(gg);
+  }
+  // Backpack for grenadier
+  if(isGrenadier){
+    var pk=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.22,0.14),new THREE.MeshStandardMaterial({color:0x886633}));
+    pk.position.set(-0.15,0.32,-0.1);g.add(pk);
+  }
   g.position.set(px,0,pz);
   scene.add(g);
   var hBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.06),new THREE.MeshBasicMaterial({color:0x44cc44,depthTest:false}));
@@ -593,7 +605,9 @@ function createEnemy(color,px,pz){
     mesh:g,pos:new THREE.Vector3(px,0,pz),hp:80,armor:80,maxHp:80,maxArmor:80,
     state:'patrol',waypoint:new THREE.Vector3(px+8-16*Math.random(),0,pz+8-16*Math.random()),
     shootCD:0,detectCD:0,walkTime:0,gun:gg,visor:vs,color:color,
-    hBar:hBar,aBar:aBar,knifeHits:0,weaponType:Math.random()<0.5?'ak47':'deagle',investigateTarget:null,searchTimer:0
+    hBar:hBar,aBar:aBar,knifeHits:0,type:type||'normal',
+    weaponType:isRusher?'knife':(isGrenadier?'deagle':(Math.random()<0.5?'ak47':'deagle')),
+    investigateTarget:null,searchTimer:0
   });
 }
 var enemyColors=[0xff4444,0x44aaff,0xffaa44,0x44ffaa,0xaa44ff,0xff44aa,0x44aaff,0xaaff44,0x44ff88,0xff8844];
@@ -2034,6 +2048,35 @@ function shoot(){
     }
   }
 }
+function randomizeEnemyType(e){
+  var roll=Math.random();
+  var newType=roll<0.2?'rusher':(roll<0.4?'grenadier':'normal');
+  e.type=newType;
+  var isRusher=newType==='rusher',isGrenadier=newType==='grenadier';
+  // Update body color
+  var bodyClr=isRusher?0xcc2222:(isGrenadier?0xccaa22:0x111111);
+  e.mesh.children[0].material.color.setHex(bodyClr);
+  // Update visor color
+  var vsClr=isRusher?0xff0000:(isGrenadier?0xffcc44:0x88ddff);
+  var vsEm=isRusher?0xff2200:(isGrenadier?0xffaa00:0x66aaff);
+  e.visor.material.color.setHex(vsClr);
+  e.visor.material.emissive.setHex(vsEm);
+  e.visor.material.emissiveIntensity=isRusher?1.0:0.3;
+  // Gun visibility
+  if(e.gun)e.gun.visible=!isRusher;
+  // Remove old backpack if any
+  for(var ci=e.mesh.children.length-1;ci>=0;ci--){
+    if(e.mesh.children[ci].userData&&e.mesh.children[ci].userData.isBackpack){
+      e.mesh.remove(e.mesh.children[ci]);
+    }
+  }
+  // Grenadier backpack
+  if(isGrenadier){
+    var pk=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.22,0.14),new THREE.MeshStandardMaterial({color:0x886633}));
+    pk.position.set(-0.15,0.32,-0.1);pk.userData={isBackpack:true};e.mesh.add(pk);
+  }
+  e.weaponType=isRusher?'knife':(isGrenadier?'deagle':(Math.random()<0.5?'ak47':'deagle'));
+}
 function enemyShoot(e){
   var wd=e.weaponType?gunData[e.weaponType]:gunData.ak47;
   var sp=wd.spread*1.5||0.03;
@@ -2046,6 +2089,14 @@ function enemyShoot(e){
   var fl=new THREE.Mesh(new THREE.SphereGeometry(0.04,4,4),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:2}));
   fl.position.copy(gp);scene.add(fl);
   setTimeout(function(){scene.remove(fl);},40);
+}
+function throwGrenade(e){
+  var gp=e.pos.clone();gp.y+=0.35;
+  var dir=new THREE.Vector3().copy(pos);dir.y+=0.3;dir.sub(e.pos).normalize();
+  dir.x+=(Math.random()-0.5)*0.08;dir.z+=(Math.random()-0.5)*0.08;dir.y+=0.2;
+  var gMesh=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,8),new THREE.MeshStandardMaterial({color:0x886633,emissive:0x442200,emissiveIntensity:0.3}));
+  gMesh.position.copy(gp);scene.add(gMesh);
+  projectiles.push({mesh:gMesh,pos:gp,vel:dir.clone().multiplyScalar(8),life:99,dmg:40,isGrenade:true,fuse:1.5+Math.random()*0.5});
 }
 function reload(){
   if(isReloading||gunAmmo[currentGun]>=gunData[currentGun].mag)return;
@@ -2072,7 +2123,7 @@ function playerDamage(dmg){
   else{playerHP-=dmg;if(playerHP<=0){onPlayerDeath()}}
 }
 function updateEnemies(dt){
-  var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++)mapMeshes.push(mapBoxes[mi].mesh);
+  var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++){var bx=mapBoxes[mi];if(!bx.isDragonBoat&&bx.mesh.visible!==false)mapMeshes.push(bx.mesh);}
   for(var i=0;i<enemies.length;i++){
     var e=enemies[i];if(e.hp<=0){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}continue}else if(!e.mesh.visible)e.mesh.visible=true;
     e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
@@ -2102,7 +2153,8 @@ function updateEnemies(dt){
       if(e.searchTimer<=0||!e.investigateTarget){e.state='patrol';e.waypoint.set(e.pos.x+8-16*Math.random(),0,e.pos.z+8-16*Math.random())}
     }
     // Movement
-    var spd=e.state==='chase'?3.5:1.2;
+    var isRusher=e.type==='rusher',isGrenadier=e.type==='grenadier';
+    var spd=(e.state==='chase'?(isRusher?7:3.5):1.2);
     var moveTarget=null,aimAtPlayer=false;
     if(e.state==='chase'){
       aimAtPlayer=true;
@@ -2112,11 +2164,17 @@ function updateEnemies(dt){
       var fwd=toPlayer.clone().normalize();
       var rgt=new THREE.Vector3(-fwd.z,0,fwd.x);
       var desired=new THREE.Vector3();
-      var idealDist=7+Math.random()*4;
-      if(d>idealDist+2)desired.add(fwd);
-      else if(d<idealDist-3)desired.sub(fwd);
-      desired.add(rgt.clone().multiplyScalar(e.strafeDir*0.8));
-      // Avoid walls (improved range)
+      if(isRusher){
+        // Rusher: rush directly at player, but stop when close
+        if(d>2.5)desired.add(fwd);
+        // When within melee range, don't move (stay and attack)
+      }else{
+        var idealDist=isGrenadier?10+Math.random()*3:7+Math.random()*4;
+        if(d>idealDist+2)desired.add(fwd);
+        else if(d<idealDist-3)desired.sub(fwd);
+        desired.add(rgt.clone().multiplyScalar(e.strafeDir*0.8));
+      }
+      // Avoid walls
       var avoidDir=new THREE.Vector3();
       for(var bi=0;bi<mapBoxes.length;bi++){
         var bx=mapBoxes[bi];
@@ -2126,15 +2184,32 @@ function updateEnemies(dt){
       }
       desired.add(avoidDir);
       if(desired.length()>1)desired.normalize();
-      moveTarget=e.pos.clone().add(desired.multiplyScalar(3));
-      // Shoot
-      if(e.shootCD<=0&&d<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);e.state='shoot'}
+      if(!isRusher||d>2.5)moveTarget=e.pos.clone().add(desired.multiplyScalar(3));
+      else moveTarget=e.pos.clone(); // stand still when close
+      // Attack
+      if(isRusher){
+        if(d<2.5&&e.shootCD<=0){playerDamage(25);slowTimer=0.3;showDmgNum(pos.clone(),25,'#ff4444');e.shootCD=0.6;}
+      }else if(isGrenadier){
+        if(e.shootCD<=0&&d<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8;e.state='shoot'}
+      }else{
+        if(e.shootCD<=0&&d<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);e.state='shoot'}
+      }
     }else if(e.state==='shoot'){
       aimAtPlayer=true;
       var toP2=new THREE.Vector3().copy(pos);toP2.y=0;toP2.sub(e.pos);
-      var rgt2=new THREE.Vector3(-toP2.z,0,toP2.x).normalize();
-      moveTarget=e.pos.clone().add(rgt2.multiplyScalar((Math.random()-0.5)*3));
-      if(e.shootCD<=0&&toP2.length()<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr)}
+      if(isGrenadier){
+        // Grenadier: throw again if ready, otherwise maintain distance
+        if(e.shootCD<=0&&toP2.length()<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8}
+        var idealG=10+Math.random()*3;
+        var rgtG=new THREE.Vector3(-toP2.x,0,toP2.z).normalize();
+        if(toP2.length()>idealG+3)moveTarget=e.pos.clone().add(toP2.clone().normalize());
+        else if(toP2.length()<idealG-3)moveTarget=e.pos.clone().sub(toP2.clone().normalize());
+        else moveTarget=e.pos.clone().add(rgtG.multiplyScalar((Math.random()-0.5)*2));
+      }else if(!isRusher){
+        var rgtN=new THREE.Vector3(-toP2.z,0,toP2.x).normalize();
+        moveTarget=e.pos.clone().add(rgtN.multiplyScalar((Math.random()-0.5)*3));
+        if(e.shootCD<=0&&toP2.length()<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);}
+      }
       e.state='chase';
     }else if(e.state==='patrol'){
       moveTarget=e.waypoint;
@@ -2243,7 +2318,7 @@ function animate(time){try{
   if(keys['KeyD']||keys['ArrowRight'])moveX+=1;
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;attachFlashlightMesh();if(!isMultiplayer){var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(rp_);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(rp_);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;attachFlashlightMesh();if(!isMultiplayer){var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(rp_);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(rp_);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -2364,7 +2439,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
             e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
             if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
             if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
-            e.knifeHits=0;
+            e.knifeHits=0;randomizeEnemyType(e);
           }else{
             e.hp=0;e.mesh.visible=false;
             if(e.hBar)e.hBar.visible=false;
@@ -2424,8 +2499,74 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     // Projectiles
     for(var pi=projectiles.length-1;pi>=0;pi--){
       var pj=projectiles[pi];
-      pj.pos.add(pj.vel.clone().multiplyScalar(dt));pj.mesh.position.copy(pj.pos);pj.life-=dt;
-      if(pj.life<=0){scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
+      pj.pos.add(pj.vel.clone().multiplyScalar(dt));pj.mesh.position.copy(pj.pos);
+      if(!pj.isGrenade)pj.life-=dt;
+      if(!pj.isGrenade&&pj.life<=0){scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
+      // Grenade handling
+      if(pj.isGrenade){
+        pj.vel.y-=9.8*dt; // gravity
+        // Bounce off ground
+        if(pj.pos.y<0.1){pj.pos.y=0.1;pj.vel.y*=-0.3;pj.vel.x*=0.8;pj.vel.z*=0.8;}
+        // Bounce off walls
+        var hitWall=false;
+        for(var bi=0;bi<mapBoxes.length;bi++){
+          var b=mapBoxes[bi];
+          if(b.isPlatform||b.isDragonBoat)continue;
+          if(Math.abs(pj.pos.x-b.pos.x)<b.size.x/2+0.1&&Math.abs(pj.pos.y-b.pos.y)<b.size.y/2+0.1&&Math.abs(pj.pos.z-b.pos.z)<b.size.z/2+0.1){
+            var ox=b.size.x/2+0.1-Math.abs(pj.pos.x-b.pos.x);
+            var oz=b.size.z/2+0.1-Math.abs(pj.pos.z-b.pos.z);
+            if(ox<oz){pj.vel.x*=-0.3;pj.pos.x+=pj.pos.x<b.pos.x?-ox:ox;}
+            else{pj.vel.z*=-0.3;pj.pos.z+=pj.pos.z<b.pos.z?-oz:oz;}
+            hitWall=true;break;
+          }
+        }
+        if(hitWall)continue;
+        pj.fuse-=dt;
+        if(pj.fuse<=0){
+          // Explosion
+          scene.remove(pj.mesh);
+          var expR=5,expDmg=pj.dmg;
+          var expMesh=new THREE.Mesh(new THREE.SphereGeometry(expR*0.04,8,8),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:2}));
+          expMesh.position.copy(pj.pos);scene.add(expMesh);
+          var expGlow=new THREE.Mesh(new THREE.SphereGeometry(expR*0.2,12,12),new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:0.3,depthWrite:false}));
+          expGlow.position.copy(pj.pos);scene.add(expGlow);
+          var expLight=new THREE.PointLight(0xff6600,4,expR*2);expLight.position.copy(pj.pos);scene.add(expLight);
+          setTimeout(function(){scene.remove(expMesh);scene.remove(expGlow);scene.remove(expLight);},300);
+          // Explosion sound
+          try{if(!bgmCtx)initBGM();if(bgmCtx){var now=bgmCtx.currentTime;
+            var bufSize=bgmCtx.sampleRate*0.3,buf=bgmCtx.createBuffer(1,bufSize,bgmCtx.sampleRate),d=buf.getChannelData(0);
+            for(var si=0;si<bufSize;si++){d[si]=(Math.random()*2-1)*Math.max(0,1-si/bufSize);}
+            var src=bgmCtx.createBufferSource();src.buffer=buf;
+            var g=bgmCtx.createGain();g.gain.setValueAtTime(0.15,now);g.gain.exponentialRampToValueAtTime(0.001,now+0.3);
+            var fn=bgmCtx.createBiquadFilter();fn.type='lowpass';fn.frequency.value=800;
+            src.connect(fn);fn.connect(g);g.connect(bgmCtx.destination);
+            src.start(now);src.stop(now+0.3);bgmNotePool.push(src);setTimeout(function(){var idx=bgmNotePool.indexOf(src);if(idx>=0)bgmNotePool.splice(idx,1);},500);
+          }}catch(es){}
+          // AOE damage to player
+          var distToP=pj.pos.distanceTo(pos);
+          if(distToP<expR){
+            var aoeDmg=Math.round(expDmg*(1-distToP/expR));
+            playerDamage(aoeDmg);slowTimer=0.5;
+            showDmgNum(pos.clone(),aoeDmg,'#ff8844');
+          }
+          // AOE damage to enemies
+          for(var ei=0;ei<enemies.length;ei++){
+            var ee=enemies[ei];
+            if(ee.hp<=0)continue;
+            var distToE=pj.pos.distanceTo(ee.pos);
+            if(distToE<expR){
+              var edmg=Math.round(expDmg*0.8*(1-distToE/expR));
+              ee.hp-=edmg;
+              if(ee.hitTimer)ee.hitTimer=0.3;
+              if(ee.hp<=0){ee.hp=0;}
+            }
+          }
+          projectiles.splice(pi,1);continue;
+        }
+        // Fuse visual: pulse
+        pj.mesh.scale.setScalar(1+0.15*Math.sin(pj.fuse*20));
+        continue; // skip normal projectile hit/remove logic
+      }
       if(pj.pos.distanceTo(pos)<P_RADIUS+0.15){var pd=pj.dmg||12;playerDamage(pd);slowTimer=0.5;showDmgNum(pos.clone(),pd,'#ff4444');scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
       for(var bi=0;bi<mapBoxes.length;bi++){
         var b=mapBoxes[bi];
