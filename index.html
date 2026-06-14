@@ -2299,7 +2299,115 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
   renderer.render(scene,cam);
   requestAnimationFrame(animate);
 }catch(e){console.error(e);document.getElementById("blocker").style.display="flex";document.querySelector("#blocker div").innerHTML="<b style=\"color:#f44\">錯誤：</b>"+e.message+"<br><small style=\"color:#aaa\">"+e.stack+"</small>";requestAnimationFrame(animate);}}
-// Check for saved game
+// ── BGM System ──
+var bgmCtx=null,bgmState='',bgmGain=null,bgmMaster=null,bgmTimer=null,bgmBeat=0,bgmBPM=80,bgmVol=0.25,bgmNotePool=[];
+var pentatonic=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99,880.00];
+var penta5=[261.63,293.66,329.63,392.00,440.00];
+var bassNotes=[65.41,73.42,82.41,98.00,110.00,130.81];
+function initBGM(){
+  if(bgmCtx)return;
+  bgmCtx=new (window.AudioContext||window.webkitAudioContext)();
+  bgmMaster=bgmCtx.createGain();bgmMaster.gain.value=bgmVol;bgmMaster.connect(bgmCtx.destination);
+  bgmGain=bgmCtx.createGain();bgmGain.gain.value=0.6;bgmGain.connect(bgmMaster);
+}
+function bgmPlayNote(freq,start,dur,type,gain,filterF){
+  if(!bgmCtx)return;
+  var o=bgmCtx.createOscillator();o.type=type||'sine';o.frequency.value=freq;
+  var g=bgmCtx.createGain();g.gain.setValueAtTime(gain||0.12,start);g.gain.exponentialRampToValueAtTime(0.001,start+dur);
+  var fn=bgmCtx.createBiquadFilter();fn.type='lowpass';fn.frequency.value=filterF||freq*4;fn.Q.value=1;
+  o.connect(fn);fn.connect(g);g.connect(bgmGain);
+  o.start(start);o.stop(start+dur);bgmNotePool.push(o);setTimeout(function(){var idx=bgmNotePool.indexOf(o);if(idx>=0)bgmNotePool.splice(idx,1);},(dur+0.1)*1000);
+}
+function bgmPlayNoise(start,dur,gain,filterF){
+  if(!bgmCtx)return;
+  var bufSize=bgmCtx.sampleRate*dur,buf=bgmCtx.createBuffer(1,bufSize,bgmCtx.sampleRate),d=buf.getChannelData(0);
+  for(var i=0;i<bufSize;i++)d[i]=Math.random()*2-1;
+  var src=bgmCtx.createBufferSource();src.buffer=buf;
+  var g=bgmCtx.createGain();g.gain.setValueAtTime(gain||0.04,start);g.gain.exponentialRampToValueAtTime(0.001,start+dur);
+  var fn=bgmCtx.createBiquadFilter();fn.type='highpass';fn.frequency.value=filterF||2000;
+  src.connect(fn);fn.connect(g);g.connect(bgmGain);
+  src.start(start);src.stop(start+dur);bgmNotePool.push(src);
+}
+function startBGM(state){
+  if(!bgmCtx)initBGM();
+  if(bgmCtx.state==='suspended')bgmCtx.resume();
+  if(bgmState===state)return;
+  stopBGM();bgmState=state;bgmBeat=0;
+  var now=bgmCtx.currentTime;
+  switch(state){
+    case 'menu':bgmBPM=72;bgmMenuLoop(now);break;
+    case 'base':case'rain':case'fog':bgmBPM=80;bgmNormalLoop(now);break;
+    case 'dragonboat':bgmBPM=90;bgmDragonLoop(now);break;
+    case 'multiplayer':bgmBPM=120;bgmMultiLoop(now);break;
+  }
+}
+function stopBGM(){
+  if(bgmTimer){clearInterval(bgmTimer);bgmTimer=null;}
+  bgmNotePool.forEach(function(n){try{n.stop()}catch(e){}});bgmNotePool=[];
+  bgmState='';bgmBeat=0;
+}
+function bgmSchedule(cb,interval){
+  bgmTimer=setInterval(function(){
+    if(!bgmCtx||bgmCtx.state==='closed')return;
+    bgmBeat=(bgmBeat+1)%16;cb(bgmCtx.currentTime+0.05,bgmBeat);
+  },interval);
+}
+function bgmMenuLoop(now){
+  var notes=[0,2,4,6,4,2,0,-1],len=notes.length;
+  function tick(t,b){
+    var idx=b%len,ni=notes[idx];
+    if(ni>=0){var f=pentatonic[ni]*(b<8?1:2);bgmPlayNote(f,t,0.25,'sine',0.08,f*2);}
+    if(b%4===1)bgmPlayNote(bassNotes[2+(b/2)%3],t,0.3,'triangle',0.1,200);
+  }
+  bgmSchedule(tick,60000/bgmBPM/4);
+}
+function bgmNormalLoop(now){
+  function tick(t,b){
+    if(b%8===0){bgmPlayNote(bassNotes[b%3+2],t,0.5,'sine',0.06,150);}
+    if(b%4===0){bgmPlayNoise(t,0.06,0.03,4000);}
+    if(b%16===7){bgmPlayNote(pentatonic[4+b%3],t,0.4,'triangle',0.05,800);}
+  }
+  bgmSchedule(tick,60000/bgmBPM/4);
+}
+function bgmDragonLoop(now){
+  var mel=[0,2,4,5,4,2,0,2,4,5,6,5,4,2,0,-1];
+  function tick(t,b){
+    var idx=b%mel.length,ni=mel[idx];
+    if(ni>=0){var f=pentatonic[ni]*1.5;bgmPlayNote(f,t,0.35,'sine',0.1,f*3);}
+    if(b%4===0){bgmPlayNote(bassNotes[(b/2)%3+2],t,0.4,'triangle',0.08,150);}
+    if(b%2===0){bgmPlayNoise(t,0.04,0.04,3000);}
+  }
+  bgmSchedule(tick,60000/bgmBPM/4);
+}
+function bgmMultiLoop(now){
+  function tick(t,b){
+    // Kick on 0, 8
+    if(b%8===0)bgmPlayNoise(t,0.1,0.12,200);
+    // Hi-hat on 2,4,6,10,12,14
+    if(b%2===0&&b%4!==0)bgmPlayNoise(t,0.03,0.04,5000);
+    // Clap on 4, 12
+    if(b%8===4)bgmPlayNoise(t,0.08,0.08,1500);
+    // Bass
+    if(b%4===0)bgmPlayNote(bassNotes[b%3+1],t,0.25,'sawtooth',0.07,200);
+    // Lead melody faster
+    var leadM=[0,4,7,5,4,2,0,2,4,7,9,7,5,4,2,0];
+    var li=leadM[b%leadM.length];bgmPlayNote(pentatonic[li]*2,t,0.12,'square',0.05,1200);
+  }
+  bgmSchedule(tick,60000/bgmBPM/4);
+}
+// Start/stop BGM based on game state
+document.addEventListener('click',function(){if(!bgmCtx)initBGM();if(bgmCtx&&bgmCtx.state==='suspended')bgmCtx.resume();}, {once:true});
+var bgmCheckInterval=setInterval(function(){
+  if(!bgmCtx)return;
+  var menuVisible=document.getElementById('menu').style.display!=='none';
+  var multiVote=document.getElementById('multi-map-vote').style.display!=='none';
+  var multiEnd=document.getElementById('multi-end-options').style.display!=='none';
+  if(menuVisible&&!multiVote&&!multiEnd){if(bgmState!=='menu')startBGM('menu');}
+  else if(isMultiplayer&&gameStarted){if(bgmState!=='multiplayer')startBGM('multiplayer');}
+  else if(gameStarted&&currentMap==='dragonboat'){if(bgmState!=='dragonboat')startBGM('dragonboat');}
+  else if(gameStarted){var nState=currentMap;if(bgmState!==nState)startBGM(nState);}
+},2000);
+// Save/Load
 try{
   var sd=localStorage.getItem('ocgame_save');
   if(sd){document.getElementById('resume-prompt').style.display='flex';document.getElementById('save-exit-btn').style.display='none';}
