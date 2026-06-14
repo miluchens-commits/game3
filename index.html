@@ -2256,22 +2256,6 @@ function updateEnemies(dt){
         if(d<2.5){screenShake=2;playerDamage(60);slowTimer=0.8;showDmgNum(pos.clone(),60,'#ff4400');e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);continue;}
       }else if(isGrenadier){
         if(e.shootCD<=0&&d<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8;e.state='shoot'}
-      }else if(isHealer){
-        // Healer: heal nearby damaged enemies
-        if(e.shootCD<=0&&d<20){
-          var nearest=null,nearestDist=99;
-          for(var hi=0;hi<enemies.length;hi++){
-            var he=enemies[hi];if(he===e||he.hp<=0)continue;
-            var hd=e.pos.distanceTo(he.pos);
-            if(hd<8&&he.hp<he.maxHp&&hd<nearestDist){nearest=he;nearestDist=hd;}
-          }
-          if(nearest){nearest.hp=Math.min(nearest.maxHp,nearest.hp+12);nearest.armor=Math.min(nearest.maxArmor,nearest.armor+6);showDmgNum(nearest.pos.clone(),12,'#44ff88');e.shootCD=0.8;
-            // Green glow on healed enemy
-            var hl=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:0.3,depthWrite:false}));
-            hl.position.copy(nearest.pos);hl.position.y=0.4;scene.add(hl);
-            setTimeout(function(){scene.remove(hl);},300);
-          }
-        }
       }else{
         if(e.shootCD<=0&&d<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);e.state='shoot'}
       }
@@ -2346,6 +2330,25 @@ function updateEnemies(dt){
             ch.children[1].material.emissiveIntensity=0.5+Math.sin(e.walkTime*6)*0.5;
           }
         }
+      }
+    }
+    // Healer: heal nearby damaged allies (unconditional)
+    if(e.type==='healer'&&e.shootCD<=0){
+      var nearest=null,nearestDist=99;
+      for(var hi=0;hi<enemies.length;hi++){
+        var he=enemies[hi];if(he===e||he.hp<=0)continue;
+        var hd=e.pos.distanceTo(he.pos);
+        if(hd<12&&he.hp<he.maxHp&&hd<nearestDist){nearest=he;nearestDist=hd;}
+      }
+      if(nearest){
+        nearest.hp=Math.min(nearest.maxHp,nearest.hp+12);
+        nearest.armor=Math.min(nearest.maxArmor,nearest.armor+6);
+        showDmgNum(nearest.pos.clone(),12,'#44ff88');
+        e.shootCD=0.8;
+        // Green glow on healed enemy
+        var hl=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:0.3,depthWrite:false}));
+        hl.position.copy(nearest.pos);hl.position.y=0.4;scene.add(hl);
+        setTimeout(function(){scene.remove(hl);},300);
       }
     }
     // HP/armor bars
