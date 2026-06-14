@@ -108,6 +108,8 @@ canvas{display:block}
 .event-quest-progress-fill.pending{background:linear-gradient(90deg,#f62,#fa4)}
 .event-quest-reward{font-size:12px;color:#fa4;white-space:nowrap;letter-spacing:1px}
 #event-expired{text-align:center;padding:40px 20px;color:rgba(255,255,255,.3);font-size:16px;letter-spacing:2px}
+.event-claim-btn{transition:all .3s}
+.event-claim-btn:hover{background:rgba(68,255,68,.15)!important;border-color:#4f4!important;box-shadow:0 0 12px rgba(68,255,68,.3)}
 #event-banner{width:100%;position:relative;border-bottom:1px solid rgba(255,100,34,.2);padding:24px 20px 18px;box-sizing:border-box;background:linear-gradient(180deg,rgba(80,30,0,.6),rgba(40,15,0,.3));min-height:120px;display:flex;align-items:center;justify-content:center}
 .eb-corner{position:absolute;width:64px;height:64px;opacity:.9}
 .eb-enemy{left:12px;top:12px;background:radial-gradient(circle,rgba(255,200,100,.25) 30%,transparent 70%);border-radius:50%;padding:6px;box-sizing:border-box}
@@ -204,7 +206,7 @@ canvas{display:block}
 <div id="awp-scope"><div class="ring"></div><div class="dot"></div></div>
 <div id="death-overlay"><div>行 動 失 敗</div></div>
 <div id="shop"><div id="shop-bg"></div><div id="shop-box"><div id="shop-close">✕</div><div id="shop-title">軍 火 交 易 所</div><div id="shop-coins"></div><div id="shop-list"></div></div></div>
-<div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div></div><div class="event-quest"><div class="event-quest-icon pending">🐉</div><div class="event-quest-info"><div class="event-quest-title">任務二：龍舟破浪</div><div class="event-quest-desc">累計完成 3 回合</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div></div></div></div></div></div>
+<div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div><button class="event-claim-btn" data-quest="kill" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div><div class="event-quest"><div class="event-quest-icon pending">🐉</div><div class="event-quest-info"><div class="event-quest-title">任務二：龍舟破浪</div><div class="event-quest-desc">累計完成 3 回合</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div><button class="event-claim-btn" data-quest="round" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div></div></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
 <div id="sb"></div>
 <div id="slide-prompt"></div>
@@ -424,12 +426,17 @@ addZongzi(new THREE.Vector3(0,0.12,-6),0.7);
 addZongzi(new THREE.Vector3(0,0.12,6),0.7);
 addZongzi(new THREE.Vector3(-3,0.12,3),0.7);
 addZongzi(new THREE.Vector3(3,0.12,-3),0.7);
-// Lanterns (floating above)
+// Lanterns (floating above) with glow lights
 var ln=0xff4422;
 addDB(new THREE.Vector3(-4,2.5,0),new THREE.Vector3(0.3,0.4,0.3),ln);
 addDB(new THREE.Vector3(4,2.5,0),new THREE.Vector3(0.3,0.4,0.3),ln);
 addDB(new THREE.Vector3(0,2.8,-4),new THREE.Vector3(0.3,0.4,0.3),ln);
 addDB(new THREE.Vector3(0,2.8,4),new THREE.Vector3(0.3,0.4,0.3),ln);
+// Lantern glow lights
+var lanternLights=[];
+[[-4,2.5,0],[4,2.5,0],[0,2.8,-4],[0,2.8,4]].forEach(function(p){
+  var ll=new THREE.PointLight(0xff4422,1.2,6);ll.position.set(p[0],p[1],p[2]);scene.add(ll);lanternLights.push(ll);
+});
 // Rope between bamboo poles (zipline ropes)
 addDB(new THREE.Vector3(-9,2.8,0),new THREE.Vector3(0.05,0.05,8),0x886644);
 addDB(new THREE.Vector3(9,2.3,0),new THREE.Vector3(0.05,0.05,8),0x886644);
@@ -814,6 +821,9 @@ function updateEventUI(){
   var q1Icon=document.querySelector('.event-quest:nth-child(1) .event-quest-icon');
   q1Icon.className='event-quest-icon '+(questClaimed.kill?'done':(questProgress.kill>=questTargets.kill?'done':'pending'));
   if(questClaimed.kill)q1Icon.textContent='✓';
+  // Show/hide claim button for quest 1
+  var q1Btn=document.querySelector('.event-quest:nth-child(1) .event-claim-btn');
+  if(q1Btn)q1Btn.style.display=(questProgress.kill>=questTargets.kill&&!questClaimed.kill)?'block':'none';
   // Quest 2: round
   var q2Fill=document.getElementById('quest2-fill');
   var q2Pct=Math.min(100,questProgress.round/questTargets.round*100);
@@ -822,7 +832,24 @@ function updateEventUI(){
   var q2Icon=document.querySelector('.event-quest:nth-child(2) .event-quest-icon');
   q2Icon.className='event-quest-icon '+(questClaimed.round?'done':(questProgress.round>=questTargets.round?'done':'pending'));
   if(questClaimed.round)q2Icon.textContent='✓';
+  // Show/hide claim button for quest 2
+  var q2Btn=document.querySelector('.event-quest:nth-child(2) .event-claim-btn');
+  if(q2Btn)q2Btn.style.display=(questProgress.round>=questTargets.round&&!questClaimed.round)?'block':'none';
 }
+// Claim button handlers
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('.event-claim-btn');
+  if(!btn)return;
+  var quest=btn.dataset.quest;
+  if(quest==='kill'&&!questClaimed.kill&&questProgress.kill>=questTargets.kill){
+    questClaimed.kill=true;specialCoins+=questRewards.kill;
+    showDmgNum(new THREE.Vector3(0,1.5,0),questRewards.kill,'#fa4');saveEventProgress();updateEventUI();
+  }
+  if(quest==='round'&&!questClaimed.round&&questProgress.round>=questTargets.round){
+    questClaimed.round=true;specialCoins+=questRewards.round;
+    showDmgNum(new THREE.Vector3(0,1.5,0),questRewards.round,'#fa4');saveEventProgress();updateEventUI();
+  }
+});
 // Track rounds for event
 var prevRoundNum=roundNum;
 setInterval(function(){
@@ -992,6 +1019,7 @@ document.getElementById('back-menu-btn').onclick=function(){
   document.getElementById('blocker').style.display='none';document.getElementById('menu').style.display='flex';
   updateCoinsDisplay();updateArmoryGunCounts();
   currentMap='base';applyMapSettings();
+  if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   if(window.multiSI)clearInterval(window.multiSI);
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
 };
@@ -1013,6 +1041,7 @@ function applyMapSettings(){
   stopRain();
   // Toggle dragon boat elements
   if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
+  if(lanternLights)lanternLights.forEach(function(l){l.visible=currentMap==='dragonboat';});
   if(currentMap==='dragonboat'){
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
@@ -1142,6 +1171,7 @@ function sendMapVote(map){
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
 var relayIframe=null,httpClientId=null;
 function connectMultiplayer(mode){
+  if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   var ip=document.getElementById('server-ip').value.trim()||'localhost';
@@ -1164,6 +1194,11 @@ function createOpponentMesh(){
   var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
   for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
   for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
+  // Gun
+  var ogg=new THREE.Group();
+  var ogb=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,0.2),new THREE.MeshStandardMaterial({color:0x333333}));
+  ogb.position.set(0,0,0.12);ogg.add(ogb);
+  ogg.position.set(0.18,0.2,0.2);og.add(ogg);
   og.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.renderOrder=1;}});
   return og;
 }
@@ -1176,12 +1211,13 @@ function processServerMessage(data){
       document.getElementById('multi-connecting').style.display='none';
       isMultiplayer=true;playerCount=data.playerCount||2;
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
-      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];
+      if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
+      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
       var myId=data.playerId;
       var otherCount=playerCount-1;
       for(var oi=0;oi<otherCount;oi++){
         opponentMeshes.push(null);
-        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true});
+          opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100});
         opponentPlayerIds.push(oi<myId?oi:oi+1);
       }
       document.getElementById('multi-map-vote').style.display='flex';
@@ -1313,6 +1349,7 @@ function processServerMessage(data){
       document.getElementById('multi-end-options').style.display='flex';
       if(document.pointerLockElement)document.exitPointerLock();
       isMultiplayer=false;
+      if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
       break;
   }
 }
@@ -1327,11 +1364,17 @@ function startMultiGame(mapName){
   for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
   playerHP=100;playerArmor=100;
   opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
-  opponentMeshes=[];
+  if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
+  opponentMeshes=[];window.opponentBars=[];
   var otherCount=playerCount-1;
   for(var oi=0;oi<otherCount;oi++){
     var om=createOpponentMesh();scene.add(om);
     opponentMeshes.push(om);
+    var ohBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.06),new THREE.MeshBasicMaterial({color:0x44cc44,depthTest:false}));
+    scene.add(ohBar);
+    var oaBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.04),new THREE.MeshBasicMaterial({color:0x4488ff,depthTest:false}));
+    scene.add(oaBar);
+    window.opponentBars.push({h:ohBar,a:oaBar});
   }
   gameStarted=true;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
@@ -1630,7 +1673,7 @@ function shoot(){
       if(isMultiplayer&&opponentMeshes.length>0){
         opponentMeshes.forEach(function(om,oidx){
           if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
-          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});showDmgNum(hits[0].point,50,'#ff4444');}});
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});opponentStates[oidx].hp-=50;if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;}showDmgNum(hits[0].point,50,'#ff4444');}});
         });
       }
       for(var ei=0;ei<enemies.length;ei++){
@@ -1702,6 +1745,8 @@ function shoot(){
           hitMarkerTimer=0.15;
           var dmg=currentGun==='awp'?999:gunData[currentGun].dmg;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
+          opponentStates[oidx].hp-=dmg;
+          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;}
           showDmgNum(hits[0].point,dmg,'#ff4444');
         }
       });
@@ -1877,8 +1922,8 @@ function updateEnemies(dt){
       }
         e.pos.x=Math.max(-14,Math.min(14,e.pos.x));e.pos.z=Math.max(-14,Math.min(14,e.pos.z));
         e.mesh.position.set(e.pos.x,0,e.pos.z);
-        if(aimAtPlayer)e.mesh.lookAt(pos.x,0,pos.z);
-        else e.mesh.lookAt(e.pos.x+dir.x,0,e.pos.z+dir.z);
+        if(aimAtPlayer){e.mesh.rotation.y=Math.atan2(pos.x-e.pos.x,pos.z-e.pos.z);}
+        else{e.mesh.rotation.y=Math.atan2(dir.x,dir.z);}
       }
       if(aimAtPlayer&&e.gun){
         var gd=new THREE.Vector3(pos.x,pos.y+0.5,e.pos.z).sub(e.pos).normalize();
@@ -2018,6 +2063,19 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
         om.rotation.y=os.yaw;
         om.rotation.x=-os.pitch*0.3;
         om.visible=os.alive;
+      }
+    }
+    // Update opponent health bars
+    if(window.opponentBars){
+      for(var oi=0;oi<opponentMeshes.length;oi++){
+        var os=opponentStates[oi];
+        var ob=window.opponentBars[oi];
+        if(os&&ob){
+          var op=os.pos;
+          ob.h.position.set(op.x,0.95,op.z);ob.h.scale.x=Math.max(0,os.hp/100);ob.h.position.x=op.x-(1-Math.max(0,os.hp/100))*0.3;
+          ob.a.position.set(op.x,0.88,op.z);ob.a.scale.x=Math.max(0,os.armor/100);ob.a.position.x=op.x-(1-Math.max(0,os.armor/100))*0.3;
+          ob.h.visible=os.alive;ob.a.visible=os.alive;
+        }
       }
     }
     // Round clear
