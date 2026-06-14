@@ -1207,19 +1207,30 @@ function releaseBoat(){
   boatRideActive=false;
   pos.set(0,1.2,1.5);vel.set(0,0,0);
   document.getElementById('boat-prompt').style.opacity='0';
+  // Reset boat mesh positions
+  for(var i=0;i<mapBoxes.length;i++){
+    var bx=mapBoxes[i];
+    if(bx.isDragonBoat&&bx.mesh){
+      bx.mesh.position.copy(bx.pos);
+    }
+  }
 }
 function updateBoatRide(dt){
   if(!boatRideActive)return;
   boatRideTime+=dt;
-  var boatX=Math.sin(boatRideTime*0.3)*6;
-  var boatY=0.75+Math.sin(boatRideTime*1.5)*0.03;
-  pos.set(boatX,boatY,0);vel.set(0,0,0);onGround=true;
+  var driftX=Math.sin(boatRideTime*0.12)*0.5;
+  var driftZ=Math.cos(boatRideTime*0.15)*0.3;
+  var bobY=Math.sin(boatRideTime*1.5)*0.03;
+  var posY=0.75+bobY;
+  pos.set(driftX,posY,driftZ);vel.set(0,0,0);onGround=true;
   cam.position.set(pos.x,pos.y+EYE_H,pos.z);
-  // Vertical bobbing for dragon boat elements
+  // Move all dragon boat meshes with the player
   for(var i=0;i<mapBoxes.length;i++){
     var bx=mapBoxes[i];
     if(bx.isDragonBoat&&bx.mesh){
-      bx.mesh.position.y=(bx.pos.y||0)+Math.sin(boatRideTime*1.5)*0.03;
+      bx.mesh.position.x=(bx.pos.x||0)+driftX;
+      bx.mesh.position.z=(bx.pos.z||0)+driftZ;
+      bx.mesh.position.y=(bx.pos.y||0)+bobY;
     }
   }
 }
