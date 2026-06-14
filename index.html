@@ -226,6 +226,7 @@ canvas{display:block}
 <div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div><button class="event-claim-btn" data-quest="kill" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div><div class="event-quest"><div class="event-quest-icon pending">🐉</div><div class="event-quest-info"><div class="event-quest-title">任務二：龍舟破浪</div><div class="event-quest-desc">累計完成 3 回合</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div><button class="event-claim-btn" data-quest="round" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div></div></div></div></div>
 <div id="rank-overlay"><div id="rank-bg"></div><div id="rank-box"><div id="rank-close">✕</div><div id="rank-title">排 位 賽</div><div id="rank-badge">青銅一階</div><div id="rank-sub">目前段位</div><div id="rank-progress"><div id="rank-progress-fill" style="width:0%"></div></div><div id="rank-info">單人模式無法升級<br>打贏多人比賽 +1 階 &bull; 中離 -1 階</div><div id="rank-stats">🏆 總場次 <span id="rank-games">0</span>　🎯 最高連勝 <span id="rank-streak">0</span></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
+<div id="buff-indicator" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 8px rgba(255,255,255,.5);letter-spacing:1px"></div>
 <div id="sb"></div>
 <div id="slide-prompt"></div>
 <div id="zipline-prompt" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);color:#8f8;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(68,255,68,.5);letter-spacing:2px"></div>
@@ -278,6 +279,7 @@ var wallNormal = new THREE.Vector3();
 var pSize = new THREE.Vector3(P_RADIUS*2, P_HEIGHT, P_RADIUS*2);
 var keys = {}, moveX = 0, moveZ = 0, locked = false, countdown = 5, gameStarted = false;
 var playerHP = 100, playerArmor = 100, sbTimer = 0, sbActive = false, projectiles = [], enemies = [], hitMarkerTimer = 0, roundNum = 1, clearTimer = -1, roundEarnings = 0;
+var pickups=[],buffTimer=0,buffType='',screenShake=0;
 var sliding=false,slideTimer=0,slideCD=0,slidePromptTimer=0,slideSpeed=14,slideKeyWas=false,slowTimer=0;
 var scene = new THREE.Scene();
 var currentMap='base';
@@ -1966,9 +1968,9 @@ function shoot(){
     return;
   }
   var gd=gunData[currentGun];
-  if(gunAmmo[currentGun]<=0){reload();return;}
-  gunAmmo[currentGun]--;
-  shootCD=gd.fireRate;
+  if(gunAmmo[currentGun]<=0&&buffType!=='infammo'){reload();return;}
+  if(buffType!=='infammo')gunAmmo[currentGun]--;
+  shootCD=buffType==='atkspeed'?gd.fireRate*0.5:gd.fireRate;
   // Bullet origin from actual barrel tip (accounts for scale + ADS position)
   var bt=barrelTips[currentGun].clone();
   if(gunGroup){gunGroup.updateMatrixWorld(true);gunGroup.localToWorld(bt);}else{bt.set(0.2,-0.15,-0.6);bt.applyQuaternion(cam.quaternion);bt.add(cam.position);}
@@ -2061,32 +2063,46 @@ function shoot(){
 }
 function randomizeEnemyType(e){
   var roll=Math.random();
-  var newType=roll<0.2?'rusher':(roll<0.4?'grenadier':'normal');
+  var newType=roll<0.15?'rusher':(roll<0.30?'grenadier':(roll<0.45?'suicider':(roll<0.60?'healer':'normal')));
   e.type=newType;
-  var isRusher=newType==='rusher',isGrenadier=newType==='grenadier';
+  var isRusher=newType==='rusher',isGrenadier=newType==='grenadier',isSuicider=newType==='suicider',isHealer=newType==='healer';
   // Update body color
-  var bodyClr=isRusher?0xcc2222:(isGrenadier?0xccaa22:0x111111);
+  var bodyClr=isRusher?0xcc2222:(isGrenadier?0xccaa22:(isSuicider?0xaa1111:(isHealer?0xeeeeee:0x111111)));
   e.mesh.children[0].material.color.setHex(bodyClr);
   // Update visor color
-  var vsClr=isRusher?0xff0000:(isGrenadier?0xffcc44:0x88ddff);
-  var vsEm=isRusher?0xff2200:(isGrenadier?0xffaa00:0x66aaff);
+  var vsClr=isRusher?0xff0000:(isGrenadier?0xffcc44:(isSuicider?0xff6600:(isHealer?0x66ff88:0x88ddff)));
+  var vsEm=isRusher?0xff2200:(isGrenadier?0xffaa00:(isSuicider?0xff4400:(isHealer?0x44ff66:0x66aaff)));
   e.visor.material.color.setHex(vsClr);
   e.visor.material.emissive.setHex(vsEm);
-  e.visor.material.emissiveIntensity=isRusher?1.0:0.3;
+  e.visor.material.emissiveIntensity=isRusher||isSuicider?1.0:0.3;
   // Gun visibility
-  if(e.gun)e.gun.visible=!isRusher;
-  // Remove old backpack if any
+  if(e.gun)e.gun.visible=!(isRusher||isSuicider||isHealer);
+  // Remove old attachments
   for(var ci=e.mesh.children.length-1;ci>=0;ci--){
-    if(e.mesh.children[ci].userData&&e.mesh.children[ci].userData.isBackpack){
+    if(e.mesh.children[ci].userData&&(e.mesh.children[ci].userData.isBackpack||e.mesh.children[ci].userData.isCore||e.mesh.children[ci].userData.isStaff)){
       e.mesh.remove(e.mesh.children[ci]);
     }
+  }
+  // Suicider core
+  if(isSuicider){
+    var cr=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0xff8800,emissive:0xff4400,emissiveIntensity:2}));
+    cr.position.set(0,0.42,0.35);cr.userData={isCore:true};e.mesh.add(cr);
+  }
+  // Healer staff
+  if(isHealer){
+    var sg=new THREE.Group();
+    var rod=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.02,0.35,6),new THREE.MeshStandardMaterial({color:0x886644}));
+    rod.position.y=0.17;sg.add(rod);
+    var orb=new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8),new THREE.MeshStandardMaterial({color:0x44ff88,emissive:0x22ff66,emissiveIntensity:0.8}));
+    orb.position.y=0.35;sg.add(orb);
+    sg.position.set(0.22,0.3,0.15);sg.userData={isStaff:true};e.mesh.add(sg);
   }
   // Grenadier backpack
   if(isGrenadier){
     var pk=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.22,0.14),new THREE.MeshStandardMaterial({color:0x886633}));
     pk.position.set(-0.15,0.32,-0.1);pk.userData={isBackpack:true};e.mesh.add(pk);
   }
-  e.weaponType=isRusher?'knife':(isGrenadier?'deagle':(Math.random()<0.5?'ak47':'deagle'));
+  e.weaponType=isRusher?'knife':(isGrenadier?'deagle':(isSuicider?'knife':(isHealer?'knife':(Math.random()<0.5?'ak47':'deagle'))));
 }
 function enemyShoot(e){
   var wd=e.weaponType?gunData[e.weaponType]:gunData.ak47;
@@ -2130,10 +2146,45 @@ function playerDamage(dmg){
   if(playerArmor>0){playerArmor-=dmg;if(playerArmor<0){playerHP+=playerArmor;playerArmor=0}if(playerArmor===0){sbActive=true;sbTimer=0;document.getElementById('sb').style.display='block'}}
   else{playerHP-=dmg;if(playerHP<=0){onPlayerDeath()}}
 }
+function dropPickup(p){
+  if(Math.random()>0.4)return;
+  var types=['health','atkspeed','infammo'];
+  var colors=[0x44ff44,0xff6622,0x44aaff];
+  var emColors=[0x22ff22,0xff4400,0x2288ff];
+  var ti=Math.floor(Math.random()*types.length);
+  var g=new THREE.Group();
+  var sph=new THREE.Mesh(new THREE.SphereGeometry(0.15,8,8),new THREE.MeshStandardMaterial({color:colors[ti],emissive:emColors[ti],emissiveIntensity:0.5,transparent:true,opacity:0.9}));
+  sph.position.y=0.15;g.add(sph);
+  var glow=new THREE.Mesh(new THREE.SphereGeometry(0.25,8,8),new THREE.MeshBasicMaterial({color:colors[ti],transparent:true,opacity:0.15,depthWrite:false}));
+  glow.position.y=0.15;g.add(glow);
+  g.position.set(p.x,0.3,p.z);scene.add(g);
+  pickups.push({mesh:g,pos:p.clone(),type:types[ti],life:15,time:0});
+}
+function updatePickups(dt){
+  for(var i=pickups.length-1;i>=0;i--){
+    var pk=pickups[i];
+    pk.time+=dt;
+    // Bob
+    pk.mesh.position.y=0.3+Math.sin(pk.time*3)*0.08;
+    pk.mesh.rotation.y+=dt*2;
+    // Lifetime
+    pk.life-=dt;
+    if(pk.life<=0){scene.remove(pk.mesh);pickups.splice(i,1);continue;}
+    // Auto-fade in last 5 sec
+    if(pk.life<5)pk.mesh.children[0].material.opacity=Math.min(1,pk.life);
+    // Player pickup
+    if(pos.distanceTo(pk.pos)<1.2){
+      if(pk.type==='health'){playerHP=Math.min(100,playerHP+40);showDmgNum(pos.clone(),40,'#44ff44')}
+      else if(pk.type==='atkspeed'){buffTimer=5;buffType='atkspeed';showDmgNum(pos.clone(),1,'#ff6622')}
+      else if(pk.type==='infammo'){buffTimer=5;buffType='infammo';showDmgNum(pos.clone(),1,'#44aaff')}
+      scene.remove(pk.mesh);pickups.splice(i,1);
+    }
+  }
+}
 function updateEnemies(dt){
   var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++){var bx=mapBoxes[mi];if(!bx.isDragonBoat&&bx.mesh.visible!==false)mapMeshes.push(bx.mesh);}
   for(var i=0;i<enemies.length;i++){
-    var e=enemies[i];if(e.hp<=0){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}continue}else if(!e.mesh.visible)e.mesh.visible=true;
+    var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}if(e.type!=='suicider'){specialCoins+=1000;roundEarnings+=1000;showDmgNum(e.pos.clone(),1000,'#fa4')}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
     e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
     if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
     if(!e.hitTimer)e.hitTimer=0;else e.hitTimer-=dt;
@@ -2161,8 +2212,8 @@ function updateEnemies(dt){
       if(e.searchTimer<=0||!e.investigateTarget){e.state='patrol';e.waypoint.set(e.pos.x+8-16*Math.random(),0,e.pos.z+8-16*Math.random())}
     }
     // Movement
-    var isRusher=e.type==='rusher',isGrenadier=e.type==='grenadier';
-    var spd=(e.state==='chase'?(isRusher?7:3.5):1.2);
+    var isRusher=e.type==='rusher',isGrenadier=e.type==='grenadier',isSuicider=e.type==='suicider',isHealer=e.type==='healer';
+    var spd=(e.state==='chase'?(isRusher?7:(isSuicider?9:3.5)):1.2);
     var moveTarget=null,aimAtPlayer=false;
     if(e.state==='chase'){
       aimAtPlayer=true;
@@ -2172,10 +2223,13 @@ function updateEnemies(dt){
       var fwd=toPlayer.clone().normalize();
       var rgt=new THREE.Vector3(-fwd.z,0,fwd.x);
       var desired=new THREE.Vector3();
-      if(isRusher){
-        // Rusher: rush directly at player, but stop when close
+      if(isRusher||isSuicider){
         if(d>2.5)desired.add(fwd);
-        // When within melee range, don't move (stay and attack)
+      }else if(isHealer){
+        // Healer: flee from player, stay at 12-17 distance
+        if(d<12)desired.sub(fwd);
+        else if(d>17)desired.add(fwd);
+        desired.add(rgt.clone().multiplyScalar(e.strafeDir*0.6));
       }else{
         var idealDist=isGrenadier?10+Math.random()*3:7+Math.random()*4;
         if(d>idealDist+2)desired.add(fwd);
@@ -2192,13 +2246,26 @@ function updateEnemies(dt){
       }
       desired.add(avoidDir);
       if(desired.length()>1)desired.normalize();
-      if(!isRusher||d>2.5)moveTarget=e.pos.clone().add(desired.multiplyScalar(3));
-      else moveTarget=e.pos.clone(); // stand still when close
+      if(!isRusher&&!isSuicider||d>2.5)moveTarget=e.pos.clone().add(desired.multiplyScalar(3));
+      else moveTarget=e.pos.clone();
       // Attack
       if(isRusher){
         if(d<2.5&&e.shootCD<=0){playerDamage(25);slowTimer=0.3;showDmgNum(pos.clone(),25,'#ff4444');e.shootCD=0.6;}
+      }else if(isSuicider){
+        if(d<2.5){screenShake=2;playerDamage(60);slowTimer=0.8;showDmgNum(pos.clone(),60,'#ff4400');e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);continue;}
       }else if(isGrenadier){
         if(e.shootCD<=0&&d<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8;e.state='shoot'}
+      }else if(isHealer){
+        // Healer: heal nearby damaged enemies
+        if(e.shootCD<=0&&d<20){
+          var nearest=null,nearestDist=99;
+          for(var hi=0;hi<enemies.length;hi++){
+            var he=enemies[hi];if(he===e||he.hp<=0)continue;
+            var hd=e.pos.distanceTo(he.pos);
+            if(hd<8&&he.hp<he.maxHp&&hd<nearestDist){nearest=he;nearestDist=hd;}
+          }
+          if(nearest){nearest.hp=Math.min(nearest.maxHp,nearest.hp+12);nearest.armor=Math.min(nearest.maxArmor,nearest.armor+6);showDmgNum(nearest.pos.clone(),12,'#44ff88');e.shootCD=0.8}
+        }
       }else{
         if(e.shootCD<=0&&d<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);e.state='shoot'}
       }
@@ -2206,14 +2273,13 @@ function updateEnemies(dt){
       aimAtPlayer=true;
       var toP2=new THREE.Vector3().copy(pos);toP2.y=0;toP2.sub(e.pos);
       if(isGrenadier){
-        // Grenadier: throw again if ready, otherwise maintain distance
         if(e.shootCD<=0&&toP2.length()<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8}
         var idealG=10+Math.random()*3;
         var rgtG=new THREE.Vector3(-toP2.x,0,toP2.z).normalize();
         if(toP2.length()>idealG+3)moveTarget=e.pos.clone().add(toP2.clone().normalize());
         else if(toP2.length()<idealG-3)moveTarget=e.pos.clone().sub(toP2.clone().normalize());
         else moveTarget=e.pos.clone().add(rgtG.multiplyScalar((Math.random()-0.5)*2));
-      }else if(!isRusher){
+      }else if(!isRusher&&!isSuicider&&!isHealer){
         var rgtN=new THREE.Vector3(-toP2.z,0,toP2.x).normalize();
         moveTarget=e.pos.clone().add(rgtN.multiplyScalar((Math.random()-0.5)*3));
         if(e.shootCD<=0&&toP2.length()<16){enemyShoot(e);var wfr=e.weaponType?gunData[e.weaponType].fireRate:0.2;e.shootCD=Math.max(0.4,wfr*1.5+Math.random()*wfr);}
@@ -2263,6 +2329,15 @@ function updateEnemies(dt){
       if(aimAtPlayer&&e.gun){
         var gd=new THREE.Vector3(pos.x,pos.y+0.5,e.pos.z).sub(e.pos).normalize();
         e.gun.lookAt(e.gun.position.clone().add(gd));
+      }
+      // Healer staff glow pulse
+      if(e.type==='healer'&&e.shootCD<0.4){
+        for(var ci=0;ci<e.mesh.children.length;ci++){
+          var ch=e.mesh.children[ci];
+          if(ch.userData&&ch.userData.isStaff&&ch.children[1]){
+            ch.children[1].material.emissiveIntensity=0.5+Math.sin(e.walkTime*6)*0.5;
+          }
+        }
       }
     }
     // HP/armor bars
@@ -2400,6 +2475,24 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     if(sbActive){sbTimer+=dt;if(sbTimer>1.2){sbActive=false;document.getElementById('sb').style.display='none';}}
     // Enemies
     if(!isMultiplayer)updateEnemies(dt);
+    // Pickups
+    updatePickups(dt);
+    // Buff timer
+    if(buffTimer>0){buffTimer-=dt;if(buffTimer<=0){buffTimer=0;buffType='';}}
+    // Buff indicator
+    var biEl=document.getElementById('buff-indicator');
+    if(buffTimer>0&&buffType){
+      var biTxt=buffType==='atkspeed'?'⚡ 攻速x2':'🔷 無限子彈';
+      biEl.textContent=biTxt+' '+Math.ceil(buffTimer).toFixed(0)+'s';
+      biEl.style.opacity='1';
+    }else{biEl.style.opacity='0';}
+    // Screen shake decay
+    if(screenShake>0)screenShake=Math.max(0,screenShake-dt*3);
+    // Apply screen shake to camera
+    if(screenShake>0){
+      cam.position.x+=(Math.random()-0.5)*screenShake*0.05;
+      cam.position.y+=(Math.random()-0.5)*screenShake*0.05;
+    }
     // Update opponent mesh
     // Update opponent meshes
     for(var oi=0;oi<opponentMeshes.length;oi++){
