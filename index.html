@@ -80,6 +80,42 @@ canvas{display:block}
 #armory-btn:hover{opacity:1;border-color:#4af;box-shadow:0 0 20px rgba(68,170,255,.4);transform:scale(1.04)}
 #shop-btn{padding:8px 36px;margin-top:8px;font-size:13px;font-weight:bold;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
 #shop-btn:hover{opacity:1;border-color:#fa4;box-shadow:0 0 25px rgba(255,170,68,.4);transform:scale(1.04);color:#fff}
+#event-btn{padding:8px 36px;margin-top:8px;font-size:13px;font-weight:bold;color:#f62;background:transparent;border:1px solid rgba(255,100,34,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;opacity:.8;z-index:1;animation:eventPulse 2s ease-in-out infinite}
+@keyframes eventPulse{0%,100%{box-shadow:0 0 8px rgba(255,100,34,.2);border-color:rgba(255,100,34,.4)}50%{box-shadow:0 0 25px rgba(255,100,34,.5);border-color:#f62}}
+#event-btn:hover{opacity:1;border-color:#f62;box-shadow:0 0 30px rgba(255,100,34,.6);transform:scale(1.04);color:#fff}
+#event-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:42;font-family:Arial;display:none;align-items:center;justify-content:center}
+#event-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#4a2010,#1a0800);overflow:hidden}
+#event-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,100,34,.03) 30px,rgba(255,100,34,.03) 31px);pointer-events:none}
+#event-bg::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 20% 30%,rgba(255,68,34,.08),transparent 50%),radial-gradient(ellipse at 80% 70%,rgba(255,200,68,.05),transparent 50%);pointer-events:none}
+#event-box{position:relative;background:linear-gradient(135deg,#2a1000,#1a0800);border:2px solid rgba(255,100,34,.3);border-radius:12px;padding:0;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 80px rgba(255,100,34,.15);max-width:520px;width:92%;overflow:hidden}
+#event-banner{width:100%;position:relative;border-bottom:1px solid rgba(255,100,34,.2)}
+#event-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1;text-shadow:0 0 10px rgba(0,0,0,.8)}
+#event-close:hover{color:#fff}
+#event-body{padding:20px 28px 28px;width:100%;box-sizing:border-box}
+#event-countdown{text-align:center;font-size:14px;color:rgba(255,255,255,.5);letter-spacing:2px;margin-bottom:18px;padding:8px;background:rgba(255,100,34,.06);border-radius:6px;border:1px solid rgba(255,100,34,.12)}
+#event-countdown span{color:#f62;font-weight:bold}
+#event-quests{display:flex;flex-direction:column;gap:12px}
+.event-quest{padding:14px 18px;background:rgba(255,100,34,.04);border:1px solid rgba(255,100,34,.12);border-radius:8px;display:flex;align-items:center;gap:14px}
+.event-quest-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.event-quest-icon.done{background:rgba(68,255,68,.15);border:1px solid rgba(68,255,68,.3)}
+.event-quest-icon.pending{background:rgba(255,200,68,.1);border:1px solid rgba(255,200,68,.25)}
+.event-quest-info{flex:1}
+.event-quest-title{font-size:15px;font-weight:bold;color:#fff;letter-spacing:2px}
+.event-quest-desc{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;letter-spacing:1px}
+.event-quest-progress{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:8px;overflow:hidden}
+.event-quest-progress-fill{height:100%;border-radius:2px;transition:width .5s}
+.event-quest-progress-fill.done{background:linear-gradient(90deg,#4f4,#8f8)}
+.event-quest-progress-fill.pending{background:linear-gradient(90deg,#f62,#fa4)}
+.event-quest-reward{font-size:12px;color:#fa4;white-space:nowrap;letter-spacing:1px}
+#event-expired{text-align:center;padding:40px 20px;color:rgba(255,255,255,.3);font-size:16px;letter-spacing:2px}
+#event-banner{width:100%;position:relative;border-bottom:1px solid rgba(255,100,34,.2);padding:24px 20px 18px;box-sizing:border-box;background:linear-gradient(180deg,rgba(80,30,0,.6),rgba(40,15,0,.3));min-height:120px;display:flex;align-items:center;justify-content:center}
+.eb-corner{position:absolute;width:64px;height:64px;opacity:.9}
+.eb-enemy{left:12px;top:12px;background:radial-gradient(circle,rgba(255,200,100,.25) 30%,transparent 70%);border-radius:50%;padding:6px;box-sizing:border-box}
+.eb-zongzi{right:12px;top:12px}
+.eb-title-row{display:flex;flex-direction:column;align-items:center;gap:4px}
+.eb-badge{font-size:10px;color:#f62;letter-spacing:4px;border:1px solid rgba(255,100,34,.4);border-radius:10px;padding:2px 14px;background:rgba(255,100,34,.12);font-weight:bold}
+.eb-title{font-size:28px;font-weight:900;color:transparent;background:linear-gradient(90deg,#f62,#fa4,#f62);background-clip:text;-webkit-background-clip:text;letter-spacing:12px;text-shadow:none;filter:drop-shadow(0 0 15px rgba(255,100,34,.4))}
+.eb-sub{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:6px;margin-top:2px}
 #menu-coins{font-size:14px;color:#fa4;margin-top:8px;letter-spacing:3px;z-index:1;font-family:Arial;opacity:.8}
 #loadout-display{display:flex;gap:8px;margin-top:14px;z-index:1}
 .loadout-slot{display:flex;flex-direction:column;align-items:center;background:rgba(68,170,255,.08);border:1px solid rgba(68,170,255,.2);border-radius:4px;padding:6px 14px;min-width:60px}
@@ -147,8 +183,8 @@ canvas{display:block}
     <button id="resume-no" style="padding:12px 40px;font-size:16px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">不要</button>
   </div>
 </div>
-<div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><button id="armory-btn">武 器 庫</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
+<div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div><div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="shop-btn">軍 火 交 易 所</button><div id="menu-coins"></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div></div>
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
@@ -168,9 +204,11 @@ canvas{display:block}
 <div id="awp-scope"><div class="ring"></div><div class="dot"></div></div>
 <div id="death-overlay"><div>行 動 失 敗</div></div>
 <div id="shop"><div id="shop-bg"></div><div id="shop-box"><div id="shop-close">✕</div><div id="shop-title">軍 火 交 易 所</div><div id="shop-coins"></div><div id="shop-list"></div></div></div>
+<div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div></div><div class="event-quest"><div class="event-quest-icon pending">🐉</div><div class="event-quest-info"><div class="event-quest-title">任務二：龍舟破浪</div><div class="event-quest-desc">累計完成 3 回合</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div></div></div></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
 <div id="sb"></div>
 <div id="slide-prompt"></div>
+<div id="zipline-prompt" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);color:#8f8;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(68,255,68,.5);letter-spacing:2px"></div>
 <div id="round-clear">通關</div>
 <div id="round-num"></div>
 <div id="round-earnings"></div>
@@ -195,11 +233,14 @@ canvas{display:block}
   </div>
 </div>
 <div id="multi-map-vote" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
-  <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
-  <div style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px;letter-spacing:2px" id="multi-vote-status">請選擇地圖</div>
-  <div class="map-option" data-map="base" id="vote-base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場</div></div>
-  <div class="map-option" data-map="rain" id="vote-rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div>
-  <div class="map-option" data-map="fog" id="vote-fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;max-height:90vh;overflow-y:auto;padding:20px;box-sizing:border-box">
+    <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px;letter-spacing:2px" id="multi-vote-status">請選擇地圖</div>
+    <div class="map-option" data-map="base" id="vote-base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場</div></div>
+    <div class="map-option" data-map="rain" id="vote-rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div>
+    <div class="map-option" data-map="fog" id="vote-fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>
+    <div class="map-option" data-map="dragonboat" id="vote-dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定</div></div>
+  </div>
 </div>
 <script>
 function bootGame() {
@@ -326,6 +367,82 @@ addBox(new THREE.Vector3(0,0.4,5),new THREE.Vector3(1.5,0.8,1.5),0x555566);
 addBox(new THREE.Vector3(-8,0.4,0),new THREE.Vector3(1,0.8,2),0x555566);
 addBox(new THREE.Vector3(10,0.4,0),new THREE.Vector3(1.5,0.8,1),0x555566);
 addBox(new THREE.Vector3(3,0.4,-3),new THREE.Vector3(1.2,0.8,1.2),0x555566);
+// ── Dragon Boat Festival map elements ──
+var dragonBoatElements=[];
+function addDB(p,s,c){addBox(p,s,c);var b=mapBoxes[mapBoxes.length-1];b.isDragonBoat=true;dragonBoatElements.push(b);}
+function addZongzi(p,s){
+  var zo=0x4a7a2a,zo2=0x5a8a3a,str=0x886644;
+  var g=new THREE.ConeGeometry(s*0.35,s*0.65,4);g.rotateY(Math.PI/4);
+  var m=new THREE.MeshStandardMaterial({color:zo,roughness:0.8,flatShading:true});
+  var mesh=new THREE.Mesh(g,m);mesh.position.set(p.x,p.y+s*0.15,p.z);
+  mesh.castShadow=true;mesh.receiveShadow=true;var ry=Math.random()*Math.PI*2;mesh.rotation.y=ry;
+  scene.add(mesh);var e={pos:mesh.position.clone(),size:new THREE.Vector3(s,s,s),mesh:mesh,isDragonBoat:true};
+  mapBoxes.push(e);dragonBoatElements.push(e);
+  // Leaf overlap (slightly rotated second layer)
+  var g2=new THREE.ConeGeometry(s*0.3,s*0.5,4);g2.rotateY(Math.PI/4+0.3);
+  var m2=new THREE.MeshStandardMaterial({color:zo2,roughness:0.8,flatShading:true});
+  var mesh2=new THREE.Mesh(g2,m2);mesh2.position.set(p.x,p.y+s*0.24,p.z);
+  mesh2.castShadow=true;mesh2.receiveShadow=true;mesh2.rotation.y=ry+0.4;
+  scene.add(mesh2);var e2={pos:mesh2.position.clone(),size:new THREE.Vector3(s*0.8,s*0.5,s*0.8),mesh:mesh2,isDragonBoat:true};
+  mapBoxes.push(e2);dragonBoatElements.push(e2);
+  // Wrapping string (two crossing thin boxes)
+  var sg=new THREE.BoxGeometry(0.02,0.02,s*0.5);
+  var sm=new THREE.MeshStandardMaterial({color:str,roughness:0.9});
+  var s1=new THREE.Mesh(sg,sm);s1.position.set(p.x,p.y+s*0.18,p.z);s1.rotation.y=ry;s1.castShadow=true;
+  scene.add(s1);dragonBoatElements.push({pos:s1.position.clone(),size:new THREE.Vector3(0.04,0.04,s*0.5),mesh:s1,isDragonBoat:true});
+  var s2=new THREE.Mesh(sg,sm);s2.position.set(p.x,p.y+s*0.18,p.z);s2.rotation.y=ry+Math.PI/2;s2.castShadow=true;
+  scene.add(s2);dragonBoatElements.push({pos:s2.position.clone(),size:new THREE.Vector3(0.04,0.04,s*0.5),mesh:s2,isDragonBoat:true});
+  // Knot on top
+  var kg=new THREE.SphereGeometry(0.03,4,4);
+  var km=new THREE.MeshStandardMaterial({color:str,roughness:0.9});
+  var knot=new THREE.Mesh(kg,km);knot.position.set(p.x,p.y+s*0.35+0.02,p.z);knot.castShadow=true;
+  scene.add(knot);dragonBoatElements.push({pos:knot.position.clone(),size:new THREE.Vector3(0.06,0.06,0.06),mesh:knot,isDragonBoat:true});
+}
+// River (blue panel)
+addDB(new THREE.Vector3(0,0.01,0),new THREE.Vector3(20,0.02,10),0x2266aa);
+// Dragon boat hull (center, elongated)
+addDB(new THREE.Vector3(0,0.25,0),new THREE.Vector3(6,0.5,1.2),0x884422);
+addDB(new THREE.Vector3(0,0.55,0),new THREE.Vector3(5,0.3,1.0),0xaa6633);
+addDB(new THREE.Vector3(2.5,0.45,0),new THREE.Vector3(0.8,0.8,0.8),0xcc4444); // dragon head
+addDB(new THREE.Vector3(-2.5,0.45,0),new THREE.Vector3(0.6,0.6,0.6),0xcc4444); // dragon tail
+// Bamboo poles
+var bc=0x55aa44;
+addDB(new THREE.Vector3(-9,1.5,-4),new THREE.Vector3(0.2,3,0.2),bc);
+addDB(new THREE.Vector3(-9,1.5,4),new THREE.Vector3(0.2,3,0.2),bc);
+addDB(new THREE.Vector3(9,1.5,-4),new THREE.Vector3(0.2,2.5,0.2),bc);
+addDB(new THREE.Vector3(9,1.5,4),new THREE.Vector3(0.2,2.5,0.2),bc);
+addDB(new THREE.Vector3(-5,1,8),new THREE.Vector3(0.15,2,0.15),bc);
+addDB(new THREE.Vector3(5,1,8),new THREE.Vector3(0.15,2,0.15),bc);
+addDB(new THREE.Vector3(-5,1,-8),new THREE.Vector3(0.15,2,0.15),bc);
+addDB(new THREE.Vector3(5,1,-8),new THREE.Vector3(0.15,2,0.15),bc);
+// Zongzi (realistic pyramid)
+addZongzi(new THREE.Vector3(-6,0.14,-5),0.8);
+addZongzi(new THREE.Vector3(6,0.16,-5),0.9);
+addZongzi(new THREE.Vector3(-6,0.14,5),0.8);
+addZongzi(new THREE.Vector3(6,0.18,5),1.0);
+addZongzi(new THREE.Vector3(0,0.12,-6),0.7);
+addZongzi(new THREE.Vector3(0,0.12,6),0.7);
+addZongzi(new THREE.Vector3(-3,0.12,3),0.7);
+addZongzi(new THREE.Vector3(3,0.12,-3),0.7);
+// Lanterns (floating above)
+var ln=0xff4422;
+addDB(new THREE.Vector3(-4,2.5,0),new THREE.Vector3(0.3,0.4,0.3),ln);
+addDB(new THREE.Vector3(4,2.5,0),new THREE.Vector3(0.3,0.4,0.3),ln);
+addDB(new THREE.Vector3(0,2.8,-4),new THREE.Vector3(0.3,0.4,0.3),ln);
+addDB(new THREE.Vector3(0,2.8,4),new THREE.Vector3(0.3,0.4,0.3),ln);
+// Rope between bamboo poles (zipline ropes)
+addDB(new THREE.Vector3(-9,2.8,0),new THREE.Vector3(0.05,0.05,8),0x886644);
+addDB(new THREE.Vector3(9,2.3,0),new THREE.Vector3(0.05,0.05,8),0x886644);
+// Small flags on rope
+addDB(new THREE.Vector3(-9,2.8,-3),new THREE.Vector3(0.4,0.3,0.02),0xff6644);
+addDB(new THREE.Vector3(-9,2.8,3),new THREE.Vector3(0.4,0.3,0.02),0xff6644);
+addDB(new THREE.Vector3(9,2.3,-3),new THREE.Vector3(0.4,0.3,0.02),0x44aaff);
+addDB(new THREE.Vector3(9,2.3,3),new THREE.Vector3(0.4,0.3,0.02),0x44aaff);
+// Zipline data
+var ziplines=[{start:new THREE.Vector3(-9,2.8,-4),end:new THREE.Vector3(-9,2.8,4)},{start:new THREE.Vector3(9,2.3,-4),end:new THREE.Vector3(9,2.3,4)}];
+var ziplineActive=false,ziplineData=null,ziplineProgress=0,ziplineDir=1;
+// Hide dragon boat elements by default
+dragonBoatElements.forEach(function(b){b.mesh.visible=false;});
 // Targets
 var targets=[];
 function addTarget(px,py,pz,clr){
@@ -646,6 +763,76 @@ document.getElementById('armory-confirm').onclick=function(){document.getElement
 document.getElementById('shop-btn').onclick=function(){document.getElementById('menu').style.display='none';showShop();};
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
+// ── Event system ──
+var eventEndDate=new Date(2026,6,1,0,0,0);
+var questProgress={kill:0,round:0};
+var questTargets={kill:20,round:3};
+var questRewards={kill:5000,round:10000};
+var questClaimed={kill:false,round:false};
+(function(){
+  try{
+    var qd=JSON.parse(localStorage.getItem('oc_event'));
+    if(qd){questProgress=qd.p||questProgress;questClaimed=qd.c||questClaimed;}
+  }catch(e){}
+})();
+function saveEventProgress(){
+  try{localStorage.setItem('oc_event',JSON.stringify({p:questProgress,c:questClaimed}));}catch(e){}
+}
+document.getElementById('event-btn').onclick=function(){
+  document.getElementById('menu').style.display='none';
+  document.getElementById('event-overlay').style.display='flex';
+  updateEventUI();
+};
+document.getElementById('event-close').onclick=function(){
+  document.getElementById('event-overlay').style.display='none';
+  document.getElementById('menu').style.display='flex';
+};
+document.getElementById('event-bg').onclick=function(){
+  document.getElementById('event-overlay').style.display='none';
+  document.getElementById('menu').style.display='flex';
+};
+function updateEventUI(){
+  var now=new Date();
+  var expired=now>eventEndDate;
+  var cdEl=document.getElementById('event-countdown');
+  var qsEl=document.getElementById('event-quests');
+  if(expired){
+    cdEl.innerHTML='<span style="color:#f44">活動已結束</span>';
+    qsEl.innerHTML='<div id="event-expired">端午節活動已結束，<br>感謝您的參與！</div>';
+    return;
+  }
+  var diff=Math.max(0,eventEndDate-now);
+  var days=Math.floor(diff/86400000);
+  var hrs=Math.floor((diff%86400000)/3600000);
+  var mins=Math.floor((diff%3600000)/60000);
+  cdEl.innerHTML='活動倒數：<span>'+days+'天 '+hrs+'小時 '+mins+'分</span>';
+  // Quest 1: kill
+  var q1Fill=document.getElementById('quest1-fill');
+  var q1Pct=Math.min(100,questProgress.kill/questTargets.kill*100);
+  q1Fill.style.width=q1Pct+'%';
+  q1Fill.className='event-quest-progress-fill '+(questProgress.kill>=questTargets.kill?'done':'pending');
+  var q1Icon=document.querySelector('.event-quest:nth-child(1) .event-quest-icon');
+  q1Icon.className='event-quest-icon '+(questClaimed.kill?'done':(questProgress.kill>=questTargets.kill?'done':'pending'));
+  if(questClaimed.kill)q1Icon.textContent='✓';
+  // Quest 2: round
+  var q2Fill=document.getElementById('quest2-fill');
+  var q2Pct=Math.min(100,questProgress.round/questTargets.round*100);
+  q2Fill.style.width=q2Pct+'%';
+  q2Fill.className='event-quest-progress-fill '+(questProgress.round>=questTargets.round?'done':'pending');
+  var q2Icon=document.querySelector('.event-quest:nth-child(2) .event-quest-icon');
+  q2Icon.className='event-quest-icon '+(questClaimed.round?'done':(questProgress.round>=questTargets.round?'done':'pending'));
+  if(questClaimed.round)q2Icon.textContent='✓';
+}
+// Track rounds for event
+var prevRoundNum=roundNum;
+setInterval(function(){
+  if(roundNum>prevRoundNum&&!isMultiplayer){
+    questProgress.round=Math.min(questTargets.round,questProgress.round+1);
+    prevRoundNum=roundNum;
+    saveEventProgress();
+  }
+  if(roundNum<prevRoundNum)prevRoundNum=roundNum;
+},500);
 document.querySelectorAll('.a-slot').forEach(function(sl){
   sl.onclick=function(){
     var si=parseInt(sl.dataset.slot);
@@ -737,6 +924,35 @@ function releaseGrapple(){
   if(grappleLine){scene.remove(grappleLine);grappleLine=null;}
   if(grappleShot){scene.remove(grappleShot.mesh);grappleShot=null;}
 }
+// ── Zipline system ──
+function tryGrabZipline(){
+  if(currentMap!=='dragonboat')return;
+  document.getElementById('zipline-prompt').style.opacity='0';
+  for(var zi=0;zi<ziplines.length;zi++){
+    var z=ziplines[zi];
+    var dS=pos.distanceTo(z.start);
+    var dE=pos.distanceTo(z.end);
+    if(dS<2.5){ziplineActive=true;ziplineData=z;ziplineProgress=0;ziplineDir=1;return;}
+    if(dE<2.5){ziplineActive=true;ziplineData=z;ziplineProgress=z.start.distanceTo(z.end);ziplineDir=-1;return;}
+  }
+}
+function releaseZipline(){
+  ziplineActive=false;ziplineData=null;ziplineProgress=0;ziplineDir=1;
+  onGround=true;
+  document.getElementById('zipline-prompt').style.opacity='0';
+}
+function updateZipline(dt){
+  if(!ziplineActive||!ziplineData)return;
+  var dir=new THREE.Vector3().copy(ziplineData.end).sub(ziplineData.start);
+  var len=dir.length();
+  dir.normalize();
+  ziplineProgress+=ziplineDir*8*dt;
+  if(ziplineProgress>=len||ziplineProgress<=0){releaseZipline();return;}
+  var newPos=new THREE.Vector3().copy(ziplineData.start).add(dir.clone().multiplyScalar(ziplineProgress));
+  newPos.y+=0.6;
+  pos.copy(newPos);vel.set(0,0,0);onGround=false;
+  cam.position.set(pos.x,pos.y+EYE_H,pos.z);
+}
 function updateGrapple(dt){
   if(!grappleActive||!grapplePoint)return;
   var dir=new THREE.Vector3().copy(grapplePoint).sub(pos);
@@ -772,7 +988,7 @@ document.getElementById('save-exit-btn').onclick=function(){
   saveGame();location.reload();
 };
 document.getElementById('back-menu-btn').onclick=function(){
-  gameStarted=false;isMultiplayer=false;
+  gameStarted=false;isMultiplayer=false;roundNum=1;
   document.getElementById('blocker').style.display='none';document.getElementById('menu').style.display='flex';
   updateCoinsDisplay();updateArmoryGunCounts();
   currentMap='base';applyMapSettings();
@@ -795,7 +1011,20 @@ document.getElementById('resume-no').onclick=function(){
 };
 function applyMapSettings(){
   stopRain();
-  if(currentMap==='rain'){
+  // Toggle dragon boat elements
+  if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
+  if(currentMap==='dragonboat'){
+    var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
+    var sctx=skyCanvas.getContext('2d');
+    var sgrd=sctx.createLinearGradient(0,0,0,512);
+    sgrd.addColorStop(0,'#2a0a00');sgrd.addColorStop(0.2,'#4a1a00');sgrd.addColorStop(0.4,'#6a3a10');
+    sgrd.addColorStop(0.6,'#8a5a20');sgrd.addColorStop(0.8,'#aa7a30');sgrd.addColorStop(1,'#cc9944');
+    sctx.fillStyle=sgrd;sctx.fillRect(0,0,2,512);
+    scene.background=new THREE.CanvasTexture(skyCanvas);
+    scene.fog=new THREE.Fog(0x8a5a20,20,40);
+    amb.color.setHex(0x664422);amb.intensity=0.7;
+    dir.color.setHex(0xffcc88);dir.intensity=1.4;
+  }else if(currentMap==='rain'){
     scene.background=new THREE.Color(0x0a0a1a);
     scene.fog=new THREE.Fog(0x0a0a1a,8,22);
     amb.color.setHex(0x334466);amb.intensity=0.4;
@@ -821,7 +1050,9 @@ function applyMapSettings(){
 }
 var mapOptions=document.querySelectorAll('.map-option');
 mapOptions.forEach(function(opt){
+  if(opt.dataset.map==='dragonboat'&&new Date()>eventEndDate){opt.style.opacity='0.3';opt.style.pointerEvents='none';opt.querySelector('.map-desc').textContent='活動已結束';}
   opt.onclick=function(){
+    if(opt.dataset.map==='dragonboat'&&new Date()>eventEndDate){return;}
     currentMap=opt.dataset.map;
     document.getElementById('map-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
@@ -893,6 +1124,7 @@ document.getElementById('multi-to-menu').onclick=function(){
 document.getElementById('vote-base').onclick=function(){sendMapVote('base');};
 document.getElementById('vote-rain').onclick=function(){sendMapVote('rain');};
 document.getElementById('vote-fog').onclick=function(){sendMapVote('fog');};
+document.getElementById('vote-dragonboat').onclick=function(){sendMapVote('dragonboat');};
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -962,8 +1194,8 @@ function processServerMessage(data){
       votedMaps.forEach(function(v){if(uniqueVotes.indexOf(v)===-1)uniqueVotes.push(v);});
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧'};
-      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog')};
+      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節'};
+      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat')};
       if(uniqueVotes.length<=1){
         // All votes same — skip animation, start game directly
         Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
@@ -1237,6 +1469,10 @@ document.addEventListener('keydown',function(e){
   if(e.code==='KeyR')reload();
   if(e.code==='KeyG')fireGrapple();
   if(e.code==='Space'&&grappleActive)releaseGrapple();
+  if(e.code==='KeyE'){
+    if(ziplineActive){releaseZipline();}
+    else{tryGrabZipline();}
+  }
 });
 document.addEventListener('keyup',function(e){keys[e.code]=false;});
 document.addEventListener('mousemove',function(e){
@@ -1656,6 +1892,12 @@ function updateEnemies(dt){
 }
 }
 function showDmgNum(p3d,dmg,clr,shield){
+  if(!clr)clr='#ff4444';
+  if(clr==='#fa4'&&dmg===1000&&!shield){
+    questProgress.kill=Math.min(questTargets.kill,questProgress.kill+1);
+    saveEventProgress();
+    updateEventUI();
+  }
   var v=p3d.clone();v.project(cam);
   var x=(v.x*0.5+0.5)*window.innerWidth,y=(-v.y*0.5+0.5)*window.innerHeight;
   var el=document.createElement('div');
@@ -1704,7 +1946,7 @@ function animate(time){try{
   if(keys['KeyD']||keys['ArrowRight'])moveX+=1;
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;attachFlashlightMesh();}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;attachFlashlightMesh();if(!isMultiplayer){var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(rp_);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(rp_);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -1714,6 +1956,16 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
   var h2=rc2.intersectObjects(meshes2);var sg=true;
   for(var i=0;i<h2.length;i++){if(h2[i].distance<0.6){sg=false;break;}}
   if(gunGroup)gunGroup.visible=sg;
+  // Zipline proximity prompt
+  if(locked&&gameStarted&&!ziplineActive&&currentMap==='dragonboat'){
+    var near=false;
+    for(var zi=0;zi<ziplines.length;zi++){
+      var z=ziplines[zi];
+      if(pos.distanceTo(z.start)<3||pos.distanceTo(z.end)<3){near=true;break;}
+    }
+    document.getElementById('zipline-prompt').style.opacity=near?'1':'0';
+    document.getElementById('zipline-prompt').textContent=near?'按 E 使用滑索':'';
+  }
   // Gameplay update gate (pause when ESC is pressed)
   if(locked&&gameStarted){
     if(slowTimer>0)slowTimer-=dt;
@@ -1817,6 +2069,8 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     }
     // Grapple update
     if(grappleActive)updateGrapple(dt);
+    // Zipline update
+    if(ziplineActive)updateZipline(dt);
     // Sky Platform timer
     if(skyPlat&&platActive){
       var onPlat=Math.abs(pos.x)<2.8&&Math.abs(pos.z)<2.8&&pos.y>10.2&&pos.y<11.4&&onGround;
