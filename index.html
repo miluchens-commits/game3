@@ -2557,11 +2557,12 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
             cSrc.connect(cf);cf.connect(cf2);cf2.connect(cg);cg.connect(bgmCtx.destination);
             cSrc.start(enow+0.02);cSrc.stop(enow+0.25);bgmNotePool.push(cSrc);
           }}catch(es){}
-          // AOE damage to player
+          // AOE damage to player — grenade shatters armor
           var distToP=pj.pos.distanceTo(pos);
           if(distToP<expR){
             var aoeDmg=Math.round(expDmg*(1-distToP/expR));
             playerDamage(aoeDmg);slowTimer=0.5;
+            playerArmor=0;
             showDmgNum(pos.clone(),aoeDmg,'#ff8844');
           }
           // AOE damage to enemies
