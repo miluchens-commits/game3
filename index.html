@@ -2367,7 +2367,8 @@ function showDmgNum(p3d,dmg,clr,shield){
   var v=p3d.clone();v.project(cam);
   var x=(v.x*0.5+0.5)*window.innerWidth,y=(-v.y*0.5+0.5)*window.innerHeight;
   var el=document.createElement('div');
-  el.textContent=(shield?'🛡 ':'')+'-'+dmg;
+  var prefix= (clr==='#fa4'||clr==='#44ff88')?'+':'-';
+  el.textContent=(shield?'🛡 ':'')+prefix+dmg;
   el.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;pointer-events:none;z-index:7;font-size:'+(shield?'28':'22')+'px;font-weight:bold;color:'+clr+';font-family:Arial;text-shadow:0 0 6px #000;opacity:1;transition:all 0.7s ease-out';
   document.body.appendChild(el);
   requestAnimationFrame(function(){el.style.transform='translateY(-35px)';el.style.opacity='0';});
