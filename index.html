@@ -896,12 +896,13 @@ var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloa
 var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6};
 var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35)};
 // ── Economy system ──
-var specialCoins=50000;
+var specialCoins=parseInt(localStorage.getItem('oc_coin'))||50000;
 var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:0};
 var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000};
 var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈'};
 var slotFlashlight=[false,false,false,false,false];
 function updateCoinsDisplay(){
+  try{localStorage.setItem('oc_coin',specialCoins);}catch(e){}
   document.getElementById('menu-coins').textContent='特種幣 $'+specialCoins;
 }
 function updateArmoryGunCounts(){
@@ -1096,7 +1097,7 @@ document.getElementById('armory-confirm').onclick=function(){document.getElement
 document.getElementById('shop-btn').onclick=function(){document.getElementById('menu').style.display='none';showShop();};
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
-var eventEndDate=new Date(Date.now()+30*86400000);
+var eventEndDate=new Date(Date.now()+36500*86400000);
 var seasonPoints=parseInt(localStorage.getItem('oc_sp'))||0;
 function getDateKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function getWeekKey(){var d=new Date();var day=d.getDay();var diff=d.getDate()-day+(day===0?-6:1);var mon=new Date(d.getFullYear(),d.getMonth(),diff);return mon.getFullYear()+'-'+(mon.getMonth()+1)+'-'+mon.getDate();}
@@ -1123,11 +1124,9 @@ function saveDragonboatProgress(){
   try{localStorage.setItem('oc_event',JSON.stringify({p:questProgress,c:questClaimed,d:questDate,t:questTargets,r:questRewards}));}catch(e){}
 }
 function updateDragonboatUI(){
-  var now=new Date();var expired=now>eventEndDate;
   var cdEl=document.getElementById('event-countdown');
   var qsEl=document.getElementById('event-quests');
-  if(expired){cdEl.innerHTML='<span style="color:#f44">活動已結束</span>';qsEl.innerHTML='<div id="event-expired">端午節活動已結束，<br>感謝您的參與！</div>';return;}
-  var diff=Math.max(0,eventEndDate-now);var days=Math.floor(diff/86400000);var hrs=Math.floor((diff%86400000)/3600000);var mins=Math.floor((diff%3600000)/60000);
+  var diff=Math.max(0,eventEndDate-Date.now());var days=Math.floor(diff/86400000);var hrs=Math.floor((diff%86400000)/3600000);var mins=Math.floor((diff%3600000)/60000);
   cdEl.innerHTML='活動倒數：<span>'+days+'天 '+hrs+'小時 '+mins+'分</span><br><small style="color:rgba(255,255,255,.3);font-size:11px">每日任務每天刷新</small>';
   var q1Desc=document.querySelector('.event-quest:nth-child(1) .event-quest-desc');
   if(q1Desc)q1Desc.textContent='擊殺 '+questTargets.kill+' 名敵人（每日刷新）';
@@ -1200,10 +1199,8 @@ function renderSeasonQuests(){
   qs.innerHTML=html;
 }
 function updateSeasonUI(){
-  var now=new Date();var expired=now>eventEndDate;
   var cdEl=document.getElementById('season-countdown');
-  if(expired){cdEl.innerHTML='<span style="color:#f44">賽季已結束</span>';document.getElementById('season-quests').innerHTML='<div id="event-expired">S1 核動力賽季已結束，<br>感謝您的參與！</div>';return;}
-  var diff=Math.max(0,eventEndDate-now);var days=Math.floor(diff/86400000);var hrs=Math.floor((diff%86400000)/3600000);
+  var diff=Math.max(0,eventEndDate-Date.now());var days=Math.floor(diff/86400000);var hrs=Math.floor((diff%86400000)/3600000);
   cdEl.innerHTML='賽季倒數：<span>'+days+'天 '+hrs+'小時</span><br><small style="color:rgba(255,255,255,.3);font-size:11px">每日任務每天刷新 &bull; 每週重置</small>';
   renderSeasonQuests();updateSeasonPointsDisplay();
 }
@@ -1774,9 +1771,7 @@ function applyClassPassives(){
 }
 var mapOptions=document.querySelectorAll('.map-option');
 mapOptions.forEach(function(opt){
-  if(opt.dataset.map==='dragonboat'&&new Date()>eventEndDate){opt.style.opacity='0.3';opt.style.pointerEvents='none';opt.querySelector('.map-desc').textContent='活動已結束';}
   opt.onclick=function(){
-    if(opt.dataset.map==='dragonboat'&&new Date()>eventEndDate){return;}
     if(opt.dataset.map==='nuclear'){
       document.getElementById('map-select').style.display='none';
       document.getElementById('diff-select').style.display='flex';
