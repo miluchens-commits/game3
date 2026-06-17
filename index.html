@@ -1097,7 +1097,7 @@ document.getElementById('armory-confirm').onclick=function(){document.getElement
 document.getElementById('shop-btn').onclick=function(){document.getElementById('menu').style.display='none';showShop();};
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
-var eventEndDate=new Date(Date.now()+36500*86400000);
+var eventEndDate=(function(){try{var d=localStorage.getItem('oc_event_end');if(d)return new Date(d);}catch(e){}var nd=new Date(Date.now()+30*86400000);try{localStorage.setItem('oc_event_end',nd.toISOString());}catch(e){}return nd;})();
 var seasonPoints=parseInt(localStorage.getItem('oc_sp'))||0;
 function getDateKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function getWeekKey(){var d=new Date();var day=d.getDay();var diff=d.getDate()-day+(day===0?-6:1);var mon=new Date(d.getFullYear(),d.getMonth(),diff);return mon.getFullYear()+'-'+(mon.getMonth()+1)+'-'+mon.getDate();}
