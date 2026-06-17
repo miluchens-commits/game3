@@ -62,6 +62,20 @@ canvas{display:block}
 #daily-btn:hover{color:#000;border-color:#fa4;box-shadow:0 0 60px rgba(255,170,68,.5),0 0 80px rgba(255,68,170,.2);transform:scale(1.08);background:linear-gradient(135deg,#fa4,#f4a)}
 #daily-share-btn{padding:8px 24px;font-size:12px;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;margin-top:8px}
 #daily-share-btn:hover{color:#000;background:#fa4;border-color:#fa4}
+#class-select{position:fixed;top:0;left:0;width:100%;height:100%;z-index:35;font-family:Arial;display:none;align-items:center;justify-content:center}
+#class-select-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#class-select-box{position:relative;display:flex;flex-direction:column;align-items:center;z-index:1}
+#class-select-title{font-size:24px;font-weight:bold;color:#f0d060;letter-spacing:6px;margin-bottom:20px;text-shadow:0 0 20px rgba(240,208,96,.2)}
+#class-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:660px}
+.class-card{background:linear-gradient(145deg,#1a1a28,#222236);border:1px solid rgba(200,170,70,.2);border-radius:10px;padding:16px 14px;cursor:pointer;transition:all .3s;text-align:center;width:100%;box-sizing:border-box}
+.class-card:hover{border-color:#f0d060;transform:translateY(-4px);box-shadow:0 4px 20px rgba(200,170,70,.15)}
+.class-card-icon{font-size:28px;margin-bottom:4px}
+.class-card-name{font-size:16px;font-weight:bold;color:#fff;letter-spacing:3px;margin-bottom:4px}
+.class-card-desc{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px}
+.class-card-passive{font-size:11px;color:rgba(255,255,255,.7);line-height:1.3;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:4px}
+.class-card-perks{font-size:10px;color:rgba(240,208,96,.3);margin-top:6px;letter-spacing:1px}
+#class-back{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);padding:6px 20px;font-size:12px;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s}
+#class-back:hover{color:#fff;border-color:rgba(255,255,255,.4)}
 #multi-btn{padding:8px 36px;margin-top:10px;font-size:13px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(68,170,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
 #multi-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.12),rgba(68,255,170,.08),rgba(255,68,170,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 #multi-btn:hover{color:#000;border-color:#4af;box-shadow:0 0 60px rgba(68,170,255,.5),0 0 80px rgba(68,255,170,.3);transform:scale(1.08);background:linear-gradient(135deg,#4af,#4fa)}
@@ -315,6 +329,7 @@ canvas{display:block}
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
   <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
+<div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
@@ -1264,6 +1279,7 @@ function startNextRound(){
   document.getElementById('round-clear').style.display='none';
   document.getElementById('round-num').style.display='none';
   roundNum++;
+  if(window.waveArmor)playerArmor=Math.min(150,playerArmor+50);
   if(currentGun==='deagle'){seasonProgress.pistol_rounds++;saveSeasonProgress();}
   specialCoins+=10000;roundEarnings+=10000;
   showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10000,'#fa4');
@@ -1700,6 +1716,62 @@ function applyMapSettings(){
     dir.color.setHex(0xffeedd);dir.intensity=1.2;
   }
 }
+var playerClass=null;
+var classData=[
+  {id:'berserker',name:'狂戰士',icon:'🔴',desc:'近戰衝鋒',passive:'小刀傷害x2，擊殺回5HP',perks:['speed','lifesteal','armor']},
+  {id:'medic',name:'醫護兵',icon:'🟢',desc:'持續回復',passive:'每秒回1HP，戰鬥中減半',perks:['hs_heal','lifesteal','armor']},
+  {id:'assault',name:'突擊兵',icon:'🔵',desc:'火力壓制',passive:'換彈速度x1.5',perks:['dmg','reload','spread']},
+  {id:'sniper',name:'神射手',icon:'🟡',desc:'一發入魂',passive:'爆頭傷害+30%',perks:['dmg','pen','hs_heal']},
+  {id:'tank',name:'鐵壁',icon:'🟣',desc:'堅不可摧',passive:'每波+50臨時護甲（上限150）',perks:['armor','lifesteal','hs_heal']},
+  {id:'ghost',name:'幽靈',icon:'⚪',desc:'高速游擊',passive:'移速+10%，滑鏟距離x1.5',perks:['speed','reload','spread']}
+];
+var classPerkLabels={dmg:'🔥傷害+25%',reload:'⚡換彈x2',pen:'🔩穿透+1',hs_heal:'💚爆頭回血',speed:'💨速度+20%',armor:'🛡護甲+50',lifesteal:'🩸擊殺回血',spread:'🎯擴散-40%'};
+function renderClassSelect(){
+  var html='';
+  for(var i=0;i<classData.length;i++){
+    var c=classData[i];
+    var perkStr='';for(var pi=0;pi<c.perks.length;pi++){perkStr+=classPerkLabels[c.perks[pi]]+(pi<c.perks.length-1?' ':'')}
+    html+='<div class="class-card" data-class="'+c.id+'"><div class="class-card-icon">'+c.icon+'</div><div class="class-card-name">'+c.name+'</div><div class="class-card-desc">'+c.desc+'</div><div class="class-card-passive">'+c.passive+'</div><div class="class-card-perks">'+perkStr+'</div></div>';
+  }
+  document.getElementById('class-grid').innerHTML=html;
+  document.querySelectorAll('.class-card').forEach(function(card){
+    card.onclick=function(){
+      playerClass=this.dataset.class;
+      document.getElementById('class-select').style.display='none';
+      if(dailyChallenge){
+        currentMap='base';gameDifficulty='normal';diffMult=1;
+        document.getElementById('scanlines').style.display='none';
+        document.getElementById('scope-overlay').style.display='none';
+        isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
+        try{localStorage.removeItem('ocgame_save')}catch(ex){}
+        applyClassPassives();
+        applyMapSettings();
+        document.body.requestPointerLock().catch(function(){});
+        var today=new Date();dailySeed=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      }else{
+        var multi=document.getElementById('class-select').dataset.multi;
+        if(multi){document.getElementById('class-select').removeAttribute('data-multi');document.getElementById('multi-connecting').style.display='flex';connectMultiplayer(parseInt(multi));}
+        else{document.getElementById('map-select').style.display='flex';}
+      }
+    };
+  });
+}
+function applyClassPassives(){
+  if(!window.baseSPEED)window.baseSPEED=8;
+  SPEED=window.baseSPEED;
+  window.knifeMult=null;window.lifesteal=null;window.regenHP=null;window.regenAccum=0;
+  window.reloadSpeedMult=null;window.hsMult=null;window.hsHeal=null;window.waveArmor=null;window.slideMult=null;
+  if(!playerClass)return;
+  var cData=null;for(var i=0;i<classData.length;i++){if(classData[i].id===playerClass){cData=classData[i];break;}}
+  if(!cData)return;
+  if(playerClass==='berserker'){window.knifeMult=2;window.lifesteal=true;}
+  else if(playerClass==='medic'){window.regenHP=true;window.regenAccum=0;}
+  else if(playerClass==='assault'){window.reloadSpeedMult=1/1.5;}
+  else if(playerClass==='sniper'){window.hsMult=1.3;window.hsHeal=true;}
+  else if(playerClass==='tank'){window.waveArmor=50;}
+  else if(playerClass==='ghost'){SPEED*=1.1;window.slideMult=1.5;}
+  for(var pi=0;pi<cData.perks.length;pi++)applyPerk(cData.perks[pi]);
+}
 var mapOptions=document.querySelectorAll('.map-option');
 mapOptions.forEach(function(opt){
   if(opt.dataset.map==='dragonboat'&&new Date()>eventEndDate){opt.style.opacity='0.3';opt.style.pointerEvents='none';opt.querySelector('.map-desc').textContent='活動已結束';}
@@ -1717,6 +1789,7 @@ mapOptions.forEach(function(opt){
     document.getElementById('scope-overlay').style.display='none';
     isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
     try{localStorage.removeItem('ocgame_save')}catch(ex){}
+    applyClassPassives();
     applyMapSettings();
     document.body.requestPointerLock().catch(function(){});
   };
@@ -1732,6 +1805,7 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
     document.getElementById('scope-overlay').style.display='none';
     isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
     try{localStorage.removeItem('ocgame_save')}catch(ex){}
+    applyClassPassives();
     applyMapSettings();
     document.body.requestPointerLock().catch(function(){});
   };
@@ -1740,17 +1814,16 @@ document.getElementById('map-select-bg').onclick=function(){
   document.getElementById('map-select').style.display='none';
   document.getElementById('menu').style.display='flex';
 };
+document.getElementById('class-back').onclick=function(){
+  document.getElementById('class-select').style.display='none';
+  document.getElementById('class-select').removeAttribute('data-multi');
+  document.getElementById('menu').style.display='flex';
+};
 document.getElementById('daily-btn').onclick=function(){
   document.getElementById('menu').style.display='none';
   dailyChallenge=true;dailyKills=0;dailyRounds=0;
-  currentMap='base';gameDifficulty='normal';diffMult=1;
-  document.getElementById('scanlines').style.display='none';
-  document.getElementById('scope-overlay').style.display='none';
-  isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
-  try{localStorage.removeItem('ocgame_save')}catch(ex){}
-  applyMapSettings();
-  document.body.requestPointerLock().catch(function(){});
-  var today=new Date();dailySeed=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  renderClassSelect();
+  document.getElementById('class-select').style.display='flex';
 };
 document.addEventListener('mousemove',function(e){
   var m=document.getElementById('menu');if(m.style.display==='none')return;
@@ -1759,19 +1832,25 @@ document.addEventListener('mousemove',function(e){
 });
 document.getElementById('play-btn').onclick=function(){
   document.getElementById('menu').style.display='none';
-  document.getElementById('map-select').style.display='flex';
+  dailyChallenge=false;
+  renderClassSelect();
+  document.getElementById('class-select').style.display='flex';
 };
 document.getElementById('multi-btn').onclick=function(){
   if(location.protocol==='file:'){document.getElementById('menu').style.display='none';document.getElementById('multi-connecting').style.display='flex';document.getElementById('multi-status').innerHTML='<span style="color:#f84">無法從 file:// 進行多人連線</span><br><small style="color:rgba(255,255,255,.3)">請改用 http://localhost:3000 開啟遊戲</small>';return;}
   document.getElementById('menu').style.display='none';
-  document.getElementById('multi-connecting').style.display='flex';
-  connectMultiplayer(2);
+  dailyChallenge=false;
+  renderClassSelect();
+  document.getElementById('class-select').style.display='flex';
+  document.getElementById('class-select').dataset.multi='2';
 };
 document.getElementById('multi4-btn').onclick=function(){
   if(location.protocol==='file:'){document.getElementById('menu').style.display='none';document.getElementById('multi-connecting').style.display='flex';document.getElementById('multi-status').innerHTML='<span style="color:#f84">無法從 file:// 進行多人連線</span><br><small style="color:rgba(255,255,255,.3)">請改用 http://localhost:3000 開啟遊戲</small>';return;}
   document.getElementById('menu').style.display='none';
-  document.getElementById('multi-connecting').style.display='flex';
-  connectMultiplayer(4);
+  dailyChallenge=false;
+  renderClassSelect();
+  document.getElementById('class-select').style.display='flex';
+  document.getElementById('class-select').dataset.multi='4';
 };
 document.getElementById('multi-cancel').onclick=function(){
   if(window.multiPInt)clearInterval(window.multiPInt);
@@ -1842,23 +1921,29 @@ function connectMultiplayer(mode){
     connectMultiplayerDirect(ip, mode);
   }
 }
-function createOpponentMesh(){
+var classColors={berserker:0xff3333,medic:0x33ff33,assault:0x3388ff,sniper:0xffcc44,tank:0xcc44ff,ghost:0x88cccc};
+var classBodyColors={berserker:0x441111,medic:0x114411,assault:0x111144,sniper:0x443311,tank:0x331144,ghost:0x222222};
+function createOpponentMesh(classId){
   var og=new THREE.Group();
-  var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:0x111111}));
-  obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);
+  var bodyColor=classId?classBodyColors[classId]||0x111111:0x111111;
+  var obd=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,12),new THREE.MeshStandardMaterial({color:bodyColor}));
+  obd.scale.set(0.85,1.0,0.85);obd.position.y=0.4;og.add(obd);og.userData.body=obd;
   var ovs=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12,0,Math.PI*2,0,Math.PI*0.55),new THREE.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.3}));
-  ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);
+  ovs.scale.set(1.1,1.5,0.7);ovs.position.set(0,0.64,0.44);ovs.rotation.x=-0.15;og.add(ovs);og.userData.visor=ovs;
   var vh2=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.5}));vh2.position.set(0.07,0.68,0.48);og.add(vh2);
   var bp2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.28,0.12),new THREE.MeshStandardMaterial({color:0x111111}));bp2.position.set(0,0.35,-0.22);og.add(bp2);
   for(var s=-1;s<=1;s+=2){var oh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x111111}));oh.position.set(s*0.52,0.28,0);og.add(oh);}
   for(var s=-1;s<=1;s+=2){var of=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),new THREE.MeshStandardMaterial({color:0x111111}));of.position.set(s*0.22,0,0.08);og.add(of);}
-  // Gun
   var ogg=new THREE.Group();
   var ogb=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.03,0.2),new THREE.MeshStandardMaterial({color:0x333333}));
   ogb.position.set(0,0,0.12);ogg.add(ogb);
   ogg.position.set(0.18,0.2,0.2);og.add(ogg);
   og.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.renderOrder=1;}});
   return og;
+}
+function applyOpponentClass(om,classId){
+  if(!om||!classId)return;
+  if(om.userData.body){om.userData.body.material.color.setHex(classBodyColors[classId]||0x111111);}
 }
 function processServerMessage(data){
   switch(data.type){
@@ -1875,7 +1960,7 @@ function processServerMessage(data){
       var otherCount=playerCount-1;
       for(var oi=0;oi<otherCount;oi++){
         opponentMeshes.push(null);
-          opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100});
+          opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null});
         opponentPlayerIds.push(oi<myId?oi:oi+1);
       }
       document.getElementById('multi-map-vote').style.display='flex';
@@ -1930,6 +2015,10 @@ function processServerMessage(data){
           opponentStates[oidx].pitch=data.data.pitch||0;
           opponentStates[oidx].gun=data.data.gun||'ak47';
           opponentStates[oidx].shooting=data.data.shooting||false;
+          if(data.data.cls&&data.data.cls!==opponentStates[oidx].cls){
+            opponentStates[oidx].cls=data.data.cls;
+            if(opponentMeshes[oidx])applyOpponentClass(opponentMeshes[oidx],data.data.cls);
+          }
         }
       }
       break;
@@ -2059,7 +2148,7 @@ window.addEventListener('message',function(e){
     processServerMessage(data);
   }
   if(msg.type==='req_state'){
-    e.source.postMessage({type:'state_data',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}},'*');
+    e.source.postMessage({type:'state_data',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,cls:playerClass}},'*');
   }
 });
 function httpSend(payload){
@@ -2095,7 +2184,7 @@ function connectMultiplayerDirect(ip, mode){
     ws.send(JSON.stringify({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000),mode:mode}));
     if(window.multiSI)clearInterval(window.multiSI);
     window.multiSI=setInterval(function(){
-      if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP}}));
+      if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP,cls:playerClass}}));
     },100);
   };
   ws.onmessage=function(e){
@@ -2285,7 +2374,7 @@ function updatePhysics(dt){
   if(slidePromptTimer>0)slidePromptTimer-=dt;else document.getElementById('slide-prompt').style.opacity='0';
   var slideKey=keys['ShiftLeft']||keys['ShiftRight'];
   if(slideKey&&onGround&&!sliding&&slideCD<=0&&gameStarted){
-    sliding=true;slideTimer=0.5;vel.y=-2;
+    sliding=true;slideTimer=0.5*(window.slideMult||1);vel.y=-2;
     slideCD=2.2;
   }
   if(!slideKey)slideKeyWas=false;else if(!slideKeyWas&&slideKey&&!sliding&&slideCD>0){slideKeyWas=true;slidePromptTimer=1;document.getElementById('slide-prompt').textContent='滑鏟冷卻 '+Math.ceil(slideCD)+'秒';document.getElementById('slide-prompt').style.opacity='1';}
@@ -2375,8 +2464,8 @@ function shoot(){
           }
           hitMarkerTimer=0.15;e.hitTimer=0.3;
           if(sliding){e.hp=0;e.armor=0;showDmgNum(hits[0].point,999,'#ff0000');seasonProgress.slide_kill++;saveSeasonProgress();}
-          else{e.knifeHits++;if(e.knifeHits>=3){e.hp=0;e.armor=0;showDmgNum(hits[0].point,999,'#ff4400')}else{showDmgNum(hits[0].point,50,'#ff6600')}}
-        if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(hits[0].point,1000,'#fa4')}
+          else{var knReq=window.knifeMult?Math.ceil(3/window.knifeMult):3;e.knifeHits++;if(e.knifeHits>=knReq){e.hp=0;e.armor=0;showDmgNum(hits[0].point,999,'#ff4400')}else{showDmgNum(hits[0].point,50,'#ff6600')}}
+        if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(hits[0].point,1000,'#fa4');if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}
           break;
         }
       }
@@ -2415,12 +2504,12 @@ function shoot(){
                 var toHit=new THREE.Vector3().copy(shits[0].point).sub(e.pos).normalize();
                 if(fwd.dot(toHit)>0.3)break;
               }
-              var pd=gunData.shotgun.dmg;
+              var pd=Math.round(gunData.shotgun.dmg*(window.hsMult||1));
               hitMarkerTimer=0.15;e.hitTimer=0.3;
               if(e.armor>0){var od=pd;e.armor-=pd;if(e.armor<0){od=-e.armor;e.armor=0}else od=0;if(e.armor===0)showDmgNum(shits[0].point,pd,'#f62',true);else showDmgNum(shits[0].point,pd,'#4488ff');if(od>0){e.hp-=od;if(e.hp<0)e.hp=0;showDmgNum(shits[0].point,od,'#ff4444')}}
               else{e.hp-=pd;if(e.hp<0)e.hp=0;showDmgNum(shits[0].point,pd,'#ff4444')}
               e.burnTimer=3;
-              if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(shits[0].point,1000,'#fa4')}
+              if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(shits[0].point,1000,'#fa4');if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}
               break;
             }
           }
@@ -2482,7 +2571,7 @@ function shoot(){
         e.hitTimer=0.3;
         if(e.armor>0){var od=dmg;e.armor-=dmg;if(e.armor<0){od=-e.armor;e.armor=0}else od=0;if(e.armor===0)showDmgNum(hits[0].point,dmg,'#f62',true);else showDmgNum(hits[0].point,dmg,'#4488ff');if(od>0){e.hp-=od;if(e.hp<0)e.hp=0;showDmgNum(hits[0].point,od,'#ff4444')}}
         else{e.hp-=dmg;if(e.hp<0)e.hp=0;showDmgNum(hits[0].point,dmg,'#ff4444')}
-        if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(hits[0].point,1000,'#fa4')}
+        if(e.hp<=0){e.mesh.visible=false;e.hp=0;if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(hits[0].point,1000,'#fa4');if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}
         break;
       }
     }
@@ -2507,7 +2596,7 @@ function shoot(){
         om.traverse(function(c){if(c===hitMesh)hitOp=true;});
         if(hitOp){
           hitMarkerTimer=0.15;
-          var dmg=currentGun==='awp'?999:gunData[currentGun].dmg;
+        var dmg=currentGun==='awp'?999:Math.round(gunData[currentGun].dmg*(window.hsMult||1));
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           opponentStates[oidx].hp-=dmg;
@@ -3229,17 +3318,18 @@ function updateNuclear(dt){
   // Check reactor explosion (at 1200W)
   if(radWattage>=1200){
     var explPos=new THREE.Vector3(0,0.5,0);
-    // Big flash
     var flash=new THREE.Mesh(new THREE.SphereGeometry(2,8,8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:1}));
     flash.position.copy(explPos);scene.add(flash);
     var shockwave=new THREE.Mesh(new THREE.RingGeometry(0.2,2,24),new THREE.MeshBasicMaterial({color:0xff8800,transparent:true,opacity:1,side:THREE.DoubleSide}));
     shockwave.position.copy(explPos);shockwave.rotation.x=-Math.PI/2;scene.add(shockwave);
-    screenShake=5;
-    // Kill player
     playerHP=0;
     showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),999,'#ff4400');
-    // Animate explosion over 2 seconds
+    document.getElementById('round-clear').textContent='☢ 反應爐爆炸 — 任務失敗';
+    document.getElementById('round-clear').style.color='#f44';
+    document.getElementById('round-clear').style.display='block';
+    gameStarted=false;
     var explTime=0;
+    var shakeAccum=0;
     var explInt=setInterval(function(){
       explTime+=0.033;
       var p=explTime/2;
@@ -3247,21 +3337,20 @@ function updateNuclear(dt){
       shockwave.material.opacity=1-p;
       var swScale=1+p*8;
       shockwave.scale.set(swScale,swScale,swScale);
+      shakeAccum+=0.033;
+      if(shakeAccum>0.05){
+        shakeAccum=0;
+        cam.position.x+=(Math.random()-0.5)*0.6;
+        cam.position.y+=(Math.random()-0.5)*0.6;
+      }
       if(p>=1){
         scene.remove(flash);scene.remove(shockwave);
         clearInterval(explInt);
+        document.getElementById('round-clear').style.display='none';
+        document.getElementById('round-clear').style.color='#4f4';
+        onPlayerDeath();
       }
     },33);
-    document.getElementById('round-clear').textContent='☢ 反應爐爆炸 — 任務失敗';
-    document.getElementById('round-clear').style.color='#f44';
-    document.getElementById('round-clear').style.display='block';
-    gameStarted=false;
-    setTimeout(function(){
-      document.getElementById('round-clear').style.display='none';
-      document.getElementById('round-clear').style.color='#4f4';
-      document.getElementById('menu').style.display='flex';
-      updateCoinsDisplay();updateArmoryGunCounts();
-    },3000);
   }
 }
 var lastTime=0;
@@ -3311,6 +3400,7 @@ if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
     // Reload timer
     if(isReloading){reloadTimer-=dt;if(reloadTimer<=0){isReloading=false;reloadTimer=0;gunAmmo[currentGun]=gunData[currentGun].mag;}}
     // Auto-fire + shoot cooldown
+    if(window.regenHP){window.regenAccum+=dt;if(window.regenAccum>=1){window.regenAccum=0;playerHP=Math.min(100,playerHP+1);}}
     if(shootCD>0)shootCD-=dt;
     if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple')shoot();
     // Smooth ADS FOV
