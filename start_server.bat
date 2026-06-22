@@ -1,0 +1,2 @@
+set GOOGLE_CLIENT_ID=65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com
+node server.js

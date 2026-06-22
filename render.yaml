@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: game3-server
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python server.py
+    name: game4-server
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
