@@ -195,7 +195,7 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// WebSocket multiplayer (unchanged)
+// WebSocket multiplayer
 const queue = [];
 const rooms = {};
 let nextRoomId = 1;
@@ -213,6 +213,9 @@ wss.on('connection', (ws) => {
       case 'hit': relayToOpponent(ws, { type: 'opponent_hit', hp: msg.hp, armor: msg.armor }); break;
       case 'player_death': relayToOpponent(ws, { type: 'opponent_died' }); break;
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
+      case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
+      case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
+      case 'map_vote': handleMapVote(ws, msg.map); break;
     }
   });
   ws.on('close', () => handleDisconnect(ws));
@@ -229,9 +232,29 @@ function addToQueue(ws) {
 }
 function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.splice(i, 1); }
 function startMatch(p1, p2) {
-  const rid = nextRoomId++; rooms[rid] = { p1, p2 }; p1.roomId = rid; p2.roomId = rid;
-  p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name }));
-  p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name }));
+  const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {} }; p1.roomId = rid; p2.roomId = rid;
+  p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));
+  p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));
+}
+function handleMapVote(ws, map) {
+  const room = rooms[ws.roomId];
+  if (!room) return;
+  const isP1 = room.p1 === ws;
+  room.votes[isP1 ? 'p1' : 'p2'] = map;
+  // Relay opponent's vote so client can show "opponent selected"
+  const opp = isP1 ? room.p2 : room.p1;
+  if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_vote', map }));
+  const v = room.votes;
+  if (v.p1 && v.p2) {
+    // Both voted — determine result
+    const votes = [v.p1, v.p2];
+    const uniqueVotes = [...new Set(votes)];
+    // If both same, use that; if different, pick randomly
+    const chosenMap = uniqueVotes.length === 1 ? uniqueVotes[0] : uniqueVotes[Math.floor(Math.random() * uniqueVotes.length)];
+    const result = { type: 'map_result', map: chosenMap, votes };
+    room.p1.send(JSON.stringify(result));
+    room.p2.send(JSON.stringify(result));
+  }
 }
 function relayToOpponent(ws, msg) {
   const room = rooms[ws.roomId]; if (!room) return;
