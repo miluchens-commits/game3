@@ -80,7 +80,7 @@ async function createUser(username, password, extra) {
 
 async function updateUser(username, fields) {
   if (dbPool) {
-    const sets = [], vals = [], i = 1;
+    const sets = [], vals = []; let i = 1;
     for (const [k, v] of Object.entries(fields)) {
       sets.push(`${k} = $${i++}`);
       vals.push(v);
