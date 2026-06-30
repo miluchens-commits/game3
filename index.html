@@ -50,10 +50,21 @@ body.mobile-mode #scope-overlay{display:none!important}
 #mobile-shoot-btn{position:absolute;bottom:50px;right:24px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(255,80,80,.6),rgba(180,0,0,.8));border:3px solid rgba(255,200,200,.5);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.3),inset 0 -4px 8px rgba(0,0,0,.4);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-shoot-btn:active{transform:scale(0.92)}
 #mobile-shoot-btn svg{width:40px;height:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-#mobile-jump-btn{position:absolute;bottom:60px;right:130px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(100,200,255,.5),rgba(0,80,160,.7));border:2px solid rgba(100,200,255,.4);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.5);box-shadow:0 0 20px rgba(0,150,255,.2),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-jump-btn{position:absolute;bottom:60px;right:130px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(100,200,255,.5),rgba(0,80,160,.7));border:2px solid rgba(100,200,255,.4);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,150,255,.2),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-jump-btn:active{transform:scale(0.9)}
+#mobile-jump-btn svg{width:22px;height:22px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
 #mobile-jump-btn:active{transform:scale(0.9)}
 #mobile-reload-btn{position:absolute;bottom:130px;right:30px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(200,200,200,.4),rgba(80,80,80,.6));border:2px solid rgba(255,255,255,.2);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.8);text-shadow:0 1px 3px rgba(0,0,0,.5);box-shadow:0 0 10px rgba(255,255,255,.1),inset 0 -2px 4px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-reload-btn:active{transform:scale(0.88)}
+#mobile-slide-btn{position:absolute;bottom:60px;right:190px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(150,255,150,.4),rgba(0,120,0,.6));border:2px solid rgba(150,255,150,.35);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-slide-btn:active{transform:scale(0.9)}
+#mobile-slide-btn svg{width:22px;height:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+#rotate-device{position:fixed;top:0;left:0;width:100%;height:100%;z-index:80;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;color:#fff}
+#rotate-device svg{width:100px;height:100px;animation:rotatePhone 2s ease-in-out infinite;margin-bottom:20px}
+@keyframes rotatePhone{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
+#rotate-device div{font-size:18px;letter-spacing:3px;text-align:center}
+@media (orientation:portrait){#rotate-device{display:flex}body.mobile-mode #mobile-controls{display:none!important}}
+@media (orientation:landscape){#rotate-device{display:none}}
 #mode-select{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial}
 #mode-box{background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:36px 44px;text-align:center;max-width:360px;width:90%}
 #mode-title{font-size:24px;color:#f0d060;letter-spacing:4px;margin-bottom:8px;font-weight:bold;text-shadow:0 0 20px rgba(240,208,96,.2)}
@@ -407,7 +418,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="season-overlay"><div id="season-bg"></div><div id="season-box"><div id="season-close">✕</div><div id="season-banner"><div class="sb-corner"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="10" fill="#4f4" opacity=".6"/><circle cx="30" cy="30" r="4" fill="#0a0"/><path d="M30,2 L38,22 L58,22 L42,34 L48,54 L30,44 L12,54 L18,34 L2,22 L22,22 Z" fill="none" stroke="#4f4" stroke-width="1.5" opacity=".3"/></svg></div><div class="sb-corner sb-skull"><svg viewBox="0 0 60 60"><circle cx="30" cy="28" r="16" fill="#fff" opacity=".1"/><circle cx="22" cy="26" r="3" fill="#4f4" opacity=".6"/><circle cx="38" cy="26" r="3" fill="#4f4" opacity=".6"/><path d="M18,36 Q30,44 42,36" fill="none" stroke="#4f4" stroke-width="2" opacity=".5"/><rect x="25" y="42" width="10" height="8" rx="2" fill="#4f4" opacity=".3"/></svg></div><div class="sb-title-row"><div class="sb-badge">S1 核動力</div><div class="sb-title">賽 季 任 務</div><div class="sb-sub">S E A S O N  1  •  N U C L E A R</div></div></div><div id="season-body"><div id="season-countdown"></div><div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px"><div class="seasontab active" id="stab-daily">📅 每日</div><div class="seasontab" id="stab-weekly">📆 每週</div></div><div id="season-quests"></div><div id="season-sp"><span id="ssp-display">SP 0</span></div></div></div></div>
 <div id="perk-overlay"><div id="perk-bg"></div><div id="perk-box"><div id="perk-title">🎴 選擇強化</div><div id="perk-cards"></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
-<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 100"><rect x="25" y="35" width="50" height="30" rx="4" fill="#fff"/><rect x="35" y="20" width="8" height="15" rx="2" fill="#fff"/><rect x="57" y="20" width="8" height="15" rx="2" fill="#fff"/><rect x="40" y="55" width="20" height="25" rx="3" fill="#fff"/><circle cx="50" cy="35" r="4" fill="#222"/></svg></button><button id="mobile-jump-btn">↑</button><button id="mobile-reload-btn">⟳</button></div>
+<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn"><svg viewBox="0 0 40 40"><path d="M20,32 L8,18 L32,18 Z" fill="#fff"/></svg></button><button id="mobile-slide-btn"><svg viewBox="0 0 40 40"><path d="M8,28 L20,12 L32,28 Z" fill="#fff"/></svg></button><button id="mobile-reload-btn">⟳</button></div>
+<div id="rotate-device"><svg viewBox="0 0 120 120"><path d="M60,10 L60,50 M50,40 L60,50 L70,40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="80" rx="6" fill="none" stroke="#fff" stroke-width="4"/><rect x="35" y="25" width="50" height="60" rx="4" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"/><line x1="50" y1="90" x2="70" y2="90" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div>請旋轉手機</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Please rotate your device to landscape</div></div>
 <div id="buff-indicator" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 8px rgba(255,255,255,.5);letter-spacing:1px"></div>
 <div id="settlement"><div id="settlement-box"><div id="settlement-title">結 算</div><div id="settlement-xp">+0</div><div id="settlement-xp-label">經 驗 值</div><div id="settlement-progress"><div id="settlement-progress-fill" style="width:0%"></div></div><div id="settlement-level">Lv.1 (0 / 100)</div><div id="settlement-daily" style="display:none"><div id="settlement-daily-stats" style="font-size:16px;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:12px"></div><div id="settlement-daily-best" style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:10px"></div><button id="daily-share-btn">📋 複製分享</button></div><button id="settlement-btn">確 認</button></div></div>
 <div id="sb"></div>
@@ -2578,13 +2590,13 @@ document.addEventListener('mousedown',function(e){
 document.addEventListener('mouseup',function(e){if(e.button===0)autoFire=false;});
 document.addEventListener('contextmenu',function(e){e.preventDefault();});
 // ── Mobile touch controls ──
-var mobileMoveX=0,mobileMoveZ=0,mobileShooting=false,mobileJumping=false;
+var mobileMoveX=0,mobileMoveZ=0,mobileShooting=false,mobileJumping=false,mobileSlide=false;
 var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
 (function(){
   var jZone=document.getElementById('joystick-zone'),jKnob=document.getElementById('joystick-knob');
-  var sBtn=document.getElementById('mobile-shoot-btn'),jBtn=document.getElementById('mobile-jump-btn'),rBtn=document.getElementById('mobile-reload-btn');
+  var sBtn=document.getElementById('mobile-shoot-btn'),jBtn=document.getElementById('mobile-jump-btn'),rBtn=document.getElementById('mobile-reload-btn'),slBtn=document.getElementById('mobile-slide-btn');
   var mc=document.getElementById('mobile-controls');
-  var jTouchId=null,sTouchId=null,jumpTouchId=null,reloadTouchId=null;
+  var jTouchId=null,sTouchId=null,jumpTouchId=null,reloadTouchId=null,slTouchId=null;
   function jRect(){return jZone.getBoundingClientRect();}
   jZone.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];jTouchId=t.identifier;updateJoystick(t);},{passive:false});
   jZone.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===jTouchId){updateJoystick(e.changedTouches[i]);break;}}},{passive:false});
@@ -2609,8 +2621,11 @@ var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
   rBtn.addEventListener('touchstart',function(e){e.preventDefault();reloadTouchId=e.changedTouches[0].identifier;if(locked)reload();},{passive:false});
   rBtn.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===reloadTouchId){reloadTouchId=null;break;}}e.preventDefault();},{passive:false});
   rBtn.addEventListener('touchcancel',function(){reloadTouchId=null;});
+  slBtn.addEventListener('touchstart',function(e){e.preventDefault();slTouchId=e.changedTouches[0].identifier;if(gameStarted&&!locked)locked=true;mobileSlide=true;if(onGround&&!sliding&&slideCD<=0&&gameStarted){sliding=true;slideTimer=0.5*(window.slideMult||1);vel.y=-2;slideCD=2.2;}},{passive:false});
+  slBtn.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===slTouchId){slTouchId=null;mobileSlide=false;break;}}e.preventDefault();},{passive:false});
+  slBtn.addEventListener('touchcancel',function(){slTouchId=null;mobileSlide=false;});
   // Camera look on non-control areas
-  document.addEventListener('touchstart',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile')return;if(mc.style.display==='none')return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];var el=document.elementFromPoint(t.clientX,t.clientY);if(el&&(el===jZone||jZone.contains(el)||el===sBtn||el===jBtn||el===rBtn))continue;mobileLookId=t.identifier;mobileLooking=true;mobileLookX=t.clientX;mobileLookY=t.clientY;}if(gameStarted&&!locked){locked=true;}},{passive:true});
+  document.addEventListener('touchstart',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile')return;if(mc.style.display==='none')return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];var el=document.elementFromPoint(t.clientX,t.clientY);if(el&&(el===jZone||jZone.contains(el)||el===sBtn||el===jBtn||el===rBtn||el===slBtn))continue;mobileLookId=t.identifier;mobileLooking=true;mobileLookX=t.clientX;mobileLookY=t.clientY;}if(gameStarted&&!locked){locked=true;}},{passive:true});
   document.addEventListener('touchmove',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile'||!mobileLooking)return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===mobileLookId){yaw-=(t.clientX-mobileLookX)*0.008;pitch-=(t.clientY-mobileLookY)*0.008;if(pitch>1.4)pitch=1.4;if(pitch<-1.4)pitch=-1.4;mobileLookX=t.clientX;mobileLookY=t.clientY;break;}}},{passive:false});
   document.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===mobileLookId){mobileLookId=null;mobileLooking=false;break;}}},{passive:true});
   document.addEventListener('touchcancel',function(){mobileLookId=null;mobileLooking=false;});
@@ -2706,7 +2721,7 @@ function updatePhysics(dt){
   // Slide
   if(slideCD>0)slideCD-=dt;
   if(slidePromptTimer>0)slidePromptTimer-=dt;else document.getElementById('slide-prompt').style.opacity='0';
-  var slideKey=keys['ShiftLeft']||keys['ShiftRight'];
+  var slideKey=keys['ShiftLeft']||keys['ShiftRight']||mobileSlide;
   if(slideKey&&onGround&&!sliding&&slideCD<=0&&gameStarted){
     sliding=true;slideTimer=0.5*(window.slideMult||1);vel.y=-2;
     slideCD=2.2;

@@ -18,7 +18,7 @@ config/name="ParkourShooter"
 config/description="Multiplayer parkour shooting game"
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.6")
+config/features=PackedStringArray("4.7")
 
 [rendering]
 

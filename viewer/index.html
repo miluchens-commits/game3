@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Map Viewer — Symmetrical Arena v4</title>
+<style>
+*{margin:0;padding:0}
+body{overflow:hidden;background:#1a1a2e;font-family:Arial}
+canvas{display:block}
+#info{position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.6);padding:6px 14px;border-radius:6px;font-size:13px;pointer-events:none;z-index:10;text-align:center}
+</style>
+</head>
+<body>
+<div id="info">Symmetrical Arena v4 — 滑鼠拖曳旋轉 · 滾輪縮放 · 右鍵平移</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x2a2a3e);
+
+const cam = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+cam.position.set(22, 16, 28);
+cam.lookAt(0, 1, 0);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(cam, renderer.domElement);
+controls.target.set(0, 1.2, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI / 2.05;
+controls.minDistance = 4;
+controls.maxDistance = 55;
+controls.update();
+
+const amb = new THREE.AmbientLight(0xccccff, 0.7);
+scene.add(amb);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8888ff, 0.6);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 2.0);
+sun.position.set(15, 25, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.width = 2048;
+sun.shadow.mapSize.height = 2048;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 60;
+sun.shadow.camera.left = -25;
+sun.shadow.camera.right = 25;
+sun.shadow.camera.top = 25;
+sun.shadow.camera.bottom = -25;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x8888ff, 0.4);
+fill.position.set(-10, 15, -10);
+scene.add(fill);
+
+function addBox(p, s, c, shadows=true){
+  const g = new THREE.BoxGeometry(s.x, s.y, s.z);
+  const m = new THREE.MeshStandardMaterial({color:c, roughness:0.85, metalness:0});
+  const mesh = new THREE.Mesh(g, m);
+  mesh.position.copy(p);
+  mesh.castShadow = shadows;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+function addCyl(p, r, h, c){
+  const g = new THREE.CylinderGeometry(r, r, h, 10);
+  const m = new THREE.MeshStandardMaterial({color:c, roughness:0.85, metalness:0});
+  const mesh = new THREE.Mesh(g, m);
+  mesh.position.copy(p);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+function addExactRamp(x1, y1, x2, y2, halfZ, c, zOff){
+  const geo = new THREE.BufferGeometry();
+  const verts = new Float32Array([
+    x1, y1, -halfZ, x2, y2, -halfZ,
+    x1, 0, -halfZ, x2, 0, -halfZ,
+    x1, y1, halfZ, x2, y2, halfZ,
+    x1, 0, halfZ, x2, 0, halfZ
+  ]);
+  const idx = new Uint16Array([
+    0,4,5, 0,5,1, 0,1,3, 0,3,2,
+    4,7,5, 4,6,7, 0,2,6, 0,6,4, 1,5,7, 1,7,3
+  ]);
+  geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+  geo.setIndex(new THREE.BufferAttribute(idx, 1));
+  geo.computeVertexNormals();
+  const m = new THREE.MeshStandardMaterial({color:c, roughness:0.85, metalness:0, side:THREE.DoubleSide});
+  const mesh = new THREE.Mesh(geo, m);
+  if(zOff) mesh.position.z = zOff;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+const W = 0xeeeeee, L = 0xdddddd, M = 0xcccccc, A = 0xbbbbbb, D = 0xaaaaaa;
+
+const AX = 22, AZ = 16;
+addBox(new THREE.Vector3(0, -0.15, 0), new THREE.Vector3(AX*2, 0.3, AZ*2), D);
+addBox(new THREE.Vector3(0, 0.05, 0), new THREE.Vector3(AX*2, 0.1, AZ*2), W);
+addBox(new THREE.Vector3(0, 2.5, -AZ), new THREE.Vector3(AX*2, 5, 0.8), L);
+addBox(new THREE.Vector3(0, 2.5, AZ), new THREE.Vector3(AX*2, 5, 0.8), L);
+addBox(new THREE.Vector3(-AX, 2.5, 0), new THREE.Vector3(0.8, 5, AZ*2), L);
+addBox(new THREE.Vector3(AX, 2.5, 0), new THREE.Vector3(0.8, 5, AZ*2), L);
+// Corner pillars (thicker than walls)
+addBox(new THREE.Vector3(-AX, 2.5, -AZ), new THREE.Vector3(1.2, 5, 1.2), D);
+addBox(new THREE.Vector3(AX, 2.5, -AZ), new THREE.Vector3(1.2, 5, 1.2), D);
+addBox(new THREE.Vector3(-AX, 2.5, AZ), new THREE.Vector3(1.2, 5, 1.2), D);
+addBox(new THREE.Vector3(AX, 2.5, AZ), new THREE.Vector3(1.2, 5, 1.2), D);
+
+addBox(new THREE.Vector3(-17, 0.5, 0), new THREE.Vector3(6, 1, 5), M);
+addBox(new THREE.Vector3(-20, 1.0, 0), new THREE.Vector3(0.4, 2, 5.6), D);
+addBox(new THREE.Vector3(-17, 1.0, -2.8), new THREE.Vector3(6, 2, 0.4), D);
+addBox(new THREE.Vector3(-17, 1.0, 2.8), new THREE.Vector3(6, 2, 0.4), D);
+addBox(new THREE.Vector3(17, 0.5, 0), new THREE.Vector3(6, 1, 5), M);
+addBox(new THREE.Vector3(20, 1.0, 0), new THREE.Vector3(0.4, 2, 5.6), D);
+addBox(new THREE.Vector3(17, 1.0, -2.8), new THREE.Vector3(6, 2, 0.4), D);
+addBox(new THREE.Vector3(17, 1.0, 2.8), new THREE.Vector3(6, 2, 0.4), D);
+
+addBox(new THREE.Vector3(-12.25, 0.5, 0), new THREE.Vector3(3.5, 1, 6), M);
+addBox(new THREE.Vector3(12.25, 0.5, 0), new THREE.Vector3(3.5, 1, 6), M);
+
+addExactRamp(-14, 1.0, -9, 0, 3, L);
+addExactRamp(14, 1.0, 9, 0, 3, L);
+
+const PH = 3, PS = 0.5, PWt = 6, PDp = 5, PTh = 0.5;
+const px2 = PWt/2 - PS/2, pz2 = PDp/2 - PS/2;
+addBox(new THREE.Vector3(-px2, PH/2, -pz2), new THREE.Vector3(PS, PH, PS), M);
+addBox(new THREE.Vector3(px2, PH/2, -pz2), new THREE.Vector3(PS, PH, PS), M);
+addBox(new THREE.Vector3(-px2, PH/2, pz2), new THREE.Vector3(PS, PH, PS), M);
+addBox(new THREE.Vector3(px2, PH/2, pz2), new THREE.Vector3(PS, PH, PS), M);
+addBox(new THREE.Vector3(0, PH + PTh/2, 0), new THREE.Vector3(PWt, PTh, PDp), W);
+const ry = PH + PTh + 0.1;
+addBox(new THREE.Vector3(0, ry, -PDp/2-0.05), new THREE.Vector3(PWt+0.4, 0.2, 0.35), A);
+addBox(new THREE.Vector3(0, ry, PDp/2+0.05), new THREE.Vector3(PWt+0.4, 0.2, 0.35), A);
+addBox(new THREE.Vector3(-PWt/2-0.05, ry, 0), new THREE.Vector3(0.35, 0.2, PDp+0.4), A);
+addBox(new THREE.Vector3(PWt/2+0.05, ry, 0), new THREE.Vector3(0.35, 0.2, PDp+0.4), A);
+
+// One ramp (east side) leading up to central platform
+addExactRamp(9, 0, PWt/2+0.2, PH+PTh, 1.5, L);
+
+const SW_H = 2.5, SW_T = 0.3;
+addBox(new THREE.Vector3(-9.5, SW_H, -3), new THREE.Vector3(9, SW_T, 2.5), W);
+addBox(new THREE.Vector3(9.5, SW_H, -3), new THREE.Vector3(9, SW_T, 2.5), W);
+addBox(new THREE.Vector3(0, SW_H+0.5, 7), new THREE.Vector3(20, SW_T, 2.5), W);
+addBox(new THREE.Vector3(0, SW_H+0.5, -7), new THREE.Vector3(20, SW_T, 2.5), W);
+
+for(let x=-12; x<=12; x+=4){
+  if(x < -5 || x > 5) addCyl(new THREE.Vector3(x, SW_H/2, -3), 0.15, SW_H, M);
+}
+for(let x=-10; x<=10; x+=4){
+  addCyl(new THREE.Vector3(x, (SW_H+0.5)/2, 7), 0.15, SW_H+0.5, M);
+  addCyl(new THREE.Vector3(x, (SW_H+0.5)/2, -7), 0.15, SW_H+0.5, M);
+}
+
+// Skywalk access ramps
+// Left skywalk (z=-3): west end
+addExactRamp(-14, SW_H+0.15, -18, 0, 1.2, L, -3);
+// Left skywalk (z=-3): east end
+addExactRamp(-5, SW_H+0.15, -3, 0, 1.2, L, -3);
+// Right skywalk (z=-3): west end
+addExactRamp(5, SW_H+0.15, 3, 0, 1.2, L, -3);
+// Right skywalk (z=-3): east end
+addExactRamp(14, SW_H+0.15, 18, 0, 1.2, L, -3);
+// Front skywalk (z=7): west end
+addExactRamp(-10, SW_H+0.5+0.15, -13, 0, 1.2, L, 7);
+// Front skywalk (z=7): east end
+addExactRamp(10, SW_H+0.5+0.15, 13, 0, 1.2, L, 7);
+// Back skywalk (z=-7): west end
+addExactRamp(-10, SW_H+0.5+0.15, -13, 0, 1.2, L, -7);
+// Back skywalk (z=-7): east end
+addExactRamp(10, SW_H+0.5+0.15, 13, 0, 1.2, L, -7);
+
+addBox(new THREE.Vector3(-7, 0.15, -11), new THREE.Vector3(6, 0.3, 1.8), W);
+addBox(new THREE.Vector3(-7, 0.15, 11), new THREE.Vector3(6, 0.3, 1.8), W);
+addBox(new THREE.Vector3(-7, 0.9, -12), new THREE.Vector3(6, 1.8, 0.4), L);
+addBox(new THREE.Vector3(-7, 0.9, 12), new THREE.Vector3(6, 1.8, 0.4), L);
+addBox(new THREE.Vector3(7, 0.15, -11), new THREE.Vector3(6, 0.3, 1.8), W);
+addBox(new THREE.Vector3(7, 0.15, 11), new THREE.Vector3(6, 0.3, 1.8), W);
+addBox(new THREE.Vector3(7, 0.9, -12), new THREE.Vector3(6, 1.8, 0.4), L);
+addBox(new THREE.Vector3(7, 0.9, 12), new THREE.Vector3(6, 1.8, 0.4), L);
+
+addBox(new THREE.Vector3(-5, 0.35, -1.5), new THREE.Vector3(0.6, 0.7, 3), A);
+addBox(new THREE.Vector3(5, 0.35, -1.5), new THREE.Vector3(0.6, 0.7, 3), A);
+addBox(new THREE.Vector3(-5, 0.35, 1.5), new THREE.Vector3(0.6, 0.7, 3), A);
+addBox(new THREE.Vector3(5, 0.35, 1.5), new THREE.Vector3(0.6, 0.7, 3), A);
+addCyl(new THREE.Vector3(-7, 1.5, -6), 0.35, 3, M);
+addCyl(new THREE.Vector3(7, 1.5, -6), 0.35, 3, M);
+addCyl(new THREE.Vector3(-7, 1.5, 6), 0.35, 3, M);
+addCyl(new THREE.Vector3(7, 1.5, 6), 0.35, 3, M);
+
+function addMarker(p, clr){
+  const g = new THREE.RingGeometry(0.3, 0.55, 24);
+  const m = new THREE.MeshBasicMaterial({color:clr, side:THREE.DoubleSide, transparent:true, opacity:0.3});
+  const mesh = new THREE.Mesh(g, m);
+  mesh.position.copy(p);
+  mesh.rotation.x = -Math.PI/2;
+  scene.add(mesh);
+}
+addMarker(new THREE.Vector3(-17, 0.01, -1.5), 0x4488ff);
+addMarker(new THREE.Vector3(-17, 0.01, 0), 0x4488ff);
+addMarker(new THREE.Vector3(-17, 0.01, 1.5), 0x4488ff);
+addMarker(new THREE.Vector3(17, 0.01, -1.5), 0xff4444);
+addMarker(new THREE.Vector3(17, 0.01, 0), 0xff4444);
+addMarker(new THREE.Vector3(17, 0.01, 1.5), 0xff4444);
+
+const grid = new THREE.GridHelper(46, 23, 0x888888, 0x666666);
+grid.position.y = 0.01;
+scene.add(grid);
+
+window.addEventListener('resize', () => {
+  cam.aspect = window.innerWidth / window.innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function animate(){
+  controls.update();
+  renderer.render(scene, cam);
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

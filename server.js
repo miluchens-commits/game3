@@ -161,5 +161,7 @@ function handleDisconnect(ws) {
   if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
 }
 
+process.on('uncaughtException', e => console.error('Uncaught:', e));
+process.on('unhandledRejection', e => console.error('Unhandled:', e));
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log('OCGAME server running on port ' + PORT));
