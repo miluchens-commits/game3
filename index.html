@@ -4145,6 +4145,7 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
   // Radiation projectile updates
   for(var rpi=projectiles.length-1;rpi>=0;rpi--){
     var rp=projectiles[rpi];
+    if(!rp.dir)continue;
     rp.life-=dt;
     if(rp.life<=0){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);projectiles.splice(rpi,1);continue;}
     var step=rp.dir.clone().multiplyScalar(rp.speed*dt);
@@ -4472,6 +4473,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'){
     // Projectiles
     for(var pi=projectiles.length-1;pi>=0;pi--){
       var pj=projectiles[pi];
+      if(!pj.vel)continue;
       var oldPos=pj.pos.clone();
       pj.pos.add(pj.vel.clone().multiplyScalar(dt));pj.mesh.position.copy(pj.pos);
       if(!pj.isGrenade)pj.life-=dt;
