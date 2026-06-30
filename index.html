@@ -2301,6 +2301,13 @@ function applyMapSettings(){
       if(!bx.isNuclear)bx.mesh.visible=false;
     }
   }
+  // Base map: show all non-special mapBoxes
+  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'){
+    for(var mxi3=0;mxi3<mapBoxes.length;mxi3++){
+      var bx3=mapBoxes[mxi3];
+      if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat)bx3.mesh.visible=true;
+    }
+  }
   if(currentMap==='dragonboat'){
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
@@ -2412,6 +2419,9 @@ mapOptions.forEach(function(opt){
     }
     currentMap=opt.dataset.map;
     gameDifficulty='normal';diffMult=1;
+    if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
+    radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
+    projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
     document.getElementById('map-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -2430,6 +2440,9 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
     gameDifficulty=opt.dataset.diff;
     diffMult=gameDifficulty==='normal'?1:(gameDifficulty==='conf'?1.5:2);
     currentMap='nuclear';
+    if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
+    radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
+    projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
     document.getElementById('diff-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -4199,7 +4212,7 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(!hitAny)rp.mesh.material.emissiveIntensity=1.5+rp.chargeMult*2+Math.sin(Date.now()*0.005)*0.5;
   }
   // RadRifle drop pickup
-  if(window.radRifleDrop&&locked){
+  if(window.radRifleDrop&&locked&&!gameStarted){
     var dropDist=pos.distanceTo(window.radRifleDrop.pos);
     window.radRifleDrop.glow.material.opacity=0.15+Math.sin(Date.now()*0.005)*0.1;
     window.radRifleDrop.mesh.rotation.y+=dt*2;
