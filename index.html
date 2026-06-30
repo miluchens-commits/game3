@@ -320,9 +320,9 @@ body.mobile-mode #scope-overlay{display:none!important}
 #scope-dots::before,#scope-dots::after{content:'';position:absolute;width:2px;height:2px;background:#000;border-radius:50%}
 #scope-dots::before{top:8px;left:-1px}
 #scope-dots::after{top:-10px;left:-1px}
-#map-select{position:fixed;top:0;left:0;width:100%;height:100%;z-index:35;font-family:Arial;display:none;align-items:center;justify-content:center}
+#map-select{position:fixed;top:0;left:0;width:100%;height:100%;z-index:35;font-family:Arial;display:none;align-items:center;justify-content:center;overflow-y:auto;padding:20px 0;box-sizing:border-box;-webkit-overflow-scrolling:touch}
 #map-select-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85)}
-#map-select-box{position:relative;display:flex;flex-direction:column;align-items:center;z-index:1;overflow-y:auto;max-height:90vh;padding-right:6px}
+#map-select-box{position:relative;display:flex;flex-direction:column;align-items:center;z-index:1;overflow-y:auto;max-height:85vh;padding:20px 10px 30px;box-sizing:border-box;-webkit-overflow-scrolling:touch}
 #diff-select{position:fixed;top:0;left:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;z-index:20;font-family:Arial}#diff-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7)}
 #diff-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(0,255,100,.4);border-radius:12px;padding:30px;text-align:center;max-width:400px;width:90%;box-shadow:0 0 60px rgba(0,255,100,.15)}
 #diff-title{font-size:22px;font-weight:bold;color:#4f4;letter-spacing:4px;margin-bottom:6px}
@@ -451,8 +451,8 @@ body.mobile-mode #scope-overlay{display:none!important}
     <button id="multi-to-menu" style="padding:12px 40px;font-size:16px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">回 選 單</button>
   </div>
 </div>
-<div id="multi-map-vote" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
-  <div style="display:flex;flex-direction:column;align-items:center;max-height:90vh;overflow-y:auto;padding:20px;box-sizing:border-box">
+<div id="multi-map-vote" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;font-family:Arial;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:30px 0;box-sizing:border-box">
+  <div style="display:flex;flex-direction:column;align-items:center">
     <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
     <div style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px;letter-spacing:2px" id="multi-vote-status">請選擇地圖</div>
     <div class="map-option" data-map="base" id="vote-base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場</div></div>
