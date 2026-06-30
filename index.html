@@ -2436,7 +2436,8 @@ function startMultiGame(mapName){
   }
   gameStarted=true;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
-  document.body.requestPointerLock().catch(function(){});
+  document.getElementById('blocker').style.display='flex';
+  document.querySelector('#blocker div').innerHTML='點擊開始對戰';
 }
 window.addEventListener('message',function(e){
   var msg=e.data;
