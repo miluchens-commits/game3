@@ -532,7 +532,7 @@ function doSetName(){
   authFetch('/api/setname',{method:'POST',body:{nickname:nm}}).then(function(d){
     if(d.error){err.textContent=d.error;return;}
     localStorage.setItem('oc_nickname',d.nickname);updateAvatarDisplay();hideNamePrompt();showModeSelect();
-  });
+  }).catch(function(){err.textContent='無法連線到伺服器';});
 }
 document.getElementById('auth-login-btn').onclick=function(){doAuth('login');};
  document.getElementById('auth-reg-btn').onclick=function(){doAuth('register');};

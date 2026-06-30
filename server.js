@@ -129,31 +129,37 @@ function auth(req, res, next) {
 }
 
 app.post('/api/save', auth, async (req, res) => {
-  const { xp, coins, rank } = req.body;
-  const fields = {};
-  if (xp != null) fields.xp = xp;
-  if (coins != null) fields.coins = coins;
-  if (rank != null) fields.rank = rank;
-  await updateUser(req.user.username, fields);
-  res.json({ ok: true });
+  try {
+    const { xp, coins, rank } = req.body;
+    const fields = {};
+    if (xp != null) fields.xp = xp;
+    if (coins != null) fields.coins = coins;
+    if (rank != null) fields.rank = rank;
+    await updateUser(req.user.username, fields);
+    res.json({ ok: true });
+  } catch (e) { console.error('Save error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
 app.get('/api/profile', auth, async (req, res) => {
-  const user = await findUser(req.user.username);
-  if (!user) return res.status(404).json({ error: '找不到使用者' });
-  res.json({ username: user.username, nickname: user.nickname || '', picture: user.picture || '', xp: user.xp, coins: user.coins, rank: user.rank, needsName: !user.nickname });
+  try {
+    const user = await findUser(req.user.username);
+    if (!user) return res.status(404).json({ error: '找不到使用者' });
+    res.json({ username: user.username, nickname: user.nickname || '', picture: user.picture || '', xp: user.xp, coins: user.coins, rank: user.rank, needsName: !user.nickname });
+  } catch (e) { console.error('Profile error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
 app.post('/api/setname', auth, async (req, res) => {
-  const { nickname } = req.body;
-  if (!nickname || nickname.length < 1 || nickname.length > 12) return res.status(400).json({ error: '名字長度需為1-12字' });
-  const user = await findUser(req.user.username);
-  if (!user) return res.status(404).json({ error: '找不到使用者' });
-  if (user.nickname) return res.status(403).json({ error: '名字已設定，無法更改！' });
-  const dup = await findUserByNickname(nickname);
-  if (dup) return res.status(409).json({ error: '此名稱已被其他玩家使用' });
-  await updateUser(req.user.username, { nickname });
-  res.json({ ok: true, nickname });
+  try {
+    const { nickname } = req.body;
+    if (!nickname || nickname.length < 1 || nickname.length > 12) return res.status(400).json({ error: '名字長度需為1-12字' });
+    const user = await findUser(req.user.username);
+    if (!user) return res.status(404).json({ error: '找不到使用者' });
+    if (user.nickname) return res.status(403).json({ error: '名字已設定，無法更改！' });
+    const dup = await findUserByNickname(nickname);
+    if (dup) return res.status(409).json({ error: '此名稱已被其他玩家使用' });
+    await updateUser(req.user.username, { nickname });
+    res.json({ ok: true, nickname });
+  } catch (e) { console.error('Setname error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
 async function findUserByNickname(nickname) {
