@@ -305,11 +305,67 @@ body.mobile-mode #scope-overlay{display:none!important}
 .a-slot-label{color:#667;font-size:10px;letter-spacing:2px;margin-bottom:4px}
 .a-slot-gun{color:#8bf;font-size:14px;font-weight:bold}
 #armory-guns-title{color:#4af;font-size:12px;letter-spacing:6px;margin-bottom:12px;opacity:.5}
-#armory-guns{display:flex;gap:10px;margin-bottom:20px}
+#armory-guns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px}
 .a-gun-btn{padding:8px 20px;font-size:13px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.25);border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7}
 .a-gun-btn:hover{opacity:1;border-color:#4af;box-shadow:0 0 15px rgba(68,170,255,.3);transform:scale(1.05)}
 #armory-confirm{padding:10px 40px;font-size:16px;font-weight:bold;color:#000;background:#4af;border:none;border-radius:4px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;box-shadow:0 0 25px rgba(68,170,255,.3)}
 #armory-confirm:hover{box-shadow:0 0 40px rgba(68,170,255,.6);transform:scale(1.05)}
+#friend-btn{background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0;transition:all .3s}
+#friend-btn:hover{border-color:#4af;color:#4af;box-shadow:0 0 12px rgba(68,170,255,.2)}
+#friend-panel{position:fixed;top:0;left:0;width:100%;height:100%;z-index:45;font-family:Arial;display:none;align-items:center;justify-content:center}
+#friend-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#friend-box{position:relative;background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(68,170,255,.3);border-radius:8px;padding:24px 30px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 60px rgba(68,170,255,.15);max-width:380px;width:90%;max-height:80vh}
+#friend-title{font-size:22px;font-weight:900;color:#4af;letter-spacing:8px;margin-bottom:16px;text-shadow:0 0 20px rgba(68,170,255,.3)}
+#friend-list{width:100%;flex:1;overflow-y:auto;margin-bottom:14px;min-height:120px;background:rgba(68,170,255,.04);border:1px solid rgba(68,170,255,.1);border-radius:6px;padding:8px}
+#friend-list .f-empty{color:rgba(255,255,255,.2);text-align:center;font-size:13px;letter-spacing:2px;padding:30px 0}
+#friend-list .f-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);color:#eee;font-size:13px}
+#friend-list .f-item:last-child{border-bottom:none}
+#friend-list .f-item .f-name{font-weight:bold;color:#8bf}
+#friend-list .f-item .f-status{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px}
+#friend-actions{display:flex;gap:10px;width:100%}
+#friend-actions button{flex:1;padding:8px 0;font-size:13px;font-weight:bold;border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;border:1px solid}
+#friend-tabs{display:flex;gap:6px;margin-bottom:12px;width:100%}
+#friend-tabs .f-tab{flex:1;padding:6px 0;font-size:12px;font-weight:bold;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .3s;font-family:Arial}
+#friend-tabs .f-tab.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.1)}
+#friend-tabs .f-tab:hover:not(.active){border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
+#f-req-badge{background:#f64;color:#fff;font-size:10px;border-radius:8px;padding:1px 6px;margin-left:3px}
+#friend-search-bar{display:flex;gap:6px;width:100%;margin-bottom:10px}
+#friend-search-input{flex:1;padding:8px 10px;border-radius:4px;border:1px solid rgba(68,170,255,.2);background:rgba(68,170,255,.06);color:#fff;font-size:13px;outline:none;font-family:Arial;box-sizing:border-box}
+#friend-search-input:focus{border-color:#4af}
+#friend-search-btn{padding:8px 14px;font-size:12px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
+#friend-search-btn:hover{background:rgba(68,170,255,.1);border-color:#4af}
+#friend-list .f-item .f-btn{padding:4px 10px;font-size:11px;font-weight:bold;border-radius:3px;cursor:pointer;letter-spacing:1px;font-family:Arial;border:1px solid;transition:all .2s}
+#friend-list .f-item .f-add-btn{color:#4f4;border-color:rgba(68,255,68,.3);background:transparent}
+#friend-list .f-item .f-add-btn:hover{background:rgba(68,255,68,.1);border-color:#4f4}
+#friend-list .f-item .f-accept-btn{color:#4f4;border-color:rgba(68,255,68,.3);background:transparent}
+#friend-list .f-item .f-accept-btn:hover{background:rgba(68,255,68,.1);border-color:#4f4}
+#friend-list .f-item .f-reject-btn{color:#f64;border-color:rgba(255,102,68,.3);background:transparent;margin-left:4px}
+#friend-list .f-item .f-reject-btn:hover{background:rgba(255,102,68,.1);border-color:#f64}
+#friend-list .f-item .f-remove-btn{color:#f64;border-color:rgba(255,102,68,.3);background:transparent}
+#friend-list .f-item .f-remove-btn:hover{background:rgba(255,102,68,.1);border-color:#f64}
+#friend-list .f-item .f-unban-btn{color:#8bf;border-color:rgba(68,170,255,.3);background:transparent}
+#friend-list .f-item .f-unban-btn:hover{background:rgba(68,170,255,.1);border-color:#4af}
+#friend-add-btn{color:#4f4;background:transparent;border-color:rgba(68,255,68,.3)}
+#friend-add-btn:hover{background:rgba(68,255,68,.1);border-color:#4f4;box-shadow:0 0 15px rgba(68,255,68,.2)}
+#friend-ban-btn{color:#f64;background:transparent;border-color:rgba(255,102,68,.3)}
+#friend-ban-btn:hover{background:rgba(255,102,68,.1);border-color:#f64;box-shadow:0 0 15px rgba(255,102,68,.2)}
+#chat-panel{position:fixed;top:0;left:0;width:100%;height:100%;z-index:46;font-family:Arial;display:none;align-items:center;justify-content:center}
+#chat-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7)}
+#chat-box{position:relative;background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(68,170,255,.3);border-radius:8px;display:flex;flex-direction:column;box-shadow:0 0 60px rgba(68,170,255,.15);max-width:380px;width:90%;height:60vh;max-height:500px}
+#chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(68,170,255,.15)}
+#chat-friend-name{font-size:16px;font-weight:bold;color:#4af;letter-spacing:3px}
+#chat-close{color:rgba(255,255,255,.4);font-size:18px;cursor:pointer;background:none;border:none;font-family:Arial;padding:0 4px}
+#chat-close:hover{color:#fff}
+#chat-messages{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+#chat-messages .cm-msg{max-width:80%;padding:8px 12px;border-radius:6px;font-size:13px;line-height:1.4;word-break:break-word}
+#chat-messages .cm-mine{align-self:flex-end;background:rgba(68,170,255,.2);border:1px solid rgba(68,170,255,.25);color:#8bf}
+#chat-messages .cm-theirs{align-self:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#ddd}
+#chat-messages .cm-time{font-size:10px;color:rgba(255,255,255,.25);margin-top:2px}
+#chat-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid rgba(68,170,255,.15)}
+#chat-input{flex:1;padding:8px 10px;border-radius:4px;border:1px solid rgba(68,170,255,.2);background:rgba(68,170,255,.06);color:#fff;font-size:13px;outline:none;font-family:Arial;box-sizing:border-box}
+#chat-input:focus{border-color:#4af}
+#chat-send-btn{padding:8px 16px;font-size:12px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
+#chat-send-btn:hover{background:rgba(68,170,255,.1);border-color:#4af}
 #slot-hud{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5;pointer-events:none;font-family:Arial}
 #slot-hud .sh-slot{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;transition:all .2s}
 #slot-hud .sh-slot.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.12)}
@@ -394,8 +450,10 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械 皮 膚</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
-<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="knife">刀</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械 皮 膚</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
+<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
+<div id="chat-panel"><div id="chat-bg"></div><div id="chat-box"><div id="chat-header"><span id="chat-friend-name">好友</span><button id="chat-close">✕</button></div><div id="chat-messages"></div><div id="chat-input-row"><input id="chat-input" placeholder="輸入訊息..." maxlength="500"><button id="chat-send-btn">發送</button></div></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
   <div style="font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:6px" id="multi-status">正在尋找其他玩家...</div>
@@ -537,6 +595,144 @@ function doSetName(){
     localStorage.setItem('oc_nickname',d.nickname);updateAvatarDisplay();hideNamePrompt();showModeSelect();
   }).catch(function(){err.textContent='無法連線到伺服器';});
 }
+function switchFriendTab(view){
+  document.querySelectorAll('#friend-tabs .f-tab').forEach(function(x){x.classList.remove('active');});
+  var tab=document.querySelector('#friend-tabs .f-tab[data-view="'+view+'"]');
+  if(tab)tab.classList.add('active');
+  document.getElementById('friend-search-bar').style.display='none';
+}
+function fetchFriendList(){
+  var list=document.getElementById('friend-list');
+  list.innerHTML='<div class="f-empty">載入中...</div>';
+  authFetch('/api/friends/list').then(function(d){
+    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(!d.friends||!d.friends.length){list.innerHTML='<div class="f-empty">暫無好友</div>';return;}
+    list.innerHTML='';
+    d.friends.forEach(function(f){
+      var item=document.createElement('div');item.className='f-item';
+      var isOnline=f.online?'🟢':'⚫';
+      item.innerHTML='<span class="f-name">'+isOnline+' '+f.nickname+'</span><div><button class="f-btn f-add-btn f-chat-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">💬 聊天</button><button class="f-btn f-remove-btn" data-user="'+f.username+'" style="margin-right:4px">移除</button><button class="f-btn f-reject-btn" data-user="'+f.username+'">封鎖</button></div>';
+      list.appendChild(item);
+    });
+    list.querySelectorAll('.f-chat-btn').forEach(function(el){
+      el.onclick=function(){openChat(this.dataset.user,this.dataset.nick);};
+    });
+    list.querySelectorAll('.f-remove-btn').forEach(function(b){
+      b.onclick=function(){
+        if(!confirm('確定移除好友？'))return;
+        authFetch('/api/friends/remove',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){
+          if(!d.error)fetchFriendList();
+          else alert(d.error);
+        });
+      };
+    });
+    list.querySelectorAll('#friend-list .f-item .f-reject-btn').forEach(function(b){
+      b.onclick=function(){
+        if(!confirm('確定封鎖此玩家？'))return;
+        authFetch('/api/friends/block',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){
+          if(!d.error)fetchFriendList();
+          else alert(d.error);
+        });
+      };
+    });
+  }).catch(function(){list.innerHTML='<div class="f-empty">無法連線</div>';});
+}
+function fetchFriendRequests(){
+  var list=document.getElementById('friend-list');
+  list.innerHTML='<div class="f-empty">載入中...</div>';
+  authFetch('/api/friends/requests').then(function(d){
+    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    var total=(d.incoming?d.incoming.length:0)+(d.outgoing?d.outgoing.length:0);
+    var badge=document.getElementById('f-req-badge');
+    if(total>0){badge.textContent=total;badge.style.display='inline';}else{badge.style.display='none';}
+    var html='';
+    if(d.incoming&&d.incoming.length){
+      html+='<div style="color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px">收到的邀請</div>';
+      d.incoming.forEach(function(f){
+        html+='<div class="f-item"><span class="f-name">'+f.nickname+'</span><div><button class="f-btn f-add-btn f-chat-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">💬</button><button class="f-btn f-accept-btn" data-user="'+f.username+'">接受</button><button class="f-btn f-reject-btn" data-user="'+f.username+'">拒絕</button></div></div>';
+      });
+    }
+    if(d.outgoing&&d.outgoing.length){
+      html+='<div style="color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px">已發送的邀請</div>';
+      d.outgoing.forEach(function(f){
+        html+='<div class="f-item"><span class="f-name">'+f.nickname+'</span><span class="f-status">等待中</span></div>';
+      });
+    }
+    if(!html)html='<div class="f-empty">暫無請求</div>';
+    list.innerHTML=html;
+    list.querySelectorAll('.f-chat-btn').forEach(function(el){
+      el.onclick=function(){openChat(this.dataset.user,this.dataset.nick);};
+    });
+    list.querySelectorAll('.f-accept-btn').forEach(function(b){
+      b.onclick=function(){
+        authFetch('/api/friends/accept',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){if(!d.error)fetchFriendRequests();else alert(d.error);});
+      };
+    });
+    list.querySelectorAll('.f-reject-btn').forEach(function(b){
+      b.onclick=function(){
+        authFetch('/api/friends/reject',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){if(!d.error)fetchFriendRequests();else alert(d.error);});
+      };
+    });
+  }).catch(function(){list.innerHTML='<div class="f-empty">無法連線</div>';});
+}
+function fetchBlacklist(){
+  var list=document.getElementById('friend-list');
+  list.innerHTML='<div class="f-empty">載入中...</div>';
+  authFetch('/api/friends/blacklist').then(function(d){
+    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(!d.blacklist||!d.blacklist.length){list.innerHTML='<div class="f-empty">黑名單為空</div>';return;}
+    list.innerHTML='';
+    d.blacklist.forEach(function(f){
+      var item=document.createElement('div');item.className='f-item';
+      item.innerHTML='<span class="f-name">'+f.nickname+'</span><button class="f-btn f-unban-btn" data-user="'+f.username+'">解除封鎖</button>';
+      list.appendChild(item);
+    });
+    list.querySelectorAll('.f-unban-btn').forEach(function(b){
+      b.onclick=function(){
+        authFetch('/api/friends/unblock',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){if(!d.error)fetchBlacklist();else alert(d.error);});
+      };
+    });
+  }).catch(function(){list.innerHTML='<div class="f-empty">無法連線</div>';});
+}
+function searchUsers(q){
+  var list=document.getElementById('friend-list');
+  list.innerHTML='<div class="f-empty">搜尋中...</div>';
+  authFetch('/api/users/search?q='+encodeURIComponent(q)).then(function(d){
+    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(!d.users||!d.users.length){list.innerHTML='<div class="f-empty">找不到符合的玩家</div>';return;}
+    list.innerHTML='';
+    d.users.forEach(function(u){
+      var item=document.createElement('div');item.className='f-item';
+      var btnText='添加';
+      if(u.status==='pending')btnText='已邀請';
+      else if(u.status==='blocked')btnText='已封鎖';
+      else if(u.status==='friend')btnText='已是好友';
+      var disabled=(u.status==='pending'||u.status==='blocked'||u.status==='friend')?'disabled':'';
+      var blockBtn='';
+      if(u.status!=='blocked')blockBtn='<button class="f-btn f-reject-btn f-block-btn" data-user="'+u.username+'">封鎖</button>';
+      item.innerHTML='<span class="f-name">'+u.nickname+'</span><div><button class="f-btn f-add-btn" data-user="'+u.username+'" '+disabled+'>'+btnText+'</button>'+blockBtn+'</div>';
+      list.appendChild(item);
+    });
+    list.querySelectorAll('.f-block-btn').forEach(function(b){
+      b.onclick=function(){
+        if(!confirm('確定封鎖此玩家？'))return;
+        authFetch('/api/friends/block',{method:'POST',body:{friendUsername:this.dataset.user}}).then(function(d){
+          if(!d.error)searchUsers(document.getElementById('friend-search-input').value.trim());
+          else alert(d.error);
+        });
+      };
+    });
+    list.querySelectorAll('.f-add-btn:not([disabled])').forEach(function(b){
+      b.onclick=function(){
+        var btn=this;
+        authFetch('/api/friends/request',{method:'POST',body:{friendUsername:btn.dataset.user}}).then(function(d){
+          if(!d.error){btn.textContent='已邀請';btn.disabled=true;}
+          else alert(d.error);
+        });
+      };
+    });
+  }).catch(function(){list.innerHTML='<div class="f-empty">無法連線</div>';});
+}
 document.getElementById('auth-login-btn').onclick=function(){doAuth('login');};
  document.getElementById('auth-reg-btn').onclick=function(){doAuth('register');};
  document.getElementById('auth-skip-btn').onclick=function(){document.getElementById('login-overlay').style.display='none';showModeSelect();};
@@ -579,6 +775,7 @@ var bulletHoles=[],maxBulletHoles=50;
 var dailyChallenge=false,dailyKills=0,dailyRounds=0;
 var dailyBest=(function(){try{return JSON.parse(localStorage.getItem('oc_daily_best'))||{}}catch(e){return{}}})();
 var radWattage=0,radImmuneTimer=0,nuclearClears=0,nuclearWave=1,bossActive=false,bossSpawned=false,boss=null,reactorGlow=null,radZoneRadius=5;
+var radRifleCharge=0,radRifleCharging=false,radRifleChargeTouchId=null,radiationZones=[];
 var sliding=false,slideTimer=0,slideCD=0,slidePromptTimer=0,slideSpeed=14,slideKeyWas=false,slowTimer=0;
 var isDowned=false,downTimer=0;
 var scene = new THREE.Scene();
@@ -1170,16 +1367,16 @@ function updateSlotFlashlightUI(){
 }
 // ── Gun system ──
 var knifeSwingCount=0,knifeAnim=0;
-var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6}};
+var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,chargeable:true,chargeTime:1.2,chargeMaxDmg:50}};
 var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null;
 var gunKills={};
-var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6};
-var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35)};
+var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20};
+var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4)};
 // ── Economy system ──
 var specialCoins=parseInt(localStorage.getItem('oc_coin'))||50000;
-var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:0};
-var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000};
-var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈'};
+var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:0,radrifle:0};
+var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0};
+var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍'};
 var slotFlashlight=[false,false,false,false,false];
 function updateCoinsDisplay(){
   try{localStorage.setItem('oc_coin',specialCoins);}catch(e){}
@@ -1332,6 +1529,33 @@ function createGunModel(type){
     var pg4=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.055,0.03),sgWood);pg4.position.set(0,-0.04,0.05);pg4.rotation.x=0.3;g.add(pg4);
     // Stock
     var stk3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.1),sgWood);stk3.position.set(0,0.01,0.1);g.add(stk3);
+  }else if(type==='radrifle'){
+    var rMat=new THREE.MeshStandardMaterial({color:0x226622,metalness:0.6,roughness:0.3});
+    var rGlow=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.8});
+    var rDark=new THREE.MeshStandardMaterial({color:0x113311,metalness:0.4,roughness:0.6});
+    // Main barrel - thick green tube
+    var rb=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.28,8),rMat);rb.rotation.x=Math.PI/2;rb.position.set(0,0,-0.22);g.add(rb);
+    // Barrel cooling fins
+    for(var rfi=0;rfi<5;rfi++){var rf=new THREE.Mesh(new THREE.TorusGeometry(0.024,0.004,6,8),rDark);rf.rotation.x=Math.PI/2;rf.position.set(0,0,-0.12-rfi*0.04);g.add(rf);}
+    // Receiver/body
+    var rr=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.05,0.14),rDark);rr.position.set(0,0,-0.02);g.add(rr);
+    // Glow core on receiver
+    var rc=new THREE.Mesh(new THREE.SphereGeometry(0.012,8,8),rGlow);rc.position.set(0,0.012,-0.06);g.add(rc);
+    // Scope rail
+    var rri=new THREE.Mesh(new THREE.BoxGeometry(0.018,0.003,0.06),rMat);rri.position.set(0,0.028,-0.04);g.add(rri);
+    // Small scope
+    var rsc=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.03,8),new THREE.MeshStandardMaterial({color:0x111111}));rsc.rotation.x=Math.PI/2;rsc.position.set(0,0.04,-0.06);g.add(rsc);
+    var rl=new THREE.Mesh(new THREE.CircleGeometry(0.01,8),new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.3}));rl.position.set(0,0.04,-0.076);g.add(rl);
+    // Muzzle glow ring
+    var mr3=new THREE.Mesh(new THREE.TorusGeometry(0.025,0.006,6,8),rGlow);mr3.rotation.x=Math.PI/2;mr3.position.set(0,0,-0.36);g.add(mr3);
+    // Pistol grip
+    var rg=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.05,0.025),rDark);rg.position.set(0,-0.035,0.06);rg.rotation.x=0.3;g.add(rg);
+    // Stock
+    var rs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.035,0.1),rDark);rs.position.set(0,0.01,0.12);g.add(rs);
+    // Green glowing magazine
+    var rm=new THREE.Mesh(new THREE.BoxGeometry(0.016,0.04,0.02),rGlow);rm.position.set(0,-0.03,-0.16);g.add(rm);
+    // Small glow particles
+    for(var rpi=0;rpi<6;rpi++){var rp_=new THREE.Mesh(new THREE.SphereGeometry(0.004,4,4),rGlow);rp_.position.set((Math.random()-0.5)*0.04,0.01+(Math.random()-0.5)*0.03,(Math.random()-0.5)*0.06-0.12);g.add(rp_);}
     // Muzzle brake
     var mb=new THREE.Mesh(new THREE.CylinderGeometry(0.028,0.024,0.025,8),sgMat);mb.rotation.x=Math.PI/2;mb.position.set(0,0,-0.24);g.add(mb);
     // Heat shield vents on barrels
@@ -1372,6 +1596,104 @@ function updateArmoryUI(){
 }
 // Armory events
 document.getElementById('armory-btn').onclick=function(){document.getElementById('armory').style.display='flex';updateArmoryUI();updateArmoryGunCounts();};
+document.getElementById('friend-btn').onclick=function(){
+  document.getElementById('friend-panel').style.display='flex';
+  document.getElementById('friend-search-bar').style.display='none';
+  switchFriendTab('friends');
+  fetchFriendList();
+};
+document.getElementById('friend-bg').onclick=function(){document.getElementById('friend-panel').style.display='none';};
+document.querySelectorAll('#friend-tabs .f-tab').forEach(function(t){
+  t.onclick=function(){
+    document.querySelectorAll('#friend-tabs .f-tab').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    var view=t.dataset.view;
+    if(view==='friends'){document.getElementById('friend-search-bar').style.display='none';fetchFriendList();}
+    else if(view==='requests'){document.getElementById('friend-search-bar').style.display='none';fetchFriendRequests();}
+    else if(view==='blacklist'){document.getElementById('friend-search-bar').style.display='none';fetchBlacklist();}
+  };
+});
+document.getElementById('friend-add-btn').onclick=function(){
+  document.querySelectorAll('#friend-tabs .f-tab').forEach(function(x){x.classList.remove('active');});
+  document.getElementById('friend-search-bar').style.display='flex';
+  document.getElementById('friend-list').innerHTML='<div class="f-empty">輸入名稱搜尋玩家</div>';
+};
+document.getElementById('friend-ban-btn').onclick=function(){
+  document.querySelectorAll('#friend-tabs .f-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelector('#friend-tabs .f-tab[data-view="blacklist"]').classList.add('active');
+  document.getElementById('friend-search-bar').style.display='none';
+  fetchBlacklist();
+};
+document.getElementById('friend-search-btn').onclick=function(){
+  var q=document.getElementById('friend-search-input').value.trim();
+  if(!q)return;
+  searchUsers(q);
+};
+document.getElementById('friend-search-input').onkeydown=function(e){
+  if(e.key==='Enter')document.getElementById('friend-search-btn').click();
+};
+var chatFriend=null,chatPollInt=null;
+window.openChat=function(friendUsername,friendNickname){
+  chatFriend=friendUsername;
+  document.getElementById('chat-friend-name').textContent=friendNickname||friendUsername;
+  document.getElementById('chat-messages').innerHTML='';
+  document.getElementById('chat-panel').style.display='flex';
+  document.getElementById('chat-input').value='';
+  document.getElementById('chat-input').focus();
+  // Mark as read
+  authFetch('/api/chat/read',{method:'POST',body:{friend:friendUsername}});
+  // Load messages
+  window.loadChatMessages();
+  // Start polling
+  if(chatPollInt)clearInterval(chatPollInt);
+  chatPollInt=setInterval(window.loadChatMessages,2000);
+};
+window.closeChat=function(){
+  if(chatPollInt){clearInterval(chatPollInt);chatPollInt=null;}
+  chatFriend=null;
+  document.getElementById('chat-panel').style.display='none';
+};
+window.loadChatMessages=function(){
+  if(!chatFriend)return;
+  var container=document.getElementById('chat-messages');
+  var lastId=container.dataset.lastId||'0';
+  authFetch('/api/chat/messages?friend='+encodeURIComponent(chatFriend)+'&after='+lastId).then(function(d){
+    if(d.error)return;
+    if(d.messages&&d.messages.length){
+      d.messages.forEach(function(m){
+        var isMine=m.from_username===authUser;
+        var div=document.createElement('div');div.className='cm-msg '+(isMine?'cm-mine':'cm-theirs');
+        div.textContent=m.content;
+        var timeDiv=document.createElement('div');timeDiv.className='cm-time';
+        var d2=new Date(m.created_at);
+        timeDiv.textContent=d2.getHours().toString().padStart(2,'0')+':'+d2.getMinutes().toString().padStart(2,'0');
+        div.appendChild(timeDiv);
+        container.appendChild(div);
+        container.dataset.lastId=m.id;
+      });
+      container.scrollTop=container.scrollHeight;
+    }
+  });
+};
+document.getElementById('chat-bg').onclick=function(){window.closeChat();};
+document.getElementById('chat-close').onclick=function(){window.closeChat();};
+document.getElementById('chat-send-btn').onclick=function(){
+  window.sendChatMessage();
+};
+document.getElementById('chat-input').onkeydown=function(e){
+  if(e.key==='Enter')window.sendChatMessage();
+};
+window.sendChatMessage=function(){
+  if(!chatFriend)return;
+  var input=document.getElementById('chat-input');
+  var text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  authFetch('/api/chat/send',{method:'POST',body:{to:chatFriend,content:text}}).then(function(d){
+    if(!d.error)window.loadChatMessages();
+    else alert(d.error);
+  });
+}
 document.getElementById('armory-bg').onclick=function(){document.getElementById('armory').style.display='none';};
 document.getElementById('armory-confirm').onclick=function(){document.getElementById('armory').style.display='none';};
 document.getElementById('shop-btn').onclick=function(){document.getElementById('menu').style.display='none';showShop();};
@@ -1918,6 +2240,9 @@ document.getElementById('back-menu-btn').onclick=function(){
   document.getElementById('nuclear-wave').style.display='none';
   document.getElementById('boss-hp-wrap').style.display='none';
   if(boss&&boss.mesh){scene.remove(boss.mesh);boss=null;bossActive=false;bossSpawned=false;}
+  if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
+  radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
+  projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   if(window.multiSI)clearInterval(window.multiSI);
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
@@ -3018,6 +3343,40 @@ function shoot(){
     }
   }
 }
+function fireRadRifle(){
+  if(isReloading||isDowned||shootCD>0)return;
+  var gd=gunData.radrifle;
+  if(gunAmmo.radrifle<=0&&buffType!=='infammo'){reload();return;}
+  if(buffType!=='infammo')gunAmmo.radrifle--;
+  shootCD=gd.fireRate;
+  var chargeMult=Math.min(1,radRifleCharge/gd.chargeTime);
+  var dmg=gd.dmg+Math.round((gd.chargeMaxDmg-gd.dmg)*chargeMult);
+  var bt=barrelTips.radrifle.clone();
+  if(gunGroup){gunGroup.updateMatrixWorld(true);gunGroup.localToWorld(bt);}else{bt.set(0.2,-0.15,-0.6);bt.applyQuaternion(cam.quaternion);bt.add(cam.position);}
+  var dir=new THREE.Vector3(0,0,-1);dir.applyQuaternion(cam.quaternion);
+  if(!isADS){dir.x+=(Math.random()-0.5)*gd.spread;dir.y+=(Math.random()-0.5)*gd.spread;dir.normalize();}
+  // Green projectile
+  var pSize=0.04+chargeMult*0.06;
+  var pMat=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:1.5+chargeMult*2});
+  var pMesh=new THREE.Mesh(new THREE.SphereGeometry(pSize,8,8),pMat);
+  pMesh.position.copy(bt);scene.add(pMesh);
+  // Projectile glow light
+  var pLight=new THREE.PointLight(0x44ff44,1.5+chargeMult,6);pLight.position.copy(bt);scene.add(pLight);
+  // Muzzle flash
+  var fl=new THREE.Mesh(new THREE.SphereGeometry(0.08+chargeMult*0.06,6,6),new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:4}));
+  fl.position.copy(bt);scene.add(fl);
+  setTimeout(function(){scene.remove(fl);},80);
+  projectiles.push({mesh:pMesh,light:pLight,dir:dir,pos:bt.clone(),speed:18,hitEnemies:[],dmg:dmg,chargeMult:chargeMult,life:3});
+  if(isMultiplayer){relaySend({type:'shoot',origin:[bt.x,bt.y,bt.z],dir:[dir.x,dir.y,dir.z],gun:'radrifle'});rankMatchShots++;}
+}
+function spawnRadZone(pos,duration,size,dmgPerSec){
+  var mat=new THREE.MeshStandardMaterial({color:0x33cc33,emissive:0x22ff22,emissiveIntensity:0.8,transparent:true,opacity:0.5});
+  var mesh=new THREE.Mesh(new THREE.SphereGeometry(size,12,12),mat);
+  mesh.position.copy(pos);scene.add(mesh);
+  var light=new THREE.PointLight(0x44ff44,1,size*1.5);light.position.copy(pos);scene.add(light);
+  var zone={mesh:mesh,light:light,pos:pos.clone(),size:size,dmgPerSec:dmgPerSec,timer:duration,life:duration};
+  radiationZones.push(zone);
+}
 function randomizeEnemyType(e){
   var roll=Math.random();
   var newType=roll<0.12?'rusher':(roll<0.22?'grenadier':(roll<0.32?'suicider':(roll<0.42?'healer':(roll<0.57?'sniper':(roll<0.72?'shield':'normal')))));
@@ -3644,13 +4003,20 @@ function updateNuclear(dt){
       document.getElementById('boss-hp-wrap').style.display='none';
       document.getElementById('nuclear-wave').textContent='☢ 核電站淨化完成！';
       document.getElementById('nuclear-wave').style.color='#4f4';
-      document.getElementById('round-clear').textContent='任務成功 — 核電站已淨化';
+      document.getElementById('round-clear').textContent='任務成功 — 輻射步槍已掉落！';
       document.getElementById('round-clear').style.display='block';
+      // Spawn radrifle pickup at boss position
+      var dropPos=boss.pos.clone();dropPos.y=0.6;
+      var dropMat=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:1.5});
+      var dropMesh=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.04,0.25),dropMat);
+      dropMesh.position.copy(dropPos);scene.add(dropMesh);
+      var dropGlow=new THREE.Mesh(new THREE.SphereGeometry(0.18,8,8),new THREE.MeshBasicMaterial({color:0x44ff44,transparent:true,opacity:0.2,depthWrite:false}));
+      dropGlow.position.copy(dropPos);scene.add(dropGlow);
+      var dropLight=new THREE.PointLight(0x44ff44,1.5,4);dropLight.position.copy(dropPos);scene.add(dropLight);
+      window.radRifleDrop={mesh:dropMesh,glow:dropGlow,light:dropLight,pos:dropPos};
       setTimeout(function(){
         document.getElementById('round-clear').style.display='none';
-        document.getElementById('menu').style.display='flex';
-        updateCoinsDisplay();updateArmoryGunCounts();
-      },3000);
+      },2500);
       gameStarted=false;
       return;
     }
@@ -3776,6 +4142,111 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
   var h2=rc2.intersectObjects(meshes2);var sg=true;
   for(var i=0;i<h2.length;i++){if(h2[i].distance<0.6){sg=false;break;}}
   if(gunGroup)gunGroup.visible=sg;
+  // Radiation projectile updates
+  for(var rpi=projectiles.length-1;rpi>=0;rpi--){
+    var rp=projectiles[rpi];
+    rp.life-=dt;
+    if(rp.life<=0){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);projectiles.splice(rpi,1);continue;}
+    var step=rp.dir.clone().multiplyScalar(rp.speed*dt);
+    rp.pos.add(step);
+    rp.mesh.position.copy(rp.pos);
+    if(rp.light)rp.light.position.copy(rp.pos);
+    // Check enemy hits
+    var hitAny=false;
+    for(var rei=0;rei<enemies.length;rei++){
+      var ren=enemies[rei];
+      if(ren.mesh.visible===false)continue;
+      if(rp.hitEnemies.indexOf(rei)!==-1)continue;
+      var rdist=rp.pos.distanceTo(ren.pos);
+      if(rdist<0.6){
+        rp.hitEnemies.push(rei);
+        hitAny=true;
+        var rdmg=rp.dmg;
+        if(ren.armor>0){var rod=rdmg;ren.armor-=rdmg;if(ren.armor<0){rod=-ren.armor;ren.armor=0}else rod=0;if(rod>0){ren.hp-=rod;if(ren.hp<0)ren.hp=0}}
+        else{ren.hp-=rdmg;if(ren.hp<0)ren.hp=0}
+        ren.hitTimer=0.3;hitMarkerTimer=0.15;
+        showDmgNum(ren.pos,rdmg,'#44ff44');
+        spawnRadZone(ren.pos.clone(),3+Math.round(rp.chargeMult*2),1.2+Math.round(rp.chargeMult),8+Math.round(rp.dmg*0.6));
+        if(ren.hp<=0){ren.mesh.visible=false;ren.hp=0;if(currentMap==='nuclear'&&ren.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(ren.pos,1000,'#fa4');if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}
+      }
+    }
+    // Boss hit
+    if(!isMultiplayer&&bossActive&&boss&&boss.mesh){
+      var bdist=rp.pos.distanceTo(boss.pos);
+      if(bdist<1.2){
+        var bdmg=Math.round(rp.dmg*0.5);
+        boss.hp-=bdmg;
+        if(boss.hp<0)boss.hp=0;
+        boss.hitTimer=0.3;
+        hitMarkerTimer=0.15;
+        spawnRadZone(boss.pos.clone(),2,1.5,5);
+        showDmgNum(boss.pos,bdmg,'#44ff44');
+        rp.life=0;
+      }
+    }
+    // Wall hit
+    var wHit=false;
+    for(var rwi=0;rwi<mapBoxes.length;rwi++){
+      if(mapBoxes[rwi].mesh.visible===false)continue;
+      var rbox=new THREE.Box3().setFromObject(mapBoxes[rwi].mesh);
+      if(rbox.containsPoint(rp.pos)){wHit=true;break;}
+    }
+    if(wHit){
+      spawnRadZone(rp.pos.clone(),3+Math.round(rp.chargeMult*2),1+Math.round(rp.chargeMult),6+Math.round(rp.dmg*0.4));
+      rp.life=0;
+    }
+    if(!hitAny)rp.mesh.material.emissiveIntensity=1.5+rp.chargeMult*2+Math.sin(Date.now()*0.005)*0.5;
+  }
+  // RadRifle drop pickup
+  if(window.radRifleDrop&&locked){
+    var dropDist=pos.distanceTo(window.radRifleDrop.pos);
+    window.radRifleDrop.glow.material.opacity=0.15+Math.sin(Date.now()*0.005)*0.1;
+    window.radRifleDrop.mesh.rotation.y+=dt*2;
+    if(dropDist<1.8){
+      scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);
+      weaponInventory.radrifle=(weaponInventory.radrifle||0)+1;
+      try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}
+      updateArmoryGunCounts();
+      window.radRifleDrop=null;
+      didPlayGame=false;
+      gameStarted=false;isMultiplayer=false;
+      if(document.pointerLockElement)document.exitPointerLock();
+      document.getElementById('blocker').style.display='flex';
+      document.getElementById('start-msg').innerHTML='獲得 輻射步槍！<br><small style="color:#4f4">已解鎖至武器庫</small>';
+      var xpEarned=10+Math.max(0,(roundNum-1)*2)+50;
+      addXP(xpEarned);
+      document.getElementById('settlement-xp').textContent='+'+xpEarned;
+      var li=getLevelInfo(playerXP);
+      document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';
+      document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';
+      document.getElementById('settlement').style.display='flex';
+      document.getElementById('settlement-daily').style.display='none';
+    }
+  }
+  // Radiation zone updates
+  for(var rzi=radiationZones.length-1;rzi>=0;rzi--){
+    var rz=radiationZones[rzi];
+    rz.timer-=dt;
+    var rzAlpha=Math.min(0.5,rz.timer/rz.life*0.5);
+    rz.mesh.material.opacity=rzAlpha;
+    rz.mesh.scale.setScalar(1+Math.sin(Date.now()*0.003+rz.timer)*0.05);
+    for(var rzei=0;rzei<enemies.length;rzei++){
+      var rze=enemies[rzei];
+      if(rze.mesh.visible===false)continue;
+      var rzd=rze.pos.distanceTo(rz.pos);
+      if(rzd<rz.size){
+        var rzdmg=rz.dmgPerSec*dt;
+        if(rze.armor>0){rze.armor-=rzdmg;if(rze.armor<0)rze.armor=0}
+        else{rze.hp-=rzdmg;if(rze.hp<0)rze.hp=0}
+        rze.hitTimer=0.1;
+        if(rze.hp<=0){rze.mesh.visible=false;rze.hp=0;if(currentMap==='nuclear'&&rze.isCleaner)nuclearClears++;specialCoins+=1000;roundEarnings+=1000;showDmgNum(rze.pos,1000,'#fa4');if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}
+      }
+    }
+    if(rz.timer<=0){
+      scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);
+      radiationZones.splice(rzi,1);
+    }
+  }
   // Boat ride proximity prompt (higher priority than zipline)
   if(locked&&gameStarted&&!boatRideActive&&currentMap==='dragonboat'){
     var nearBoat=pos.distanceTo(new THREE.Vector3(0,0.62,0))<3;
@@ -3815,8 +4286,12 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(isReloading){reloadTimer-=dt;if(reloadTimer<=0){isReloading=false;reloadTimer=0;gunAmmo[currentGun]=gunData[currentGun].mag;}}
     // Auto-fire + shoot cooldown
     if(window.regenHP){window.regenAccum+=dt;if(window.regenAccum>=1){window.regenAccum=0;playerHP=Math.min(100,playerHP+1);}}
-    if(shootCD>0)shootCD-=dt;
-    if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple')shoot();
+if(shootCD>0)shootCD-=dt;
+if(currentGun==='radrifle'&&autoFire&&locked&&!isReloading&&!isDowned){
+  radRifleCharge+=dt;
+  if(radRifleCharge>=gunData.radrifle.chargeTime){radRifleCharge=gunData.radrifle.chargeTime;fireRadRifle();autoFire=false;radRifleCharge=0;}
+}else if(currentGun==='radrifle'&&!autoFire&&radRifleCharge>0&&locked){fireRadRifle();radRifleCharge=0;}
+if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='radrifle')shoot();
     // Smooth ADS FOV
     var fov=isADS?gunData[currentGun].adsFov:80;
     cam.fov+=(fov-cam.fov)*Math.min(1,dt*10);

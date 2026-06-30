@@ -36,14 +36,31 @@ async function initDB() {
     picture TEXT NOT NULL DEFAULT '',
     xp INTEGER NOT NULL DEFAULT 0,
     coins INTEGER NOT NULL DEFAULT 0,
-    rank TEXT NOT NULL DEFAULT ''
+    rank TEXT NOT NULL DEFAULT '',
+    last_read INTEGER NOT NULL DEFAULT 0
   )`);
+  await dbPool.query(`CREATE TABLE IF NOT EXISTS friends (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    friend_username TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(username, friend_username)
+  )`);
+  await dbPool.query(`CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    from_username TEXT NOT NULL,
+    to_username TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  )`);
+  await dbPool.query(`CREATE INDEX IF NOT EXISTS idx_messages_pair ON messages(from_username, to_username)`);
 }
 initDB().catch(e => console.error('DB init error:', e));
 
 function loadDB() {
   if (dbPool) return null;
-  try { return JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { return { users: [], nextId: 1 }; }
+  try { const d = JSON.parse(fs.readFileSync('data.json', 'utf8')); if (!d.friends) d.friends = []; if (!d.messages) d.messages = []; return d; } catch { return { users: [], friends: [], messages: [], nextId: 1 }; }
 }
 function saveDB(db) {
   if (dbPool) return;
@@ -162,6 +179,45 @@ app.post('/api/setname', auth, async (req, res) => {
   } catch (e) { console.error('Setname error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
+// Friends helpers
+async function findFriend(username, friendUsername) {
+  if (dbPool) {
+    const r = await dbPool.query('SELECT * FROM friends WHERE username = $1 AND friend_username = $2', [username, friendUsername]);
+    return r.rows[0] || null;
+  }
+  const db = loadDB();
+  return (db.friends || []).find(f => f.username === username && f.friend_username === friendUsername) || null;
+}
+async function addFriendRecord(username, friendUsername, status) {
+  if (dbPool) {
+    await dbPool.query('INSERT INTO friends (username, friend_username, status) VALUES ($1,$2,$3) ON CONFLICT (username, friend_username) DO UPDATE SET status = $3', [username, friendUsername, status]);
+    return;
+  }
+  const db = loadDB();
+  if (!db.friends) db.friends = [];
+  const existing = db.friends.findIndex(f => f.username === username && f.friend_username === friendUsername);
+  if (existing !== -1) db.friends[existing].status = status;
+  else db.friends.push({ username, friend_username: friendUsername, status, created_at: new Date().toISOString() });
+  saveDB(db);
+}
+async function removeFriendRecord(username, friendUsername) {
+  if (dbPool) {
+    await dbPool.query('DELETE FROM friends WHERE (username = $1 AND friend_username = $2) OR (username = $2 AND friend_username = $1)', [username, friendUsername]);
+    return;
+  }
+  const db = loadDB();
+  if (!db.friends) return;
+  db.friends = db.friends.filter(f => !((f.username === username && f.friend_username === friendUsername) || (f.username === friendUsername && f.friend_username === username)));
+  saveDB(db);
+}
+async function getFriends(username, status) {
+  if (dbPool) {
+    const r = await dbPool.query('SELECT * FROM friends WHERE (username = $1 OR friend_username = $1) AND status = $2', [username, status]);
+    return r.rows;
+  }
+  const db = loadDB();
+  return (db.friends || []).filter(f => (f.username === username || f.friend_username === username) && f.status === status);
+}
 async function findUserByNickname(nickname) {
   if (dbPool) {
     const r = await dbPool.query('SELECT * FROM users WHERE LOWER(nickname) = LOWER($1) AND nickname != \'\'', [nickname]);
@@ -193,6 +249,260 @@ app.post('/api/auth/google', async (req, res) => {
     console.error('Google auth error:', e);
     res.status(401).json({ error: 'Google 驗證失敗' });
   }
+});
+
+// Friends API
+app.get('/api/users/search', auth, async (req, res) => {
+  try {
+    const q = req.query.q || '';
+    if (!q) return res.json({ users: [] });
+    let users;
+    if (dbPool) {
+      const r = await dbPool.query('SELECT username, nickname FROM users WHERE LOWER(nickname) LIKE LOWER($1) AND nickname != \'\' AND username != $2 LIMIT 20', ['%' + q + '%', req.user.username]);
+      users = r.rows;
+    } else {
+      const db = loadDB();
+      users = db.users.filter(u => u.nickname && u.nickname.toLowerCase().includes(q.toLowerCase()) && u.username !== req.user.username).slice(0, 20).map(u => ({ username: u.username, nickname: u.nickname }));
+    }
+    // Check friendship status for each result
+    const enriched = await Promise.all(users.map(async (u) => {
+      const f1 = await findFriend(req.user.username, u.username);
+      const f2 = await findFriend(u.username, req.user.username);
+      let status = '';
+      if (f1 && f1.status === 'blocked') status = 'blocked';
+      else if (f2 && f2.status === 'blocked') status = 'blocked';
+      else if (f1 && f1.status === 'accepted') status = 'friend';
+      else if (f2 && f2.status === 'accepted') status = 'friend';
+      else if (f1 && f1.status === 'pending') status = 'pending';
+      else if (f2 && f2.status === 'pending') status = 'pending';
+      return { username: u.username, nickname: u.nickname, status };
+    }));
+    res.json({ users: enriched });
+  } catch (e) { console.error('Search error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/request', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername || friendUsername === req.user.username) return res.status(400).json({ error: '無效的使用者' });
+    const friend = await findUser(friendUsername);
+    if (!friend) return res.status(404).json({ error: '找不到該玩家' });
+    // Check if already blocked
+    const f1 = await findFriend(req.user.username, friendUsername);
+    const f2 = await findFriend(friendUsername, req.user.username);
+    if (f2 && f2.status === 'blocked') return res.status(403).json({ error: '對方已將你封鎖' });
+    if (f1 && f1.status === 'blocked') return res.status(400).json({ error: '你已封鎖該玩家' });
+    if (f1 && f1.status === 'accepted') return res.status(400).json({ error: '已經是好友' });
+    if (f1 && f1.status === 'pending') return res.status(400).json({ error: '已發送過邀請' });
+    await addFriendRecord(req.user.username, friendUsername, 'pending');
+    res.json({ ok: true });
+  } catch (e) { console.error('Friend request error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/friends/list', auth, async (req, res) => {
+  try {
+    const rows = await getFriends(req.user.username, 'accepted');
+    const friends = rows.map(r => {
+      const isMe = r.username === req.user.username;
+      const friendUser = isMe ? r.friend_username : r.username;
+      return { username: friendUser, nickname: '' };
+    });
+    // Get nicknames for friends
+    const enriched = await Promise.all(friends.map(async (f) => {
+      const u = await findUser(f.username);
+      return { username: f.username, nickname: u ? (u.nickname || u.username) : f.username, online: false };
+    }));
+    res.json({ friends: enriched });
+  } catch (e) { console.error('Friend list error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/friends/requests', auth, async (req, res) => {
+  try {
+    let incoming = [], outgoing = [];
+    if (dbPool) {
+      const inR = await dbPool.query('SELECT * FROM friends WHERE friend_username = $1 AND status = $2', [req.user.username, 'pending']);
+      incoming = inR.rows;
+      const outR = await dbPool.query('SELECT * FROM friends WHERE username = $1 AND status = $2', [req.user.username, 'pending']);
+      outgoing = outR.rows;
+    } else {
+      const db = loadDB();
+      const all = db.friends || [];
+      incoming = all.filter(f => f.friend_username === req.user.username && f.status === 'pending');
+      outgoing = all.filter(f => f.username === req.user.username && f.status === 'pending');
+    }
+    const inEnriched = await Promise.all(incoming.map(async (f) => {
+      const u = await findUser(f.username);
+      return { username: f.username, nickname: u ? (u.nickname || u.username) : f.username };
+    }));
+    const outEnriched = await Promise.all(outgoing.map(async (f) => {
+      const u = await findUser(f.friend_username);
+      return { username: f.friend_username, nickname: u ? (u.nickname || u.friend_username) : f.friend_username };
+    }));
+    res.json({ incoming: inEnriched, outgoing: outEnriched });
+  } catch (e) { console.error('Friend requests error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/accept', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
+    const f = await findFriend(friendUsername, req.user.username);
+    if (!f || f.status !== 'pending') return res.status(400).json({ error: '沒有待處理的邀請' });
+    await addFriendRecord(friendUsername, req.user.username, 'accepted');
+    res.json({ ok: true });
+  } catch (e) { console.error('Friend accept error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/reject', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
+    await removeFriendRecord(friendUsername, req.user.username);
+    res.json({ ok: true });
+  } catch (e) { console.error('Friend reject error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/remove', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
+    await removeFriendRecord(req.user.username, friendUsername);
+    res.json({ ok: true });
+  } catch (e) { console.error('Friend remove error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/friends/blacklist', auth, async (req, res) => {
+  try {
+    let blocked;
+    if (dbPool) {
+      const r = await dbPool.query('SELECT * FROM friends WHERE username = $1 AND status = $2', [req.user.username, 'blocked']);
+      blocked = r.rows;
+    } else {
+      const db = loadDB();
+      blocked = (db.friends || []).filter(f => f.username === req.user.username && f.status === 'blocked');
+    }
+    const enriched = await Promise.all(blocked.map(async (f) => {
+      const u = await findUser(f.friend_username);
+      return { username: f.friend_username, nickname: u ? (u.nickname || u.friend_username) : f.friend_username };
+    }));
+    res.json({ blacklist: enriched });
+  } catch (e) { console.error('Blacklist error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/block', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername || friendUsername === req.user.username) return res.status(400).json({ error: '無效的使用者' });
+    const friend = await findUser(friendUsername);
+    if (!friend) return res.status(404).json({ error: '找不到該玩家' });
+    await addFriendRecord(req.user.username, friendUsername, 'blocked');
+    // Also remove any existing request from either side
+    await removeFriendRecord(friendUsername, req.user.username);
+    res.json({ ok: true });
+  } catch (e) { console.error('Block error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/friends/unblock', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
+    await removeFriendRecord(req.user.username, friendUsername);
+    res.json({ ok: true });
+  } catch (e) { console.error('Unblock error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+// Chat API
+async function saveMessage(from, to, content) {
+  if (dbPool) {
+    await dbPool.query('INSERT INTO messages (from_username, to_username, content) VALUES ($1,$2,$3)', [from, to, content]);
+    return;
+  }
+  const db = loadDB();
+  if (!db.messages) db.messages = [];
+  db.messages.push({ id: Date.now(), from_username: from, to_username: to, content, created_at: new Date().toISOString() });
+  saveDB(db);
+}
+async function getMessages(user1, user2, afterId) {
+  if (dbPool) {
+    let query = 'SELECT * FROM messages WHERE ((from_username = $1 AND to_username = $2) OR (from_username = $2 AND to_username = $1))';
+    const params = [user1, user2];
+    if (afterId > 0) { query += ' AND id > $3'; params.push(afterId); }
+    query += ' ORDER BY id ASC LIMIT 100';
+    const r = await dbPool.query(query, params);
+    return r.rows;
+  }
+  const db = loadDB();
+  const msgs = (db.messages || []).filter(m =>
+    (m.from_username === user1 && m.to_username === user2) ||
+    (m.from_username === user2 && m.to_username === user1)
+  );
+  if (afterId > 0) return msgs.filter(m => m.id > afterId).sort((a, b) => a.id - b.id).slice(0, 100);
+  return msgs.sort((a, b) => a.id - b.id).slice(0, 100);
+}
+
+app.post('/api/chat/send', auth, async (req, res) => {
+  try {
+    const { to, content } = req.body;
+    if (!to || !content || content.length > 500) return res.status(400).json({ error: '訊息無效' });
+    const friend = await findUser(to);
+    if (!friend) return res.status(404).json({ error: '找不到該玩家' });
+    await saveMessage(req.user.username, to, content);
+    res.json({ ok: true });
+  } catch (e) { console.error('Chat send error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/chat/messages', auth, async (req, res) => {
+  try {
+    const friend = req.query.friend;
+    const after = parseInt(req.query.after) || 0;
+    if (!friend) return res.status(400).json({ error: '缺少參數' });
+    const msgs = await getMessages(req.user.username, friend, after);
+    res.json({ messages: msgs });
+  } catch (e) { console.error('Chat messages error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/chat/unread', auth, async (req, res) => {
+  try {
+    let unread = {};
+    if (dbPool) {
+      const r = await dbPool.query(
+        'SELECT from_username, COUNT(*) as cnt FROM messages WHERE to_username = $1 AND id > COALESCE((SELECT last_read FROM users WHERE username = $1), 0) GROUP BY from_username',
+        [req.user.username]
+      );
+      r.rows.forEach(row => { unread[row.from_username] = parseInt(row.cnt); });
+    } else {
+      const db = loadDB();
+      const user = db.users.find(u => u.username === req.user.username);
+      const lastRead = (user && user.last_read_msg) || 0;
+      (db.messages || []).forEach(m => {
+        if (m.to_username === req.user.username && m.id > lastRead) {
+          unread[m.from_username] = (unread[m.from_username] || 0) + 1;
+        }
+      });
+    }
+    res.json({ unread });
+  } catch (e) { console.error('Chat unread error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/chat/read', auth, async (req, res) => {
+  try {
+    const { friend } = req.body;
+    if (!friend) return res.status(400).json({ error: '缺少參數' });
+    // Mark messages from this friend as read by updating last_read timestamp
+    if (dbPool) {
+      await dbPool.query('UPDATE users SET last_read = (SELECT COALESCE(MAX(id),0) FROM messages WHERE from_username = $1 AND to_username = $2) WHERE username = $2', [friend, req.user.username]);
+    } else {
+      const db = loadDB();
+      const user = db.users.find(u => u.username === req.user.username);
+      if (user) {
+        const msgs = (db.messages || []).filter(m => m.from_username === friend && m.to_username === req.user.username);
+        const maxId = msgs.reduce((max, m) => Math.max(max, m.id), 0);
+        user.last_read_msg = maxId;
+        saveDB(db);
+      }
+    }
+    res.json({ ok: true });
+  } catch (e) { console.error('Chat read error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
 // WebSocket multiplayer

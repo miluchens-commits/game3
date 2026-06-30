@@ -1,1 +1,56 @@
-{"users":[],"nextId":1}
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "123",
+      "nickname": "milu",
+      "password": "$2a$06$PlQGIGx9kPzZc1oEI2BNKO6ssCSrEl0bis/po.MSm8Acl.q86jkWa",
+      "xp": 0,
+      "coins": 0,
+      "rank": "",
+      "last_read_msg": 0
+    },
+    {
+      "id": 2,
+      "username": "1234",
+      "nickname": "milu2",
+      "password": "$2a$06$GbxcMQU99qFyWaTDcKIKCufog.X/crOq72GdVZxcjsq2RYA7yy3P.",
+      "xp": 0,
+      "coins": 0,
+      "rank": "",
+      "last_read_msg": 1782823669238
+    }
+  ],
+  "nextId": 3,
+  "friends": [
+    {
+      "username": "1234",
+      "friend_username": "123",
+      "status": "accepted",
+      "created_at": "2026-06-30T12:32:34.578Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": 1782823656962,
+      "from_username": "123",
+      "to_username": "1234",
+      "content": "hi",
+      "created_at": "2026-06-30T12:47:36.962Z"
+    },
+    {
+      "id": 1782823669238,
+      "from_username": "123",
+      "to_username": "1234",
+      "content": "????",
+      "created_at": "2026-06-30T12:47:49.238Z"
+    },
+    {
+      "id": 1782823719170,
+      "from_username": "1234",
+      "to_username": "123",
+      "content": "?//////////",
+      "created_at": "2026-06-30T12:48:39.170Z"
+    }
+  ]
+}
