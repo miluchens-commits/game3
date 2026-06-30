@@ -469,7 +469,7 @@ body.mobile-mode #scope-overlay{display:none!important}
   </div>
 </div>
 <script>
-var authToken=sessionStorage.getItem('oc_token'),authUser=sessionStorage.getItem('oc_user')||'';
+var authToken=localStorage.getItem('oc_token'),authUser=localStorage.getItem('oc_user')||'';
 var API_BASE='';
 function authFetch(url,opts){
   opts=opts||{};opts.headers=opts.headers||{};
@@ -485,7 +485,7 @@ function doAuth(action){
   authFetch('/api/'+action,{method:'POST',body:{username:u,password:p}}).then(function(d){
     if(d.error){err.textContent=d.error;return;}
     authToken=d.token;authUser=d.username;
-    sessionStorage.setItem('oc_token',d.token);sessionStorage.setItem('oc_user',d.username);
+    localStorage.setItem('oc_token',d.token);localStorage.setItem('oc_user',d.username);
     document.getElementById('login-overlay').style.display='none';
     showLoginSuccess();
     if(d.xp!=null)localStorage.setItem('oc_level',String(d.xp));
@@ -503,7 +503,7 @@ function doAuth(action){
     authFetch('/api/auth/google',{method:'POST',body:{credential:r.credential}}).then(function(d){
       if(d.error){document.getElementById('auth-err').textContent=d.error;return;}
       authToken=d.token;authUser=d.username;
-      sessionStorage.setItem('oc_token',d.token);sessionStorage.setItem('oc_user',d.username);
+      localStorage.setItem('oc_token',d.token);localStorage.setItem('oc_user',d.username);
       document.getElementById('login-overlay').style.display='none';
       showLoginSuccess();
       if(d.xp!=null)localStorage.setItem('oc_level',String(d.xp));
@@ -518,7 +518,7 @@ function doAuth(action){
   else{if(nm)nm.style.display='none';if(el)el.style.display='flex';if(lb)lb.style.display='none';}
 }
 function doLogout(){
-  sessionStorage.removeItem('oc_token');sessionStorage.removeItem('oc_user');localStorage.removeItem('oc_nickname');
+  localStorage.removeItem('oc_token');localStorage.removeItem('oc_user');localStorage.removeItem('oc_nickname');
   authToken=null;authUser='';
   updateAvatarDisplay();
   document.getElementById('login-overlay').style.display='flex';

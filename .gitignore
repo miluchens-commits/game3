@@ -3,6 +3,6 @@ tools/
 __pycache__/
 *.pyc
 node_modules/
-data.json
+# data.json tracked as seed for Render deploy
 *.import
 
