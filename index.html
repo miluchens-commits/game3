@@ -40,21 +40,23 @@ canvas{display:block}
 #hud>div>span{position:absolute;right:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace}
 #hp-fill{background:linear-gradient(90deg,#3a3,#5e5);width:100%}
 #armor-fill{background:linear-gradient(90deg,#38c,#5af);width:100%}
-body.mobile-mode #hud{bottom:190px;left:14px}
-body.mobile-mode #ammo-hud{bottom:190px;left:auto;right:20px}
-body.mobile-mode #slot-hud{bottom:150px;left:auto;right:14px}
+body.mobile-mode #hud{bottom:calc(6vh + 20vmin);left:2vw}
+body.mobile-mode #ammo-hud{bottom:calc(6vh + 20vmin);left:auto;right:3vw}
+body.mobile-mode #slot-hud{bottom:calc(2vh + 10vmin);left:auto;right:3vw;font-size:clamp(10px,2vmin,14px)}
 body.mobile-mode #scope-overlay{display:none!important}
 #mobile-controls{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;pointer-events:none;display:none;touch-action:none}
-#joystick-zone{position:absolute;bottom:40px;left:30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);pointer-events:auto;touch-action:none}
-#joystick-knob{position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#fff,#aaa);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 15px rgba(255,255,255,.3)}
-#mobile-shoot-btn{position:absolute;bottom:50px;right:24px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(255,80,80,.6),rgba(180,0,0,.8));border:3px solid rgba(255,200,200,.5);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.3),inset 0 -4px 8px rgba(0,0,0,.4);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#joystick-zone{position:absolute;bottom:6vh;left:3vw;width:18vmin;height:18vmin;max-width:150px;max-height:150px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);pointer-events:auto;touch-action:none}
+#joystick-knob{position:absolute;top:50%;left:50%;width:40%;height:40%;border-radius:50%;background:radial-gradient(circle,#fff,#aaa);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 15px rgba(255,255,255,.3)}
+#mobile-shoot-btn{position:absolute;bottom:6vh;right:3vw;width:18vmin;height:18vmin;max-width:90px;max-height:90px;min-width:60px;min-height:60px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(255,80,80,.6),rgba(180,0,0,.8));border:3px solid rgba(255,200,200,.5);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.3),inset 0 -4px 8px rgba(0,0,0,.4);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-shoot-btn:active{transform:scale(0.92)}
-#mobile-shoot-btn svg{width:40px;height:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-#mobile-jump-btn{position:absolute;bottom:60px;right:130px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(100,200,255,.5),rgba(0,80,160,.7));border:2px solid rgba(100,200,255,.4);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,150,255,.2),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-shoot-btn svg{width:50%;height:50%;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+#mobile-jump-btn{position:absolute;bottom:6vh;right:calc(3vw + 20vmin);width:11vmin;height:11vmin;max-width:65px;max-height:65px;min-width:44px;min-height:44px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(100,200,255,.5),rgba(0,80,160,.7));border:2px solid rgba(100,200,255,.4);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,150,255,.2),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-jump-btn:active{transform:scale(0.9)}
-#mobile-jump-btn svg{width:22px;height:22px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
-#mobile-jump-btn:active{transform:scale(0.9)}
-#mobile-reload-btn{position:absolute;bottom:130px;right:30px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(200,200,200,.4),rgba(80,80,80,.6));border:2px solid rgba(255,255,255,.2);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.8);text-shadow:0 1px 3px rgba(0,0,0,.5);box-shadow:0 0 10px rgba(255,255,255,.1),inset 0 -2px 4px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-jump-btn svg{width:45%;height:45%;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+#mobile-slide-btn{position:absolute;bottom:6vh;right:calc(3vw + 32vmin);width:9vmin;height:9vmin;max-width:55px;max-height:55px;min-width:38px;min-height:38px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(150,255,150,.4),rgba(0,120,0,.6));border:2px solid rgba(150,255,150,.35);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
+#mobile-slide-btn:active{transform:scale(0.9)}
+#mobile-slide-btn svg{width:50%;height:50%;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+#mobile-reload-btn{position:absolute;bottom:calc(6vh + 20vmin);right:3vw;width:8vmin;height:8vmin;max-width:44px;max-height:44px;min-width:32px;min-height:32px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(200,200,200,.4),rgba(80,80,80,.6));border:2px solid rgba(255,255,255,.2);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,3vmin,20px);color:rgba(255,255,255,.8);text-shadow:0 1px 3px rgba(0,0,0,.5);box-shadow:0 0 10px rgba(255,255,255,.1),inset 0 -2px 4px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-reload-btn:active{transform:scale(0.88)}
 #mobile-slide-btn{position:absolute;bottom:60px;right:190px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(150,255,150,.4),rgba(0,120,0,.6));border:2px solid rgba(150,255,150,.35);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none}
 #mobile-slide-btn:active{transform:scale(0.9)}
