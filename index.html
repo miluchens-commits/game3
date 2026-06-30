@@ -42,7 +42,8 @@ canvas{display:block}
 #armor-fill{background:linear-gradient(90deg,#38c,#5af);width:100%}
 body.mobile-mode #hud{bottom:calc(6vh + 26vmin);left:2vw}
 body.mobile-mode #ammo-hud{bottom:calc(6vh + 26vmin);left:auto;right:3vw}
-body.mobile-mode #slot-hud{bottom:calc(6vh + 14vmin);left:auto;right:3vw;font-size:clamp(10px,2vmin,14px)}
+body.mobile-mode #slot-hud{display:none}
+body.mobile-mode #mobile-slots{display:flex}
 body.mobile-mode #scope-overlay{display:none!important}
 #mobile-controls{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;pointer-events:none;display:none;touch-action:none}
 #joystick-zone{position:absolute;bottom:6vh;left:3vw;width:18vmin;height:18vmin;max-width:150px;max-height:150px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);pointer-events:auto;touch-action:none}
@@ -56,6 +57,13 @@ body.mobile-mode #scope-overlay{display:none!important}
 #mobile-slide-btn:active{transform:scale(0.9)}
 #mobile-reload-btn{position:absolute;bottom:calc(6vh + 24vmin);right:3vw;width:10vmin;height:10vmin;max-width:52px;max-height:52px;min-width:36px;min-height:36px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(200,200,200,.4),rgba(80,80,80,.6));border:2px solid rgba(255,255,255,.2);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;font-size:clamp(11px,4vmin,20px);font-weight:bold;color:rgba(255,255,255,.8);text-shadow:0 1px 3px rgba(0,0,0,.5);box-shadow:0 0 10px rgba(255,255,255,.1),inset 0 -2px 4px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none;font-family:Arial}
 #mobile-reload-btn:active{transform:scale(0.88)}
+#mobile-aim-btn{position:absolute;bottom:calc(6vh + 26vmin);right:calc(3vw + 24vmin);width:12vmin;height:12vmin;max-width:60px;max-height:60px;min-width:40px;min-height:40px;border-radius:8px;background:radial-gradient(circle at 40% 35%,rgba(200,200,100,.4),rgba(120,80,0,.6));border:2px solid rgba(255,255,100,.3);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(255,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none;font-size:clamp(12px,4vmin,20px);font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:Arial}
+#mobile-aim-btn:active{transform:scale(0.9)}
+#mobile-aim-btn.active{background:radial-gradient(circle at 40% 35%,rgba(255,255,150,.6),rgba(200,150,0,.8));border-color:rgba(255,255,100,.7);box-shadow:0 0 25px rgba(255,200,0,.4)}
+#mobile-slots{position:fixed;bottom:calc(6vh + 14vmin);left:50%;transform:translateX(-50%);display:none;gap:4px;z-index:15;pointer-events:none;font-family:Arial}
+#mobile-slots .ms-slot{pointer-events:auto;touch-action:none;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:3px 8px;font-size:clamp(9px,1.8vmin,13px);color:rgba(255,255,255,.5);letter-spacing:1px;transition:all .2s;user-select:none;-webkit-user-select:none;cursor:pointer;text-align:center;min-width:clamp(36px,8vmin,60px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mobile-slots .ms-slot.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.15)}
+#mobile-slots .ms-slot:active{transform:scale(0.92)}
 #rotate-device{position:fixed;top:0;left:0;width:100%;height:100%;z-index:80;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;color:#fff}
 #rotate-device svg{width:100px;height:100px;animation:rotatePhone 2s ease-in-out infinite;margin-bottom:20px}
 @keyframes rotatePhone{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
@@ -415,7 +423,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="season-overlay"><div id="season-bg"></div><div id="season-box"><div id="season-close">✕</div><div id="season-banner"><div class="sb-corner"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="10" fill="#4f4" opacity=".6"/><circle cx="30" cy="30" r="4" fill="#0a0"/><path d="M30,2 L38,22 L58,22 L42,34 L48,54 L30,44 L12,54 L18,34 L2,22 L22,22 Z" fill="none" stroke="#4f4" stroke-width="1.5" opacity=".3"/></svg></div><div class="sb-corner sb-skull"><svg viewBox="0 0 60 60"><circle cx="30" cy="28" r="16" fill="#fff" opacity=".1"/><circle cx="22" cy="26" r="3" fill="#4f4" opacity=".6"/><circle cx="38" cy="26" r="3" fill="#4f4" opacity=".6"/><path d="M18,36 Q30,44 42,36" fill="none" stroke="#4f4" stroke-width="2" opacity=".5"/><rect x="25" y="42" width="10" height="8" rx="2" fill="#4f4" opacity=".3"/></svg></div><div class="sb-title-row"><div class="sb-badge">S1 核動力</div><div class="sb-title">賽 季 任 務</div><div class="sb-sub">S E A S O N  1  •  N U C L E A R</div></div></div><div id="season-body"><div id="season-countdown"></div><div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px"><div class="seasontab active" id="stab-daily">📅 每日</div><div class="seasontab" id="stab-weekly">📆 每週</div></div><div id="season-quests"></div><div id="season-sp"><span id="ssp-display">SP 0</span></div></div></div></div>
 <div id="perk-overlay"><div id="perk-bg"></div><div id="perk-box"><div id="perk-title">🎴 選擇強化</div><div id="perk-cards"></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
-<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button></div>
+<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button><button id="mobile-aim-btn">準</button></div><div id="mobile-slots"></div>
 <div id="rotate-device"><svg viewBox="0 0 120 120"><path d="M60,10 L60,50 M50,40 L60,50 L70,40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="80" rx="6" fill="none" stroke="#fff" stroke-width="4"/><rect x="35" y="25" width="50" height="60" rx="4" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"/><line x1="50" y1="90" x2="70" y2="90" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div>請旋轉手機</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Please rotate your device to landscape</div></div>
 <div id="buff-indicator" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 8px rgba(255,255,255,.5);letter-spacing:1px"></div>
 <div id="settlement"><div id="settlement-box"><div id="settlement-title">結 算</div><div id="settlement-xp">+0</div><div id="settlement-xp-label">經 驗 值</div><div id="settlement-progress"><div id="settlement-progress-fill" style="width:0%"></div></div><div id="settlement-level">Lv.1 (0 / 100)</div><div id="settlement-daily" style="display:none"><div id="settlement-daily-stats" style="font-size:16px;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:12px"></div><div id="settlement-daily-best" style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:10px"></div><button id="daily-share-btn">📋 複製分享</button></div><button id="settlement-btn">確 認</button></div></div>
@@ -1872,7 +1880,7 @@ document.getElementById('save-exit-btn').onclick=function(){
   saveGame();location.reload();
 };
 document.getElementById('back-menu-btn').onclick=function(){
-  document.getElementById('mobile-controls').style.display='none';
+  document.getElementById('mobile-controls').style.display='none';document.getElementById('mobile-slots').style.display='none';
   var finalRound=roundNum;
   gameStarted=false;isMultiplayer=false;roundNum=1;
   document.getElementById('blocker').style.display='none';
@@ -2531,7 +2539,7 @@ function connectMultiplayerHTTP(ip){
 document.addEventListener('pointerlockchange',function(){
   var mobile=localStorage.getItem('oc_ui_mode')==='mobile';
   locked=!!document.pointerLockElement;
-  if(mobile){locked=true;document.getElementById('mobile-controls').style.display=gameStarted?'block':'none';}
+  if(mobile){locked=true;document.getElementById('mobile-controls').style.display=gameStarted?'block':'none';document.getElementById('mobile-slots').style.display=gameStarted?'flex':'none';}
   var menuShown=document.getElementById('menu').style.display!=='none';
   document.getElementById('blocker').style.display=locked||menuShown?'none':'flex';
   document.getElementById('save-exit-btn').style.display=(!locked&&gameStarted&&!menuShown&&!mobile)?'block':'none';
@@ -2591,9 +2599,9 @@ var mobileMoveX=0,mobileMoveZ=0,mobileShooting=false,mobileJumping=false,mobileS
 var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
 (function(){
   var jZone=document.getElementById('joystick-zone'),jKnob=document.getElementById('joystick-knob');
-  var sBtn=document.getElementById('mobile-shoot-btn'),jBtn=document.getElementById('mobile-jump-btn'),rBtn=document.getElementById('mobile-reload-btn'),slBtn=document.getElementById('mobile-slide-btn');
-  var mc=document.getElementById('mobile-controls');
-  var jTouchId=null,sTouchId=null,jumpTouchId=null,reloadTouchId=null,slTouchId=null;
+  var sBtn=document.getElementById('mobile-shoot-btn'),jBtn=document.getElementById('mobile-jump-btn'),rBtn=document.getElementById('mobile-reload-btn'),slBtn=document.getElementById('mobile-slide-btn'),aBtn=document.getElementById('mobile-aim-btn');
+  var mc=document.getElementById('mobile-controls'),msc=document.getElementById('mobile-slots');
+  var jTouchId=null,sTouchId=null,jumpTouchId=null,reloadTouchId=null,slTouchId=null,aimTouchId=null;
   function jRect(){return jZone.getBoundingClientRect();}
   jZone.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];jTouchId=t.identifier;updateJoystick(t);},{passive:false});
   jZone.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===jTouchId){updateJoystick(e.changedTouches[i]);break;}}},{passive:false});
@@ -2621,8 +2629,24 @@ var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
   slBtn.addEventListener('touchstart',function(e){e.preventDefault();slTouchId=e.changedTouches[0].identifier;if(gameStarted&&!locked)locked=true;mobileSlide=true;if(onGround&&!sliding&&slideCD<=0&&gameStarted){sliding=true;slideTimer=0.5*(window.slideMult||1);vel.y=-2;slideCD=2.2;}},{passive:false});
   slBtn.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===slTouchId){slTouchId=null;mobileSlide=false;break;}}e.preventDefault();},{passive:false});
   slBtn.addEventListener('touchcancel',function(){slTouchId=null;mobileSlide=false;});
+  // Aim button
+  aBtn.addEventListener('touchstart',function(e){e.preventDefault();aimTouchId=e.changedTouches[0].identifier;if(locked&&currentGun!=='grapple'&&currentGun!=='knife'){isADS=!isADS;aBtn.classList.toggle('active',isADS);}},{passive:false});
+  aBtn.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===aimTouchId){aimTouchId=null;break;}}e.preventDefault();},{passive:false});
+  aBtn.addEventListener('touchcancel',function(){aimTouchId=null;});
+  // Weapon slot touch handlers
+  var slotBtns=[];
+  for(var msi=0;msi<5;msi++){
+    (function(idx){
+      var el=document.createElement('div');el.className='ms-slot'+(idx===currentSlot?' active':'');el.textContent=(idx+1)+' -';msc.appendChild(el);
+      slotBtns.push(el);
+      el.addEventListener('touchstart',function(e){e.preventDefault();if(locked)switchToSlot(idx);},{passive:false});
+      el.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+      el.addEventListener('touchend',function(e){e.preventDefault();},{passive:false});
+      el.addEventListener('touchcancel',function(){});
+    })(msi);
+  }
   // Camera look on non-control areas
-  document.addEventListener('touchstart',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile')return;if(mc.style.display==='none')return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];var el=document.elementFromPoint(t.clientX,t.clientY);if(el&&(el===jZone||jZone.contains(el)||el===sBtn||el===jBtn||el===rBtn||el===slBtn))continue;mobileLookId=t.identifier;mobileLooking=true;mobileLookX=t.clientX;mobileLookY=t.clientY;}if(gameStarted&&!locked){locked=true;}},{passive:true});
+  document.addEventListener('touchstart',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile')return;if(mc.style.display==='none')return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];var el=document.elementFromPoint(t.clientX,t.clientY);if(el&&(el===jZone||jZone.contains(el)||el===sBtn||el===jBtn||el===rBtn||el===slBtn||el===aBtn||el.parentElement===msc))continue;mobileLookId=t.identifier;mobileLooking=true;mobileLookX=t.clientX;mobileLookY=t.clientY;}if(gameStarted&&!locked){locked=true;}},{passive:true});
   document.addEventListener('touchmove',function(e){if(localStorage.getItem('oc_ui_mode')!=='mobile'||!mobileLooking)return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===mobileLookId){yaw-=(t.clientX-mobileLookX)*0.008;pitch-=(t.clientY-mobileLookY)*0.008;if(pitch>1.4)pitch=1.4;if(pitch<-1.4)pitch=-1.4;mobileLookX=t.clientX;mobileLookY=t.clientY;break;}}},{passive:false});
   document.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===mobileLookId){mobileLookId=null;mobileLooking=false;break;}}},{passive:true});
   document.addEventListener('touchcancel',function(){mobileLookId=null;mobileLooking=false;});
@@ -2819,7 +2843,7 @@ function shoot(){
     return;
   }
   var gd=gunData[currentGun];
-  if(gunAmmo[currentGun]<=0&&buffType!=='infammo'){var ns=(currentSlot+1)%5,found=false;for(var i=0;i<4;i++){var si=(currentSlot+1+i)%5;if(playerLoadout[si]&&gunAmmo[playerLoadout[si]]>0){switchToSlot(si);found=true;break;}}if(!found)reload();return;}
+  if(gunAmmo[currentGun]<=0&&buffType!=='infammo'){reload();return;}
   if(buffType!=='infammo')gunAmmo[currentGun]--;
   shootCD=buffType==='atkspeed'?gd.fireRate*0.5:gd.fireRate;
   // Bullet origin from actual barrel tip (accounts for scale + ADS position)
@@ -4073,6 +4097,14 @@ if(!isMultiplayer&&currentMap!=='nuclear'){
   for(var si=0;si<5;si++){
     var sd=document.createElement('div');sd.className='sh-slot'+(si===currentSlot?' active':'');
     sd.textContent=(si+1)+' '+(playerLoadout[si]?gunData[playerLoadout[si]].name : '-');sh.appendChild(sd);
+  }
+  // Mobile slot buttons
+  var msb=document.getElementById('mobile-slots');
+  if(msb.childNodes.length){
+    for(var msi2=0;msi2<5;msi2++){
+      var msbe=msb.childNodes[msi2];
+      if(msbe){msbe.textContent=(msi2+1)+' '+(playerLoadout[msi2]?gunData[playerLoadout[msi2]].name:'-');msbe.className='ms-slot'+(msi2===currentSlot?' active':'');}
+    }
   }
   // Platform HUD
   var ph=document.getElementById('plat-hud');
