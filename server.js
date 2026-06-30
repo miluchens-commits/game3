@@ -21,28 +21,32 @@ function loadDB(){try{return JSON.parse(fs.readFileSync('data.json','utf8'))}cat
 function saveDB(db){fs.writeFileSync('data.json',JSON.stringify(db,null,2))}
 
 // Auth
-app.post('/api/register', (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password || username.length < 2 || password.length < 4) return res.status(400).json({ error: '帳號至少2字，密碼至少4字' });
-  const db = loadDB();
-  if (db.users.find(u => u.username === username)) return res.status(409).json({ error: '帳號已存在' });
-  const hash = bcrypt.hashSync(password, 10);
-  const user = { id: db.nextId++, username, nickname: '', password: hash, xp: 0, coins: 0, rank: '' };
-  db.users.push(user);
-  saveDB(db);
-  const token = jwt.sign({ username, userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
-  res.json({ token, username, picture: user.picture || '', needsName: true });
+app.post('/api/register', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password || username.length < 2 || password.length < 4) return res.status(400).json({ error: '帳號至少2字，密碼至少4字' });
+    const db = loadDB();
+    if (db.users.find(u => u.username === username)) return res.status(409).json({ error: '帳號已存在' });
+    const hash = await bcrypt.hash(password, 6);
+    const user = { id: db.nextId++, username, nickname: '', password: hash, xp: 0, coins: 0, rank: '' };
+    db.users.push(user);
+    saveDB(db);
+    const token = jwt.sign({ username, userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
+    res.json({ token, username, picture: user.picture || '', needsName: true });
+  } catch (e) { res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) return res.status(400).json({ error: '請填寫帳號密碼' });
-  const db = loadDB();
-  const user = db.users.find(u => u.username === username);
-  if (!user) return res.status(401).json({ error: '帳號不存在' });
-  if (!bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: '密碼錯誤' });
-  const token = jwt.sign({ username, userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
-  res.json({ token, username, picture: user.picture || '', xp: user.xp, coins: user.coins, rank: user.rank, needsName: !user.nickname });
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: '請填寫帳號密碼' });
+    const db = loadDB();
+    const user = db.users.find(u => u.username === username);
+    if (!user) return res.status(401).json({ error: '帳號不存在' });
+    if (!await bcrypt.compare(password, user.password)) return res.status(401).json({ error: '密碼錯誤' });
+    const token = jwt.sign({ username, userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
+    res.json({ token, username, picture: user.picture || '', xp: user.xp, coins: user.coins, rank: user.rank, needsName: !user.nickname });
+  } catch (e) { res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
 function auth(req, res, next) {
