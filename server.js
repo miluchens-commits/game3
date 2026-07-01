@@ -307,10 +307,10 @@ app.get('/api/friends/list', auth, async (req, res) => {
       const friendUser = isMe ? r.friend_username : r.username;
       return { username: friendUser, nickname: '' };
     });
-    // Get nicknames for friends
+    // Get nicknames and online status for friends
     const enriched = await Promise.all(friends.map(async (f) => {
       const u = await findUser(f.username);
-      return { username: f.username, nickname: u ? (u.nickname || u.username) : f.username, online: false };
+      return { username: f.username, nickname: u ? (u.nickname || u.username) : f.username, online: onlineUsers.has(u ? u.username : f.username) };
     }));
     res.json({ friends: enriched });
   } catch (e) { console.error('Friend list error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
@@ -505,9 +505,81 @@ app.post('/api/chat/read', auth, async (req, res) => {
   } catch (e) { console.error('Chat read error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
+// Team API
+app.post('/api/team/invite', auth, async (req, res) => {
+  try {
+    const { friendUsername } = req.body;
+    if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
+    if (!onlineUsers.has(friendUsername)) return res.status(400).json({ error: '對方不在線' });
+    const friend = await findUser(friendUsername);
+    if (!friend) return res.status(404).json({ error: '找不到該玩家' });
+    // Check if friend is already in a team
+    for (const tid in teams) {
+      if (teams[tid].members.includes(friendUsername)) return res.status(400).json({ error: '對方已在隊伍中' });
+    }
+    res.json({ ok: true, friendNickname: friend.nickname || friend.username });
+  } catch (e) { console.error('Team invite error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/team/create', auth, async (req, res) => {
+  try {
+    // Check if user already in a team
+    for (const tid in teams) {
+      if (teams[tid].members.includes(req.user.username)) return res.status(400).json({ error: '你已在隊伍中' });
+    }
+    const tid = 'team_' + Date.now();
+    teams[tid] = { leader: req.user.username, members: [req.user.username], created: Date.now() };
+    res.json({ ok: true, teamId: tid });
+  } catch (e) { console.error('Team create error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/team/join', auth, async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    if (!teamId || !teams[teamId]) return res.status(404).json({ error: '隊伍不存在' });
+    if (teams[teamId].members.includes(req.user.username)) return res.status(400).json({ error: '已在隊伍中' });
+    teams[teamId].members.push(req.user.username);
+    res.json({ ok: true, teamId, leader: teams[teamId].leader, members: teams[teamId].members });
+  } catch (e) { console.error('Team join error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.get('/api/team/status', auth, async (req, res) => {
+  try {
+    for (const tid in teams) {
+      if (teams[tid].members.includes(req.user.username)) {
+        return res.json({ inTeam: true, teamId: tid, leader: teams[tid].leader, members: teams[tid].members });
+      }
+    }
+    res.json({ inTeam: false });
+  } catch (e) { console.error('Team status error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
+app.post('/api/team/ping', auth, async (req, res) => {
+  onlineUsers.add(req.user.username);
+  res.json({ ok: true });
+});
+
+app.post('/api/team/leave', auth, async (req, res) => {
+  try {
+    for (const tid in teams) {
+      const t = teams[tid];
+      const idx = t.members.indexOf(req.user.username);
+      if (idx !== -1) {
+        t.members.splice(idx, 1);
+        if (t.members.length === 0) delete teams[tid];
+        else if (t.leader === req.user.username) t.leader = t.members[0];
+        return res.json({ ok: true });
+      }
+    }
+    res.status(400).json({ error: '你不在任何隊伍中' });
+  } catch (e) { console.error('Team leave error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
+});
+
 // WebSocket multiplayer
 const queue = [];
 const rooms = {};
+const onlineUsers = new Set();
+const teams = {}; // teamId -> {leader, members:[]}
 let nextRoomId = 1;
 
 wss.on('connection', (ws) => {
@@ -516,7 +588,8 @@ wss.on('connection', (ws) => {
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
     switch (msg.type) {
-      case 'join_queue': ws.playerData = { name: msg.name || 'Player' }; addToQueue(ws); break;
+      case 'join_queue': ws.playerData = { name: msg.name || 'Player' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
+      case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', data: msg.data }); break;
       case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;
@@ -573,6 +646,7 @@ function relayToOpponent(ws, msg) {
 }
 function handleDisconnect(ws) {
   removeFromQueue(ws);
+  if (ws.playerName) onlineUsers.delete(ws.playerName);
   if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
 }
 
