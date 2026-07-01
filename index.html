@@ -2914,6 +2914,7 @@ function connectMultiplayerDirect(ip, mode){
   ws.onmessage=function(e){
     try{var data=JSON.parse(e.data);processServerMessage(data);}catch(ex){}
   };
+  ws.onerror=function(){console.log('WS error');};
   ws.onclose=function(){
     if(window.multiSI)clearInterval(window.multiSI);
     if(isMultiplayer){

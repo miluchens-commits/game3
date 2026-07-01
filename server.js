@@ -640,8 +640,8 @@ function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.
 function startMatch(p1, p2) {
   const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {} }; p1.roomId = rid; p2.roomId = rid;
   p1.playerId = 0; p2.playerId = 1;
-  p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));
-  p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));
+    try{p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));}catch(e){console.log('send to p1 failed');}
+    try{p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));}catch(e){console.log('send to p2 failed');}
   // Auto-pick map after 15s if not both voted
   const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2'];
   rooms[rid].voteTimer = setTimeout(() => {
@@ -654,8 +654,8 @@ function startMatch(p1, p2) {
     else if (!v.p1 && v.p2) chosenMap = v.p2;
     else chosenMap = maps[Math.floor(Math.random() * maps.length)];
     const result = { type: 'map_result', map: chosenMap, votes: [v.p1, v.p2].filter(Boolean) };
-    if (room.p1.readyState === WebSocket.OPEN) room.p1.send(JSON.stringify(result));
-    if (room.p2.readyState === WebSocket.OPEN) room.p2.send(JSON.stringify(result));
+    try{if (room.p1.readyState === WebSocket.OPEN) room.p1.send(JSON.stringify(result));}catch(e){}
+    try{if (room.p2.readyState === WebSocket.OPEN) room.p2.send(JSON.stringify(result));}catch(e){}
   }, 15000);
 }
 function handleMapVote(ws, map) {
@@ -667,7 +667,7 @@ function handleMapVote(ws, map) {
   console.log('MapVote:', who, 'voted', map, 'votes:', JSON.stringify(room.votes));
   // Relay opponent's vote so client can show "opponent selected"
   const opp = isP1 ? room.p2 : room.p1;
-  if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_vote', map }));
+  try{if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_vote', map }));}catch(e){console.log('opponent_vote send failed');}
   const v = room.votes;
   if (v.p1 && v.p2) {
     if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; }
@@ -678,14 +678,14 @@ function handleMapVote(ws, map) {
     const chosenMap = uniqueVotes.length === 1 ? uniqueVotes[0] : uniqueVotes[Math.floor(Math.random() * uniqueVotes.length)];
     console.log('MapVote: both voted, chosenMap:', chosenMap);
     const result = { type: 'map_result', map: chosenMap, votes };
-    room.p1.send(JSON.stringify(result));
-    room.p2.send(JSON.stringify(result));
+    try{room.p1.send(JSON.stringify(result));}catch(e){console.log('map_result p1 failed');}
+    try{room.p2.send(JSON.stringify(result));}catch(e){console.log('map_result p2 failed');}
   }
 }
 function relayToOpponent(ws, msg) {
   const room = rooms[ws.roomId]; if (!room) return;
   const opp = room.p1 === ws ? room.p2 : room.p1;
-  if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify(msg));
+  try{if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify(msg));}catch(e){}
 }
 function handleDisconnect(ws) {
   removeFromQueue(ws);
