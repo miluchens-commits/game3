@@ -1549,20 +1549,13 @@ function createGunModel(type){
     var ind=new THREE.Mesh(new THREE.SphereGeometry(0.005,6,6),new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x44ff44,emissiveIntensity:1}));
     ind.position.set(0.026,0.02,-0.05);g.add(ind);
   }else if(type==='shotgun'){
-    var sgMat=new THREE.MeshStandardMaterial({color:skinC&&skinC.dark!==undefined?skinC.dark:0x444444,metalness:0.5,roughness:0.5});
-    var sgWood=new THREE.MeshStandardMaterial({color:skinC&&skinC.wood!==undefined?skinC.wood:0x6B3E1C,roughness:0.9});
-    var b1=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.16,8),sgMat);b1.rotation.x=Math.PI/2;b1.position.set(-0.012,0,-0.15);g.add(b1);
-    var b2=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.16,8),sgMat);b2.rotation.x=Math.PI/2;b2.position.set(0.012,0,-0.15);g.add(b2);
-    // Receiver
-    var rec=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.12),sgMat);rec.position.set(0,0,-0.02);g.add(rec);
-    // Magazine tube under barrel
-    var mt=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.12,6),sgMat);mt.rotation.x=Math.PI/2;mt.position.set(0,-0.03,-0.14);g.add(mt);
-    // Pump grip (forend)
-    var pg3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.05),sgWood);pg3.position.set(0,-0.015,-0.18);g.add(pg3);
-    // Pistol grip
-    var pg4=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.055,0.03),sgWood);pg4.position.set(0,-0.04,0.05);pg4.rotation.x=0.3;g.add(pg4);
-    // Stock
-    var stk3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.1),sgWood);stk3.position.set(0,0.01,0.1);g.add(stk3);
+    var b1=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.16,8),matMetal);b1.rotation.x=Math.PI/2;b1.position.set(-0.012,0,-0.15);g.add(b1);
+    var b2=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.16,8),matMetal);b2.rotation.x=Math.PI/2;b2.position.set(0.012,0,-0.15);g.add(b2);
+    var rec=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.12),matDark);rec.position.set(0,0,-0.02);g.add(rec);
+    var mt=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.12,6),matDark);mt.rotation.x=Math.PI/2;mt.position.set(0,-0.03,-0.14);g.add(mt);
+    var pg3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.05),matWood);pg3.position.set(0,-0.015,-0.18);g.add(pg3);
+    var pg4=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.055,0.03),matWood);pg4.position.set(0,-0.04,0.05);pg4.rotation.x=0.3;g.add(pg4);
+    var stk3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.1),matWood);stk3.position.set(0,0.01,0.1);g.add(stk3);
   }else if(type==='radrifle'){
     var rMat=new THREE.MeshStandardMaterial({color:0x226622,metalness:0.6,roughness:0.3});
     var rGlow=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.8});
