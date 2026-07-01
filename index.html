@@ -200,7 +200,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #skin-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1}
 #skin-close:hover{color:#f8a}
 #skin-title{font-size:26px;font-weight:900;color:#f8a;letter-spacing:6px;margin-bottom:12px;text-shadow:0 0 20px rgba(255,136,170,.25)}
-#skin-preview-wrap{position:relative;width:100%;height:180px;border-radius:8px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,136,170,.15);background:rgba(0,0,0,.4);cursor:grab;touch-action:none}
+#skin-preview-wrap{position:relative;width:100%;height:150px;border-radius:8px;overflow:hidden;margin-bottom:10px;border:1px solid rgba(255,136,170,.15);background:rgba(0,0,0,.4);cursor:grab;touch-action:none}
 #skin-preview-wrap:active{cursor:grabbing}
 #skin-preview-wrap canvas{width:100%!important;height:100%!important;display:block}
 #skin-preview-hint{position:absolute;bottom:6px;right:10px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1px;pointer-events:none}
@@ -208,10 +208,10 @@ body.mobile-mode #scope-overlay{display:none!important}
 .skin-part-btn{padding:4px 12px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;background:rgba(255,255,255,.04);letter-spacing:1px}
 .skin-part-btn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 .skin-part-btn.active{color:#f8a;border-color:#f8a;background:rgba(255,136,170,.15)}
-#skin-color-grid{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
-.skin-color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,.15);transition:all .2s;position:relative}
-.skin-color-swatch:hover{transform:scale(1.15);border-color:rgba(255,255,255,.4)}
-.skin-color-swatch.active{border-color:#f8a;box-shadow:0 0 10px rgba(255,136,170,.4)}
+#skin-color-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:12px;width:100%}
+.skin-color-swatch{width:100%;aspect-ratio:1;border-radius:4px;cursor:pointer;border:2px solid rgba(255,255,255,.15);transition:all .15s;box-sizing:border-box;max-width:28px;justify-self:center}
+.skin-color-swatch:hover{transform:scale(1.2);border-color:rgba(255,255,255,.4);z-index:1}
+.skin-color-swatch.active{border-color:#f8a;box-shadow:0 0 8px rgba(255,136,170,.5)}
 #skin-gun-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
 .skin-gun-tab{padding:6px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.04)}
 .skin-gun-tab:hover{color:#fff;border-color:rgba(255,255,255,.3)}
@@ -1855,14 +1855,17 @@ function renderSkinColorGrid(){
   }
 }
 function openSkinPanel(){
+  document.getElementById('skin-overlay').style.display='flex';document.getElementById('menu').style.display='none';
   initSkinPreview();
+  // Resize canvas after overlay is visible
+  var wrap=document.getElementById('skin-preview-wrap');
+  if(skinPreviewRen)skinPreviewRen.setSize(wrap.clientWidth,wrap.clientHeight);
   var tabs=document.getElementById('skin-gun-tabs');var list=document.getElementById('skin-list');
   tabs.innerHTML='';list.innerHTML='';
   var guns=['ak47','deagle','awp','shotgun'];var gunNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',shotgun:'霰彈槍'};
   for(var i=0;i<guns.length;i++){var g=guns[i];if(!gunSkins[g])continue;var tab=document.createElement('button');
     tab.className='skin-gun-tab'+(g===skinSelectedGun?' active':'');tab.textContent=gunNames[g];
     tab.onclick=function(gg){return function(){skinSelectedGun=gg;openSkinPanel();};}(g);tabs.appendChild(tab);}
-  // Set custom colors from current equipped skin
   var cur=getEquippedSkin(skinSelectedGun);
   if(cur&&gunSkins[skinSelectedGun]){
     for(var si=0;si<gunSkins[skinSelectedGun].length;si++){
@@ -1871,9 +1874,8 @@ function openSkinPanel(){
     }
   }else{skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111};}
   renderSkinPartPicker();renderSkinColorGrid();
-  buildSkinPreviewGun();
+  setTimeout(function(){buildSkinPreviewGun();},50);
   renderSkinList();
-  document.getElementById('skin-overlay').style.display='flex';document.getElementById('menu').style.display='none';
 }
 function renderSkinList(){
   var list=document.getElementById('skin-list');list.innerHTML='';
