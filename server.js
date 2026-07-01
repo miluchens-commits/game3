@@ -604,7 +604,7 @@ wss.on('connection', (ws) => {
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;
       case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;
-      case 'hit': relayToOpponent(ws, { type: 'opponent_hit', hp: msg.hp, armor: msg.armor }); break;
+      case 'hit': relayToOpponent(ws, { type: 'opponent_hit', hp: msg.hp, armor: msg.armor, fromName: ws.playerName||'' }); break;
       case 'player_death': relayToOpponent(ws, { type: 'opponent_died' }); break;
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
