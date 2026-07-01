@@ -1635,8 +1635,9 @@ document.getElementById('friend-search-input').onkeydown=function(e){
 var chatFriend=null,chatPollInt=null;
 window.openChat=function(friendUsername,friendNickname){
   chatFriend=friendUsername;
-  document.getElementById('chat-friend-name').textContent=friendNickname||friendUsername;
-  document.getElementById('chat-messages').innerHTML='';
+  var cm=document.getElementById('chat-messages');
+  cm.innerHTML='';
+  cm.dataset.lastId='0';
   document.getElementById('chat-panel').style.display='flex';
   document.getElementById('chat-input').value='';
   document.getElementById('chat-input').focus();
