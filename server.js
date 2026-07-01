@@ -586,6 +586,35 @@ app.post('/api/team/leave', auth, async (req, res) => {
   } catch (e) { console.error('Team leave error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
+// HTTP map vote (fallback for Render WebSocket issues)
+app.post('/api/map_vote', auth, (req, res) => {
+  const { map } = req.body;
+  if (!map) return res.status(400).json({ error: '缺少地圖' });
+  // Find the WebSocket for this user by matching username
+  let found = false;
+  wss.clients.forEach((ws) => {
+    if (ws.playerData && ws.playerData.username === req.user.username && ws.roomId) {
+      handleMapVote(ws, map);
+      found = true;
+    }
+  });
+  if (!found) return res.status(400).json({ error: '不在房間中' });
+  res.json({ ok: true });
+});
+app.get('/api/game_status', auth, (req, res) => {
+  // Check if user is in a room with a decided map
+  let result = { started: false };
+  wss.clients.forEach((ws) => {
+    if (ws.playerData && ws.playerData.username === req.user.username && ws.roomId) {
+      const room = rooms[ws.roomId];
+      if (room && room.gameStarted) {
+        result = { started: true, map: room.chosenMap };
+      }
+    }
+  });
+  res.json(result);
+});
+
 // WebSocket multiplayer
 const queue = [];
 const rooms = {};
@@ -594,11 +623,13 @@ const teams = {}; // teamId -> {leader, members:[]}
 let nextRoomId = 1;
 
 wss.on('connection', (ws) => {
-  ws.playerData = null; ws.roomId = null;
+  ws.playerData = null; ws.roomId = null; ws.isAlive = true;
+  ws.on('pong', () => { ws.isAlive = true; });
   ws.on('message', (raw) => {
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
     switch (msg.type) {
+      case 'ping': ws.send(JSON.stringify({ type: 'pong' })); break;
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
@@ -610,11 +641,20 @@ wss.on('connection', (ws) => {
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
       case 'map_vote': handleMapVote(ws, msg.map); break;
-      default: console.log('WS unknown type:', msg.type);
+      default: break;
     }
   });
   ws.on('close', () => handleDisconnect(ws));
 });
+// Heartbeat interval
+const heartbeatInterval = setInterval(() => {
+  wss.clients.forEach((ws) => {
+    if (ws.isAlive === false) { ws.terminate(); return; }
+    ws.isAlive = false;
+    try { ws.ping(); } catch (e) {}
+  });
+}, 10000);
+wss.on('close', () => clearInterval(heartbeatInterval));
 
 function addToQueue(ws) {
   // Check if any queued player is from the same team
@@ -653,6 +693,7 @@ function startMatch(p1, p2) {
     if (v.p1 && !v.p2) chosenMap = v.p1;
     else if (!v.p1 && v.p2) chosenMap = v.p2;
     else chosenMap = maps[Math.floor(Math.random() * maps.length)];
+    room.chosenMap = chosenMap; room.gameStarted = true;
     const result = { type: 'map_result', map: chosenMap, votes: [v.p1, v.p2].filter(Boolean) };
     try{if (room.p1.readyState === WebSocket.OPEN) room.p1.send(JSON.stringify(result));}catch(e){}
     try{if (room.p2.readyState === WebSocket.OPEN) room.p2.send(JSON.stringify(result));}catch(e){}
@@ -677,6 +718,7 @@ function handleMapVote(ws, map) {
     // If both same, use that; if different, pick randomly
     const chosenMap = uniqueVotes.length === 1 ? uniqueVotes[0] : uniqueVotes[Math.floor(Math.random() * uniqueVotes.length)];
     console.log('MapVote: both voted, chosenMap:', chosenMap);
+    room.chosenMap = chosenMap; room.gameStarted = true;
     const result = { type: 'map_result', map: chosenMap, votes };
     try{room.p1.send(JSON.stringify(result));}catch(e){console.log('map_result p1 failed');}
     try{room.p2.send(JSON.stringify(result));}catch(e){console.log('map_result p2 failed');}

@@ -2561,6 +2561,8 @@ document.getElementById('multi4-btn').onclick=function(){
 document.getElementById('multi-cancel').onclick=function(){
   if(window.multiPInt)clearInterval(window.multiPInt);
   if(window.multiSI)clearInterval(window.multiSI);
+  if(window.wsHB)clearInterval(window.wsHB);
+  if(window.votePoll)clearInterval(window.votePoll);
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
   if(relayIframe){document.body.removeChild(relayIframe);relayIframe=null;}
   document.getElementById('multi-connecting').style.display='none';
@@ -2607,6 +2609,14 @@ function sendMapVote(map){
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
   console.log('sendMapVote:',map,'ws:',window.multiWS?'open='+(window.multiWS.readyState===1):'null');
   relaySend({type:'map_vote',map:map});
+  authFetch('/api/map_vote',{method:'POST',body:{map:map}}).catch(function(){});
+  window._voteResolved=false;
+  if(window.votePoll)clearInterval(window.votePoll);
+  window.votePoll=setInterval(function(){
+    authFetch('/api/game_status').then(function(d){
+      if(d.started&&d.map&&!window._voteResolved){window._voteResolved=true;clearInterval(window.votePoll);processServerMessage({type:'map_result',map:d.map,votes:[]});}
+    }).catch(function(){});
+  },500);
 }
 // Auto-detect server IP
 (function(){
@@ -2676,6 +2686,7 @@ function processServerMessage(data){
       document.getElementById('multi-map-vote').style.display='flex';
       document.getElementById('multi-vote-status').textContent='請選擇地圖';
       document.getElementById('multi-vote-timer').textContent='';
+      window._voteResolved=false;
       if(window.voteTimer)clearInterval(window.voteTimer);
       var voteSecs=15;
       document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
@@ -2690,6 +2701,7 @@ function processServerMessage(data){
       var uniqueVotes=[];
       votedMaps.forEach(function(v){if(uniqueVotes.indexOf(v)===-1)uniqueVotes.push(v);});
       if(window.voteTimer){clearInterval(window.voteTimer);window.voteTimer=null;}
+      if(window.votePoll){clearInterval(window.votePoll);window.votePoll=null;}
       document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -2911,6 +2923,9 @@ function connectMultiplayerDirect(ip, mode){
       if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP,cls:playerClass}}));
     },100);
   };
+  // Heartbeat to keep WS alive through Render proxy
+  if(window.wsHB)clearInterval(window.wsHB);
+  window.wsHB=setInterval(function(){if(ws.readyState===1){try{ws.send(JSON.stringify({type:'ping'}));}catch(e){}}},15000);
   ws.onmessage=function(e){
     try{var data=JSON.parse(e.data);processServerMessage(data);}catch(ex){}
   };
