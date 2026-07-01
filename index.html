@@ -1567,34 +1567,22 @@ function createGunModel(type){
     var rMat=new THREE.MeshStandardMaterial({color:0x226622,metalness:0.6,roughness:0.3});
     var rGlow=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.8});
     var rDark=new THREE.MeshStandardMaterial({color:0x113311,metalness:0.4,roughness:0.6});
-    // Main barrel - thick green tube
     var rb=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.28,8),rMat);rb.rotation.x=Math.PI/2;rb.position.set(0,0,-0.22);g.add(rb);
-    // Barrel cooling fins
     for(var rfi=0;rfi<5;rfi++){var rf=new THREE.Mesh(new THREE.TorusGeometry(0.024,0.004,6,8),rDark);rf.rotation.x=Math.PI/2;rf.position.set(0,0,-0.12-rfi*0.04);g.add(rf);}
-    // Receiver/body
     var rr=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.05,0.14),rDark);rr.position.set(0,0,-0.02);g.add(rr);
-    // Glow core on receiver
     var rc=new THREE.Mesh(new THREE.SphereGeometry(0.012,8,8),rGlow);rc.position.set(0,0.012,-0.06);g.add(rc);
-    // Scope rail
     var rri=new THREE.Mesh(new THREE.BoxGeometry(0.018,0.003,0.06),rMat);rri.position.set(0,0.028,-0.04);g.add(rri);
-    // Small scope
     var rsc=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.03,8),new THREE.MeshStandardMaterial({color:0x111111}));rsc.rotation.x=Math.PI/2;rsc.position.set(0,0.04,-0.06);g.add(rsc);
     var rl=new THREE.Mesh(new THREE.CircleGeometry(0.01,8),new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.3}));rl.position.set(0,0.04,-0.076);g.add(rl);
-    // Muzzle glow ring
     var mr3=new THREE.Mesh(new THREE.TorusGeometry(0.025,0.006,6,8),rGlow);mr3.rotation.x=Math.PI/2;mr3.position.set(0,0,-0.36);g.add(mr3);
-    // Pistol grip
     var rg=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.05,0.025),rDark);rg.position.set(0,-0.035,0.06);rg.rotation.x=0.3;g.add(rg);
-    // Stock
     var rs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.035,0.1),rDark);rs.position.set(0,0.01,0.12);g.add(rs);
-    // Green glowing magazine
     var rm=new THREE.Mesh(new THREE.BoxGeometry(0.016,0.04,0.02),rGlow);rm.position.set(0,-0.03,-0.16);g.add(rm);
-    // Small glow particles
     for(var rpi=0;rpi<6;rpi++){var rp_=new THREE.Mesh(new THREE.SphereGeometry(0.004,4,4),rGlow);rp_.position.set((Math.random()-0.5)*0.04,0.01+(Math.random()-0.5)*0.03,(Math.random()-0.5)*0.06-0.12);g.add(rp_);}
-    // Muzzle brake
-    var mb=new THREE.Mesh(new THREE.CylinderGeometry(0.028,0.024,0.025,8),sgMat);mb.rotation.x=Math.PI/2;mb.position.set(0,0,-0.24);g.add(mb);
-    // Heat shield vents on barrels
-    for(var vi=0;vi<5;vi++){var vt=new THREE.Mesh(new THREE.BoxGeometry(0.005,0.008,0.005),sgMat);vt.position.set(0,0.03,-0.13-vi*0.025);g.add(vt);}
+    var mb=new THREE.Mesh(new THREE.CylinderGeometry(0.028,0.024,0.025,8),new THREE.MeshStandardMaterial({color:skinC&&skinC.dark!==undefined?skinC.dark:0x444444,metalness:0.5,roughness:0.5}));mb.rotation.x=Math.PI/2;mb.position.set(0,0,-0.24);g.add(mb);
+    for(var vi=0;vi<5;vi++){var vt=new THREE.Mesh(new THREE.BoxGeometry(0.005,0.008,0.005),new THREE.MeshStandardMaterial({color:skinC&&skinC.dark!==undefined?skinC.dark:0x444444,metalness:0.5,roughness:0.5}));vt.position.set(0,0.03,-0.13-vi*0.025);g.add(vt);}
   }
+  g.userData.skinMats={dark:matDark,metal:matMetal,wood:matWood,scope:matScope};
   return g;
 }
 // ── Loadout system ──
@@ -1828,22 +1816,20 @@ function initSkinPreview(){
 }
 function buildSkinPreviewGun(){
   if(skinPreviewGun){skinPreviewScene.remove(skinPreviewGun);skinPreviewGun=null;}
+  var orig=window.getSkinColors;
+  window.getSkinColors=function(type){return type===skinSelectedGun?skinCustomColors:(orig?orig(type):{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111});};
   var g=createGunModel(skinSelectedGun);
+  window.getSkinColors=orig;
   if(g){skinPreviewScene.add(g);skinPreviewGun=g;}
 }
 function updateSkinPreviewColors(){
   if(!skinPreviewGun)return;
-  // Rebuild gun with new colors
-  if(skinPreviewGun){skinPreviewScene.remove(skinPreviewGun);skinPreviewGun=null;}
-  // Override getSkinColors to return custom colors
-  var origGetSkinColors=window.getSkinColors;
-  window.getSkinColors=function(type){
-    if(type===skinSelectedGun)return skinCustomColors;
-    return origGetSkinColors?origGetSkinColors(type):{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111};
-  };
-  var g=createGunModel(skinSelectedGun);
-  window.getSkinColors=origGetSkinColors;
-  if(g){skinPreviewScene.add(g);skinPreviewGun=g;}
+  var mats=skinPreviewGun.userData.skinMats;
+  if(!mats)return;
+  if(skinCustomColors.dark!==undefined&&mats.dark)mats.dark.color.setHex(skinCustomColors.dark);
+  if(skinCustomColors.metal!==undefined&&mats.metal)mats.metal.color.setHex(skinCustomColors.metal);
+  if(skinCustomColors.wood!==undefined&&mats.wood)mats.wood.color.setHex(skinCustomColors.wood);
+  if(skinCustomColors.scope!==undefined&&mats.scope)mats.scope.color.setHex(skinCustomColors.scope);
 }
 function renderSkinPartPicker(){
   var p=document.getElementById('skin-part-picker');p.innerHTML='';
