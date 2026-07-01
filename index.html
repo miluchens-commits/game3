@@ -450,7 +450,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械 皮 膚</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械 皮 膚</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
 <div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="team-info" style="display:none;width:100%;padding:6px 10px;margin-bottom:8px;background:rgba(68,255,170,.08);border:1px solid rgba(68,255,170,.2);border-radius:4px;font-size:12px;color:#4fa;letter-spacing:1px;box-sizing:border-box;text-align:center">👥 隊伍：<span id="team-members"></span> <button id="team-leave-btn" style="margin-left:6px;padding:2px 8px;font-size:10px;color:#f64;background:transparent;border:1px solid rgba(255,102,68,.3);border-radius:3px;cursor:pointer;font-family:Arial">離開</button></div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
 <div id="chat-panel"><div id="chat-bg"></div><div id="chat-box"><div id="chat-header"><span id="chat-friend-name">好友</span><button id="chat-close">✕</button></div><div id="chat-messages"></div><div id="chat-input-row"><input id="chat-input" placeholder="輸入訊息..." maxlength="500"><button id="chat-send-btn">發送</button></div></div></div>
@@ -530,7 +530,7 @@ body.mobile-mode #scope-overlay{display:none!important}
   </div>
 </div>
 <script>
-var authToken=localStorage.getItem('oc_token'),authUser=localStorage.getItem('oc_user')||'';
+var authToken=localStorage.getItem('oc_token'),authUser=localStorage.getItem('oc_user')||'',currentTeamId=null;
 var API_BASE='';
 function authFetch(url,opts){
   opts=opts||{};opts.headers=opts.headers||{};
@@ -611,7 +611,7 @@ function fetchFriendList(){
     d.friends.forEach(function(f){
       var item=document.createElement('div');item.className='f-item';
       var isOnline=f.online?'🟢':'⚫';
-      var teamBtn=f.online?'<button class="f-btn f-add-btn f-team-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">組隊</button>':'';
+      var teamBtn='<button class="f-btn f-add-btn f-team-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">組隊</button>';
       item.innerHTML='<span class="f-name">'+isOnline+' '+f.nickname+'</span><div>'+teamBtn+'<button class="f-btn f-add-btn f-chat-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">💬</button><button class="f-btn f-remove-btn" data-user="'+f.username+'" style="margin-right:4px">移除</button><button class="f-btn f-reject-btn" data-user="'+f.username+'">封鎖</button></div>';
       list.appendChild(item);
     });
@@ -623,7 +623,7 @@ function fetchFriendList(){
         var btn=this;
         authFetch('/api/team/invite',{method:'POST',body:{friendUsername:btn.dataset.user}}).then(function(d){
           if(d.error)alert(d.error);
-          else{alert('已邀請 '+d.friendNickname+' 組隊，等待對方接受');}
+          else{alert('已與 '+d.friendNickname+' 組隊');setTimeout(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},0);}
         });
       };
     });
@@ -766,11 +766,13 @@ if(authToken){
     }
   }).catch(function(){});
 }
-// Online presence heartbeat
+// Online presence heartbeat + team polling
 if(authToken){
   setInterval(function(){
     authFetch('/api/team/ping',{method:'POST',body:{}}).catch(function(){});
   },30000);
+  setInterval(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},5000);
+  setTimeout(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},100);
 }
 function bootGame() {
 var THREE = window.THREE;
@@ -1618,8 +1620,12 @@ document.getElementById('friend-btn').onclick=function(){
   switchFriendTab('friends');
   checkTeamStatus();
   fetchFriendList();
+  if(!window.fpTeamInt)window.fpTeamInt=setInterval(function(){if(document.getElementById('friend-panel').style.display==='flex')checkTeamStatus();},3000);
 };
-document.getElementById('friend-bg').onclick=function(){document.getElementById('friend-panel').style.display='none';};
+document.getElementById('friend-bg').onclick=function(){
+  document.getElementById('friend-panel').style.display='none';
+  if(window.fpTeamInt){clearInterval(window.fpTeamInt);window.fpTeamInt=null;}
+};
 document.querySelectorAll('#friend-tabs .f-tab').forEach(function(t){
   t.onclick=function(){
     document.querySelectorAll('#friend-tabs .f-tab').forEach(function(x){x.classList.remove('active');});
@@ -1635,15 +1641,21 @@ document.getElementById('friend-add-btn').onclick=function(){
   document.getElementById('friend-search-bar').style.display='flex';
   document.getElementById('friend-list').innerHTML='<div class="f-empty">輸入名稱搜尋玩家</div>';
 };
-function checkTeamStatus(){
+window.checkTeamStatus=function(){
   authFetch('/api/team/status').then(function(d){
     var info=document.getElementById('team-info');
     var members=document.getElementById('team-members');
+    var ts=document.getElementById('team-status');
     if(d.inTeam&&d.members){
       info.style.display='block';
       members.textContent=d.members.join(', ');
+      ts.style.display='flex';
+      document.getElementById('team-status-text').textContent='組隊中 '+d.members.join(', ');
+      currentTeamId=d.teamId||null;
     }else{
       info.style.display='none';
+      ts.style.display='none';
+      currentTeamId=null;
     }
   });
 }
@@ -2288,6 +2300,7 @@ document.getElementById('settlement-btn').onclick=function(){
   document.getElementById('settlement').style.display='none';
   document.getElementById('settlement-daily').style.display='none';
   document.getElementById('menu').style.display='flex';
+  if(authToken)checkTeamStatus();
   updateLevelDisplay();
   updateCoinsDisplay();updateArmoryGunCounts();
   var dbEl=document.getElementById('daily-best');
@@ -2538,6 +2551,7 @@ document.getElementById('multi-cancel').onclick=function(){
   if(relayIframe){document.body.removeChild(relayIframe);relayIframe=null;}
   document.getElementById('multi-connecting').style.display='none';
   document.getElementById('menu').style.display='flex';
+  if(authToken)checkTeamStatus();
 };
 document.getElementById('multi-quit-btn').onclick=function(){
   document.getElementById('multi-death-prompt').style.display='none';
@@ -2563,6 +2577,7 @@ document.getElementById('multi-to-menu').onclick=function(){
   document.getElementById('multi-end-options').style.display='none';
   isMultiplayer=false;gameStarted=false;
   document.getElementById('menu').style.display='flex';
+  if(authToken)checkTeamStatus();
   updateCoinsDisplay();updateArmoryGunCounts();
   document.getElementById('multi-status').textContent='正在尋找其他玩家...';
 };
@@ -2820,7 +2835,7 @@ window.addEventListener('message',function(e){
       if(location.protocol==='file:')return;
       relayReady=true;
       document.getElementById('multi-status').textContent='正在尋找其他玩家...';
-      relaySend({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000)});
+      relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||''});
     }else if(msg.error){
       if(location.protocol==='file:')return;
       document.getElementById('multi-status').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
@@ -2865,7 +2880,7 @@ function connectMultiplayerDirect(ip, mode){
   ws.onopen=function(){
     relayReady=true;
     document.getElementById('multi-status').innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 '+mode+' 位玩家</small>';
-    ws.send(JSON.stringify({type:'join_queue',name:'Player'+Math.floor(Math.random()*1000),mode:mode}));
+    ws.send(JSON.stringify({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:mode}));
     if(window.multiSI)clearInterval(window.multiSI);
     window.multiSI=setInterval(function(){
       if(isMultiplayer&&ws.readyState===1)ws.send(JSON.stringify({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP,cls:playerClass}}));

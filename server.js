@@ -517,7 +517,18 @@ app.post('/api/team/invite', auth, async (req, res) => {
     for (const tid in teams) {
       if (teams[tid].members.includes(friendUsername)) return res.status(400).json({ error: '對方已在隊伍中' });
     }
-    res.json({ ok: true, friendNickname: friend.nickname || friend.username });
+    // Find or create team for inviter
+    let myTeamId = null;
+    for (const tid in teams) {
+      if (teams[tid].members.includes(req.user.username)) { myTeamId = tid; break; }
+    }
+    if (!myTeamId) {
+      myTeamId = 'team_' + Date.now();
+      teams[myTeamId] = { leader: req.user.username, members: [req.user.username], created: Date.now() };
+    }
+    // Add friend to team
+    teams[myTeamId].members.push(friendUsername);
+    res.json({ ok: true, teamId: myTeamId, members: teams[myTeamId].members, friendNickname: friend.nickname || friend.username });
   } catch (e) { console.error('Team invite error:', e); res.status(500).json({ error: '伺服器錯誤' }); }
 });
 
@@ -588,8 +599,8 @@ wss.on('connection', (ws) => {
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
     switch (msg.type) {
-      case 'join_queue': ws.playerData = { name: msg.name || 'Player' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
-      case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; } break;
+      case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
+      case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', data: msg.data }); break;
       case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;
@@ -605,6 +616,17 @@ wss.on('connection', (ws) => {
 });
 
 function addToQueue(ws) {
+  // Check if any queued player is from the same team
+  if (ws.playerData.teamId) {
+    for (let i = 0; i < queue.length; i++) {
+      const q = queue[i];
+      if (q.playerData.teamId === ws.playerData.teamId && q.readyState === WebSocket.OPEN) {
+        queue.splice(i, 1);
+        startMatch(ws, q);
+        return;
+      }
+    }
+  }
   queue.push(ws);
   ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
   if (queue.length >= 2) {
