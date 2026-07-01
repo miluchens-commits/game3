@@ -644,9 +644,11 @@ function startMatch(p1, p2) {
 }
 function handleMapVote(ws, map) {
   const room = rooms[ws.roomId];
-  if (!room) return;
+  if (!room) { console.log('MapVote: no room for', ws.playerName); return; }
   const isP1 = room.p1 === ws;
-  room.votes[isP1 ? 'p1' : 'p2'] = map;
+  const who = isP1 ? 'p1' : 'p2';
+  room.votes[who] = map;
+  console.log('MapVote:', who, 'voted', map, 'votes:', JSON.stringify(room.votes));
   // Relay opponent's vote so client can show "opponent selected"
   const opp = isP1 ? room.p2 : room.p1;
   if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_vote', map }));
@@ -657,6 +659,7 @@ function handleMapVote(ws, map) {
     const uniqueVotes = [...new Set(votes)];
     // If both same, use that; if different, pick randomly
     const chosenMap = uniqueVotes.length === 1 ? uniqueVotes[0] : uniqueVotes[Math.floor(Math.random() * uniqueVotes.length)];
+    console.log('MapVote: both voted, chosenMap:', chosenMap);
     const result = { type: 'map_result', map: chosenMap, votes };
     room.p1.send(JSON.stringify(result));
     room.p2.send(JSON.stringify(result));
