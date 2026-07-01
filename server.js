@@ -597,8 +597,7 @@ wss.on('connection', (ws) => {
   ws.playerData = null; ws.roomId = null;
   ws.on('message', (raw) => {
     let msg;
-    try { msg = JSON.parse(raw); } catch { console.log('WS parse fail:', raw.toString().substring(0,80)); return; }
-    if(msg.type!=='state')console.log('WS msg:', msg.type, JSON.stringify(msg).substring(0,120));
+    try { msg = JSON.parse(raw); } catch { return; }
     switch (msg.type) {
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
@@ -610,7 +609,7 @@ wss.on('connection', (ws) => {
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
-      case 'map_vote': console.log('WS map_vote received:', msg.map, 'roomId:', ws.roomId, 'rooms:', Object.keys(rooms).length); handleMapVote(ws, msg.map); break;
+      case 'map_vote': handleMapVote(ws, msg.map); break;
       default: console.log('WS unknown type:', msg.type);
     }
   });
@@ -643,6 +642,21 @@ function startMatch(p1, p2) {
   p1.playerId = 0; p2.playerId = 1;
   p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));
   p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));
+  // Auto-pick map after 15s if not both voted
+  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2'];
+  rooms[rid].voteTimer = setTimeout(() => {
+    const room = rooms[rid];
+    if (!room) return;
+    const v = room.votes;
+    let chosenMap;
+    if (v.p1 && v.p2) return; // already handled
+    if (v.p1 && !v.p2) chosenMap = v.p1;
+    else if (!v.p1 && v.p2) chosenMap = v.p2;
+    else chosenMap = maps[Math.floor(Math.random() * maps.length)];
+    const result = { type: 'map_result', map: chosenMap, votes: [v.p1, v.p2].filter(Boolean) };
+    if (room.p1.readyState === WebSocket.OPEN) room.p1.send(JSON.stringify(result));
+    if (room.p2.readyState === WebSocket.OPEN) room.p2.send(JSON.stringify(result));
+  }, 15000);
 }
 function handleMapVote(ws, map) {
   const room = rooms[ws.roomId];
@@ -656,6 +670,7 @@ function handleMapVote(ws, map) {
   if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_vote', map }));
   const v = room.votes;
   if (v.p1 && v.p2) {
+    if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; }
     // Both voted — determine result
     const votes = [v.p1, v.p2];
     const uniqueVotes = [...new Set(votes)];
@@ -675,7 +690,7 @@ function relayToOpponent(ws, msg) {
 function handleDisconnect(ws) {
   removeFromQueue(ws);
   if (ws.playerName) onlineUsers.delete(ws.playerName);
-  if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
+  if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; } const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp && opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
 }
 
 process.on('uncaughtException', e => console.error('Uncaught:', e));

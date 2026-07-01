@@ -524,6 +524,7 @@ body.mobile-mode #scope-overlay{display:none!important}
   <div style="display:flex;flex-direction:column;align-items:center">
     <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
     <div style="font-size:14px;color:rgba(255,255,255,.4);margin-bottom:24px;letter-spacing:2px" id="multi-vote-status">請選擇地圖</div>
+    <div id="multi-vote-timer" style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:8px;letter-spacing:1px;font-family:monospace"></div>
     <div class="map-option" data-map="base" id="vote-base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場</div></div>
     <div class="map-option" data-map="arena2" id="vote-arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div>
     <div class="map-option" data-map="rain" id="vote-rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div>
@@ -2674,6 +2675,11 @@ function processServerMessage(data){
       }
       document.getElementById('multi-map-vote').style.display='flex';
       document.getElementById('multi-vote-status').textContent='請選擇地圖';
+      document.getElementById('multi-vote-timer').textContent='';
+      if(window.voteTimer)clearInterval(window.voteTimer);
+      var voteSecs=15;
+      document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
+      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';clearInterval(window.voteTimer);}},1000);
       break;
     case 'opponent_vote':
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
@@ -2683,6 +2689,8 @@ function processServerMessage(data){
       var votedMaps=data.votes||[];
       var uniqueVotes=[];
       votedMaps.forEach(function(v){if(uniqueVotes.indexOf(v)===-1)uniqueVotes.push(v);});
+      if(window.voteTimer){clearInterval(window.voteTimer);window.voteTimer=null;}
+      document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
       var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)'};
@@ -2727,6 +2735,9 @@ function processServerMessage(data){
           opponentStates[oidx].pitch=data.data.pitch||0;
           opponentStates[oidx].gun=data.data.gun||'ak47';
           opponentStates[oidx].shooting=data.data.shooting||false;
+          if(data.data.hp!==undefined)opponentStates[oidx].hp=data.data.hp;
+          if(data.data.armor!==undefined)opponentStates[oidx].armor=data.data.armor;
+          opponentStates[oidx].alive=opponentStates[oidx].hp>0;
           if(data.data.cls&&data.data.cls!==opponentStates[oidx].cls){
             opponentStates[oidx].cls=data.data.cls;
             if(opponentMeshes[oidx])applyOpponentClass(opponentMeshes[oidx],data.data.cls);
@@ -2815,7 +2826,7 @@ function processServerMessage(data){
   }
 }
 function startMultiGame(mapName){
-  document.getElementById('multi-map-vote').style.display='none';
+  if(window.voteTimer){clearInterval(window.voteTimer);window.voteTimer=null;}document.getElementById('multi-map-vote').style.display='none';
   currentMap=mapName||'base';
   document.getElementById('scanlines').style.display='none';
   document.getElementById('scope-overlay').style.display='none';
@@ -2939,7 +2950,7 @@ function connectMultiplayerHTTP(ip){
       // Set up state send interval
       if(window.multiSI)clearInterval(window.multiSI);
       window.multiSI=setInterval(function(){
-        if(isMultiplayer)relaySend({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire}});
+        if(isMultiplayer)relaySend({type:'state',data:{px:pos.x,py:pos.y,pz:pos.z,yaw:yaw,pitch:pitch,gun:currentGun,shooting:autoFire,hp:playerHP,armor:playerArmor}});
       },100);
     });
 }
@@ -3226,7 +3237,7 @@ function shoot(){
       if(isMultiplayer&&opponentMeshes.length>0){
         opponentMeshes.forEach(function(om,oidx){
           if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
-          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});opponentStates[oidx].hp-=50;if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;}showDmgNum(hits[0].point,50,'#ff4444');}});
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){opponentStates[oidx].alive=false;rankMatchKills++;}showDmgNum(hits[0].point,50,'#ff4444');}});
         });
       }
       for(var ei=0;ei<enemies.length;ei++){
@@ -3382,9 +3393,9 @@ function shoot(){
         var dmg=currentGun==='awp'?999:Math.round(gunData[currentGun].dmg*(window.hsMult||1));
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
-          opponentStates[oidx].hp-=dmg;
+          var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
           if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;}
-          showDmgNum(hits[0].point,dmg,'#ff4444');
+          showDmgNum(hits[0].point,Math.round(dmg),'#ff4444');
         }
       });
     }
