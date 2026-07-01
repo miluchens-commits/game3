@@ -2604,6 +2604,7 @@ document.getElementById('vote-arena2').onclick=function(){sendMapVote('arena2');
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
+  console.log('sendMapVote:',map,'ws:',window.multiWS?'open='+(window.multiWS.readyState===1):'null');
   relaySend({type:'map_vote',map:map});
 }
 // Auto-detect server IP
