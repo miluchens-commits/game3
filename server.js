@@ -602,7 +602,7 @@ wss.on('connection', (ws) => {
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
-      case 'state': relayToOpponent(ws, { type: 'opponent_state', data: msg.data }); break;
+      case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;
       case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;
       case 'hit': relayToOpponent(ws, { type: 'opponent_hit', hp: msg.hp, armor: msg.armor }); break;
       case 'player_death': relayToOpponent(ws, { type: 'opponent_died' }); break;
@@ -638,6 +638,7 @@ function addToQueue(ws) {
 function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.splice(i, 1); }
 function startMatch(p1, p2) {
   const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {} }; p1.roomId = rid; p2.roomId = rid;
+  p1.playerId = 0; p2.playerId = 1;
   p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));
   p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));
 }
