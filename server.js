@@ -597,7 +597,8 @@ wss.on('connection', (ws) => {
   ws.playerData = null; ws.roomId = null;
   ws.on('message', (raw) => {
     let msg;
-    try { msg = JSON.parse(raw); } catch { return; }
+    try { msg = JSON.parse(raw); } catch { console.log('WS parse fail:', raw.toString().substring(0,80)); return; }
+    if(msg.type!=='state')console.log('WS msg:', msg.type, JSON.stringify(msg).substring(0,120));
     switch (msg.type) {
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
@@ -609,7 +610,8 @@ wss.on('connection', (ws) => {
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
-      case 'map_vote': handleMapVote(ws, msg.map); break;
+      case 'map_vote': console.log('WS map_vote received:', msg.map, 'roomId:', ws.roomId, 'rooms:', Object.keys(rooms).length); handleMapVote(ws, msg.map); break;
+      default: console.log('WS unknown type:', msg.type);
     }
   });
   ws.on('close', () => handleDisconnect(ws));
