@@ -1,0 +1,170 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>SMG 衝鋒槍 3D 預覽</title>
+<style>
+body{margin:0;overflow:hidden;background:#1a1a22;font-family:Arial;color:#fff}
+#info{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:12px 24px;border-radius:8px;font-size:14px;letter-spacing:2px;border:1px solid rgba(255,255,255,.1);text-align:center}
+#info small{display:block;color:rgba(255,255,255,.3);font-size:10px;margin-top:4px;letter-spacing:1px}
+#title{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:28px;font-weight:bold;letter-spacing:8px;color:#f8a;text-shadow:0 0 30px rgba(255,136,170,.3)}
+#hint{position:absolute;top:50%;right:30px;transform:translateY(-50%);color:rgba(255,255,255,.15);font-size:12px;letter-spacing:2px;writing-mode:vertical-rl}
+#controls{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+#controls button{padding:6px 16px;border-radius:4px;font-size:12px;font-weight:bold;color:rgba(255,255,255,.5);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);cursor:pointer;letter-spacing:2px;transition:all .2s}
+#controls button:hover{color:#fff;background:rgba(255,136,170,.15);border-color:#f8a}
+#controls button.active{color:#f8a;border-color:#f8a;background:rgba(255,136,170,.12)}
+</style>
+</head><body>
+<div id="title">衝 鋒 槍</div>
+<div id="hint">⇄ 拖曳旋轉</div>
+<div id="info">SMG / 衝鋒槍<small>滑鼠拖曳旋轉 • 滾輪縮放</small></div>
+<div id="controls"><button class="active" data-part="default">原廠配色</button><button data-part="red">赤紅</button><button data-part="navy">海軍</button><button data-part="tiger">虎紋</button></div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(0x1a1a22);
+var cam=new THREE.PerspectiveCamera(25,window.innerWidth/window.innerHeight,0.1,10);
+cam.position.set(0.5,0.2,1.2);
+var ren=new THREE.WebGLRenderer({antialias:true});
+ren.setSize(window.innerWidth,window.innerHeight);
+ren.setPixelRatio(Math.min(devicePixelRatio,2));
+ren.toneMapping=THREE.ACESFilmicToneMapping;
+ren.toneMappingExposure=1.2;
+document.body.appendChild(ren.domElement);
+new OrbitControls(cam,ren.domElement);
+
+var al=new THREE.AmbientLight(0x8888ff,0.3);scene.add(al);
+var dl=new THREE.DirectionalLight(0xffeedd,1.5);dl.position.set(1.5,2.5,1);scene.add(dl);
+var dl2=new THREE.DirectionalLight(0x8888ff,0.6);dl2.position.set(-1,1.5,-1);scene.add(dl2);
+var rim=new THREE.DirectionalLight(0x4488ff,0.8);rim.position.set(-0.5,0,-1);scene.add(rim);
+
+var ringGeo=new THREE.RingGeometry(0.15,0.25,32);
+var ringMat=new THREE.MeshBasicMaterial({color:0x8844aa,transparent:true,opacity:0.12,side:THREE.DoubleSide});
+var ring=new THREE.Mesh(ringGeo,ringMat);ring.rotation.x=-Math.PI/2;ring.position.y=-0.08;scene.add(ring);
+
+var presets={
+  default:{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111},
+  red:{dark:0x441111,metal:0xcc2222,wood:0x552222,scope:0x222222},
+  navy:{dark:0x112244,metal:0x4477aa,wood:0x223355,scope:0x111133},
+  tiger:{dark:0x442200,metal:0xcc8800,wood:0x663300,scope:0x331100}
+};
+
+function createSMG(colors){
+  var g=new THREE.Group();
+  var matDark=new THREE.MeshStandardMaterial({color:colors.dark,metalness:0.3,roughness:0.7});
+  var matMetal=new THREE.MeshStandardMaterial({color:colors.metal,metalness:0.6,roughness:0.4});
+  var matWood=new THREE.MeshStandardMaterial({color:colors.wood,roughness:0.9});
+  var matScope=new THREE.MeshStandardMaterial({color:colors.scope,metalness:0.5,roughness:0.3});
+  var matLens=new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x4488ff,emissiveIntensity:0.15});
+
+  // --- Receiver (main body) ---
+  var rcv=new THREE.Mesh(new THREE.BoxGeometry(0.034,0.034,0.10),matDark);
+  rcv.position.set(0,0,0);g.add(rcv);
+  // rcv z range: -0.05 to +0.05
+
+  // --- Barrel (touches receiver front at z=-0.05) ---
+  var barr=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.012,0.10,8),matMetal);
+  barr.position.set(0,0,-0.10);barr.rotation.x=Math.PI/2;g.add(barr);
+  // barr z range: -0.15 to -0.05
+
+  // --- Flash hider (touches barrel front at z=-0.15) ---
+  var fh=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.01,0.02,8),matDark);
+  fh.position.set(0,0,-0.16);fh.rotation.x=Math.PI/2;g.add(fh);
+  // fh z range: -0.17 to -0.15
+
+  // --- Handguard (below barrel, touches receiver at z=-0.05) ---
+  var hg=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.022,0.10),matDark);
+  hg.position.set(0,-0.014,-0.10);g.add(hg);
+  // hg z range: -0.15 to -0.05, y: -0.025 to -0.003
+
+  // --- Top rail (on receiver) ---
+  var rail=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.004,0.10),matMetal);
+  rail.position.set(0,0.019,0);g.add(rail);
+  // rail z: -0.05 to +0.05
+
+  // --- Rear sight (on top rear of receiver) ---
+  var rs=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.016,0.006),matDark);
+  rs.position.set(0,0.03,0.045);g.add(rs);
+
+  // --- Front sight (on top of barrel area) ---
+  var fs=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.014,0.006),matDark);
+  fs.position.set(0,0.026,-0.10);g.add(fs);
+
+  // --- Red dot sight ---
+  var rdsBody=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,0.025,8),matScope);
+  rdsBody.position.set(0,0.04,-0.02);rdsBody.rotation.x=Math.PI/2;g.add(rdsBody);
+  var rdsLens=new THREE.Mesh(new THREE.SphereGeometry(0.004,6,6),matLens);
+  rdsLens.position.set(0,0.04,-0.034);g.add(rdsLens);
+
+  // --- Charging handle (right side of receiver) ---
+  var ch=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.015,6),matMetal);
+  ch.position.set(0.02,0.012,-0.02);ch.rotation.z=Math.PI/2;g.add(ch);
+
+  // --- Magazine (touches receiver bottom at y=-0.017) ---
+  var magBody=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.048,0.014),matDark);
+  magBody.position.set(0,-0.041,-0.01);g.add(magBody);
+  // magBody top at y=-0.017, bottom at y=-0.065
+  var magCurve=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.018,0.014),matDark);
+  magCurve.position.set(0,-0.063,-0.002);magCurve.rotation.x=0.35;g.add(magCurve);
+
+  // --- Trigger guard (under receiver, behind magazine) ---
+  var tg=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.01,0.022),matDark);
+  tg.position.set(0,-0.022,0.045);g.add(tg);
+  // tg z: 0.034 to 0.056, y: -0.027 to -0.017
+
+  // --- Trigger ---
+  var tr=new THREE.Mesh(new THREE.BoxGeometry(0.003,0.008,0.004),matMetal);
+  tr.position.set(0,-0.016,0.045);g.add(tr);
+
+  // --- Pistol grip ---
+  var grip=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.036,0.022),matWood);
+  grip.position.set(0,-0.034,0.06);grip.rotation.x=0.3;g.add(grip);
+
+  // --- Stock arms (touching receiver back at z=0.05) ---
+  var s1=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);
+  s1.position.set(0.01,0.008,0.075);s1.rotation.x=0.1;g.add(s1);
+  var s2=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);
+  s2.position.set(-0.01,0.008,0.075);s2.rotation.x=0.1;g.add(s2);
+  // arm front at z=0.05, back at z=0.10
+  var sButt=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.016,0.012),matDark);
+  sButt.position.set(0,0.004,0.105);g.add(sButt);
+
+  // --- Foregrip (below handguard) ---
+  var fg=new THREE.Mesh(new THREE.BoxGeometry(0.014,0.02,0.022),matWood);
+  fg.position.set(0,-0.034,-0.10);g.add(fg);
+
+  // Frustum culling
+  g.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.renderOrder=1;}});
+  return g;
+}
+
+var currentGun=null;
+function buildSMG(colors){
+  if(currentGun){scene.remove(currentGun);currentGun=null;}
+  currentGun=createSMG(colors);
+  currentGun.scale.set(1.5,1.5,1.5);
+  currentGun.position.y=-0.05;
+  scene.add(currentGun);
+}
+buildSMG(presets.default);
+
+document.querySelectorAll('#controls button').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('#controls button').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    buildSMG(presets[btn.dataset.part]);
+  });
+});
+
+function resize(){
+  cam.aspect=window.innerWidth/window.innerHeight;
+  cam.updateProjectionMatrix();
+  ren.setSize(window.innerWidth,window.innerHeight);
+}
+window.addEventListener('resize',resize);
+
+function anim(){requestAnimationFrame(anim);ren.render(scene,cam);}
+anim();
+</script>
+</body></html>

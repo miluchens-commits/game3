@@ -41,6 +41,14 @@ canvas{display:block}
 #hp-fill{background:linear-gradient(90deg,#3a3,#5e5);width:100%}
 #armor-fill{background:linear-gradient(90deg,#38c,#5af);width:100%}
 body.mobile-mode #hud{bottom:calc(6vh + 26vmin);left:2vw}
+#killfeed{position:fixed;top:80px;right:16px;z-index:5;pointer-events:none;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.kf-entry{padding:5px 12px;border-radius:4px;font-size:12px;font-weight:bold;letter-spacing:1px;font-family:Arial;white-space:nowrap;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(4px);color:#fff;animation:kfIn .25s ease-out;transition:opacity .4s}
+.kf-entry .kf-killer{color:#f8a}
+.kf-entry .kf-weapon{color:#ffd;margin:0 4px;font-size:10px}
+.kf-entry .kf-victim{color:#8cf}
+.kf-entry.kf-self .kf-victim{color:#f66}
+.kf-entry.kf-self .kf-killer{color:#f66}
+@keyframes kfIn{0%{opacity:0;transform:translateX(30px)}100%{opacity:1;transform:translateX(0)}}
 body.mobile-mode #ammo-hud{bottom:calc(6vh + 26vmin);left:auto;right:3vw}
 body.mobile-mode #slot-hud{display:none}
 body.mobile-mode #mobile-slots{display:flex}
@@ -191,14 +199,32 @@ body.mobile-mode #scope-overlay{display:none!important}
 #rank-stats span{color:#c6f;font-weight:bold}
 #rank-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1}
 #rank-close:hover{color:#fff}
-#skin-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#f8a;background:transparent;border:1px solid rgba(255,136,170,.35);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.8;z-index:1}
-#skin-btn:hover{opacity:1;border-color:#f8a;box-shadow:0 0 25px rgba(255,136,170,.5);transform:scale(1.04);color:#fff}
+#skin-btn,#charskin-btn,#prof-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#f8a;background:transparent;border:1px solid rgba(255,136,170,.35);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.8;z-index:1}
+#skin-btn:hover,#charskin-btn:hover,#prof-btn:hover{opacity:1;border-color:#f8a;box-shadow:0 0 25px rgba(255,136,170,.5);transform:scale(1.04);color:#fff}
 #skin-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
 #skin-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#2a0a1a,#100008);overflow:hidden}
 #skin-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,136,170,.03) 30px,rgba(255,136,170,.03) 31px);pointer-events:none}
 #skin-box{position:relative;background:linear-gradient(135deg,#1a0a12,#100008);border:2px solid rgba(255,136,170,.25);border-radius:12px;padding:28px 32px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 80px rgba(255,136,170,.12);max-width:520px;width:92%}
 #skin-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1}
 #skin-close:hover{color:#f8a}
+#prof-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;font-family:Arial;display:none;align-items:center;justify-content:center}
+#prof-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#1a1a2a,#080810);overflow:hidden}
+#prof-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(170,136,255,.03) 30px,rgba(170,136,255,.03) 31px);pointer-events:none}
+#prof-box{position:relative;background:linear-gradient(135deg,#12101a,#08060e);border:2px solid rgba(170,136,255,.25);border-radius:12px;padding:28px 32px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 80px rgba(170,136,255,.12);max-width:520px;width:92%}
+#prof-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1}
+#prof-close:hover{color:#a8f}
+#prof-title{font-size:22px;font-weight:bold;letter-spacing:6px;margin-bottom:18px;color:#a8f;text-shadow:0 0 30px rgba(170,136,255,.3)}
+#prof-list{width:100%;display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:4px}
+#prof-list::-webkit-scrollbar{width:4px}
+#prof-list::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:2px}
+#prof-list::-webkit-scrollbar-thumb{background:rgba(170,136,255,.3);border-radius:2px}
+.prof-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.prof-item .pi-name{font-size:14px;font-weight:bold;color:#fff;min-width:80px;letter-spacing:2px}
+.prof-item .pi-lvl{font-size:11px;color:#a8f;min-width:40px;text-align:center}
+.prof-item .pi-bar-wrap{flex:1;height:14px;background:rgba(255,255,255,.06);border-radius:7px;overflow:hidden;position:relative}
+.prof-item .pi-bar{height:100%;border-radius:7px;background:linear-gradient(90deg,#86a,#a8f);transition:width .3s}
+.prof-item .pi-bar-text{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.6);letter-spacing:1px}
+.prof-item .pi-sp{font-size:11px;color:#ffd;min-width:50px;text-align:right;letter-spacing:1px}
 #skin-title{font-size:26px;font-weight:900;color:#f8a;letter-spacing:6px;margin-bottom:12px;text-shadow:0 0 20px rgba(255,136,170,.25)}
 #skin-preview-wrap{position:relative;width:100%;height:150px;border-radius:8px;overflow:hidden;margin-bottom:10px;border:1px solid rgba(255,136,170,.15);background:rgba(0,0,0,.4);cursor:grab;touch-action:none}
 #skin-preview-wrap:active{cursor:grabbing}
@@ -212,6 +238,9 @@ body.mobile-mode #scope-overlay{display:none!important}
 .skin-color-swatch{width:100%;aspect-ratio:1;border-radius:4px;cursor:pointer;border:2px solid rgba(255,255,255,.15);transition:all .15s;box-sizing:border-box;max-width:28px;justify-self:center}
 .skin-color-swatch:hover{transform:scale(1.2);border-color:rgba(255,255,255,.4);z-index:1}
 .skin-color-swatch.active{border-color:#f8a;box-shadow:0 0 8px rgba(255,136,170,.5)}
+.skin-color-swatch.locked{position:relative;cursor:pointer;border-color:rgba(255,255,255,.05);opacity:.45}
+.skin-color-swatch.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;line-height:1;pointer-events:none}
+.skin-color-swatch.locked:hover{opacity:.7;border-color:rgba(255,255,255,.15)}
 #skin-gun-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
 .skin-gun-tab{padding:6px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.04)}
 .skin-gun-tab:hover{color:#fff;border-color:rgba(255,255,255,.3)}
@@ -465,8 +494,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
-<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械 皮 膚</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="team-block-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;background:rgba(0,0,0,.92);border:1px solid rgba(255,68,68,.4);border-radius:10px;padding:20px 30px;font-family:Arial;text-align:center;pointer-events:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">⚠ 無法遊玩</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊中無法進行此模式<br>請先離開隊伍</div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
-<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械</button><button id="charskin-btn">👤 角 色</button><button id="prof-btn">⭐ 熟 練 度</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="team-block-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;background:rgba(0,0,0,.92);border:1px solid rgba(255,68,68,.4);border-radius:10px;padding:20px 30px;font-family:Arial;text-align:center;pointer-events:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">⚠ 無法遊玩</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊中無法進行此模式<br>請先離開隊伍</div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
+<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button><button class="a-gun-btn" data-gun="smg">衝鋒槍</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="team-info" style="display:none;width:100%;padding:6px 10px;margin-bottom:8px;background:rgba(68,255,170,.08);border:1px solid rgba(68,255,170,.2);border-radius:4px;font-size:12px;color:#4fa;letter-spacing:1px;box-sizing:border-box;text-align:center">👥 隊伍：<span id="team-members"></span> <button id="team-leave-btn" style="margin-left:6px;padding:2px 8px;font-size:10px;color:#f64;background:transparent;border:1px solid rgba(255,102,68,.3);border-radius:3px;cursor:pointer;font-family:Arial">離開</button></div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
 <div id="chat-panel"><div id="chat-bg"></div><div id="chat-box"><div id="chat-header"><span id="chat-friend-name">好友</span><button id="chat-close">✕</button></div><div id="chat-messages"></div><div id="chat-input-row"><input id="chat-input" placeholder="輸入訊息..." maxlength="500"><button id="chat-send-btn">發送</button></div></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
@@ -492,10 +521,14 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="shop"><div id="shop-bg"></div><div id="shop-box"><div id="shop-close">✕</div><div id="shop-title">軍 火 交 易 所</div><div id="shop-coins"></div><div id="shop-list"></div></div></div>
 <div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人（每日刷新）</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div><button class="event-claim-btn" data-quest="kill" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務二：乘龍破浪</div><div class="event-quest-desc">累積完成 3 波（每日刷新）</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div><button class="event-claim-btn" data-quest="round" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div></div></div></div>
 <div id="rank-overlay"><div id="rank-bg"></div><div id="rank-box"><div id="rank-close">✕</div><div id="rank-title">排 位 賽</div><div id="rank-badge">青銅一階</div><div id="rank-sub">目前段位</div><div id="rank-progress"><div id="rank-progress-fill" style="width:0%"></div></div><div id="rank-info">單人模式無法升級<br>打贏多人比賽 +1 階 &bull; 中離 -1 階</div><div id="rank-stats">🏆 總場次 <span id="rank-games">0</span>　🎯 最高連勝 <span id="rank-streak">0</span></div></div></div>
-<div id="skin-overlay"><div id="skin-bg"></div><div id="skin-box"><div id="skin-close">✕</div><div id="skin-title">槍 械 皮 膚</div><div id="skin-preview-wrap"><canvas id="skin-canvas"></canvas><div id="skin-preview-hint">⇄ 拖曳旋轉</div></div><div id="skin-part-picker"></div><div id="skin-color-grid"></div><div id="skin-gun-tabs"></div><div id="skin-list"></div></div></div>
+<div id="skin-overlay"><div id="skin-bg"></div><div id="skin-box"><div id="skin-close">✕</div><div id="skin-title">皮 膚</div><div id="skin-preview-wrap"><canvas id="skin-canvas"></canvas><div id="skin-preview-hint">⇄ 拖曳旋轉</div></div><div id="skin-part-picker"></div><div id="skin-color-grid"></div><div id="skin-gun-tabs"></div><div id="skin-list"></div></div></div>
+<div id="prof-overlay"><div id="prof-bg"></div><div id="prof-box"><div id="prof-close">✕</div><div id="prof-title">⭐ 武 器 熟 練 度</div><div id="prof-list"></div></div></div>
 <div id="season-overlay"><div id="season-bg"></div><div id="season-box"><div id="season-close">✕</div><div id="season-banner"><div class="sb-corner"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="10" fill="#4f4" opacity=".6"/><circle cx="30" cy="30" r="4" fill="#0a0"/><path d="M30,2 L38,22 L58,22 L42,34 L48,54 L30,44 L12,54 L18,34 L2,22 L22,22 Z" fill="none" stroke="#4f4" stroke-width="1.5" opacity=".3"/></svg></div><div class="sb-corner sb-skull"><svg viewBox="0 0 60 60"><circle cx="30" cy="28" r="16" fill="#fff" opacity=".1"/><circle cx="22" cy="26" r="3" fill="#4f4" opacity=".6"/><circle cx="38" cy="26" r="3" fill="#4f4" opacity=".6"/><path d="M18,36 Q30,44 42,36" fill="none" stroke="#4f4" stroke-width="2" opacity=".5"/><rect x="25" y="42" width="10" height="8" rx="2" fill="#4f4" opacity=".3"/></svg></div><div class="sb-title-row"><div class="sb-badge">S1 核動力</div><div class="sb-title">賽 季 任 務</div><div class="sb-sub">S E A S O N  1  •  N U C L E A R</div></div></div><div id="season-body"><div id="season-countdown"></div><div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px"><div class="seasontab active" id="stab-daily">📅 每日</div><div class="seasontab" id="stab-weekly">📆 每週</div></div><div id="season-quests"></div><div id="season-sp"><span id="ssp-display">SP 0</span></div></div></div></div>
 <div id="perk-overlay"><div id="perk-bg"></div><div id="perk-box"><div id="perk-title">🎴 選擇強化</div><div id="perk-cards"></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
+<div id="session-sp" style="position:fixed;top:12px;right:12px;z-index:5;pointer-events:none;font-size:13px;font-weight:bold;color:#ffd;letter-spacing:1px;font-family:Arial;text-shadow:0 0 10px rgba(255,255,200,.2);display:none">SP +<span id="session-sp-val">0</span></div>
+<div id="unlock-dialog" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;align-items:center;justify-content:center;font-family:Arial"><div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6)" id="unlock-bg"></div><div style="position:relative;background:linear-gradient(135deg,#1a1220,#0a0810);border:2px solid rgba(170,136,255,.3);border-radius:12px;padding:24px 32px;text-align:center;max-width:300px;box-shadow:0 0 60px rgba(170,136,255,.15)"><div style="font-size:16px;font-weight:bold;color:#a8f;letter-spacing:2px;margin-bottom:6px">🔓 解鎖顏色</div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;letter-spacing:1px">花費 <span style="color:#ffd;font-weight:bold">5 SP</span> 解鎖此顏色？</div><div style="display:flex;gap:12px;justify-content:center"><button id="unlock-confirm" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:#a8f;background:rgba(170,136,255,.12);border:1px solid rgba(170,136,255,.4);cursor:pointer;letter-spacing:2px;transition:all .2s">✓ 解鎖</button><button id="unlock-cancel" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);cursor:pointer;letter-spacing:2px">✕ 取消</button></div></div></div>
+<div id="killfeed"></div>
 <div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button><button id="mobile-aim-btn">準</button></div><div id="mobile-slots"></div>
 <div id="rotate-device"><svg viewBox="0 0 120 120"><path d="M60,10 L60,50 M50,40 L60,50 L70,40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="80" rx="6" fill="none" stroke="#fff" stroke-width="4"/><rect x="35" y="25" width="50" height="60" rx="4" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"/><line x1="50" y1="90" x2="70" y2="90" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div>請旋轉手機</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Please rotate your device to landscape</div></div>
 <div id="buff-indicator" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 8px rgba(255,255,255,.5);letter-spacing:1px"></div>
@@ -1401,20 +1434,66 @@ function updateSlotFlashlightUI(){
 }
 // ── Gun system ──
 var knifeSwingCount=0,knifeAnim=0;
-var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,chargeable:true,chargeTime:1.2,chargeMaxDmg:50}};
+var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,chargeable:true,chargeTime:1.2,chargeMaxDmg:50},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40}};
 var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null;
 var gunKills={};
-var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20};
-var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4)};
+var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20,smg:40};
+var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4),smg:new THREE.Vector3(0,0,-0.35)};
 // ── Economy system ──
 var specialCoins=parseInt(localStorage.getItem('oc_coin'))||50000;
-var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:0,radrifle:0};
-var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0};
-var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍'};
+var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:0,radrifle:0,smg:0};
+var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0,smg:20000};
+var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍',smg:'衝鋒槍'};
 var slotFlashlight=[false,false,false,false,false];
 function updateCoinsDisplay(){
   try{localStorage.setItem('oc_coin',specialCoins);}catch(e){}
   document.getElementById('menu-coins').textContent='特種幣 $'+specialCoins;
+}
+var weaponProf={};
+try{var wp=localStorage.getItem('oc_prof');if(wp)weaponProf=JSON.parse(wp);}catch(e){}
+function addProficiency(){
+  if(sessionSP>0){
+    seasonPoints=(seasonPoints||0)+sessionSP;
+    try{localStorage.setItem('oc_sp',seasonPoints);}catch(e){}
+    document.getElementById('menu-sp-val').textContent=seasonPoints;
+    document.getElementById('ssp-display').textContent='SP '+seasonPoints;
+  }
+  var loadout=playerLoadout||[];
+  var anyGain=false;
+  for(var si=0;si<loadout.length;si++){
+    var gun=loadout[si];if(!gun||gun==='knife'||gun==='grapple')continue;
+    weaponProf[gun]=(weaponProf[gun]||0)+1;
+    anyGain=true;
+    if(weaponProf[gun]%10===0){
+      seasonPoints=(seasonPoints||0)+10;
+      try{localStorage.setItem('oc_sp',seasonPoints);}catch(e){}
+      document.getElementById('menu-sp-val').textContent=seasonPoints;
+      document.getElementById('ssp-display').textContent='SP '+seasonPoints;
+    }
+  }
+  if(anyGain){try{localStorage.setItem('oc_prof',JSON.stringify(weaponProf));}catch(e){}}
+}
+function openProficiencyPanel(){
+  document.getElementById('prof-overlay').style.display='flex';document.getElementById('menu').style.display='none';
+  var list=document.getElementById('prof-list');list.innerHTML='';
+  var tracked=['ak47','deagle','awp','shotgun','smg'];
+  tracked.forEach(function(gun){
+    var prof=weaponProf[gun]||0;
+    var lvl=Math.floor(prof/10)+1;
+    var cur=prof%10;
+    var spEarned=Math.floor(prof/10)*10;
+    var name=gunData[gun]?gunData[gun].name:gun;
+    var totalSp=seasonPoints||0;
+    var item=document.createElement('div');item.className='prof-item';
+    item.innerHTML='<span class="pi-name">'+name+'</span><span class="pi-lvl">Lv.'+lvl+'</span><div class="pi-bar-wrap"><div class="pi-bar" style="width:'+(cur*10)+'%"></div><span class="pi-bar-text">'+cur+' / 10</span></div><span class="pi-sp">+'+spEarned+' SP</span>';
+    list.appendChild(item);
+  });
+  var spInfo=document.createElement('div');spInfo.style.cssText='margin-top:12px;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;text-align:center';
+  spInfo.textContent='每 10 熟練度 = 10 SP　目前 SP：'+(seasonPoints||0);
+  list.appendChild(spInfo);
+}
+function updateProficiencyDisplay(){
+  if(document.getElementById('prof-overlay').style.display==='flex')openProficiencyPanel();
 }
 function updateArmoryGunCounts(){
   document.querySelectorAll('.a-gun-btn').forEach(function(b){
@@ -1431,7 +1510,7 @@ function showShop(){
 function renderShopList(){
   document.getElementById('shop-coins').textContent='特種幣 $'+specialCoins;
   var list=document.getElementById('shop-list');list.innerHTML='';
-  var guns=['ak47','deagle','awp','shotgun','knife'];
+  var guns=['ak47','deagle','awp','shotgun','knife','smg'];
   guns.forEach(function(gun){
     var price=weaponPrices[gun];
     var cnt=weaponInventory[gun]||0;
@@ -1556,6 +1635,26 @@ function createGunModel(type){
     var pg3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.05),matWood);pg3.position.set(0,-0.015,-0.18);g.add(pg3);
     var pg4=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.055,0.03),matWood);pg4.position.set(0,-0.04,0.05);pg4.rotation.x=0.3;g.add(pg4);
     var stk3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.1),matWood);stk3.position.set(0,0.01,0.1);g.add(stk3);
+  }else if(type==='smg'){
+    var rcvs=new THREE.Mesh(new THREE.BoxGeometry(0.034,0.034,0.10),matDark);rcvs.position.set(0,0,0);g.add(rcvs);
+    var barrs=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.012,0.10,8),matMetal);barrs.rotation.x=Math.PI/2;barrs.position.set(0,0,-0.10);g.add(barrs);
+    var fhs=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.01,0.02,8),matDark);fhs.rotation.x=Math.PI/2;fhs.position.set(0,0,-0.16);g.add(fhs);
+    var hgs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.022,0.10),matDark);hgs.position.set(0,-0.014,-0.10);g.add(hgs);
+    var rails=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.004,0.10),matMetal);rails.position.set(0,0.019,0);g.add(rails);
+    var rss=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.016,0.006),matDark);rss.position.set(0,0.03,0.045);g.add(rss);
+    var fss=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.014,0.006),matDark);fss.position.set(0,0.026,-0.10);g.add(fss);
+    var rdss=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,0.025,8),matScope);rdss.rotation.x=Math.PI/2;rdss.position.set(0,0.04,-0.02);g.add(rdss);
+    var rdlens=new THREE.Mesh(new THREE.SphereGeometry(0.004,6,6),matLens);rdlens.position.set(0,0.04,-0.034);g.add(rdlens);
+    var chs=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.015,6),matMetal);chs.rotation.z=Math.PI/2;chs.position.set(0.02,0.012,-0.02);g.add(chs);
+    var mags=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.048,0.014),matDark);mags.position.set(0,-0.041,-0.01);g.add(mags);
+    var magcs=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.018,0.014),matDark);magcs.position.set(0,-0.063,-0.002);magcs.rotation.x=0.35;g.add(magcs);
+    var tgs=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.01,0.022),matDark);tgs.position.set(0,-0.022,0.045);g.add(tgs);
+    var trs=new THREE.Mesh(new THREE.BoxGeometry(0.003,0.008,0.004),matMetal);trs.position.set(0,-0.016,0.045);g.add(trs);
+    var grips=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.036,0.022),matWood);grips.position.set(0,-0.034,0.06);grips.rotation.x=0.3;g.add(grips);
+    var s1s=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);s1s.position.set(0.01,0.008,0.075);s1s.rotation.x=0.1;g.add(s1s);
+    var s2s=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);s2s.position.set(-0.01,0.008,0.075);s2s.rotation.x=0.1;g.add(s2s);
+    var sbs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.016,0.012),matDark);sbs.position.set(0,0.004,0.105);g.add(sbs);
+    var fgs=new THREE.Mesh(new THREE.BoxGeometry(0.014,0.02,0.022),matWood);fgs.position.set(0,-0.034,-0.10);g.add(fgs);
   }else if(type==='radrifle'){
     var rMat=new THREE.MeshStandardMaterial({color:0x226622,metalness:0.6,roughness:0.3});
     var rGlow=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.8});
@@ -1753,13 +1852,15 @@ document.getElementById('shop-btn').onclick=function(){document.getElementById('
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 // ── Skin system ──
-var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,scope:0x222222}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xcccccc,scope:0xaaaaaa}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xcc8800,scope:0x331100}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}}]};
+var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,scope:0x222222}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xcccccc,scope:0xaaaaaa}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xcc8800,scope:0x331100}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}}],smg:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,wood:0x222222,scope:0x222222}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411,scope:0x224411}}]};
 function getEquippedSkin(type){var s;try{s=localStorage.getItem('oc_skin_'+type);}catch(e){}return s||'default';}
 function setSkin(type,id){try{localStorage.setItem('oc_skin_'+type,id);}catch(e){}if(type===currentGun&&gunGroup){detachFlashlightMesh();cam.remove(gunGroup);gunGroup=createGunModel(type);gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.scale.set(1.5,1.5,1.5);cam.add(gunGroup);gunGroup.rotation.set(0,0,0);attachFlashlightMesh();createMagazine();}}
 function getSkinColors(type){var sk=gunSkins[type];if(!sk)return null;var id=getEquippedSkin(type);for(var i=0;i<sk.length;i++){if(sk[i].id===id)return sk[i].colors;}return sk[0]?sk[0].colors:null;}
-var skinSelectedGun='ak47';
-var skinPreviewScene=null,skinPreviewCam=null,skinPreviewRen=null,skinPreviewGun=null,skinPreviewRotX=0,skinPreviewRotY=0,skinPreviewDrag=false,skinPreviewLastX=0,skinPreviewLastY=0,skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111},skinSelectedPart='dark';
+var skinSelectedGun='ak47',skinMode='gun';
+var skinPreviewScene=null,skinPreviewCam=null,skinPreviewRen=null,skinPreviewGun=null,skinPreviewChar=null,skinPreviewRotX=0,skinPreviewRotY=0,skinPreviewDrag=false,skinPreviewLastX=0,skinPreviewLastY=0,skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111},skinSelectedPart='dark';
 var skinPartNames={dark:'暗色',metal:'金屬',wood:'木質',scope:'瞄具'};
+var skinCharParts={body:'身體',feet:'腳',shoulders:'手部'};
+var skinCharDefault={body:0x111111,feet:0x111111,shoulders:0x111111};
 var presetColors=[
   0x222222,0x333333,0x444444,0x555555,0x666666,0x777777,0x888888,0x999999,
   0x111111,0x1a1a1a,0x2a2a2a,0x3a3a3a,0x4a4a4a,0x5a5a5a,0xaaaaaa,0xcccccc,
@@ -1768,6 +1869,11 @@ var presetColors=[
   0x553311,0x774422,0x885533,0x996644,0x332211,0x554422,0x443322,0x665533,
   0x111100,0x222200,0x333300,0x444400,0xffaa00,0xff6600,0x88ccff,0x22cc66
 ];
+var lockedColors=[0x555555,0x888888,0x1a1a1a,0xcccccc,0xaa3333,0xcc4444,0x336622,0x448833,0x226688,0x44aacc,0x222244,0x444488,0x774422,0x996644,0x554422,0x665533,0x444400,0xffaa00];
+var unlockedColors=new Set();
+try{var uc=JSON.parse(localStorage.getItem('oc_unlocked_colors'));if(uc)uc.forEach(function(c){unlockedColors.add(c);});}catch(e){}
+function isColorLocked(c){return lockedColors.indexOf(c)>=0&&!unlockedColors.has(c);}
+var sessionSP=0;
 function initSkinPreview(){
   var canvas=document.getElementById('skin-canvas');
   if(!canvas||skinPreviewRen)return;
@@ -1796,12 +1902,13 @@ function initSkinPreview(){
   wrap.addEventListener('touchend',function(){skinPreviewDrag=false;},{passive:true});
   // Animate
   function skinAnim(){requestAnimationFrame(skinAnim);
-    if(skinPreviewGun&&!skinPreviewDrag){
+    var obj=skinPreviewGun||skinPreviewChar;
+    if(obj&&!skinPreviewDrag){
       skinPreviewRotY+=0.008;
     }
-    if(skinPreviewGun){
-      skinPreviewGun.rotation.y=skinPreviewRotY;
-      skinPreviewGun.rotation.x=skinPreviewRotX;
+    if(obj){
+      obj.rotation.y=skinPreviewRotY;
+      obj.rotation.x=skinPreviewRotX;
     }
     if(skinPreviewRen&&skinPreviewScene&&skinPreviewCam)skinPreviewRen.render(skinPreviewScene,skinPreviewCam);
   }
@@ -1816,21 +1923,59 @@ function buildSkinPreviewGun(){
   if(g){skinPreviewScene.add(g);skinPreviewGun=g;}
 }
 function updateSkinPreviewColors(){
-  if(!skinPreviewGun)return;
-  var mats=skinPreviewGun.userData.skinMats;
-  if(!mats)return;
-  if(skinCustomColors.dark!==undefined&&mats.dark)mats.dark.color.setHex(skinCustomColors.dark);
-  if(skinCustomColors.metal!==undefined&&mats.metal)mats.metal.color.setHex(skinCustomColors.metal);
-  if(skinCustomColors.wood!==undefined&&mats.wood)mats.wood.color.setHex(skinCustomColors.wood);
-  if(skinCustomColors.scope!==undefined&&mats.scope)mats.scope.color.setHex(skinCustomColors.scope);
+  if(skinMode==='gun'){
+    if(!skinPreviewGun)return;
+    var mats=skinPreviewGun.userData.skinMats;
+    if(!mats)return;
+    if(skinCustomColors.dark!==undefined&&mats.dark)mats.dark.color.setHex(skinCustomColors.dark);
+    if(skinCustomColors.metal!==undefined&&mats.metal)mats.metal.color.setHex(skinCustomColors.metal);
+    if(skinCustomColors.wood!==undefined&&mats.wood)mats.wood.color.setHex(skinCustomColors.wood);
+    if(skinCustomColors.scope!==undefined&&mats.scope)mats.scope.color.setHex(skinCustomColors.scope);
+  }else{
+    updateCharPreviewColors();
+  }
+}
+function buildSkinPreviewChar(){
+  if(skinPreviewChar){skinPreviewScene.remove(skinPreviewChar);skinPreviewChar=null;}
+  if(skinPreviewGun){skinPreviewScene.remove(skinPreviewGun);skinPreviewGun=null;}
+  var g=createOpponentMesh();
+  g.scale.set(0.3,0.3,0.3);
+  g.position.y=-0.08;
+  skinPreviewScene.add(g);
+  skinPreviewChar=g;
+  updateCharPreviewColors();
+}
+function updateCharPreviewColors(){
+  if(!skinPreviewChar)return;
+  if(skinCustomColors.body!==undefined&&skinPreviewChar.userData.body)skinPreviewChar.userData.body.material.color.setHex(skinCustomColors.body);
+  if(skinCustomColors.visor!==undefined&&skinPreviewChar.userData.visor)skinPreviewChar.userData.visor.material.color.setHex(skinCustomColors.visor);
+  if(skinCustomColors.backpack!==undefined){
+    var bp=null;skinPreviewChar.traverse(function(c){if(c.isMesh&&c.geometry.type==='BoxGeometry'&&c.position.y===0.35)bp=c;});
+    if(bp)bp.material.color.setHex(skinCustomColors.backpack);
+  }
+  if(skinCustomColors.feet!==undefined){
+    var cnt=0;skinPreviewChar.traverse(function(c){if(c.isMesh&&c.geometry.type==='SphereGeometry'&&c.position.y===0&&Math.abs(c.position.x)===0.22){c.material.color.setHex(skinCustomColors.feet);}});
+  }
+  if(skinCustomColors.shoulders!==undefined){
+    skinPreviewChar.traverse(function(c){if(c.isMesh&&c.geometry.type==='SphereGeometry'&&c.position.y===0.28&&Math.abs(c.position.x)===0.52)c.material.color.setHex(skinCustomColors.shoulders);});
+  }
 }
 function renderSkinPartPicker(){
   var p=document.getElementById('skin-part-picker');p.innerHTML='';
-  var parts=['dark','metal','wood','scope'];
-  for(var i=0;i<parts.length;i++){
-    var btn=document.createElement('button');btn.className='skin-part-btn'+(parts[i]===skinSelectedPart?' active':'');btn.textContent=skinPartNames[parts[i]];
-    btn.onclick=function(pp){return function(){skinSelectedPart=pp;renderSkinPartPicker();renderSkinColorGrid();};}(parts[i]);
-    p.appendChild(btn);
+  if(skinMode==='gun'){
+    var parts=['dark','metal','wood','scope'];
+    for(var i=0;i<parts.length;i++){
+      var btn=document.createElement('button');btn.className='skin-part-btn'+(parts[i]===skinSelectedPart?' active':'');btn.textContent=skinPartNames[parts[i]];
+      btn.onclick=function(pp){return function(){skinSelectedPart=pp;renderSkinPartPicker();renderSkinColorGrid();};}(parts[i]);
+      p.appendChild(btn);
+    }
+  }else{
+    var cparts=['body','feet','shoulders'];
+    for(var i=0;i<cparts.length;i++){
+      var btn=document.createElement('button');btn.className='skin-part-btn'+(cparts[i]===skinSelectedPart?' active':'');btn.textContent=skinCharParts[cparts[i]];
+      btn.onclick=function(pp){return function(){skinSelectedPart=pp;renderSkinPartPicker();renderSkinColorGrid();};}(cparts[i]);
+      p.appendChild(btn);
+    }
   }
 }
 function renderSkinColorGrid(){
@@ -1838,38 +1983,72 @@ function renderSkinColorGrid(){
   for(var i=0;i<presetColors.length;i++){
     var sw=document.createElement('div');sw.className='skin-color-swatch';
     var c=presetColors[i];sw.style.background='#'+c.toString(16).padStart(6,'0');
+    if(isColorLocked(c))sw.classList.add('locked');
     if(c===skinCustomColors[skinSelectedPart])sw.classList.add('active');
     sw.onclick=function(col){return function(){
+      if(isColorLocked(col)){
+        showUnlockDialog(col);
+        return;
+      }
       skinCustomColors[skinSelectedPart]=col;
       renderSkinColorGrid();
-      // Update preview
       updateSkinPreviewColors();
     };}(c);
     g.appendChild(sw);
   }
 }
+var _pendingUnlockColor=null;
+function showUnlockDialog(col){
+  _pendingUnlockColor=col;
+  document.getElementById('unlock-dialog').style.display='flex';
+}
+document.getElementById('unlock-confirm').onclick=function(){
+  if(_pendingUnlockColor===null)return;
+  if((seasonPoints||0)<5){document.getElementById('unlock-dialog').style.display='none';_pendingUnlockColor=null;return;}
+  seasonPoints-=5;
+  try{localStorage.setItem('oc_sp',seasonPoints);}catch(e){}
+  document.getElementById('menu-sp-val').textContent=seasonPoints;
+  document.getElementById('ssp-display').textContent='SP '+seasonPoints;
+  unlockedColors.add(_pendingUnlockColor);
+  try{localStorage.setItem('oc_unlocked_colors',JSON.stringify(Array.from(unlockedColors)));}catch(e){}
+  document.getElementById('unlock-dialog').style.display='none';
+  skinCustomColors[skinSelectedPart]=_pendingUnlockColor;
+  renderSkinColorGrid();
+  updateSkinPreviewColors();
+  _pendingUnlockColor=null;
+};
+document.getElementById('unlock-cancel').onclick=function(){document.getElementById('unlock-dialog').style.display='none';_pendingUnlockColor=null;};
+document.getElementById('unlock-bg').onclick=function(){document.getElementById('unlock-dialog').style.display='none';_pendingUnlockColor=null;};
 function openSkinPanel(){
   document.getElementById('skin-overlay').style.display='flex';document.getElementById('menu').style.display='none';
   initSkinPreview();
-  // Resize canvas after overlay is visible
   var wrap=document.getElementById('skin-preview-wrap');
   if(skinPreviewRen)skinPreviewRen.setSize(wrap.clientWidth,wrap.clientHeight);
-  var tabs=document.getElementById('skin-gun-tabs');var list=document.getElementById('skin-list');
-  tabs.innerHTML='';list.innerHTML='';
-  var guns=['ak47','deagle','awp','shotgun'];var gunNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',shotgun:'霰彈槍'};
-  for(var i=0;i<guns.length;i++){var g=guns[i];if(!gunSkins[g])continue;var tab=document.createElement('button');
-    tab.className='skin-gun-tab'+(g===skinSelectedGun?' active':'');tab.textContent=gunNames[g];
-    tab.onclick=function(gg){return function(){skinSelectedGun=gg;openSkinPanel();};}(g);tabs.appendChild(tab);}
-  var cur=getEquippedSkin(skinSelectedGun);
-  if(cur&&gunSkins[skinSelectedGun]){
-    for(var si=0;si<gunSkins[skinSelectedGun].length;si++){
-      var sk=gunSkins[skinSelectedGun][si];
-      if(sk.id===cur){skinCustomColors={};for(var k in sk.colors)skinCustomColors[k]=sk.colors[k];break;}
-    }
-  }else{skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111};}
-  renderSkinPartPicker();renderSkinColorGrid();
-  setTimeout(function(){buildSkinPreviewGun();},50);
-  renderSkinList();
+  if(skinMode==='gun'){
+    document.getElementById('skin-gun-tabs').style.display='flex';document.getElementById('skin-list').style.display='flex';
+    var tabs=document.getElementById('skin-gun-tabs');var list=document.getElementById('skin-list');
+    tabs.innerHTML='';list.innerHTML='';
+    var guns=['ak47','deagle','awp','shotgun','smg'];var gunNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',shotgun:'霰彈槍',smg:'衝鋒槍'};
+    for(var i=0;i<guns.length;i++){var g=guns[i];if(!gunSkins[g])continue;var tab=document.createElement('button');
+      tab.className='skin-gun-tab'+(g===skinSelectedGun?' active':'');tab.textContent=gunNames[g];
+      tab.onclick=function(gg){return function(){skinSelectedGun=gg;openSkinPanel();};}(g);tabs.appendChild(tab);}
+    var cur=getEquippedSkin(skinSelectedGun);
+    if(cur&&gunSkins[skinSelectedGun]){
+      for(var si=0;si<gunSkins[skinSelectedGun].length;si++){
+        var sk=gunSkins[skinSelectedGun][si];
+        if(sk.id===cur){skinCustomColors={};for(var k in sk.colors)skinCustomColors[k]=sk.colors[k];break;}
+      }
+    }else{skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111};}
+    renderSkinPartPicker();renderSkinColorGrid();
+    setTimeout(function(){buildSkinPreviewGun();},50);
+    renderSkinList();
+  }else{
+    document.getElementById('skin-gun-tabs').style.display='none';document.getElementById('skin-list').style.display='none';
+    skinSelectedPart='body';
+    try{var cs=JSON.parse(localStorage.getItem('oc_char_skin'));if(cs)skinCustomColors=cs;else skinCustomColors=JSON.parse(JSON.stringify(skinCharDefault));}catch(e){skinCustomColors=JSON.parse(JSON.stringify(skinCharDefault));}
+    renderSkinPartPicker();renderSkinColorGrid();
+    setTimeout(function(){buildSkinPreviewChar();},50);
+  }
 }
 function renderSkinList(){
   var list=document.getElementById('skin-list');list.innerHTML='';
@@ -1900,10 +2079,20 @@ function renderSkinList(){
     list.appendChild(card);
   }
 }
-document.getElementById('skin-btn').onclick=function(){openSkinPanel();};
+document.getElementById('skin-btn').onclick=function(){skinMode='gun';openSkinPanel();};
+document.getElementById('charskin-btn').onclick=function(){skinMode='char';openSkinPanel();};
+document.getElementById('prof-btn').onclick=function(){openProficiencyPanel();};
+document.getElementById('prof-close').onclick=function(){document.getElementById('prof-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
+document.getElementById('prof-bg').onclick=function(){document.getElementById('prof-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
 document.getElementById('skin-bg').onclick=function(){document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
-document.getElementById('skin-close').onclick=function(){document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
-document.getElementById('skin-bg').onclick=function(){}; // override default
+document.getElementById('skin-close').onclick=function(){
+  document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';
+  if(skinMode==='char'){try{localStorage.setItem('oc_char_skin',JSON.stringify(skinCustomColors));}catch(e){}}
+};
+document.getElementById('skin-bg').onclick=function(){
+  document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';
+  if(skinMode==='char'){try{localStorage.setItem('oc_char_skin',JSON.stringify(skinCustomColors));}catch(e){}}
+};
 var eventEndDate=(function(){try{var d=localStorage.getItem('oc_event_end');if(d)return new Date(d);}catch(e){}var nd=new Date(Date.now()+30*86400000);try{localStorage.setItem('oc_event_end',nd.toISOString());}catch(e){}return nd;})();
 var seasonPoints=parseInt(localStorage.getItem('oc_sp'))||0;
 function getDateKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
@@ -2446,6 +2635,7 @@ document.getElementById('settlement-btn').onclick=function(){
   document.getElementById('settlement').style.display='none';
   document.getElementById('settlement-daily').style.display='none';
   document.getElementById('menu').style.display='flex';
+  document.getElementById('session-sp').style.display='none';
   if(authToken)checkTeamStatus();
   updateLevelDisplay();
   updateCoinsDisplay();updateArmoryGunCounts();
@@ -2752,6 +2942,16 @@ function sendMapVote(map){
     }).catch(function(){});
   },500);
 }
+var opponentName='';
+function addKillFeed(killer,victim,gun){
+  var kf=document.getElementById('killfeed');
+  var entry=document.createElement('div');entry.className='kf-entry';
+  if(killer==='你'||killer===authUser)entry.classList.add('kf-self');
+  entry.innerHTML='<span class="kf-killer">'+killer+'</span><span class="kf-weapon">'+gun+'</span><span class="kf-victim">'+victim+'</span>';
+  if(kf.children.length>=5)kf.removeChild(kf.lastChild);
+  kf.insertBefore(entry,kf.firstChild);
+  setTimeout(function(){entry.style.opacity='0';setTimeout(function(){if(entry.parentNode)kf.removeChild(entry);},400);},2500);
+}
 // Auto-detect server IP
 (function(){
   var si=document.getElementById('server-ip');
@@ -2799,6 +2999,21 @@ function applyOpponentClass(om,classId){
   if(!om||!classId)return;
   if(om.userData.body){om.userData.body.material.color.setHex(classBodyColors[classId]||0x111111);}
 }
+function applyCharSkin(om){
+  if(!om)return;
+  try{var cs=JSON.parse(localStorage.getItem('oc_char_skin'));if(!cs)return;}catch(e){return;}
+  if(cs.body!==undefined&&om.userData.body)om.userData.body.material.color.setHex(cs.body);
+  if(cs.visor!==undefined&&om.userData.visor)om.userData.visor.material.color.setHex(cs.visor);
+  if(cs.backpack!==undefined){
+    om.traverse(function(c){if(c.isMesh&&c.geometry.type==='BoxGeometry'&&c.position.y===0.35)c.material.color.setHex(cs.backpack);});
+  }
+  if(cs.feet!==undefined){
+    om.traverse(function(c){if(c.isMesh&&c.geometry.type==='SphereGeometry'&&c.position.y===0&&Math.abs(c.position.x)===0.22)c.material.color.setHex(cs.feet);});
+  }
+  if(cs.shoulders!==undefined){
+    om.traverse(function(c){if(c.isMesh&&c.geometry.type==='SphereGeometry'&&c.position.y===0.28&&Math.abs(c.position.x)===0.52)c.material.color.setHex(cs.shoulders);});
+  }
+}
 function processServerMessage(data){
   switch(data.type){
     case 'in_queue':
@@ -2806,7 +3021,7 @@ function processServerMessage(data){
       break;
     case 'match_found':
       document.getElementById('multi-connecting').style.display='none';
-      isMultiplayer=true;playerCount=data.playerCount||2;
+      isMultiplayer=true;playerCount=data.playerCount||2;opponentName=data.opponent||'對手';
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
@@ -2886,7 +3101,7 @@ function processServerMessage(data){
           opponentStates[oidx].alive=opponentStates[oidx].hp>0;
           if(data.data.cls&&data.data.cls!==opponentStates[oidx].cls){
             opponentStates[oidx].cls=data.data.cls;
-            if(opponentMeshes[oidx])applyOpponentClass(opponentMeshes[oidx],data.data.cls);
+            if(opponentMeshes[oidx]){applyOpponentClass(opponentMeshes[oidx],data.data.cls);applyCharSkin(opponentMeshes[oidx]);}
           }
         }
       }
@@ -2987,6 +3202,7 @@ function startMultiGame(mapName){
   var otherCount=playerCount-1;
   for(var oi=0;oi<otherCount;oi++){
     var om=createOpponentMesh();scene.add(om);
+    applyCharSkin(om);
     opponentMeshes.push(om);
     var ohBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.06),new THREE.MeshBasicMaterial({color:0x44cc44,depthTest:false}));
     scene.add(ohBar);
@@ -3387,7 +3603,7 @@ function shoot(){
       if(isMultiplayer&&opponentMeshes.length>0){
         opponentMeshes.forEach(function(om,oidx){
           if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
-          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){opponentStates[oidx].alive=false;rankMatchKills++;}showDmgNum(hits[0].point,50,'#ff4444');}});
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentName,'🔪');}showDmgNum(hits[0].point,50,'#ff4444');}});
         });
       }
       for(var ei=0;ei<enemies.length;ei++){
@@ -3544,7 +3760,7 @@ function shoot(){
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
-          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;}
+          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentName,gunData[currentGun]?gunData[currentGun].name:'??');}
           showDmgNum(hits[0].point,Math.round(dmg),'#ff4444');
         }
       });
@@ -3744,7 +3960,9 @@ function removeMagazine(){
 function onPlayerDeath(){
   if(isMultiplayer){
     rankMatchDeaths++;
+    addProficiency();
     relaySend({type:'player_death'});
+    addKillFeed(opponentName,'你','??');
     document.getElementById('multi-death-prompt').style.display='flex';
     if(document.pointerLockElement)document.exitPointerLock();
     return;
@@ -3833,7 +4051,7 @@ function updatePickups(dt){
 function updateEnemies(dt){
   var mapMeshes=[];for(var mi=0;mi<mapBoxes.length;mi++){var bx=mapBoxes[mi];if(!bx.isDragonBoat&&bx.mesh.visible!==false)mapMeshes.push(bx.mesh);}
   for(var i=0;i<enemies.length;i++){
-    var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;if(e.type!=='suicider'){specialCoins+=1000;roundEarnings+=1000;showDmgNum(e.pos.clone(),1000,'#fa4');if(e.type==='sniper')seasonProgress.kill_sniper++;seasonProgress.kill++;gunKills[currentGun]=(gunKills[currentGun]||0)+1;if(dailyChallenge)dailyKills++;questProgress.kill++;saveSeasonProgress();saveDragonboatProgress();if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
+    var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;if(e.type!=='suicider'){specialCoins+=1000;roundEarnings+=1000;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;showDmgNum(e.pos.clone(),1000,'#fa4');if(e.type==='sniper')seasonProgress.kill_sniper++;seasonProgress.kill++;gunKills[currentGun]=(gunKills[currentGun]||0)+1;if(dailyChallenge)dailyKills++;questProgress.kill++;saveSeasonProgress();saveDragonboatProgress();if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
     e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
     if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
     if(!e.hitTimer)e.hitTimer=0;else e.hitTimer-=dt;
@@ -4371,7 +4589,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;attachFlashlightMesh();if(!isMultiplayer){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';attachFlashlightMesh();if(!isMultiplayer){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -4454,8 +4672,9 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
       document.getElementById('blocker').style.display='flex';
       document.getElementById('start-msg').innerHTML='獲得 輻射步槍！<br><small style="color:#4f4">已解鎖至武器庫</small>';
       var xpEarned=10+Math.max(0,(roundNum-1)*2)+50;
-      addXP(xpEarned);
-      document.getElementById('settlement-xp').textContent='+'+xpEarned;
+    addXP(xpEarned);
+    addProficiency();
+    document.getElementById('settlement-xp').textContent='+'+xpEarned;
       var li=getLevelInfo(playerXP);
       document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';
       document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';
