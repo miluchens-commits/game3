@@ -511,7 +511,6 @@ app.post('/api/team/invite', auth, async (req, res) => {
   try {
     const { friendUsername } = req.body;
     if (!friendUsername) return res.status(400).json({ error: '缺少參數' });
-    if (!onlineUsers.has(friendUsername)) return res.status(400).json({ error: '對方不在線' });
     const friend = await findUser(friendUsername);
     if (!friend) return res.status(404).json({ error: '找不到該玩家' });
     // Check if friend is already in a team
