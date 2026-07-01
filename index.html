@@ -1791,14 +1791,20 @@ function initSkinPreview(){
   var canvas=document.getElementById('skin-canvas');
   if(!canvas||skinPreviewRen)return;
   skinPreviewScene=new THREE.Scene();
-  skinPreviewCam=new THREE.PerspectiveCamera(30,canvas.parentElement.clientWidth/canvas.parentElement.clientHeight,0.1,10);
-  skinPreviewCam.position.set(0,0.05,0.65);
+  // Dark gradient background via CSS (canvas bg is transparent)
+  skinPreviewCam=new THREE.PerspectiveCamera(25,canvas.parentElement.clientWidth/canvas.parentElement.clientHeight,0.1,10);
+  skinPreviewCam.position.set(0,0.04,0.7);
   skinPreviewRen=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
   skinPreviewRen.setSize(canvas.parentElement.clientWidth,canvas.parentElement.clientHeight);
   skinPreviewRen.setPixelRatio(Math.min(devicePixelRatio,2));
-  var al=new THREE.AmbientLight(0xffffff,0.4);skinPreviewScene.add(al);
-  var dl=new THREE.DirectionalLight(0xffffff,1);dl.position.set(1,2,1);skinPreviewScene.add(dl);
-  var dl2=new THREE.DirectionalLight(0x8888ff,0.3);dl2.position.set(-1,1,-1);skinPreviewScene.add(dl2);
+  skinPreviewRen.toneMapping=THREE.ACESFilmicToneMapping;skinPreviewRen.toneMappingExposure=1.2;
+  var al=new THREE.AmbientLight(0x8888ff,0.3);skinPreviewScene.add(al);
+  var dl=new THREE.DirectionalLight(0xffeedd,1.5);dl.position.set(1.5,2.5,1);skinPreviewScene.add(dl);
+  var dl2=new THREE.DirectionalLight(0x8888ff,0.6);dl2.position.set(-1,1.5,-1);skinPreviewScene.add(dl2);
+  var rim=new THREE.DirectionalLight(0x4488ff,0.8);rim.position.set(-0.5,0,-1);skinPreviewScene.add(rim);
+  // Floor glow ring
+  var ringGeo=new THREE.RingGeometry(0.12,0.2,32);var ringMat=new THREE.MeshBasicMaterial({color:0x8844aa,transparent:true,opacity:0.15,side:THREE.DoubleSide});
+  var ring=new THREE.Mesh(ringGeo,ringMat);ring.rotation.x=-Math.PI/2;ring.position.y=-0.08;skinPreviewScene.add(ring);
   // Mouse drag
   var wrap=canvas.parentElement;
   wrap.addEventListener('mousedown',function(e){skinPreviewDrag=true;skinPreviewLastX=e.clientX;skinPreviewLastY=e.clientY;});
@@ -1808,7 +1814,16 @@ function initSkinPreview(){
   wrap.addEventListener('touchmove',function(e){if(!skinPreviewDrag||!e.touches.length)return;var t=e.touches[0];var dx=t.clientX-skinPreviewLastX,dy=t.clientY-skinPreviewLastY;skinPreviewRotY+=dx*0.01;skinPreviewRotX+=dy*0.01;skinPreviewRotX=Math.max(-1,Math.min(1,skinPreviewRotX));skinPreviewLastX=t.clientX;skinPreviewLastY=t.clientY;},{passive:true});
   wrap.addEventListener('touchend',function(){skinPreviewDrag=false;},{passive:true});
   // Animate
-  function skinAnim(){requestAnimationFrame(skinAnim);if(skinPreviewRen&&skinPreviewScene&&skinPreviewCam){skinPreviewRen.render(skinPreviewScene,skinPreviewCam);}}
+  function skinAnim(){requestAnimationFrame(skinAnim);
+    if(skinPreviewGun&&!skinPreviewDrag){
+      skinPreviewRotY+=0.008;
+    }
+    if(skinPreviewGun){
+      skinPreviewGun.rotation.y=skinPreviewRotY;
+      skinPreviewGun.rotation.x=skinPreviewRotX;
+    }
+    if(skinPreviewRen&&skinPreviewScene&&skinPreviewCam)skinPreviewRen.render(skinPreviewScene,skinPreviewCam);
+  }
   skinAnim();
 }
 function buildSkinPreviewGun(){
