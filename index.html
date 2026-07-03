@@ -1296,6 +1296,7 @@ function loadGame(data){
   if(data.ammo){for(var k in data.ammo)gunAmmo[k]=data.ammo[k];}
   if(data.slotFlashlight){for(var si=0;si<5;si++)slotFlashlight[si]=!!data.slotFlashlight[si];}
   if(data.grenadeStacks){for(var si=0;si<5;si++)grenadeStacks[si]=data.grenadeStacks[si]||0;}
+  recalcProdBonuses();
   switchToSlot(currentSlot);
   applyMapSettings();
   // Restore enemies
@@ -1529,6 +1530,7 @@ function addProficiency(){
     }
   }
   if(anyGain){try{localStorage.setItem('oc_prof',JSON.stringify(weaponProf));}catch(e){}}
+  recalcProdBonuses();
 }
 function openProficiencyPanel(){
   document.getElementById('prof-overlay').style.display='flex';document.getElementById('menu').style.display='none';
@@ -1541,8 +1543,12 @@ function openProficiencyPanel(){
     var spEarned=Math.floor(prof/10)*10;
     var name=gunData[gun]?gunData[gun].name:gun;
     var totalSp=seasonPoints||0;
+    var bonusText='';
+    if(lvl>=20)bonusText='<span style="color:#f84;font-size:10px;display:block">🔥 黯焰解鎖</span>';
+    else if(lvl>=10)bonusText='<span style="color:#4af;font-size:10px;display:block">⚡ 換彈 +20%</span>';
+    else if(lvl>=5)bonusText='<span style="color:#4f4;font-size:10px;display:block">⬆ 傷害 +10%</span>';
     var item=document.createElement('div');item.className='prof-item';
-    item.innerHTML='<span class="pi-name">'+name+'</span><span class="pi-lvl">Lv.'+lvl+'</span><div class="pi-bar-wrap"><div class="pi-bar" style="width:'+(cur*10)+'%"></div><span class="pi-bar-text">'+cur+' / 10</span></div><span class="pi-sp">+'+spEarned+' SP</span>';
+    item.innerHTML='<span class="pi-name">'+name+'</span><span class="pi-lvl">Lv.'+lvl+'</span><div class="pi-bar-wrap"><div class="pi-bar" style="width:'+(cur*10)+'%"></div><span class="pi-bar-text">'+cur+' / 10</span></div><span class="pi-sp">'+bonusText+'+'+spEarned+' SP</span>';
     list.appendChild(item);
   });
   var spInfo=document.createElement('div');spInfo.style.cssText='margin-top:12px;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;text-align:center';
@@ -1918,10 +1924,22 @@ document.getElementById('shop-btn').onclick=function(){document.getElementById('
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 // ── Skin system ──
-var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,scope:0x222222}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xcccccc,scope:0xaaaaaa}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xcc8800,scope:0x331100}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}}],smg:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,wood:0x222222,scope:0x222222}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411,scope:0x224411}}]};
+var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,scope:0x222222}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xcccccc,scope:0xaaaaaa}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xcc8800,scope:0x331100}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,scope:0x330000}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}}],smg:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,wood:0x222222,scope:0x222222}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411,scope:0x224411}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a,scope:0x330000}}]};
 function getEquippedSkin(type){var s;try{s=localStorage.getItem('oc_skin_'+type);}catch(e){}return s||'default';}
 function setSkin(type,id){try{localStorage.setItem('oc_skin_'+type,id);}catch(e){}if(type===currentGun&&gunGroup){detachFlashlightMesh();cam.remove(gunGroup);gunGroup=createGunModel(type);gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.scale.set(1.5,1.5,1.5);cam.add(gunGroup);gunGroup.rotation.set(0,0,0);attachFlashlightMesh();createMagazine();}}
-function getSkinColors(type){var sk=gunSkins[type];if(!sk)return null;var id=getEquippedSkin(type);for(var i=0;i<sk.length;i++){if(sk[i].id===id)return sk[i].colors;}return sk[0]?sk[0].colors:null;}
+function getProfLevel(gun){return Math.floor((weaponProf[gun]||0)/10)+1;}
+function getSkinColors(type){var sk=gunSkins[type];if(!sk)return null;var id=getEquippedSkin(type);if(id==='dark_flame'&&getProfLevel(type)<20)id='default';for(var i=0;i<sk.length;i++){if(sk[i].id===id)return sk[i].colors;}return sk[0]?sk[0].colors:null;}
+function recalcProdBonuses(){
+  var dmgMult=1,reloadMult=1;
+  for(var si=0;si<playerLoadout.length;si++){
+    var g=playerLoadout[si];if(!g||g==='knife'||g==='grapple'||g==='grenade')continue;
+    var lv=getProfLevel(g);
+    if(lv>=10)reloadMult=Math.min(reloadMult,0.8);
+    if(lv>=5)dmgMult=Math.max(dmgMult,1.10);
+  }
+  window.dmgMult=dmgMult;
+  window.reloadSpeedMult=reloadMult;
+}
 var skinSelectedGun='ak47',skinMode='gun';
 var skinPreviewScene=null,skinPreviewCam=null,skinPreviewRen=null,skinPreviewGun=null,skinPreviewChar=null,skinPreviewRotX=0,skinPreviewRotY=0,skinPreviewDrag=false,skinPreviewLastX=0,skinPreviewLastY=0,skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111},skinSelectedPart='dark';
 var skinPartNames={dark:'暗色',metal:'金屬',wood:'木質',scope:'瞄具'};
@@ -2131,9 +2149,10 @@ function renderSkinList(){
     if(cols.scope!==undefined)gradParts.push('#'+cols.scope.toString(16).padStart(6,'0'));
     if(gradParts.length>0)swatch.style.background='linear-gradient(135deg,'+gradParts.join(',')+')';else swatch.style.background='#444';
     var name=document.createElement('div');name.className='skin-card-name';name.textContent=s.name;
-    var label=document.createElement('label');label.textContent=s.id==='default'?'已裝備':'點擊裝備';
+    var locked=s.locked&&getProfLevel(skinSelectedGun)<20;
+    if(locked){card.style.opacity='0.25';card.style.cursor='default';label.textContent='🔒 Lv.20 解鎖';}else{label.textContent=s.id==='default'?'已裝備':'點擊裝備';}
     card.appendChild(swatch);card.appendChild(name);card.appendChild(label);
-    card.onclick=function(skinId){return function(){
+    if(!locked)card.onclick=function(skinId){return function(){
       setSkin(skinSelectedGun,skinId);
       // Also update custom colors from selected skin
       for(var si=0;si<gunSkins[skinSelectedGun].length;si++){
@@ -3855,7 +3874,7 @@ function shoot(){
                 var toHit=new THREE.Vector3().copy(shits[0].point).sub(e.pos).normalize();
                 if(fwd.dot(toHit)>0.3)break;
               }
-              var pd=Math.round(gunData.shotgun.dmg*(window.hsMult||1));
+              var pd=Math.round(gunData.shotgun.dmg*(window.hsMult||1)*(window.dmgMult||1));
               hitMarkerTimer=0.15;e.hitTimer=0.3;
               if(e.armor>0){var od=pd;e.armor-=pd;if(e.armor<0){od=-e.armor;e.armor=0}else od=0;if(e.armor===0)showDmgNum(shits[0].point,pd,'#f62',true);else showDmgNum(shits[0].point,pd,'#4488ff');if(od>0){e.hp-=od;if(e.hp<0)e.hp=0;showDmgNum(shits[0].point,od,'#ff4444')}}
               else{e.hp-=pd;if(e.hp<0)e.hp=0;showDmgNum(shits[0].point,pd,'#ff4444')}
@@ -3926,7 +3945,7 @@ function shoot(){
             break;
           }
         }
-        var dmg=currentGun==='awp'?999:gunData[currentGun].dmg;
+        var dmg=currentGun==='awp'?999:Math.round((gunData[currentGun].dmg||0)*(window.dmgMult||1));
         hitMarkerTimer=0.15;
         e.hitTimer=0.3;
         if(e.armor>0){var od=dmg;e.armor-=dmg;if(e.armor<0){od=-e.armor;e.armor=0}else od=0;if(e.armor===0)showDmgNum(hits[0].point,dmg,'#f62',true);else showDmgNum(hits[0].point,dmg,'#4488ff');if(od>0){e.hp-=od;if(e.hp<0)e.hp=0;showDmgNum(hits[0].point,od,'#ff4444')}}
@@ -3941,7 +3960,7 @@ function shoot(){
       var hitBoss=false;
       boss.mesh.traverse(function(child){if(child===hitMesh)hitBoss=true;});
       if(hitBoss&&currentGun!=='awp'){
-        var dmg=gunData[currentGun].dmg;
+        var dmg=Math.round(gunData[currentGun].dmg*(window.dmgMult||1));
         hitMarkerTimer=0.15;
         boss.hp-=dmg;
         boss.hitTimer=0.3;
@@ -3956,7 +3975,7 @@ function shoot(){
         om.traverse(function(c){if(c===hitMesh)hitOp=true;});
         if(hitOp){
           hitMarkerTimer=0.15;
-        var dmg=currentGun==='awp'?999:Math.round(gunData[currentGun].dmg*(window.hsMult||1));
+        var dmg=currentGun==='awp'?999:Math.round(gunData[currentGun].dmg*(window.hsMult||1)*(window.dmgMult||1));
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
@@ -4843,7 +4862,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
