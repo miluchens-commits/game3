@@ -2222,6 +2222,7 @@ function renderSkinList(){
     if(cols.scope!==undefined)gradParts.push('#'+cols.scope.toString(16).padStart(6,'0'));
     if(gradParts.length>0)swatch.style.background='linear-gradient(135deg,'+gradParts.join(',')+')';else swatch.style.background='#444';
     var name=document.createElement('div');name.className='skin-card-name';name.textContent=s.name;
+    var label=document.createElement('label');
     var locked=s.locked&&getProfLevel(skinSelectedGun)<20;
     if(locked){card.style.opacity='0.25';card.style.cursor='default';label.textContent='🔒 Lv.20 解鎖';}else{label.textContent=s.id==='default'?'已裝備':'點擊裝備';}
     card.appendChild(swatch);card.appendChild(name);card.appendChild(label);
