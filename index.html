@@ -591,6 +591,14 @@ body.mobile-mode #scope-overlay{display:none!important}
     <div class="map-option" data-map="nuclear" id="vote-nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
   </div>
 </div>
+<div id="lb-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);z-index:45;display:none;align-items:center;justify-content:center;font-family:Arial">
+<div id="lb-box" style="background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(136,204,255,.3);border-radius:10px;padding:24px 30px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 40px rgba(68,170,255,.15);max-width:400px;width:90%;max-height:80vh">
+<div id="lb-title" style="font-size:22px;font-weight:900;color:#88ccff;letter-spacing:6px;margin-bottom:16px;text-shadow:0 0 15px rgba(136,204,255,.3)">📊 排 行 榜</div>
+<div id="lb-sub" style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px">Boss 大戰   最高波數排行</div>
+<div id="lb-list" style="width:100%;overflow-y:auto;flex:1;min-height:160px"></div>
+<button id="lb-close-btn" style="margin-top:14px;padding:8px 36px;font-size:14px;font-weight:bold;color:#88ccff;background:transparent;border:1px solid rgba(136,204,255,.3);border-radius:4px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial" onmouseover="this.style.color='#000';this.style.background='#88ccff'" onmouseout="this.style.color='#88ccff';this.style.background='transparent'">關 閉</button>
+</div>
+</div>
 <script>
 var authToken=localStorage.getItem('oc_token'),authUser=localStorage.getItem('oc_user')||'',currentTeamId=null;
 var API_BASE='';
@@ -1517,8 +1525,8 @@ function updateAchUI(){
 }
 document.getElementById('ach-btn').onclick=function(){updateAchUI();document.getElementById('ach-panel').style.display='flex';};
 document.getElementById('ach-close').onclick=function(){document.getElementById('ach-panel').style.display='none';};
-document.getElementById('lb-btn').onclick=function(){updateLeaderboard();document.getElementById('lb-overlay').style.display='flex';};
-document.getElementById('lb-close-btn').onclick=function(){document.getElementById('lb-overlay').style.display='none';};
+var lbEl=document.getElementById('lb-btn');if(lbEl)lbEl.onclick=function(){updateLeaderboard();document.getElementById('lb-overlay').style.display='flex';};
+var lbcEl=document.getElementById('lb-close-btn');if(lbcEl)lbcEl.onclick=function(){document.getElementById('lb-overlay').style.display='none';};
 function lbSave(mode,score,rounds,extra){
   var key='oc_lb_'+mode;
   var list=[];try{var r=JSON.parse(localStorage.getItem(key));if(r)list=r;}catch(e){}
@@ -6327,15 +6335,6 @@ s.onerror=function(){
 };
 document.head.appendChild(s);
 "></script>
-
-<div id="lb-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);z-index:45;display:none;align-items:center;justify-content:center;font-family:Arial">
-<div id="lb-box" style="background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(136,204,255,.3);border-radius:10px;padding:24px 30px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 40px rgba(68,170,255,.15);max-width:400px;width:90%;max-height:80vh">
-<div id="lb-title" style="font-size:22px;font-weight:900;color:#88ccff;letter-spacing:6px;margin-bottom:16px;text-shadow:0 0 15px rgba(136,204,255,.3)">📊 排 行 榜</div>
-<div id="lb-sub" style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px">Boss 大戰   最高波數排行</div>
-<div id="lb-list" style="width:100%;overflow-y:auto;flex:1;min-height:160px"></div>
-<button id="lb-close-btn" style="margin-top:14px;padding:8px 36px;font-size:14px;font-weight:bold;color:#88ccff;background:transparent;border:1px solid rgba(136,204,255,.3);border-radius:4px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial" onmouseover="this.style.color='#000';this.style.background='#88ccff'" onmouseout="this.style.color='#88ccff';this.style.background='transparent'">關 閉</button>
-</div>
-</div>
 </body>
 </html>
 
