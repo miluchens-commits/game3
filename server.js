@@ -56,6 +56,10 @@ async function initDB() {
     created_at TIMESTAMP DEFAULT NOW()
   )`);
   await dbPool.query(`CREATE INDEX IF NOT EXISTS idx_messages_pair ON messages(from_username, to_username)`);
+  // Migration: add columns that may not exist on older schemas
+  for (const col of ['last_read']) {
+    try { await dbPool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS ${col} INTEGER NOT NULL DEFAULT 0`); } catch(e) {}
+  }
 }
 initDB().catch(e => console.error('DB init error:', e));
 
