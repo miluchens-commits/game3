@@ -851,7 +851,7 @@ var keys = {}, moveX = 0, moveZ = 0, locked = false, countdown = 5, gameStarted 
 var playerHP = 100, playerArmor = 100, sbTimer = 0, sbActive = false, projectiles = [], enemies = [], hitMarkerTimer = 0, roundNum = 1, clearTimer = -1, roundEarnings = 0, playerXP = parseInt(localStorage.getItem('oc_level')) || 0;
 var pickups=[],buffTimer=0,buffType='',screenShake=0,didPlayGame=false;
 var smokeParticles=[],incendiaryZones=[],smokeZoneCenters=[];
-var bulletHoles=[],maxBulletHoles=50;
+var bulletHoles=[],maxBulletHoles=50,impactPool=[],bulletHolePool=[],flashMesh=null,flashLight=null,flashTimer=0,dmgNumPool=[];
 var dailyChallenge=false,dailyKills=0,dailyRounds=0;
 var dailyBest=(function(){try{return JSON.parse(localStorage.getItem('oc_daily_best'))||{}}catch(e){return{}}})();
 var radWattage=0,radImmuneTimer=0,nuclearClears=0,nuclearWave=1,bossActive=false,bossSpawned=false,boss=null,reactorGlow=null,radZoneRadius=5;
@@ -1451,8 +1451,8 @@ function updateSlotFlashlightUI(){
 }
 // ── Gun system ──
 var knifeSwingCount=0,knifeAnim=0,grenadeAnim=0,grenadeThrown=false,recoilKick=0,recoilRotX=0,boltOffset=0,boltTarget=0,swapAnimTimer=0,swapAnimDuration=0.4,swapOutGroup=null,swapTargetSlot=-1,swapTargetGun='';
-var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30,reloadTime:2},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7,reloadTime:1.5},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5,reloadTime:2.8},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6,reloadTime:2.2},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,reloadTime:2.4,chargeable:true,chargeTime:1.2,chargeMaxDmg:50},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40,reloadTime:1.6},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
-var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null,grenadeStacks=[0,0,0,0,0];
+var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30,reloadTime:2,accuracyDecay:0.006,accuracyRecovery:10,maxSpread:0.08,damageRange:35,damageFalloff:0.5},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7,reloadTime:1.5,accuracyDecay:0.015,accuracyRecovery:7,maxSpread:0.06,damageRange:45,damageFalloff:0.55},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5,reloadTime:2.8,accuracyDecay:0,accuracyRecovery:0,maxSpread:0.003,damageRange:100,damageFalloff:1},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6,reloadTime:2.2,accuracyDecay:0.12,accuracyRecovery:5,maxSpread:0.35,damageRange:15,damageFalloff:0.3},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,reloadTime:2.4,chargeable:true,chargeTime:1.2,chargeMaxDmg:50,accuracyDecay:0.01,accuracyRecovery:8,maxSpread:0.07,damageRange:40,damageFalloff:0.6},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40,reloadTime:1.6,accuracyDecay:0.012,accuracyRecovery:12,maxSpread:0.12,damageRange:25,damageFalloff:0.4},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
+var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null,grenadeStacks=[0,0,0,0,0],currentSpread=0,currentSpreadGun='';
 var footstepTimer=0,lastMoving=false;
 var gunKills={};
 var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20,smg:40,grenade:1};
@@ -1796,7 +1796,7 @@ function switchToSlot(slot){
   gunGroup.scale.set(1.5,1.5,1.5);
   gunGroup.visible=true;
   cam.add(gunGroup);
-  swapAnimTimer=swapAnimDuration;swapTargetSlot=slot;swapTargetGun=type;
+  swapAnimTimer=swapAnimDuration;swapTargetSlot=slot;swapTargetGun=type;currentSpread=(gunData[type]||{}).spread||0;currentSpreadGun=type;
   shootCD=0;isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();knifeAnim=0;gunGroup.rotation.set(0.3,0,0);
   document.getElementById('scope-overlay').style.display='none';
   attachFlashlightMesh();createMagazine();
@@ -3906,6 +3906,16 @@ function updatePhysics(dt){
   }
 }
 var impacts=[];
+function getImpactMesh(){
+  for(var i=0;i<impactPool.length;i++){if(!impactPool[i].parent){impactPool[i].material.color.setHex(0xff4422);impactPool[i].material.emissive.setHex(0xff4422);return impactPool[i];}}
+  var im=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),new THREE.MeshStandardMaterial({color:0xff4422,emissive:0xff4422,emissiveIntensity:0.5}));
+  impactPool.push(im);return im;
+}
+function getBulletHoleMesh(){
+  for(var i=0;i<bulletHolePool.length;i++){if(!bulletHolePool[i].parent)return bulletHolePool[i];}
+  var bh=new THREE.Mesh(new THREE.CircleGeometry(0.04,6),new THREE.MeshBasicMaterial({color:0x111111,depthWrite:false,side:THREE.DoubleSide}));
+  bulletHolePool.push(bh);return bh;
+}
 function shoot(){
   if(shootCD>0||isReloading||isDowned||inspectTimer>0)return;
   if(window.ghostInvis)window.ghostInvis=false;
@@ -4006,7 +4016,9 @@ function shoot(){
                 var toHit=new THREE.Vector3().copy(shits[0].point).sub(e.pos).normalize();
                 if(fwd.dot(toHit)>0.3)break;
               }
-              var pd=Math.round(gunData.shotgun.dmg*(window.hsMult||1)*(window.dmgMult||1));
+              var sgd=gunData.shotgun;var sDist=shits[0].distance;var sFall=1;
+              if(sgd.damageRange!==undefined&&sDist>sgd.damageRange){var sEx=sDist-sgd.damageRange;sFall=Math.max(sgd.damageFalloff||0.3,1-sEx/(sgd.damageRange*3));}
+              var pd=Math.round(sgd.dmg*sFall*(window.hsMult||1)*(window.dmgMult||1));
               if(window.sniperMarked&&window.sniperMarked===e){pd=Math.round(pd*2.5);window.sniperMarked=null;}
               hitMarkerTimer=0.15;e.hitTimer=0.3;
               if(e.armor>0){var od=pd;e.armor-=pd;if(e.armor<0){od=-e.armor;e.armor=0}else od=0;if(e.armor===0)showDmgNum(shits[0].point,pd,'#f62',true);else showDmgNum(shits[0].point,pd,'#4488ff');if(od>0){e.hp-=od;if(e.hp<0)e.hp=0;showDmgNum(shits[0].point,od,'#ff4444')}}
@@ -4022,35 +4034,42 @@ function shoot(){
           var hitBoss=false;
           boss.mesh.traverse(function(child){if(child===hitMesh)hitBoss=true;});
           if(hitBoss){
-            var pd=Math.round(gunData.shotgun.dmg*(window.dmgMult||1));
+            var sgd=gunData.shotgun;var sDist=shits[0].distance;var sFall=1;
+            if(sgd.damageRange!==undefined&&sDist>sgd.damageRange){var sEx=sDist-sgd.damageRange;sFall=Math.max(sgd.damageFalloff||0.3,1-sEx/(sgd.damageRange*3));}
+            var pd=Math.round(sgd.dmg*sFall*(window.dmgMult||1));
             hitMarkerTimer=0.15;boss.hp-=pd;boss.hitTimer=0.3;
             showDmgNum(shits[0].point,pd,'#ff4444');
           }
         }
         if(rangeMode)checkRangeHit(hitMesh);
-        var im=new THREE.Mesh(new THREE.SphereGeometry(0.02,6,6),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:0.5}));
-        im.position.copy(shits[0].point);scene.add(im);impacts.push({mesh:im,time:0});
-        var bh=new THREE.Mesh(new THREE.CircleGeometry(0.04,6),new THREE.MeshBasicMaterial({color:0x111111,depthWrite:false,side:THREE.DoubleSide}));
-        bh.position.copy(shits[0].point);bh.lookAt(cam.position);scene.add(bh);bulletHoles.push(bh);
-        if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();scene.remove(old);}
+        var im=getImpactMesh();im.position.copy(shits[0].point);im.material.color.setHex(0xff6600);im.material.emissive.setHex(0xff4400);scene.add(im);impacts.push({mesh:im,time:0});
+        var bh=getBulletHoleMesh();bh.position.copy(shits[0].point);bh.lookAt(cam.position);scene.add(bh);bulletHoles.push(bh);
+        if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();if(old.parent)scene.remove(old);}
       }
     }
     if(shotHit)playShort('deejaycoxknot-vinyl-scratches-430214.mp3',0.15,0.5);
-    // Shoot flash for shotgun
-    var fl=new THREE.Mesh(new THREE.SphereGeometry(0.12,6,6),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:4}));
-    fl.position.copy(bt);scene.add(fl);
-    var fll=new THREE.PointLight(0xff6600,5,5);fll.position.copy(bt);scene.add(fll);
-    setTimeout(function(){scene.remove(fl);scene.remove(fll);},80);
+    // Shoot flash for shotgun (reusable)
+    if(!flashMesh){flashMesh=new THREE.Mesh(new THREE.SphereGeometry(0.12,6,6),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:4}));flashLight=new THREE.PointLight(0xff6600,5,5);}
+    flashMesh.position.copy(bt);scene.add(flashMesh);
+    flashLight.position.copy(bt);scene.add(flashLight);
+    flashTimer=0.08;
     if(isMultiplayer){relaySend({type:'shoot',origin:[bt.x,bt.y,bt.z],dir:[0,0,0],gun:'shotgun'});rankMatchShots++;}
     return;
   }
-  // Spread
+  // Dynamic spread bloom
   var dir=new THREE.Vector3(0,0,-1);dir.applyQuaternion(cam.quaternion);
-  if(!isADS){dir.x+=(Math.random()-0.5)*gd.spread;dir.y+=(Math.random()-0.5)*gd.spread;dir.normalize();}
-  var fl=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));
-  fl.position.copy(bt);scene.add(fl);
-  var fll=new THREE.PointLight(0xffaa44,3,4);fll.position.copy(bt);scene.add(fll);
-  setTimeout(function(){scene.remove(fl);scene.remove(fll);},60);
+  if(!isADS){
+    var sprd=currentSpread||gd.spread;
+    dir.x+=(Math.random()-0.5)*sprd;dir.y+=(Math.random()-0.5)*sprd;dir.normalize();
+    if(gd.accuracyDecay!==undefined)currentSpread=Math.min(gd.maxSpread||gd.spread*2,(currentSpread||gd.spread)+gd.accuracyDecay);
+  }
+  // Reusable muzzle flash
+  if(!flashMesh){flashMesh=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xffaa44,emissive:0xff8800,emissiveIntensity:3}));flashLight=new THREE.PointLight(0xffaa44,3,4);}
+  flashMesh.material.color.setHex(0xffaa44);flashMesh.material.emissive.setHex(0xff8800);
+  flashLight.color.setHex(0xffaa44);
+  flashMesh.position.copy(bt);scene.add(flashMesh);
+  flashLight.position.copy(bt);scene.add(flashLight);
+  flashTimer=0.06;
   // Send shoot event to opponent
   if(isMultiplayer){relaySend({type:'shoot',origin:[bt.x,bt.y,bt.z],dir:[dir.x,dir.y,dir.z],gun:currentGun});rankMatchShots++;}
   var rc=new THREE.Raycaster(bt,dir);
@@ -4062,11 +4081,9 @@ function shoot(){
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
     if(hits.length>0){
-      var im=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),new THREE.MeshStandardMaterial({color:0xff4422,emissive:0xff4422,emissiveIntensity:0.5}));
-      im.position.copy(hits[0].point);scene.add(im);impacts.push({mesh:im,time:0});
-      var bh=new THREE.Mesh(new THREE.CircleGeometry(0.04,6),new THREE.MeshBasicMaterial({color:0x111111,depthWrite:false,side:THREE.DoubleSide}));
-      bh.position.copy(hits[0].point);bh.lookAt(cam.position);scene.add(bh);bulletHoles.push(bh);
-      if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();scene.remove(old);}
+      var im=getImpactMesh();im.position.copy(hits[0].point);scene.add(im);impacts.push({mesh:im,time:0});
+      var bh=getBulletHoleMesh();bh.position.copy(hits[0].point);bh.lookAt(cam.position);scene.add(bh);bulletHoles.push(bh);
+      if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();if(old.parent)scene.remove(old);}
       var hitMesh=hits[0].object;
     // Damage enemies (skip in multiplayer)
     if(!isMultiplayer){
@@ -4088,7 +4105,10 @@ function shoot(){
             break;
           }
         }
-        var dmg=currentGun==='awp'?999:Math.round((gunData[currentGun].dmg||0)*(window.dmgMult||1));
+        var dist=hits[0].distance;
+        var falloff=1;
+        if(gd.damageRange!==undefined&&dist>gd.damageRange){var excess=dist-gd.damageRange;var maxRd=gd.damageRange*3;falloff=Math.max(gd.damageFalloff||0.3,1-excess/maxRd);}
+        var dmg=currentGun==='awp'?999:Math.round((gunData[currentGun].dmg||0)*falloff*(window.dmgMult||1));
         if(window.sniperMarked&&window.sniperMarked===e){dmg=Math.round(dmg*2.5);window.sniperMarked=null;}
         hitMarkerTimer=0.15;
         e.hitTimer=0.3;
@@ -4104,7 +4124,10 @@ function shoot(){
       var hitBoss=false;
       boss.mesh.traverse(function(child){if(child===hitMesh)hitBoss=true;});
       if(hitBoss&&currentGun!=='awp'){
-        var dmg=Math.round(gunData[currentGun].dmg*(window.dmgMult||1));
+        var dist=hits[0].distance;
+        var falloff=1;
+        if(gd.damageRange!==undefined&&dist>gd.damageRange){var excess=dist-gd.damageRange;var maxRd=gd.damageRange*3;falloff=Math.max(gd.damageFalloff||0.3,1-excess/maxRd);}
+        var dmg=Math.round(gunData[currentGun].dmg*falloff*(window.dmgMult||1));
         hitMarkerTimer=0.15;
         boss.hp-=dmg;
         boss.hitTimer=0.3;
@@ -4119,7 +4142,9 @@ function shoot(){
         om.traverse(function(c){if(c===hitMesh)hitOp=true;});
         if(hitOp){
           hitMarkerTimer=0.15;
-        var dmg=currentGun==='awp'?999:Math.round(gunData[currentGun].dmg*(window.hsMult||1)*(window.dmgMult||1));
+          var mpGd=gunData[currentGun];var mpDist=hits[0].distance;var mpFall=1;
+          if(mpGd&&mpGd.damageRange!==undefined&&mpDist>mpGd.damageRange){var mpEx=mpDist-mpGd.damageRange;mpFall=Math.max(mpGd.damageFalloff||0.3,1-mpEx/(mpGd.damageRange*3));}
+        var dmg=currentGun==='awp'?999:Math.round((mpGd?mpGd.dmg:0)*mpFall*(window.hsMult||1)*(window.dmgMult||1));
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
@@ -4363,7 +4388,7 @@ function reload(){
   if(isReloading||gunAmmo[currentGun]>=gunData[currentGun].mag||isDowned||inspectTimer>0)return;
   var gd=gunData[currentGun];
   isReloading=true;reloadTimer=window.reloadSpeedMult?gd.reloadTime*window.reloadSpeedMult:gd.reloadTime;
-  reloadDuration=reloadTimer;createMagazine();
+  reloadDuration=reloadTimer;currentSpread=gd.spread||0;createMagazine();
   if(magazineMesh)magazineMesh.position.y=0;
   if(currentGun==='smg'){var sr=new Audio('ElevenLabs_快节奏现代冲锋枪换弹，清晰的弹匣释放，快速插弹，干脆的枪机撞击声，逼真的金属与聚合物点击声，带有细微未来感伺服声，竞技射击风格，无语音，无音乐。.mp3');sr.volume=0.4;sr.play().catch(function(){});}
   else{var sr=new Audio('freesound_community-assault-rifle-reload-104296.mp3');sr.volume=0.4;sr.play().catch(function(){});}
@@ -5466,7 +5491,14 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
         gunGroup.rotation.y*=0.9;gunGroup.rotation.z*=0.9;
       }
     }
-    for(var i=impacts.length-1;i>=0;i--){impacts[i].time+=dt;if(impacts[i].time>2){scene.remove(impacts[i].mesh);impacts.splice(i,1);}}
+    // Flash cleanup
+    if(flashTimer>0){flashTimer-=dt;if(flashTimer<=0){if(flashMesh.parent)scene.remove(flashMesh);if(flashLight.parent)scene.remove(flashLight);}}
+    // Spread recovery
+    if(currentGun!==currentSpreadGun){var sg=gunData[currentGun];currentSpread=sg?sg.spread||0:0;currentSpreadGun=currentGun;}
+    else if(currentSpread>(gunData[currentGun]||{}).spread){
+      var sg=gunData[currentGun];currentSpread=Math.max(sg.spread,currentSpread-(sg.accuracyRecovery||0)*dt);
+    }
+    for(var i=impacts.length-1;i>=0;i--){impacts[i].time+=dt;if(impacts[i].time>2){if(impacts[i].mesh.parent)scene.remove(impacts[i].mesh);impacts.splice(i,1);}}
     // Shield break timer
     if(sbActive){sbTimer+=dt;if(sbTimer>1.2){sbActive=false;document.getElementById('sb').style.display='none';}}
     // Enemies
