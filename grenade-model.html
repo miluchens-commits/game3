@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>手榴彈模型檢視</title>
+<style>
+*{margin:0;padding:0}
+body{overflow:hidden;background:#1a1a2e;font-family:Arial}
+canvas{display:block}
+#info{position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.7);padding:8px 18px;border-radius:8px;font-size:14px;pointer-events:none;z-index:10;text-align:center;border:1px solid #444}
+</style>
+</head>
+<body>
+<div id="info">滑鼠拖曳旋轉 · 滾輪縮放 · <span style="color:#ff8844">右鍵拔插銷</span></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a2e);
+
+const cam = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerWidth, 0.1, 20);
+cam.position.set(3, 2, 4);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(cam, renderer.domElement);
+controls.target.set(0, 0.2, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 1.5;
+controls.maxDistance = 10;
+controls.update();
+
+// Lights
+const amb = new THREE.AmbientLight(0x8888ff, 0.5);
+scene.add(amb);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8888ff, 0.6);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+sun.position.set(5, 8, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.width = 1024;
+sun.shadow.mapSize.height = 1024;
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 20;
+sun.shadow.camera.left = -5;
+sun.shadow.camera.right = 5;
+sun.shadow.camera.top = 5;
+sun.shadow.camera.bottom = -5;
+scene.add(sun);
+const rim = new THREE.DirectionalLight(0x4488ff, 0.6);
+rim.position.set(-3, 2, -4);
+scene.add(rim);
+const fill = new THREE.DirectionalLight(0xff8844, 0.3);
+fill.position.set(-2, 1, 3);
+scene.add(fill);
+
+// Ground
+const groundGeo = new THREE.PlaneGeometry(10, 10);
+const groundMat = new THREE.MeshStandardMaterial({color:0x222244, roughness:0.9, metalness:0.1});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.4;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// === 手榴彈模型 ===
+const grenadeGroup = new THREE.Group();
+
+// 主體 — 圓形手榴彈
+const bodyGeo = new THREE.SphereGeometry(0.4, 24, 18);
+const bodyMat = new THREE.MeshStandardMaterial({
+  color: 0x4a6b3d,
+  roughness: 0.7,
+  metalness: 0.1
+});
+const body = new THREE.Mesh(bodyGeo, bodyMat);
+body.scale.set(1, 1, 1);
+body.position.y = 0;
+body.castShadow = true;
+grenadeGroup.add(body);
+
+// 頂部螺紋環
+const ringGeo = new THREE.TorusGeometry(0.18, 0.04, 8, 16);
+const ringMat = new THREE.MeshStandardMaterial({
+  color: 0x888888,
+  roughness: 0.4,
+  metalness: 0.7
+});
+const topRing = new THREE.Mesh(ringGeo, ringMat);
+topRing.position.set(0, 0.34, 0);
+topRing.rotation.x = Math.PI / 2;
+topRing.castShadow = true;
+grenadeGroup.add(topRing);
+
+// 引信桿（頂部突起）
+const fuseGeo = new THREE.CylinderGeometry(0.04, 0.06, 0.12, 8);
+const fuseMat = new THREE.MeshStandardMaterial({
+  color: 0x666666,
+  roughness: 0.5,
+  metalness: 0.6
+});
+const fuse = new THREE.Mesh(fuseGeo, fuseMat);
+fuse.position.set(0, 0.4, 0);
+fuse.castShadow = true;
+grenadeGroup.add(fuse);
+
+// 安全夾（槓桿/spoon）— 彎曲金屬片
+const spoonPoints = [
+  new THREE.Vector3(0, 0.36, 0.22),
+  new THREE.Vector3(0, 0.32, 0.26),
+  new THREE.Vector3(0, 0.24, 0.28),
+  new THREE.Vector3(0, 0.14, 0.26),
+  new THREE.Vector3(0, 0.06, 0.22),
+  new THREE.Vector3(0, 0.0, 0.18)
+];
+const spoonCurve = new THREE.CatmullRomCurve3(spoonPoints);
+const spoonTube = new THREE.TubeGeometry(spoonCurve, 12, 0.025, 8, false);
+const spoonMat = new THREE.MeshStandardMaterial({
+  color: 0xbbaa88,
+  roughness: 0.3,
+  metalness: 0.8
+});
+const spoon = new THREE.Mesh(spoonTube, spoonMat);
+spoon.castShadow = true;
+grenadeGroup.add(spoon);
+
+// 安全夾另一端（對稱）
+const spoonPoints2 = spoonPoints.map(p => new THREE.Vector3(p.x, p.y, -p.z));
+const spoonCurve2 = new THREE.CatmullRomCurve3(spoonPoints2);
+const spoonTube2 = new THREE.TubeGeometry(spoonCurve2, 12, 0.025, 8, false);
+const spoon2 = new THREE.Mesh(spoonTube2, spoonMat);
+spoon2.castShadow = true;
+grenadeGroup.add(spoon2);
+
+// 安全夾橫向連接
+const crossGeo = new THREE.BoxGeometry(0.03, 0.02, 0.48);
+const crossMat = new THREE.MeshStandardMaterial({
+  color: 0xbbaa88,
+  roughness: 0.3,
+  metalness: 0.8
+});
+const crossBar = new THREE.Mesh(crossGeo, crossMat);
+crossBar.position.set(0, 0.34, 0);
+crossBar.castShadow = true;
+grenadeGroup.add(crossBar);
+
+// 安全插銷（保險針）+ 拉環
+// 拉環
+const pullRingGeo = new THREE.TorusGeometry(0.07, 0.025, 8, 16);
+const pullRingMat = new THREE.MeshStandardMaterial({
+  color: 0xcccccc,
+  roughness: 0.3,
+  metalness: 0.9
+});
+const pullRing = new THREE.Mesh(pullRingGeo, pullRingMat);
+pullRing.position.set(0.2, 0.39, 0);
+pullRing.rotation.z = Math.PI / 4;
+pullRing.castShadow = true;
+grenadeGroup.add(pullRing);
+
+// 插銷（穿過拉環到安全夾）
+const pinGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.15, 6);
+const pinMat = new THREE.MeshStandardMaterial({
+  color: 0xdddddd,
+  roughness: 0.2,
+  metalness: 0.9
+});
+const pin = new THREE.Mesh(pinGeo, pinMat);
+pin.position.set(0.1, 0.36, 0);
+pin.rotation.z = Math.PI / 2;
+pin.castShadow = true;
+grenadeGroup.add(pin);
+
+// 底部平面 — 讓手榴彈可以站立
+const flatGeo = new THREE.CircleGeometry(0.12, 8);
+const flatMat = new THREE.MeshStandardMaterial({
+  color: 0x3a5a2e,
+  roughness: 0.9,
+  metalness: 0.0,
+  side: THREE.DoubleSide
+});
+const flatBottom = new THREE.Mesh(flatGeo, flatMat);
+flatBottom.rotation.x = -Math.PI / 2;
+flatBottom.position.y = -0.32;
+grenadeGroup.add(flatBottom);
+
+// 底部小圓環（破片手榴彈尾部特徵）
+const bottomRingGeo = new THREE.TorusGeometry(0.12, 0.025, 8, 12);
+const bottomRingMat = new THREE.MeshStandardMaterial({
+  color: 0x777777,
+  roughness: 0.5,
+  metalness: 0.6
+});
+const bottomRing2 = new THREE.Mesh(bottomRingGeo, bottomRingMat);
+bottomRing2.position.set(0, -0.33, 0);
+bottomRing2.rotation.x = Math.PI / 2;
+bottomRing2.castShadow = true;
+grenadeGroup.add(bottomRing2);
+
+// 拔插銷互動
+let pinPulled = false;
+const pinState = { pullT: 0, spoonFlying: false };
+const pinGroup = new THREE.Group();
+pinGroup.add(pullRing);
+pinGroup.add(pin);
+pin.position.set(0.1, 0.36, 0);
+
+// 建立動畫用的 spoon 群組
+const spoonGroup = new THREE.Group();
+crossBar.position.set(0, 0.34, 0);
+spoon.position.set(0, 0, 0);
+spoon2.position.set(0, 0, 0);
+spoonGroup.add(spoon);
+spoonGroup.add(spoon2);
+spoonGroup.add(crossBar);
+spoonGroup.position.set(0, 0, 0);
+
+renderer.domElement.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  if (pinPulled) return;
+  pinPulled = true;
+  pinState.spoonFlying = true;
+  document.getElementById('info').innerHTML =
+    '滑鼠拖曳旋轉 · 滾輪縮放 · <span style="color:#ff4444">插銷已拔！</span>';
+});
+
+// 更新 info — 右鍵重置
+renderer.domElement.addEventListener('dblclick', () => {
+  pinPulled = false;
+  pinState.pullT = 0;
+  pinState.spoonFlying = false;
+  pinGroup.position.set(0, 0, 0);
+  pinGroup.rotation.set(0, 0, 0);
+  spoonGroup.position.set(0, 0, 0);
+  spoonGroup.rotation.set(0, 0, 0);
+  grenadeGroup.add(spoonGroup);
+  document.getElementById('info').innerHTML =
+    '滑鼠拖曳旋轉 · 滾輪縮放 · <span style="color:#ff8844">右鍵拔插銷</span>';
+});
+
+// 輕微傾斜好看
+grenadeGroup.rotation.x = 0.1;
+grenadeGroup.rotation.z = -0.2;
+
+scene.add(grenadeGroup);
+
+// 包裝盒簡易地板標示
+const circleGeo = new THREE.RingGeometry(0.5, 0.55, 32);
+const circleMat = new THREE.MeshBasicMaterial({
+  color: 0x445566,
+  side: THREE.DoubleSide,
+  transparent: true,
+  opacity: 0.2
+});
+const circle = new THREE.Mesh(circleGeo, circleMat);
+circle.rotation.x = -Math.PI / 2;
+circle.position.y = -0.39;
+scene.add(circle);
+
+window.addEventListener('resize', () => {
+  cam.aspect = window.innerWidth / window.innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function animate() {
+  controls.update();
+
+  // 拔插銷動畫
+  if (pinPulled && pinState.pullT < 1) {
+    pinState.pullT += 0.02;
+    const t = Math.min(pinState.pullT, 1);
+    const eased = 1 - Math.pow(1 - t, 2);
+    pinGroup.position.set(eased * 0.6, eased * 0.1, 0);
+    pinGroup.rotation.z = eased * 0.6;
+    grenadeGroup.remove(spoonGroup);
+    scene.add(spoonGroup);
+    spoonGroup.position.x = eased * 0.5;
+    spoonGroup.position.y = eased * 0.3;
+    spoonGroup.position.z = eased * 0.15;
+    spoonGroup.rotation.x = eased * 1.5;
+    spoonGroup.rotation.z = eased * 0.8;
+  } else if (pinPulled && pinState.spoonFlying) {
+    pinState.spoonFlying = false;
+  }
+
+  renderer.render(scene, cam);
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

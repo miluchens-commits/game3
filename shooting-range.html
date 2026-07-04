@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>射擊靶場</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#000}
+canvas{display:block}
+#error{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:#f44;font-size:18px;font-family:Arial;text-align:center;display:none;z-index:10}
+</style>
+</head>
+<body>
+<div id="error">無法載入 Three.js<br><small style="color:#888">請檢查網路連線</small></div>
+<script>
+function boot(){
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(0x87ceeb);
+scene.fog=new THREE.Fog(0x87ceeb,40,80);
+var cam=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,100);
+cam.position.set(2,4,10);
+var renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+var isDragging=false,pm={x:0,y:0},theta=-0.4,phi=-0.3,dist=12,la=new THREE.Vector3(0,1,-8);
+renderer.domElement.addEventListener('mousedown',function(e){isDragging=true;pm={x:e.clientX,y:e.clientY};});
+window.addEventListener('mousemove',function(e){if(!isDragging)return;theta-=(e.clientX-pm.x)*0.005;phi+=(e.clientY-pm.y)*0.005;phi=Math.max(-1.2,Math.min(1.2,phi));pm={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',function(){isDragging=false;});
+renderer.domElement.addEventListener('wheel',function(e){dist+=e.deltaY*0.01;dist=Math.max(3,Math.min(30,dist));});
+function uc(){cam.position.x=la.x+dist*Math.cos(theta)*Math.cos(phi);cam.position.y=la.y+dist*Math.sin(phi);cam.position.z=la.z+dist*Math.sin(theta)*Math.cos(phi);cam.lookAt(la);}
+uc();
+var g=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.MeshStandardMaterial({color:0x5a8a4a}));g.rotation.x=-Math.PI/2;g.receiveShadow=true;scene.add(g);
+scene.add(new THREE.AmbientLight(0x404060,0.5));
+var s=new THREE.DirectionalLight(0xffeedd,1.2);s.position.set(20,30,10);s.castShadow=true;s.shadow.mapSize.width=1024;s.shadow.mapSize.height=1024;s.shadow.camera.near=0.5;s.shadow.camera.far=60;s.shadow.camera.left=-30;s.shadow.camera.right=30;s.shadow.camera.top=30;s.shadow.camera.bottom=-30;scene.add(s);
+scene.add(new THREE.HemisphereLight(0x87ceeb,0x5a8a4a,0.6));
+var wm=new THREE.MeshStandardMaterial({color:0x6a5a4a,roughness:0.9});
+var b=new THREE.Mesh(new THREE.BoxGeometry(12,4,0.3),wm);b.position.set(0,2,-25);b.castShadow=true;b.receiveShadow=true;scene.add(b);
+for(var i=-1;i<=1;i+=2){var sw=new THREE.Mesh(new THREE.BoxGeometry(0.3,4,30),wm);sw.position.set(i*6,2,-12);sw.castShadow=true;sw.receiveShadow=true;scene.add(sw);}
+var lm=new THREE.MeshStandardMaterial({color:0x8a7a6a,roughness:0.9});
+[-1.5,1.5].forEach(function(x){var l=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.3,28),lm);l.position.set(x,0.15,-11);scene.add(l);});
+// Moving walkway (middle lane)
+var walkMat=new THREE.MeshStandardMaterial({color:0x667788,roughness:0.7,metalness:0.3});
+var walkPlatform=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.08,0.8),walkMat);
+walkPlatform.position.set(0,0.1,2);walkPlatform.receiveShadow=true;walkPlatform.castShadow=true;scene.add(walkPlatform);
+var railMat=new THREE.MeshStandardMaterial({color:0x888899,roughness:0.5,metalness:0.5});
+for(var ri=-1;ri<=1;ri+=2){
+  var rail=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.15,28),railMat);
+  rail.position.set(ri*0.6,0.08,-11);scene.add(rail);
+}
+// Arrow indicators on platform
+var arrowMat=new THREE.MeshBasicMaterial({color:0x88ccff,transparent:true,opacity:0.4});
+for(var ai=0;ai<3;ai++){
+  var arr=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.12,3),arrowMat);
+  arr.position.set(0,0.1,2-ai*0.3);arr.rotation.x=Math.PI/2;scene.add(arr);
+}
+walkPlatform.userData={dir:-1,speed:2,minZ:-22,maxZ:2};
+// Stationary targets
+[{x:-3.5,z:-5},{x:-3.5,z:-10},{x:-3.5,z:-15},{x:-3.5,z:-20},{x:-3.5,z:-23},{x:-3.5,z:-25},
+ {x:3.5,z:-5},{x:3.5,z:-10},{x:3.5,z:-15},{x:3.5,z:-20},{x:3.5,z:-23},{x:3.5,z:-25},
+ {x:0,z:-25}].forEach(function(tp){
+  var p=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.2,0.06),new THREE.MeshStandardMaterial({color:0x444444}));p.position.set(tp.x,0.6,tp.z);p.castShadow=true;scene.add(p);
+  var grp=new THREE.Group();var bm=new THREE.MeshStandardMaterial({color:0xcc3333});
+  var bd=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.15,0.5,8),bm);bd.position.y=0.25;bd.castShadow=true;grp.add(bd);
+  var hd=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),bm);hd.position.y=0.55;hd.castShadow=true;grp.add(hd);
+  grp.position.set(tp.x,0.5,tp.z);scene.add(grp);
+});
+for(var di=5;di<=25;di+=5){var m=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.5,0.05),new THREE.MeshStandardMaterial({color:0xcccccc}));m.position.set(0,0.25,-di);scene.add(m);}
+// Flying targets (drones)
+var drones=[];
+var droneData=[
+  {x:-3,z:-8,y:2.5,sx:0.5,sz:0.4,sy:0.3,sp:0.6},
+  {x:3,z:-12,y:3,sx:0.4,sz:0.6,sy:0.2,sp:0.7},
+  {x:-2,z:-16,y:2,sx:0.6,sz:0.3,sy:0.4,sp:0.5},
+  {x:2,z:-20,y:3.5,sx:0.3,sz:0.5,sy:0.3,sp:0.8},
+  {x:-3,z:-14,y:4,sx:0.5,sz:0.4,sy:0.2,sp:0.6},
+  {x:1,z:-7,y:3.2,sx:0.7,sz:0.3,sy:0.5,sp:0.9},
+  {x:-1,z:-22,y:2.8,sx:0.4,sz:0.7,sy:0.3,sp:0.7},
+  {x:2.5,z:-10,y:4.5,sx:0.3,sz:0.5,sy:0.4,sp:0.5}
+];
+droneData.forEach(function(dd){
+  var dm=new THREE.MeshStandardMaterial({color:0xdd8800,emissive:0xcc6600,emissiveIntensity:0.2});
+  var grp=new THREE.Group();
+  var core=new THREE.Mesh(new THREE.SphereGeometry(0.15,8,8),dm);grp.add(core);
+  var armMat=new THREE.MeshStandardMaterial({color:0x666666});
+  for(var ri=0;ri<4;ri++){
+    var ang=ri*Math.PI/2;
+    var arm=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.02,0.02),armMat);
+    arm.position.set(Math.cos(ang)*0.12,0,Math.sin(ang)*0.12);grp.add(arm);
+    var prop=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.01,0.08),new THREE.MeshStandardMaterial({color:0x888888}));
+    prop.position.set(Math.cos(ang)*0.22,0.02,Math.sin(ang)*0.22);grp.add(prop);
+    grp.props=grp.props||[];grp.props.push(prop);
+  }
+  grp.position.set(dd.x,dd.y,dd.z);scene.add(grp);
+  dd.mesh=grp;dd.ph=0;
+  drones.push(dd);
+});
+function animate(){
+  uc();
+  // Move walkway
+  var wd=walkPlatform.userData;
+  walkPlatform.position.z+=wd.dir*wd.speed*0.016;
+  if(walkPlatform.position.z<wd.minZ)wd.dir=1;
+  if(walkPlatform.position.z>wd.maxZ)wd.dir=-1;
+  // Visual arrows pulse on the walkway
+  var children=walkPlatform.children;
+  // Move drones
+  drones.forEach(function(d){
+    d.ph+=0.02*d.sp;
+    d.mesh.position.x=d.x+Math.sin(d.ph*d.sx)*2;
+    d.mesh.position.z=d.z+Math.cos(d.ph*d.sz)*2;
+    d.mesh.position.y=d.y+Math.sin(d.ph*d.sy)*1.2;
+    d.mesh.rotation.y+=0.02;
+    if(d.mesh.props)d.mesh.props.forEach(function(p){p.rotation.x+=0.3;p.rotation.z+=0.3;});
+  });
+  renderer.render(scene,cam);requestAnimationFrame(animate);}
+animate();
+window.addEventListener('resize',function(){cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+}
+// Three.js loading with fallbacks (same as main game)
+var s=document.createElement('script');
+s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js';
+s.onload=boot;
+s.onerror=function(){
+  var s2=document.createElement('script');
+  s2.src='https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js';
+  s2.onload=boot;
+  s2.onerror=function(){
+    var s3=document.createElement('script');
+    s3.src='https://unpkg.com/three@0.152.0/build/three.min.js';
+    s3.onload=boot;
+    s3.onerror=function(){document.getElementById('error').style.display='block';};
+    document.head.appendChild(s3);
+  };
+  document.head.appendChild(s2);
+};
+document.head.appendChild(s);
+</script>
+</body>
+</html>
