@@ -498,7 +498,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
 <div id="menu"><div id="menu-sweep"></div><div id="menu-title">OCGAME</div><div id="menu-line"></div><div id="menu-sub">C O D E   &bull;   C L I M B   &bull;   S H O O T</div><button id="play-btn">單 人 模 式</button><button id="daily-btn">🔥 每 日 挑 戰</button><button id="multi-btn">多 人 連 線 (2 人)</button><button id="multi4-btn">多 人 連 線 (4 人)</button><div style="display:flex;gap:8px;margin-top:10px;z-index:1"><button id="armory-btn">武 器 庫</button><button id="event-btn">🎏 活 動</button><button id="season-btn">☢ 賽 季</button><button id="rank-btn">🏆 排 位</button><button id="shop-btn">軍 火 交 易 所</button></div><div style="display:flex;gap:8px;margin-top:8px;z-index:1"><button id="skin-btn">🎨 槍 械</button><button id="charskin-btn">👤 角 色</button><button id="prof-btn">⭐ 熟 練 度</button><button id="range-btn">🎯 射 擊 訓 練</button><button id="ach-btn">🏅 成 就</button></div><div id="menu-coins"></div><div id="menu-sp">SP：<span id="menu-sp-val">0</span></div><div id="level-frame" style="position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:10px;background:linear-gradient(145deg,rgba(30,30,40,.95),rgba(20,20,30,.95));box-shadow:0 0 0 2px #c9a84c,0 0 20px rgba(200,170,70,.2),inset 0 0 15px rgba(200,170,70,.05);z-index:2"><div id="level-enemy"><div id="level-enemy-body"><div id="level-enemy-visor"></div></div><div id="level-enemy-feet"><div></div><div></div></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="team-block-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;background:rgba(0,0,0,.92);border:1px solid rgba(255,68,68,.4);border-radius:10px;padding:20px 30px;font-family:Arial;text-align:center;pointer-events:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">⚠ 無法遊玩</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊中無法進行此模式<br>請先離開隊伍</div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
-<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button><button class="a-gun-btn" data-gun="smg">衝鋒槍</button><button class="a-gun-btn" data-gun="grenade">手雷</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">AK-47</button><button class="a-gun-btn" data-gun="deagle">沙鷹</button><button class="a-gun-btn" data-gun="awp">AWP</button><button class="a-gun-btn" data-gun="grapple">勾爪槍</button><button class="a-gun-btn" data-gun="shotgun">霰彈槍</button><button class="a-gun-btn" data-gun="knife">刀</button><button class="a-gun-btn" data-gun="radrifle">輻射步槍</button><button class="a-gun-btn" data-gun="smg">衝鋒槍</button><button class="a-gun-btn" data-gun="grenade_frag">💣 手雷</button><button class="a-gun-btn" data-gun="grenade_flashbang">💥 閃光彈</button><button class="a-gun-btn" data-gun="grenade_smoke">🌫 煙霧彈</button><button class="a-gun-btn" data-gun="grenade_incendiary">🔥 燃燒弹</button></div><button id="armory-confirm">確 認</button></div></div>
 <div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="team-info" style="display:none;width:100%;padding:6px 10px;margin-bottom:8px;background:rgba(68,255,170,.08);border:1px solid rgba(68,255,170,.2);border-radius:4px;font-size:12px;color:#4fa;letter-spacing:1px;box-sizing:border-box;text-align:center">👥 隊伍：<span id="team-members"></span> <button id="team-leave-btn" style="margin-left:6px;padding:2px 8px;font-size:10px;color:#f64;background:transparent;border:1px solid rgba(255,102,68,.3);border-radius:3px;cursor:pointer;font-family:Arial">離開</button></div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
 <div id="chat-panel"><div id="chat-bg"></div><div id="chat-box"><div id="chat-header"><span id="chat-friend-name">好友</span><button id="chat-close">✕</button></div><div id="chat-messages"></div><div id="chat-input-row"><input id="chat-input" placeholder="輸入訊息..." maxlength="500"><button id="chat-send-btn">發送</button></div></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
@@ -849,6 +849,7 @@ var pSize = new THREE.Vector3(P_RADIUS*2, P_HEIGHT, P_RADIUS*2);
 var keys = {}, moveX = 0, moveZ = 0, locked = false, countdown = 5, gameStarted = false;
 var playerHP = 100, playerArmor = 100, sbTimer = 0, sbActive = false, projectiles = [], enemies = [], hitMarkerTimer = 0, roundNum = 1, clearTimer = -1, roundEarnings = 0, playerXP = parseInt(localStorage.getItem('oc_level')) || 0;
 var pickups=[],buffTimer=0,buffType='',screenShake=0,didPlayGame=false;
+var smokeParticles=[],incendiaryZones=[],smokeZoneCenters=[];
 var bulletHoles=[],maxBulletHoles=50;
 var dailyChallenge=false,dailyKills=0,dailyRounds=0;
 var dailyBest=(function(){try{return JSON.parse(localStorage.getItem('oc_daily_best'))||{}}catch(e){return{}}})();
@@ -1291,7 +1292,7 @@ function saveGame(){
     var e=enemies[i];if(e.hp<=0)continue;
     ed.push({color:e.color,hp:e.hp,armor:e.armor,maxHp:e.maxHp,maxArmor:e.maxArmor,px:e.pos.x,pz:e.pos.z,weaponType:e.weaponType,state:e.state,type:e.type});
   }
-  var save={playerHP:playerHP,playerArmor:playerArmor,px:pos.x,py:pos.y,pz:pos.z,roundNum:roundNum,loadout:playerLoadout,ammo:gunAmmo,enemies:ed,coins:specialCoins,inventory:weaponInventory,map:currentMap,slotFlashlight:slotFlashlight,grenadeStacks:grenadeStacks};
+  var save={playerHP:playerHP,playerArmor:playerArmor,px:pos.x,py:pos.y,pz:pos.z,roundNum:roundNum,loadout:playerLoadout,ammo:gunAmmo,enemies:ed,coins:specialCoins,inventory:weaponInventory,map:currentMap,slotFlashlight:slotFlashlight,grenadeStacks:grenadeStacks,grenadeTypes:grenadeTypes};
   try{localStorage.setItem('ocgame_save',JSON.stringify(save))}catch(ex){}
 }
 function loadGame(data){
@@ -1301,6 +1302,7 @@ function loadGame(data){
   if(data.ammo){for(var k in data.ammo)gunAmmo[k]=data.ammo[k];}
   if(data.slotFlashlight){for(var si=0;si<5;si++)slotFlashlight[si]=!!data.slotFlashlight[si];}
   if(data.grenadeStacks){for(var si=0;si<5;si++)grenadeStacks[si]=data.grenadeStacks[si]||0;}
+  if(data.grenadeTypes){for(var si=0;si<5;si++)grenadeTypes[si]=data.grenadeTypes[si]||'frag';}
   recalcProdBonuses();
   switchToSlot(currentSlot);
   applyMapSettings();
@@ -1453,14 +1455,14 @@ var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloa
 var footstepTimer=0,lastMoving=false;
 var gunKills={};
 var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20,smg:40,grenade:1};
-var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4),smg:new THREE.Vector3(0,0,-0.35),grenade:new THREE.Vector3(0,0,-0.25)};
+var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4),smg:new THREE.Vector3(0,0,-0.35),grenade:new THREE.Vector3(0,0,-0.25),grenade_frag:new THREE.Vector3(0,0,-0.25),grenade_flashbang:new THREE.Vector3(0,0,-0.25),grenade_smoke:new THREE.Vector3(0,0,-0.25),grenade_incendiary:new THREE.Vector3(0,0,-0.25)};
 // ── Economy system ──
 var specialCoins=parseInt(localStorage.getItem('oc_coin'))||50000;
-var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:1,radrifle:1,smg:1,grenade:1};
-try{var inv=localStorage.getItem('oc_inv');if(inv){var parsed=JSON.parse(inv);for(var k in parsed)weaponInventory[k]=parsed[k];}}catch(e){}
+var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:1,radrifle:1,smg:1,grenade_frag:1,grenade_flashbang:1,grenade_smoke:1,grenade_incendiary:1};
+try{var inv=localStorage.getItem('oc_inv');if(inv){var parsed=JSON.parse(inv);for(var k in parsed)weaponInventory[k]=parsed[k];if(parsed.grenade!==undefined&&!parsed.grenade_frag){weaponInventory.grenade_frag=parsed.grenade;}delete weaponInventory.grenade;}}catch(e){}
 function saveWeaponInventory(){try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}}
-var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0,smg:20000,grenade:10000};
-var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍',smg:'衝鋒槍',grenade:'手雷'};
+var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0,smg:20000,grenade_frag:10000,grenade_flashbang:15000,grenade_smoke:12000,grenade_incendiary:18000};
+var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍',smg:'衝鋒槍',grenade_frag:'手雷',grenade_flashbang:'閃光彈',grenade_smoke:'煙霧彈',grenade_incendiary:'燃燒弹'};
 var slotFlashlight=[false,false,false,false,false];
 function updateCoinsDisplay(){
   try{localStorage.setItem('oc_coin',specialCoins);}catch(e){}
@@ -1578,7 +1580,7 @@ function showShop(){
 function renderShopList(){
   document.getElementById('shop-coins').textContent='特種幣 $'+specialCoins;
   var list=document.getElementById('shop-list');list.innerHTML='';
-  var guns=['ak47','deagle','awp','shotgun','knife','smg','grenade'];
+  var guns=['ak47','deagle','awp','shotgun','knife','smg','grenade_frag','grenade_flashbang','grenade_smoke','grenade_incendiary'];
   guns.forEach(function(gun){
     var price=weaponPrices[gun];
     var cnt=weaponInventory[gun]||0;
@@ -1589,6 +1591,17 @@ function renderShopList(){
     };
     list.appendChild(item);
   });
+}
+function showToast(text,duration){
+  var el=document.getElementById('toast-notify');
+  if(!el){
+    el=document.createElement('div');el.id='toast-notify';
+    el.style.cssText='position:fixed;bottom:16%;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.7);padding:8px 18px;border-radius:6px;font-size:16px;letter-spacing:1px;z-index:20;pointer-events:none;transition:opacity 0.15s;opacity:0;text-shadow:0 1px 3px rgba(0,0,0,.8)';
+    document.body.appendChild(el);
+  }
+  el.textContent=text;el.style.opacity='1';
+  if(el._toast)clearTimeout(el._toast);
+  el._toast=setTimeout(function(){el.style.opacity='0';},(duration||1)*1000);
 }
 function createGunModel(type){
   var g=new THREE.Group();
@@ -1774,13 +1787,13 @@ function switchToSlot(slot){
   document.getElementById('scope-overlay').style.display='none';
   attachFlashlightMesh();createMagazine();
   document.querySelectorAll('.loadout-slot').forEach(function(s,i){
-    s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';
+    s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
   });
 }
 function updateArmoryUI(){
   for(var si=0;si<5;si++){
     var el=document.querySelector('.a-slot[data-slot="'+si+'"]');
-    el.querySelector('.a-slot-gun').textContent=playerLoadout[si]?gunData[playerLoadout[si]].name+(playerLoadout[si]==='grenade'&&grenadeStacks[si]?' ×'+grenadeStacks[si]:''):'─';
+    el.querySelector('.a-slot-gun').textContent=playerLoadout[si]?getSlotGunText(si):'─';
     el.classList.toggle('active',si===selectedArmorySlot);
   }
   updateSlotFlashlightUI();
@@ -2188,6 +2201,7 @@ document.getElementById('range-btn').onclick=function(){
     buildRangeScene();pos.set(0,0.8,1.5);vel.set(0,0,0);yaw=0;pitch=0;
   cam.position.copy(pos);cam.rotation.set(0,0,0);
   onGround=true;locked=false;
+  if(localStorage.getItem('oc_ui_mode')==='mobile'){locked=true;document.getElementById('mobile-controls').style.display='block';document.getElementById('mobile-slots').style.display='flex';}
   if(window.playerClass)playerClass=null;
   document.body.requestPointerLock().catch(function(){});
 };
@@ -2403,7 +2417,7 @@ function startNextRound(){
     var e=enemies[ei];
     if(ei<targetCount){
       e.hp=e.maxHp*(1+roundNum*0.15);e.armor=e.maxArmor*(1+roundNum*0.1);
-      e.knifeHits=0;randomizeEnemyType(e);
+      e.knifeHits=0;e.burnTimer=0;randomizeEnemyType(e);
       if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var sp=st.pos.clone();}else{var sp=getRandomSpawnPos(true,pos,8);}
       e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
       if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
@@ -2513,10 +2527,12 @@ document.querySelectorAll('.a-slot').forEach(function(sl){
   sl.onclick=function(){
     var si=parseInt(sl.dataset.slot);
     if(playerLoadout[si]&&selectedArmorySlot===si&&si>0){
-      if(playerLoadout[si]==='grenade'){weaponInventory.grenade+=grenadeStacks[si];grenadeStacks[si]=0;saveWeaponInventory();}
-      else if(playerLoadout[si]!=='grapple'&&weaponInventory[playerLoadout[si]]!==undefined){weaponInventory[playerLoadout[si]]++;saveWeaponInventory();}
+      if(playerLoadout[si]==='grenade'&&grenadeStacks[si]>0){
+        var retKey='grenade_'+(grenadeTypes[si]||'frag');
+        weaponInventory[retKey]=(weaponInventory[retKey]||0)+grenadeStacks[si];grenadeStacks[si]=0;saveWeaponInventory();
+      }else if(playerLoadout[si]!=='grapple'&&weaponInventory[playerLoadout[si]]!==undefined){weaponInventory[playerLoadout[si]]++;saveWeaponInventory();}
       playerLoadout[si]=null;updateArmoryUI();updateArmoryGunCounts();
-      document.querySelectorAll('.loadout-slot').forEach(function(s,i){s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';});
+      document.querySelectorAll('.loadout-slot').forEach(function(s,i){s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';});
     }
     else{selectedArmorySlot=si;updateArmoryUI();}
   };
@@ -2526,28 +2542,45 @@ document.querySelectorAll('.a-gun-btn').forEach(function(b){
     var gun=b.dataset.gun;
     var cnt=weaponInventory[gun]||0;
     if(cnt<1&&gun!=='grapple')return;
-    // Grenade stacking
-    if(gun==='grenade'&&playerLoadout[selectedArmorySlot]==='grenade'){
-      weaponInventory.grenade--;grenadeStacks[selectedArmorySlot]++;saveWeaponInventory();
+    var isGrenadeType=gun.indexOf('grenade_')===0;
+    var gTypeTag=isGrenadeType?gun.slice(8):null; // 'frag','flashbang','smoke','incendiary'
+    // Grenade stacking: same type into same slot
+    if(isGrenadeType&&playerLoadout[selectedArmorySlot]==='grenade'&&grenadeTypes[selectedArmorySlot]===gTypeTag){
+      weaponInventory[gun]--;grenadeStacks[selectedArmorySlot]++;saveWeaponInventory();
       if(currentSlot===selectedArmorySlot)switchToSlot(selectedArmorySlot);
       updateArmoryUI();updateArmoryGunCounts();
       document.querySelectorAll('.loadout-slot').forEach(function(s,i){
-        s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';
+        s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
       });
       return;
     }
     var prevGun=playerLoadout[selectedArmorySlot];
-    if(prevGun&&prevGun!=='grapple'&&weaponInventory[prevGun]!==undefined){
-      if(prevGun==='grenade'){weaponInventory.grenade+=grenadeStacks[selectedArmorySlot];grenadeStacks[selectedArmorySlot]=0;}
-      else weaponInventory[prevGun]++;
+    // Return previous gun to inventory
+    if(prevGun&&prevGun!=='grapple'){
+      if(prevGun==='grenade'&&grenadeStacks[selectedArmorySlot]>0){
+        var prevTypeKey='grenade_'+(grenadeTypes[selectedArmorySlot]||'frag');
+        weaponInventory[prevTypeKey]=(weaponInventory[prevTypeKey]||0)+grenadeStacks[selectedArmorySlot];
+        grenadeStacks[selectedArmorySlot]=0;
+      }else if(weaponInventory[prevGun]!==undefined){
+        weaponInventory[prevGun]++;
+      }
     }
-    playerLoadout[selectedArmorySlot]=gun;
-    if(gun==='grenade'){weaponInventory.grenade--;grenadeStacks[selectedArmorySlot]=1;saveWeaponInventory();}
-    else if(gun!=='grapple'){weaponInventory[gun]--;saveWeaponInventory();}
+    // Equip new gun
+    if(isGrenadeType){
+      playerLoadout[selectedArmorySlot]='grenade';
+      grenadeTypes[selectedArmorySlot]=gTypeTag;
+      grenadeStacks[selectedArmorySlot]=3;
+      weaponInventory[gun]--;saveWeaponInventory();
+    }else if(gun!=='grapple'){
+      playerLoadout[selectedArmorySlot]=gun;
+      weaponInventory[gun]--;saveWeaponInventory();
+    }else{
+      playerLoadout[selectedArmorySlot]=gun;
+    }
     if(currentSlot===selectedArmorySlot)switchToSlot(selectedArmorySlot);
     updateArmoryUI();updateArmoryGunCounts();
     document.querySelectorAll('.loadout-slot').forEach(function(s,i){
-      s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';
+      s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
     });
   };
 });
@@ -2565,7 +2598,7 @@ document.querySelectorAll('.slot-fl-btn').forEach(function(b){
 });
 // Initial loadout display
 document.querySelectorAll('.loadout-slot').forEach(function(s,i){
-  s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';
+  s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
 });
 updateCoinsDisplay();updateArmoryGunCounts();
 switchToSlot(0);
@@ -2819,6 +2852,8 @@ document.getElementById('back-menu-btn').onclick=function(){
   if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
   radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
   projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
+  smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
+  incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   if(window.multiSI)clearInterval(window.multiSI);
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
@@ -3059,6 +3094,8 @@ mapOptions.forEach(function(opt){
     if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
     radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
     projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
+    smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
+    incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
     document.getElementById('map-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -3080,6 +3117,8 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
     if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
     radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
     projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
+    smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
+    incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
     document.getElementById('diff-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -3440,6 +3479,16 @@ function processServerMessage(data){
       isMultiplayer=false;
       if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
       break;
+    case 'flashbang':
+      if(data.pos){
+        var fbDist=pos.distanceTo(new THREE.Vector3(data.pos[0],data.pos[1],data.pos[2]));
+        if(fbDist<8){
+          var fbOverlay=document.createElement('div');fbOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:12;pointer-events:none;opacity:0;transition:opacity 0.1s';document.body.appendChild(fbOverlay);
+          requestAnimationFrame(function(){fbOverlay.style.opacity='0.7';});
+          setTimeout(function(){fbOverlay.style.opacity='0';setTimeout(function(){fbOverlay.remove();},300);},800);
+        }
+      }
+      break;
   }
 }
 function startMultiGame(mapName){
@@ -3616,6 +3665,14 @@ document.addEventListener('keydown',function(e){
     else if(ziplineActive){releaseZipline();}
     else if(!tryGrabBoat()){tryGrabZipline();}
   }
+  if(e.code==='KeyX'&&playerLoadout[currentSlot]==='grenade'){
+    var types=['frag','flashbang','smoke','incendiary'];
+    var ci=types.indexOf(grenadeTypes[currentSlot]);
+    grenadeTypes[currentSlot]=types[(ci+1)%types.length];
+    var nn=grenadeTypeNames[grenadeTypes[currentSlot]]||'手雷';
+    var ic=grenadeTypeIcons[grenadeTypes[currentSlot]]||'💣';
+    showToast('切換: '+ic+' '+nn,0.8);
+  }
 });
 document.addEventListener('keyup',function(e){keys[e.code]=false;});
 document.addEventListener('mousemove',function(e){
@@ -3658,7 +3715,7 @@ var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
     if(mobileMoveZ>1)mobileMoveZ=1;if(mobileMoveZ<-1)mobileMoveZ=-1;
     jKnob.style.transform='translate(-50%,-50%) translate('+dx+'px,'+dy+'px)';
   }
-  sBtn.addEventListener('touchstart',function(e){e.preventDefault();sTouchId=e.changedTouches[0].identifier;if(gameStarted&&!locked)locked=true;if(locked){if(isDowned){if(currentGun!=='knife'&&currentGun!=='grapple'&&currentGun!=='grenade')shoot();}else if(currentGun==='grapple'){fireGrapple();}else if(currentGun==='knife'){shoot();}else if(currentGun==='grenade'){shoot();}else{shoot();autoFire=true;}}mobileShooting=true;},{passive:false});
+  sBtn.addEventListener('touchstart',function(e){e.preventDefault();sTouchId=e.changedTouches[0].identifier;if(!locked)locked=true;if(locked){if(isDowned){if(currentGun!=='knife'&&currentGun!=='grapple'&&currentGun!=='grenade')shoot();}else if(currentGun==='grapple'){fireGrapple();}else if(currentGun==='knife'){shoot();}else if(currentGun==='grenade'){shoot();}else{shoot();autoFire=true;}}mobileShooting=true;},{passive:false});
   sBtn.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===sTouchId){sTouchId=null;mobileShooting=false;autoFire=false;break;}}e.preventDefault();},{passive:false});
   sBtn.addEventListener('touchcancel',function(){sTouchId=null;mobileShooting=false;autoFire=false;});
   jBtn.addEventListener('touchstart',function(e){e.preventDefault();jumpTouchId=e.changedTouches[0].identifier;mobileJumping=true;if(gameStarted&&!locked)locked=true;if(locked&&gameStarted&&onGround&&!sliding){vel.y=JUMP_V;onGround=false;}if(grappleActive)releaseGrapple();},{passive:false});
@@ -4255,18 +4312,36 @@ function throwGrenade(e){
   gMesh.position.copy(gp);scene.add(gMesh);
   projectiles.push({mesh:gMesh,pos:gp,vel:dir.clone().multiplyScalar(8),life:99,dmg:30,isGrenade:true,fromEnemy:true,fuse:1.5+Math.random()*0.5});
 }
+var grenadeTypes=['frag','frag','frag','frag','frag'];
+var grenadeTypeIcons={frag:'💣',flashbang:'💥',smoke:'🌫',incendiary:'🔥'};
+var grenadeTypeColors={frag:0x4a6b3d,flashbang:0xffffff,smoke:0x888888,incendiary:0xff4400};
+var grenadeTypeNames={frag:'手雷',flashbang:'閃光彈',smoke:'煙霧彈',incendiary:'燃燒弹'};
+function getGunDisplayName(gun,slot){
+  if(!gun)return '─';
+  if(gun==='grenade')return grenadeTypeNames[grenadeTypes[slot]]||'手雷';
+  return weaponNames[gun]||gunData[gun]&&gunData[gun].name||gun;
+}
+function getSlotGunText(slot){
+  var g=playerLoadout[slot];
+  if(!g)return '─';
+  var name=getGunDisplayName(g,slot);
+  if(g==='grenade'&&grenadeStacks[slot])return name+' ×'+grenadeStacks[slot];
+  return name;
+}
 function throwPlayerGrenade(){
   if(grenadeStacks[currentSlot]<=0){switchToSlot(currentSlot);return;}
   grenadeStacks[currentSlot]--;
+  var gtype=grenadeTypes[currentSlot]||'frag';
   var gp=new THREE.Vector3(0.2,-0.15,-0.45);gp.applyQuaternion(cam.quaternion);gp.add(cam.position);
   var dir=new THREE.Vector3(0,0,-1);dir.applyQuaternion(cam.quaternion);
   dir.x+=(Math.random()-0.5)*0.03;dir.z+=(Math.random()-0.5)*0.03;dir.y+=0.15;dir.normalize();
-  var gMesh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:0x4a6b3d}));
+  var gMesh=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshStandardMaterial({color:grenadeTypeColors[gtype]}));
   gMesh.position.copy(gp);scene.add(gMesh);
-  projectiles.push({mesh:gMesh,pos:gp,vel:dir.clone().multiplyScalar(10),life:99,dmg:gunData.grenade.dmg,isGrenade:true,fuse:3});
+  var fdmg=gtype==='frag'?gunData.grenade.dmg:(gtype==='incendiary'?20:0);
+  projectiles.push({mesh:gMesh,pos:gp,vel:dir.clone().multiplyScalar(10),life:99,dmg:fdmg,isGrenade:true,fuse:gtype==='frag'?3:2,subType:gtype});
   if(grenadeStacks[currentSlot]<=0&&playerLoadout[currentSlot]==='grenade'){playerLoadout[currentSlot]=null;switchToSlot(currentSlot<1?0:currentSlot-1);}
   document.querySelectorAll('.loadout-slot').forEach(function(s,i){
-    s.querySelector('.slot-gun').textContent=playerLoadout[i]?gunData[playerLoadout[i]].name+(playerLoadout[i]==='grenade'&&grenadeStacks[i]?' ×'+grenadeStacks[i]:''):'─';
+    s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
   });
 }
 function reload(){
@@ -4693,7 +4768,7 @@ function spawnCleanerWave(){
       e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
       if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
       if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
-      e.knifeHits=0;
+      e.knifeHits=0;e.burnTimer=0;
       e.shootCD=0;
       spawned++;
     }
@@ -4809,9 +4884,13 @@ function updateNuclear(dt){
       document.getElementById('boss-hp-wrap').style.display='none';
       document.getElementById('nuclear-wave').textContent='☢ 核電站淨化完成！';
       document.getElementById('nuclear-wave').style.color='#4f4';
-      document.getElementById('round-clear').textContent='任務成功 — 輻射步槍已掉落！';
+      document.getElementById('round-clear').textContent='任務成功 — 輻射步槍已解鎖！';
       document.getElementById('round-clear').style.display='block';
-      // Spawn radrifle pickup at boss position
+      // Auto-grant radrifle to all players
+      weaponInventory.radrifle=(weaponInventory.radrifle||0)+1;
+      try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}
+      updateArmoryGunCounts();
+      // Visual drop at boss position
       var dropPos=boss.pos.clone();dropPos.y=0.6;
       var dropMat=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:1.5});
       var dropMesh=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.04,0.25),dropMat);
@@ -4824,6 +4903,13 @@ function updateNuclear(dt){
         document.getElementById('round-clear').style.display='none';
       },2500);
       gameStarted=false;
+      didPlayGame=false;
+      if(document.pointerLockElement)document.exitPointerLock();
+      document.getElementById('blocker').style.display='flex';
+      document.getElementById('start-msg').innerHTML='獲得 輻射步槍！<br><small style="color:#4f4">已解鎖至武器庫</small>';
+      var xpEarned=10+Math.max(0,(roundNum-1)*2)+50;
+      addXP(xpEarned);
+      addProficiency();
       return;
     }
   }
@@ -5088,7 +5174,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -5154,32 +5240,10 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     }
     if(!hitAny)rp.mesh.material.emissiveIntensity=1.5+rp.chargeMult*2+Math.sin(Date.now()*0.005)*0.5;
   }
-  // RadRifle drop pickup
-  if(window.radRifleDrop&&locked&&!gameStarted){
-    var dropDist=pos.distanceTo(window.radRifleDrop.pos);
+  // RadRifle drop visual (only decoration — rifle already auto-granted on boss death)
+  if(window.radRifleDrop&&!gameStarted){
     window.radRifleDrop.glow.material.opacity=0.15+Math.sin(Date.now()*0.005)*0.1;
     window.radRifleDrop.mesh.rotation.y+=dt*2;
-    if(dropDist<1.8){
-      scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);
-      weaponInventory.radrifle=(weaponInventory.radrifle||0)+1;
-      try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}
-      updateArmoryGunCounts();
-      window.radRifleDrop=null;
-      didPlayGame=false;
-      gameStarted=false;isMultiplayer=false;
-      if(document.pointerLockElement)document.exitPointerLock();
-      document.getElementById('blocker').style.display='flex';
-      document.getElementById('start-msg').innerHTML='獲得 輻射步槍！<br><small style="color:#4f4">已解鎖至武器庫</small>';
-      var xpEarned=10+Math.max(0,(roundNum-1)*2)+50;
-    addXP(xpEarned);
-    addProficiency();
-    document.getElementById('settlement-xp').textContent='+'+xpEarned;
-      var li=getLevelInfo(playerXP);
-      document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';
-      document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';
-      document.getElementById('settlement').style.display='flex';
-      document.getElementById('settlement-daily').style.display='none';
-    }
   }
   // Radiation zone updates
   for(var rzi=radiationZones.length-1;rzi>=0;rzi--){
@@ -5536,35 +5600,57 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
         if(hitWall)continue;
         pj.fuse-=dt;
         if(pj.fuse<=0){
-          // Explosion
           scene.remove(pj.mesh);
-          var expR=5,expDmg=pj.dmg;
-          var expMesh=new THREE.Mesh(new THREE.SphereGeometry(expR*0.04,8,8),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:2}));
-          expMesh.position.copy(pj.pos);scene.add(expMesh);
-          var expGlow=new THREE.Mesh(new THREE.SphereGeometry(expR*0.2,12,12),new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:0.3,depthWrite:false}));
-          expGlow.position.copy(pj.pos);scene.add(expGlow);
-          var expLight=new THREE.PointLight(0xff6600,4,expR*2);expLight.position.copy(pj.pos);scene.add(expLight);
-          setTimeout(function(){scene.remove(expMesh);scene.remove(expGlow);scene.remove(expLight);},300);
-          playShort('soundreality-explosion-fx-343683.mp3',null,0.6);
-          // AOE damage to player — grenade shatters armor
-          var distToP=pj.pos.distanceTo(pos);
-          if(distToP<expR){
-            var aoeDmg=Math.round(expDmg*(1-distToP/expR));
-            playerDamage(aoeDmg);slowTimer=0.5;
-            playerArmor=0;
-            showDmgNum(pos.clone(),aoeDmg,'#ff8844');
-          }
-          // AOE damage to enemies
-          for(var ei=0;ei<enemies.length;ei++){
-            var ee=enemies[ei];
-            if(ee.hp<=0)continue;
-            var distToE=pj.pos.distanceTo(ee.pos);
-            if(distToE<expR){
-              var edmg=Math.round(expDmg*0.8*(1-distToE/expR));
-              ee.hp-=edmg;
-              if(ee.hitTimer)ee.hitTimer=0.3;
-              if(ee.hp<=0){ee.hp=0;}
+          var st=pj.subType||'frag';
+          if(st==='frag'){
+            var expR=5,expDmg=pj.dmg;
+            var expMesh=new THREE.Mesh(new THREE.SphereGeometry(expR*0.04,8,8),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:2}));
+            expMesh.position.copy(pj.pos);scene.add(expMesh);
+            var expGlow=new THREE.Mesh(new THREE.SphereGeometry(expR*0.2,12,12),new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:0.3,depthWrite:false}));
+            expGlow.position.copy(pj.pos);scene.add(expGlow);
+            var expLight=new THREE.PointLight(0xff6600,4,expR*2);expLight.position.copy(pj.pos);scene.add(expLight);
+            setTimeout(function(){scene.remove(expMesh);scene.remove(expGlow);scene.remove(expLight);},300);
+            playShort('soundreality-explosion-fx-343683.mp3',null,0.6);
+            var distToP=pj.pos.distanceTo(pos);
+            if(distToP<expR){var aoeDmg=Math.round(expDmg*(1-distToP/expR));playerDamage(aoeDmg);slowTimer=0.5;playerArmor=0;showDmgNum(pos.clone(),aoeDmg,'#ff8844');}
+            for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;var distToE=pj.pos.distanceTo(ee.pos);if(distToE<expR){var edmg=Math.round(expDmg*0.8*(1-distToE/expR));ee.hp-=edmg;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;}}
+          }else if(st==='flashbang'){
+            var fbMesh=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.6}));
+            fbMesh.position.copy(pj.pos);scene.add(fbMesh);
+            var fbGlow=new THREE.Mesh(new THREE.SphereGeometry(2,16,16),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.15}));
+            fbGlow.position.copy(pj.pos);scene.add(fbGlow);
+            var fbLight=new THREE.PointLight(0xffffff,8,15);fbLight.position.copy(pj.pos);scene.add(fbLight);
+            setTimeout(function(){scene.remove(fbMesh);scene.remove(fbGlow);scene.remove(fbLight);},200);
+            playShort('soundreality-explosion-fx-343683.mp3',null,0.3);
+            // Flashbang: stun AI enemies
+            for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;if(ee.pos.distanceTo(pj.pos)<8){ee.stunTimer=3;ee.hasDetected=false;if(ee.hitTimer)ee.hitTimer=0.5;}}
+            // Multiplayer: blind opponent screen
+            if(isMultiplayer){relaySend({type:'flashbang',pos:[pj.pos.x,pj.pos.y,pj.pos.z]});}
+            var distP=pj.pos.distanceTo(pos);
+            if(distP<8){
+              var fbOverlay=document.createElement('div');fbOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:12;pointer-events:none;opacity:0;transition:opacity 0.1s';document.body.appendChild(fbOverlay);
+              requestAnimationFrame(function(){fbOverlay.style.opacity='0.7';});
+              setTimeout(function(){fbOverlay.style.opacity='0';setTimeout(function(){fbOverlay.remove();},300);},800);
             }
+          }else if(st==='smoke'){
+            for(var si=0;si<15;si++){
+              var puff=new THREE.Mesh(new THREE.SphereGeometry(0.4+Math.random()*0.3,8,8),new THREE.MeshBasicMaterial({color:0x999999,transparent:true,opacity:0.25+Math.random()*0.15,depthWrite:false}));
+              puff.position.set(pj.pos.x+(Math.random()-0.5)*3.5,Math.random()*1.5,pj.pos.z+(Math.random()-0.5)*3.5);scene.add(puff);
+              puff.userData={vy:0.3+Math.random()*0.4,lifetime:6+Math.random()*2};
+              smokeParticles.push(puff);
+            }
+            smokeZoneCenters.push({pos:pj.pos.clone(),timer:6});
+            var smokeLight=new THREE.PointLight(0x888888,1,6);smokeLight.position.copy(pj.pos);scene.add(smokeLight);
+            smokeParticles.push({light:smokeLight,pos:pj.pos.clone(),lifetime:6});
+            playShort('soundreality-explosion-fx-343683.mp3',null,0.2);
+          }else if(st==='incendiary'){
+            var fireMesh=new THREE.Mesh(new THREE.CircleGeometry(2.5,16),new THREE.MeshBasicMaterial({color:0xff4400,transparent:true,opacity:0.25,depthWrite:false}));
+            fireMesh.rotation.x=-Math.PI/2;fireMesh.position.set(pj.pos.x,0.05,pj.pos.z);scene.add(fireMesh);
+            var fireGlow=new THREE.Mesh(new THREE.CircleGeometry(2.5,16),new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:0.08,depthWrite:false}));
+            fireGlow.rotation.x=-Math.PI/2;fireGlow.position.set(pj.pos.x,0.04,pj.pos.z);scene.add(fireGlow);
+            var fireLight=new THREE.PointLight(0xff4400,3,6);fireLight.position.set(pj.pos.x,0.5,pj.pos.z);scene.add(fireLight);
+            playShort('soundreality-explosion-fx-343683.mp3',null,0.4);
+            incendiaryZones.push({pos:pj.pos.clone(),timer:6,mesh:fireMesh,mesh2:fireGlow,light:fireLight});
           }
           projectiles.splice(pi,1);continue;
         }
@@ -5582,6 +5668,48 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
       }
     }
   }
+  // Smoke particles update
+  for(var spi=smokeParticles.length-1;spi>=0;spi--){
+    var sp=smokeParticles[spi];
+    if(sp.light){
+      sp.lifetime-=dt;
+      if(sp.lifetime<=0){scene.remove(sp.light);smokeParticles.splice(spi,1);continue;}
+    }else{
+      sp.position.y+=sp.userData.vy*dt;
+      var s=sp.scale.x+0.2*dt;sp.scale.setScalar(s);
+      sp.material.opacity-=0.015*dt;
+      if(sp.material.opacity<=0||sp.lifetime<=0){scene.remove(sp);smokeParticles.splice(spi,1);}
+      sp.lifetime-=dt;
+    }
+  }
+  // Smoke zone centers (vision blocking)
+  for(var sci=smokeZoneCenters.length-1;sci>=0;sci--){
+    var sc=smokeZoneCenters[sci];sc.timer-=dt;
+    if(sc.timer<=0){smokeZoneCenters.splice(sci,1);continue;}
+  }
+  // Apply smoke fog if player inside a smoke zone
+  var inSmoke=false;
+  for(var sci=0;sci<smokeZoneCenters.length;sci++){
+    if(pos.distanceTo(smokeZoneCenters[sci].pos)<3.5){inSmoke=true;break;}
+  }
+  if(inSmoke&&scene.fog instanceof THREE.Fog){
+    if(!window._smokeFogRestore){window._smokeFogRestore={near:scene.fog.near,far:scene.fog.far};}
+    scene.fog.near=2;scene.fog.far=6;
+  }else if(!inSmoke&&window._smokeFogRestore&&scene.fog instanceof THREE.Fog){
+    scene.fog.near=window._smokeFogRestore.near;scene.fog.far=window._smokeFogRestore.far;window._smokeFogRestore=null;
+  }
+  // Incendiary zones update
+  for(var izi=incendiaryZones.length-1;izi>=0;izi--){
+    var iz=incendiaryZones[izi];
+    iz.timer-=dt;
+    if(iz.timer<=0){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);incendiaryZones.splice(izi,1);continue;}
+    // Damage enemies in zone
+    for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;if(ee.pos.distanceTo(iz.pos)<2.5){ee.hp-=5*dt;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;}}
+    // Damage player in zone
+    if(pos.distanceTo(iz.pos)<2.5){playerDamage(2*dt);showDmgNum(pos.clone(),Math.round(2*dt),'#ff6622');}
+    // Pulse visual
+    var puls=0.8+0.2*Math.sin(iz.timer*4);iz.mesh.material.opacity=0.25*puls;iz.mesh2.material.opacity=0.08*puls;
+  }
   // HUD
   document.getElementById('hp-fill').style.width=playerHP+'%';
   document.getElementById('hp-txt').textContent=Math.ceil(playerHP);
@@ -5591,7 +5719,12 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
   var ammoEl=document.getElementById('ammo-hud');
   if(currentGun==='grapple'){ammoEl.innerHTML='<span style="font-size:20px;color:#4af;letter-spacing:2px">∞ 勾爪</span>';}
   else if(currentGun==='knife'){ammoEl.innerHTML='<span style="font-size:20px;color:#f84;letter-spacing:2px">⚔ 刀</span>';}
-  else if(currentGun==='grenade'){ammoEl.innerHTML='<span style="font-size:20px;color:'+(grenadeStacks[currentSlot]<=0?'#f44':'#fa4')+';letter-spacing:2px">💣 ×'+grenadeStacks[currentSlot]+'</span>';}
+  else if(currentGun==='grenade'){
+    var gt=grenadeTypes[currentSlot]||'frag';
+    var gIcon=grenadeTypeIcons[gt]||'💣';
+    var gName=grenadeTypeNames[gt]||'手雷';
+    ammoEl.innerHTML='<span style="font-size:16px;color:'+(grenadeStacks[currentSlot]<=0?'#f44':'#fa4')+';letter-spacing:2px">'+gIcon+' '+gName+' ×'+grenadeStacks[currentSlot]+'</span>';
+  }
   else if(isReloading){ammoEl.innerHTML='<span style="color:#ff8;font-size:18px;letter-spacing:2px">RELOADING...</span>';}
   else{ammoEl.innerHTML='<span id="ammo-txt" style="color:'+(gunAmmo[currentGun]===0?'#f44':'#fff')+'">'+gunAmmo[currentGun]+'</span><span id="ammo-sep"> / </span><span id="ammo-max">'+gunData[currentGun].mag+'</span>';}
   var kc=gunKills[currentGun]||0;document.getElementById('kill-count').textContent='☠ '+kc;
@@ -5599,14 +5732,14 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
   var sh=document.getElementById('slot-hud');sh.innerHTML='';
   for(var si=0;si<5;si++){
     var sd=document.createElement('div');sd.className='sh-slot'+(si===currentSlot?' active':'');
-    sd.textContent=(si+1)+' '+(playerLoadout[si]?gunData[playerLoadout[si]].name+(playerLoadout[si]==='grenade'&&grenadeStacks[si]?'×'+grenadeStacks[si]:''):'-');sh.appendChild(sd);
+    sd.textContent=(si+1)+' '+(playerLoadout[si]?getSlotGunText(si):'-');sh.appendChild(sd);
   }
   // Mobile slot buttons
   var msb=document.getElementById('mobile-slots');
   if(msb.childNodes.length){
     for(var msi2=0;msi2<5;msi2++){
       var msbe=msb.childNodes[msi2];
-      if(msbe){msbe.textContent=(msi2+1)+' '+(playerLoadout[msi2]?gunData[playerLoadout[msi2]].name+(playerLoadout[msi2]==='grenade'&&grenadeStacks[msi2]?'×'+grenadeStacks[msi2]:''):'-');msbe.className='ms-slot'+(msi2===currentSlot?' active':'');}
+      if(msbe){msbe.textContent=(msi2+1)+' '+(playerLoadout[msi2]?getSlotGunText(msi2):'-');msbe.className='ms-slot'+(msi2===currentSlot?' active':'');}
     }
   }
   // Platform HUD
