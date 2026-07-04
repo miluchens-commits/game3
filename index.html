@@ -1549,7 +1549,7 @@ function lbTop3(mode){
 function updateLeaderboard(){
   var html='';
   html+='<div style="margin-bottom:10px"><div style="font-size:14px;color:#88ccff;letter-spacing:2px;margin-bottom:6px">👹 Boss大戰</div>'+lbTop3('bossrush')+'</div>';
-  html+='<div style="margin-bottom:10px"><div style="font-size:14px;color:#fa4;letter-spacing:2px;margin-bottom:6px">🎯 嗮人模式</div>'+lbTop3('single')+'</div>';
+  html+='<div style="margin-bottom:10px"><div style="font-size:14px;color:#fa4;letter-spacing:2px;margin-bottom:6px">🎯 單人模式</div>'+lbTop3('single')+'</div>';
   html+='<div style="margin-bottom:6px"><div style="font-size:14px;color:#fa4;letter-spacing:2px;margin-bottom:6px">🔥 每日挑戰</div>'+lbTop3('daily')+'</div>';
   var el=document.getElementById('lb-list');
   if(el)el.innerHTML=html;
