@@ -1519,25 +1519,38 @@ document.getElementById('ach-btn').onclick=function(){updateAchUI();document.get
 document.getElementById('ach-close').onclick=function(){document.getElementById('ach-panel').style.display='none';};
 document.getElementById('lb-btn').onclick=function(){updateLeaderboard();document.getElementById('lb-overlay').style.display='flex';};
 document.getElementById('lb-close-btn').onclick=function(){document.getElementById('lb-overlay').style.display='none';};
+function lbSave(mode,score,rounds,extra){
+  var key='oc_lb_'+mode;
+  var list=[];try{var r=JSON.parse(localStorage.getItem(key));if(r)list=r;}catch(e){}
+  var name=localStorage.getItem('oc_nickname')||localStorage.getItem('oc_user')||'玩家';
+  var entry={name:name,score:score,rounds:rounds,date:new Date().toISOString().slice(0,10)};
+  if(extra)for(var k in extra)entry[k]=extra[k];
+  list.push(entry);
+  list.sort(function(a,b){return b.score-a.score;});
+  if(list.length>10)list=list.slice(0,10);
+  try{localStorage.setItem(key,JSON.stringify(list));}catch(e){}
+}
+function lbTop3(mode){
+  var key='oc_lb_'+mode;
+  var list=[];try{var r=JSON.parse(localStorage.getItem(key));if(r)list=r;}catch(e){}
+  list.sort(function(a,b){return b.score-a.score;});
+  var medals=['🥇','🥈','🥉'];
+  var html='<div style="display:flex;flex-direction:column;gap:4px">';
+  for(var i=0;i<Math.min(3,list.length);i++){
+    var e=list[i];
+    var medal=i<3?medals[i]:'';
+    var nm=e.name.length>6?e.name.slice(0,6)+'..':e.name;
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:4px;background:rgba(255,255,255,'+(0.04-i*0.01)+');border:1px solid rgba(255,255,255,'+(0.08-i*0.02)+')"><span>'+medal+' '+nm+'</span><span style="font-family:monospace;color:#4fa">'+e.rounds+' 波</span><span style="font-family:monospace;color:#ff8">'+e.score+'分</span></div>';
+  }
+  if(list.length===0)html+='<div style="text-align:center;color:rgba(255,255,255,.2);padding:14px 0;font-size:13px">暫無數據</div>';
+  html+='</div>';
+  return html;
+}
 function updateLeaderboard(){
   var html='';
-  // Boss Rush
-  var brData={maxWave:0};try{var br=JSON.parse(localStorage.getItem('oc_bossrush'));if(br&&br.maxWave)brData=br;}catch(e){}
-  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#88ccff;letter-spacing:2px;margin-bottom:4px">👹 Boss大戰</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+brData.maxWave+'</strong></span></div></div>';
-  // Single player
-  var spData={rounds:0,score:0,date:''};try{var sp=JSON.parse(localStorage.getItem('oc_best_single'));if(sp&&sp.rounds)spData=sp;}catch(e){}
-  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:4px">🎯 嗮人模式</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+spData.rounds+'</strong></span><span>最高分: <strong style="color:#ff8">'+spData.score+'</strong></span></div><div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:4px">'+spData.date+'</div></div>';
-  // Daily challenge - show today and all-time best
-  var dbAll={};try{dbAll=JSON.parse(localStorage.getItem('oc_daily_best'))||{};}catch(e){}
-  var bestScore=0,bestRounds=0,bestKills=0,bestDate='';
-  for(var k in dbAll){var d=dbAll[k];if(d.score>bestScore){bestScore=d.score;bestRounds=d.rounds;bestKills=d.kills;bestDate=d.date;}}
-  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:4px">🔥 每日挑戰</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+(bestRounds||0)+'</strong></span><span>最佳分數: <strong style="color:#ff8">'+(bestScore||0)+'</strong></span></div><div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:4px">'+(bestDate||'')+'</div></div>';
-  var now=new Date();
-  var todayKey=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
-  var todayBest=dbAll[todayKey];
-  if(todayBest){
-    html+='<div style="padding:8px 0"><div style="font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:3px">今日挑戰</div><div style="display:flex;justify-content:space-around;font-size:13px"><span>波數: <strong style="color:#4fa">'+todayBest.rounds+'</strong></span><span>擊殺: <strong style="color:#f8a">'+todayBest.kills+'</strong></span><span>分數: <strong style="color:#ff8">'+todayBest.score+'</strong></span></div></div>';
-  }
+  html+='<div style="margin-bottom:10px"><div style="font-size:14px;color:#88ccff;letter-spacing:2px;margin-bottom:6px">👹 Boss大戰</div>'+lbTop3('bossrush')+'</div>';
+  html+='<div style="margin-bottom:10px"><div style="font-size:14px;color:#fa4;letter-spacing:2px;margin-bottom:6px">🎯 嗮人模式</div>'+lbTop3('single')+'</div>';
+  html+='<div style="margin-bottom:6px"><div style="font-size:14px;color:#fa4;letter-spacing:2px;margin-bottom:6px">🔥 每日挑戰</div>'+lbTop3('daily')+'</div>';
   var el=document.getElementById('lb-list');
   if(el)el.innerHTML=html;
 }
@@ -2871,7 +2884,7 @@ document.getElementById('back-menu-btn').onclick=function(){
       var todayKey=new Date();todayKey=todayKey.getFullYear()+'-'+(todayKey.getMonth()+1)+'-'+todayKey.getDate();
       var score=dailyRounds*1000+dailyKills;
       var isNew=!dailyBest[todayKey]||score>dailyBest[todayKey].score;
-      if(isNew){dailyBest[todayKey]={score:score,rounds:dailyRounds,kills:dailyKills,date:todayKey};try{localStorage.setItem('oc_daily_best',JSON.stringify(dailyBest));}catch(e){}}
+      if(isNew){dailyBest[todayKey]={score:score,rounds:dailyRounds,kills:dailyKills,date:todayKey};try{localStorage.setItem('oc_daily_best',JSON.stringify(dailyBest));}catch(e){}}lbSave('daily',score,dailyRounds,{kills:dailyKills});
       var best=dailyBest[todayKey];
       document.getElementById('settlement-daily').style.display='block';
       document.getElementById('settlement-daily-stats').innerHTML='波數：'+dailyRounds+'<br>擊殺：'+dailyKills+'<br>得分：'+(dailyRounds*1000+dailyKills);
@@ -2880,7 +2893,7 @@ document.getElementById('back-menu-btn').onclick=function(){
     }else{
       document.getElementById('settlement-daily').style.display='none';
       document.getElementById('settlement-xp-label').textContent='經 驗 值';
-      if(!isMultiplayer&&!rangeMode&&!bossRushMode){var bestSingle=(function(){try{return JSON.parse(localStorage.getItem('oc_best_single'))||{}}catch(e){return{}}})();if(!bestSingle.rounds||finalRound>bestSingle.rounds){bestSingle={rounds:finalRound,score:finalRound*200+roundEarnings,date:new Date().toISOString().slice(0,10)};try{localStorage.setItem('oc_best_single',JSON.stringify(bestSingle));}catch(e){}}}
+      if(!isMultiplayer&&!rangeMode&&!bossRushMode){var bestSingle=(function(){try{return JSON.parse(localStorage.getItem('oc_best_single'))||{}}catch(e){return{}}})();if(!bestSingle.rounds||finalRound>bestSingle.rounds){bestSingle={rounds:finalRound,score:finalRound*200+roundEarnings,date:new Date().toISOString().slice(0,10)};try{localStorage.setItem('oc_best_single',JSON.stringify(bestSingle));}catch(e){}}lbSave('single',finalRound*200+roundEarnings,finalRound,{kills:dailyKills||0});}
     }
     document.getElementById('settlement').style.display='flex';
   }else{
@@ -4480,6 +4493,7 @@ function onPlayerDeath(){
     if(boss&&boss.mesh){scene.remove(boss.mesh);boss=null;}
     document.getElementById('boss-hp-wrap').style.display='none';
     var brWave=bossRushWave;
+    lbSave('bossrush',brWave*1000,brWave,{maxWave:brWave});
     var xpEarned=50+brWave*15;
     addXP(xpEarned);
     document.getElementById('settlement-xp').textContent='+'+xpEarned;
