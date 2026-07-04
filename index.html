@@ -1517,8 +1517,31 @@ function updateAchUI(){
 }
 document.getElementById('ach-btn').onclick=function(){updateAchUI();document.getElementById('ach-panel').style.display='flex';};
 document.getElementById('ach-close').onclick=function(){document.getElementById('ach-panel').style.display='none';};
-document.getElementById('lb-btn').onclick=function(){document.getElementById('lb-overlay').style.display='flex';};
+document.getElementById('lb-btn').onclick=function(){updateLeaderboard();document.getElementById('lb-overlay').style.display='flex';};
 document.getElementById('lb-close-btn').onclick=function(){document.getElementById('lb-overlay').style.display='none';};
+function updateLeaderboard(){
+  var html='';
+  // Boss Rush
+  var brData={maxWave:0};try{var br=JSON.parse(localStorage.getItem('oc_bossrush'));if(br&&br.maxWave)brData=br;}catch(e){}
+  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#88ccff;letter-spacing:2px;margin-bottom:4px">👹 Boss大戰</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+brData.maxWave+'</strong></span></div></div>';
+  // Single player
+  var spData={rounds:0,score:0,date:''};try{var sp=JSON.parse(localStorage.getItem('oc_best_single'));if(sp&&sp.rounds)spData=sp;}catch(e){}
+  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:4px">🎯 嗮人模式</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+spData.rounds+'</strong></span><span>最高分: <strong style="color:#ff8">'+spData.score+'</strong></span></div><div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:4px">'+spData.date+'</div></div>';
+  // Daily challenge - show today and all-time best
+  var dbAll={};try{dbAll=JSON.parse(localStorage.getItem('oc_daily_best'))||{};}catch(e){}
+  var bestScore=0,bestRounds=0,bestKills=0,bestDate='';
+  for(var k in dbAll){var d=dbAll[k];if(d.score>bestScore){bestScore=d.score;bestRounds=d.rounds;bestKills=d.kills;bestDate=d.date;}}
+  html+='<div style="border-bottom:1px solid rgba(136,204,255,.1);padding:10px 0;margin-bottom:6px"><div style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:4px">🔥 每日挑戰</div><div style="display:flex;justify-content:space-around;font-size:14px"><span>最高波數: <strong style="color:#4fa">'+(bestRounds||0)+'</strong></span><span>最佳分數: <strong style="color:#ff8">'+(bestScore||0)+'</strong></span></div><div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:4px">'+(bestDate||'')+'</div></div>';
+  var now=new Date();
+  var todayKey=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+  var todayBest=dbAll[todayKey];
+  if(todayBest){
+    html+='<div style="padding:8px 0"><div style="font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:3px">今日挑戰</div><div style="display:flex;justify-content:space-around;font-size:13px"><span>波數: <strong style="color:#4fa">'+todayBest.rounds+'</strong></span><span>擊殺: <strong style="color:#f8a">'+todayBest.kills+'</strong></span><span>分數: <strong style="color:#ff8">'+todayBest.score+'</strong></span></div></div>';
+  }
+  var el=document.getElementById('lb-list');
+  if(el)el.innerHTML=html;
+}
+
 
 var weaponProf={};
 try{var wp=localStorage.getItem('oc_prof');if(wp)weaponProf=JSON.parse(wp);}catch(e){}
@@ -2857,6 +2880,7 @@ document.getElementById('back-menu-btn').onclick=function(){
     }else{
       document.getElementById('settlement-daily').style.display='none';
       document.getElementById('settlement-xp-label').textContent='經 驗 值';
+      if(!isMultiplayer&&!rangeMode&&!bossRushMode){var bestSingle=(function(){try{return JSON.parse(localStorage.getItem('oc_best_single'))||{}}catch(e){return{}}})();if(!bestSingle.rounds||finalRound>bestSingle.rounds){bestSingle={rounds:finalRound,score:finalRound*200+roundEarnings,date:new Date().toISOString().slice(0,10)};try{localStorage.setItem('oc_best_single',JSON.stringify(bestSingle));}catch(e){}}}
     }
     document.getElementById('settlement').style.display='flex';
   }else{
@@ -6278,9 +6302,7 @@ document.head.appendChild(s);
 <div id="lb-box" style="background:linear-gradient(135deg,#0a1628,#000);border:1px solid rgba(136,204,255,.3);border-radius:10px;padding:24px 30px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 40px rgba(68,170,255,.15);max-width:400px;width:90%;max-height:80vh">
 <div id="lb-title" style="font-size:22px;font-weight:900;color:#88ccff;letter-spacing:6px;margin-bottom:16px;text-shadow:0 0 15px rgba(136,204,255,.3)">📊 排 行 榜</div>
 <div id="lb-sub" style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px">Boss 大戰   最高波數排行</div>
-<div id="lb-list" style="width:100%;overflow-y:auto;flex:1;min-height:100px">
-<div style="text-align:center;color:rgba(255,255,255,.2);padding:30px 0;font-size:14px;letter-spacing:2px">暫無數據</div>
-</div>
+<div id="lb-list" style="width:100%;overflow-y:auto;flex:1;min-height:160px"></div>
 <button id="lb-close-btn" style="margin-top:14px;padding:8px 36px;font-size:14px;font-weight:bold;color:#88ccff;background:transparent;border:1px solid rgba(136,204,255,.3);border-radius:4px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial" onmouseover="this.style.color='#000';this.style.background='#88ccff'" onmouseout="this.style.color='#88ccff';this.style.background='transparent'">關 閉</button>
 </div>
 </div>
