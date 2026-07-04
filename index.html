@@ -68,6 +68,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #mobile-aim-btn{position:absolute;bottom:calc(6vh + 26vmin);right:calc(3vw + 24vmin);width:12vmin;height:12vmin;max-width:60px;max-height:60px;min-width:40px;min-height:40px;border-radius:8px;background:radial-gradient(circle at 40% 35%,rgba(200,200,100,.4),rgba(120,80,0,.6));border:2px solid rgba(255,255,100,.3);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(255,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none;font-size:clamp(12px,4vmin,20px);font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:Arial}
 #mobile-aim-btn:active{transform:scale(0.9)}
 #mobile-aim-btn.active{background:radial-gradient(circle at 40% 35%,rgba(255,255,150,.6),rgba(200,150,0,.8));border-color:rgba(255,255,100,.7);box-shadow:0 0 25px rgba(255,200,0,.4)}
+#mobile-skill-btn{position:absolute;bottom:calc(6vh + 30vmin);left:3vw;width:12vmin;height:12vmin;max-width:60px;max-height:60px;min-width:40px;min-height:40px;border-radius:8px;background:radial-gradient(circle at 40% 35%,rgba(240,208,96,.4),rgba(180,150,30,.6));border:2px solid rgba(240,208,96,.3);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(240,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none;font-size:clamp(11px,3.5vmin,18px);font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:Arial}
 #mobile-skill-btn:active{transform:scale(0.9)}
 #mobile-slots{position:fixed;bottom:calc(6vh + 14vmin);left:50%;transform:translateX(-50%);display:none;gap:4px;z-index:15;pointer-events:none;font-family:Arial}
 #mobile-slots .ms-slot{pointer-events:auto;touch-action:none;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:3px 8px;font-size:clamp(9px,1.8vmin,13px);color:rgba(255,255,255,.5);letter-spacing:1px;transition:all .2s;user-select:none;-webkit-user-select:none;cursor:pointer;text-align:center;min-width:clamp(36px,8vmin,60px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -534,7 +535,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <canvas id="minimap" width="140" height="140" style="position:fixed;top:12px;right:12px;width:140px;height:140px;z-index:5;border-radius:6px;border:2px solid rgba(200,170,70,.35);box-shadow:0 0 20px rgba(0,0,0,.6);pointer-events:none;display:none"></canvas>
 <div id="unlock-dialog" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;align-items:center;justify-content:center;font-family:Arial"><div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6)" id="unlock-bg"></div><div style="position:relative;background:linear-gradient(135deg,#1a1220,#0a0810);border:2px solid rgba(170,136,255,.3);border-radius:12px;padding:24px 32px;text-align:center;max-width:300px;box-shadow:0 0 60px rgba(170,136,255,.15)"><div style="font-size:16px;font-weight:bold;color:#a8f;letter-spacing:2px;margin-bottom:6px">🔓 解鎖顏色</div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;letter-spacing:1px">花費 <span style="color:#ffd;font-weight:bold">5 SP</span> 解鎖此顏色？</div><div style="display:flex;gap:12px;justify-content:center"><button id="unlock-confirm" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:#a8f;background:rgba(170,136,255,.12);border:1px solid rgba(170,136,255,.4);cursor:pointer;letter-spacing:2px;transition:all .2s">✓ 解鎖</button><button id="unlock-cancel" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);cursor:pointer;letter-spacing:2px">✕ 取消</button></div></div></div>
 <div id="killfeed"></div>
-<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button><button id="mobile-aim-btn">準</button><button id="mobile-skill-btn" style="position:absolute;bottom:calc(6vh + 26vmin);right:calc(3vw + 38vmin);width:12vmin;height:12vmin;max-width:60px;max-height:60px;min-width:40px;min-height:40px;border-radius:8px;background:radial-gradient(circle at 40% 35%,rgba(240,208,96,.4),rgba(180,150,30,.6));border:2px solid rgba(240,208,96,.3);pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(240,200,0,.15),inset 0 -3px 6px rgba(0,0,0,.3);transition:transform .1s;user-select:none;-webkit-user-select:none;font-size:clamp(11px,3.5vmin,18px);font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:Arial">技</button></div><div id="mobile-slots"></div>
+<div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button><button id="mobile-aim-btn">準</button><button id="mobile-skill-btn">技</button></div><div id="mobile-slots"></div>
 <div id="rotate-device"><svg viewBox="0 0 120 120"><path d="M60,10 L60,50 M50,40 L60,50 L70,40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="80" rx="6" fill="none" stroke="#fff" stroke-width="4"/><rect x="35" y="25" width="50" height="60" rx="4" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"/><line x1="50" y1="90" x2="70" y2="90" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div>請旋轉手機</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Please rotate your device to landscape</div></div>
 <div id="buff-indicator" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 8px rgba(255,255,255,.5);letter-spacing:1px"></div>
 <div id="settlement"><div id="settlement-box"><div id="settlement-title">結 算</div><div id="settlement-xp">+0</div><div id="settlement-xp-label">經 驗 值</div><div id="settlement-progress"><div id="settlement-progress-fill" style="width:0%"></div></div><div id="settlement-level">Lv.1 (0 / 100)</div><div id="settlement-daily" style="display:none"><div id="settlement-daily-stats" style="font-size:16px;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:12px"></div><div id="settlement-daily-best" style="font-size:13px;color:#fa4;letter-spacing:2px;margin-bottom:10px"></div><button id="daily-share-btn">📋 複製分享</button></div><button id="settlement-btn">確 認</button></div></div>
@@ -1449,8 +1450,8 @@ function updateSlotFlashlightUI(){
   });
 }
 // ── Gun system ──
-var knifeSwingCount=0,knifeAnim=0,grenadeAnim=0,grenadeThrown=false;
-var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,chargeable:true,chargeTime:1.2,chargeMaxDmg:50},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
+var knifeSwingCount=0,knifeAnim=0,grenadeAnim=0,grenadeThrown=false,recoilKick=0,recoilRotX=0,boltOffset=0,boltTarget=0,swapAnimTimer=0,swapAnimDuration=0.4,swapOutGroup=null,swapTargetSlot=-1,swapTargetGun='';
+var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30,reloadTime:2},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7,reloadTime:1.5},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5,reloadTime:2.8},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6,reloadTime:2.2},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,reloadTime:2.4,chargeable:true,chargeTime:1.2,chargeMaxDmg:50},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40,reloadTime:1.6},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
 var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null,grenadeStacks=[0,0,0,0,0];
 var footstepTimer=0,lastMoving=false;
 var gunKills={};
@@ -1763,6 +1764,14 @@ function createGunModel(type){
     var gSpoon=new THREE.Mesh(new THREE.TorusGeometry(0.032,0.004,4,8,Math.PI*0.5),new THREE.MeshStandardMaterial({color:0xbbaa88,roughness:0.3,metalness:0.8}));gSpoon.rotation.x=Math.PI*0.6;gSpoon.position.set(0,0.003,0.012);g.add(gSpoon);
     var gBottomRing=new THREE.Mesh(new THREE.TorusGeometry(0.014,0.003,5,6),new THREE.MeshStandardMaterial({color:0x777777,roughness:0.5,metalness:0.6}));gBottomRing.rotation.x=Math.PI/2;gBottomRing.position.set(0,-0.04,-0.03);g.add(gBottomRing);
   }
+  // Charging handle mesh per gun type
+  var boltMat=new THREE.MeshStandardMaterial({color:0x666666,metalness:0.7,roughness:0.3});
+  if(type==='ak47'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.004,0.014,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0.021,0.03,-0.02);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='deagle'){var bolt=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.008,0.004),boltMat);bolt.position.set(0,0.02,0.035);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='awp'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.006,0.025,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0.024,0.015,-0.03);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='shotgun'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.008,0.02,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0,-0.015,-0.18);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='smg'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.012,6),boltMat);bolt.position.set(0.022,0.018,0.025);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='radrifle'){var bolt=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.008,0.005),boltMat);bolt.position.set(0,0.038,-0.03);g.add(bolt);g.userData.boltMesh=bolt;}
   g.userData.skinMats={dark:matDark,metal:matMetal,wood:matWood,scope:matScope};
   return g;
 }
@@ -1777,13 +1786,18 @@ function switchToSlot(slot){
   if(type==='grenade'&&grenadeStacks[slot]<=0){playerLoadout[slot]=null;switchToSlot(slot<1?0:slot-1);return;}
   currentSlot=slot;
   detachFlashlightMesh();
-  if(gunGroup){cam.remove(gunGroup);}
+  if(gunGroup){
+    swapOutGroup=gunGroup;
+    swapOutGroup.userData.oldGun=true;
+  }
   currentGun=type;
   gunGroup=createGunModel(type);
-  if(type==='grenade'){gunGroup.position.set(0.12,-0.12,-0.32);}else{gunGroup.position.set(0.2,-0.15,-0.35);}
+  if(type==='grenade'){gunGroup.position.set(0.2,-0.15,-0.35);}else{gunGroup.position.set(0.55,-0.4,-0.05);}
   gunGroup.scale.set(1.5,1.5,1.5);
+  gunGroup.visible=true;
   cam.add(gunGroup);
-  shootCD=0;isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();knifeAnim=0;gunGroup.rotation.set(0,0,0);
+  swapAnimTimer=swapAnimDuration;swapTargetSlot=slot;swapTargetGun=type;
+  shootCD=0;isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();knifeAnim=0;gunGroup.rotation.set(0.3,0,0);
   document.getElementById('scope-overlay').style.display='none';
   attachFlashlightMesh();createMagazine();
   document.querySelectorAll('.loadout-slot').forEach(function(s,i){
@@ -3959,6 +3973,7 @@ function shoot(){
   if(gunAmmo[currentGun]<=0&&buffType!=='infammo'){reload();return;}
   if(buffType!=='infammo')gunAmmo[currentGun]--;
   shootCD=buffType==='atkspeed'?gd.fireRate*0.5:gd.fireRate;
+  recoilKick=0.04;recoilRotX=-0.025;
   playGunSound(currentGun);
   // Bullet origin from actual barrel tip (accounts for scale + ADS position)
   var bt=barrelTips[currentGun].clone();
@@ -4346,8 +4361,10 @@ function throwPlayerGrenade(){
 }
 function reload(){
   if(isReloading||gunAmmo[currentGun]>=gunData[currentGun].mag||isDowned||inspectTimer>0)return;
-  isReloading=true;reloadTimer=(window.reloadSpeedMult?2*window.reloadSpeedMult:2);
+  var gd=gunData[currentGun];
+  isReloading=true;reloadTimer=window.reloadSpeedMult?gd.reloadTime*window.reloadSpeedMult:gd.reloadTime;
   reloadDuration=reloadTimer;createMagazine();
+  if(magazineMesh)magazineMesh.position.y=0;
   if(currentGun==='smg'){var sr=new Audio('ElevenLabs_快节奏现代冲锋枪换弹，清晰的弹匣释放，快速插弹，干脆的枪机撞击声，逼真的金属与聚合物点击声，带有细微未来感伺服声，竞技射击风格，无语音，无音乐。.mp3');sr.volume=0.4;sr.play().catch(function(){});}
   else{var sr=new Audio('freesound_community-assault-rifle-reload-104296.mp3');sr.volume=0.4;sr.play().catch(function(){});}
 }
@@ -5304,8 +5321,8 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(isDowned)document.getElementById('down-timer').textContent=Math.ceil(downTimer);
     // Inspect timer
     if(inspectTimer>0){inspectTimer-=dt;if(inspectTimer<0)inspectTimer=0;}
-    // Reload timer
-    if(isReloading){reloadTimer-=dt;if(reloadTimer<=0){isReloading=false;reloadTimer=0;gunAmmo[currentGun]=gunData[currentGun].mag;}}
+    // Reload timer + bolt offset reset on completion
+    if(isReloading){reloadTimer-=dt;if(reloadTimer<=0){isReloading=false;reloadTimer=0;boltTarget=0;boltOffset=0;gunAmmo[currentGun]=gunData[currentGun].mag;if(gunGroup&&gunGroup.userData&&gunGroup.userData.boltMesh){gunGroup.userData.boltMesh.position.z=0;}}}
     // Auto-fire + shoot cooldown
     if(window.regenHP){window.regenAccum+=dt;if(window.regenAccum>=1){window.regenAccum=0;playerHP=Math.min(100,playerHP+1);}}
 if(shootCD>0)shootCD-=dt;
@@ -5325,16 +5342,88 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
       var sr=document.getElementById('scope-ring');
       sr.style.width='60px';sr.style.height='60px';sr.style.borderColor='rgba(0,0,0,.3)';sr.style.borderWidth='1px';
     }else{so.style.display='none';}
-    // ADS gun position + knife swing anim
+    // ADS gun position + animations
+    // Recoil recovery
+    if(recoilKick>0){recoilKick*=0.85;if(recoilKick<0.001)recoilKick=0;}
+    if(recoilRotX!==0){recoilRotX*=0.85;if(Math.abs(recoilRotX)<0.001)recoilRotX=0;}
+    // Charging handle animation
+    if(boltTarget!==0||boltOffset!==0){
+      boltOffset+=(boltTarget-boltOffset)*Math.min(1,dt*15);
+      if(Math.abs(boltOffset-boltTarget)<0.001){boltOffset=boltTarget;}
+    }
     if(gunGroup){
-      if(isReloading&&currentGun!=='knife'&&currentGun!=='grapple'){
-        var rp=1-reloadTimer/(reloadDuration||2);
-        if(rp<0.5){
-          var t=rp/0.5;
-          if(magazineMesh)magazineMesh.position.y=-t*0.1;
+      // Swap animation (weapon switching — new gun slides in from off-screen)
+      if(swapAnimTimer>0){
+        swapAnimTimer-=dt;
+        var sp=Math.max(0,1-swapAnimTimer/swapAnimDuration);
+        var targetX=currentGun==='grenade'?0.12:0.2;
+        var targetY=currentGun==='grenade'?-0.12:-0.15;
+        var targetZ=currentGun==='grenade'?-0.32:-0.35;
+        // Animate old gun out
+        if(swapOutGroup){
+          var st=sp/0.35;
+          if(st<1){
+            swapOutGroup.position.x=0.2+st*0.35;swapOutGroup.position.y=-0.15-st*0.2;swapOutGroup.position.z=-0.35+st*0.2;
+            swapOutGroup.rotation.x=-st*0.3;swapOutGroup.rotation.z=st*0.5;
+          }else{
+            if(swapOutGroup.parent)cam.remove(swapOutGroup);swapOutGroup=null;
+          }
+        }
+        // Animate new gun in
+        gunGroup.position.x=0.55-sp*0.35;gunGroup.position.y=-0.4+sp*0.25;gunGroup.position.z=-0.05-sp*0.3;
+        gunGroup.rotation.x=0.3-sp*0.3;gunGroup.rotation.z=sp*0.3;
+        if(sp>=1){
+          gunGroup.position.set(targetX,targetY,targetZ);
+          gunGroup.rotation.set(0,0,0);
+          swapAnimTimer=0;swapTargetSlot=-1;swapTargetGun='';
+        }
+      }else if(isReloading&&currentGun!=='knife'&&currentGun!=='grapple'&&currentGun!=='grenade'){
+        var rp=Math.max(0,1-reloadTimer/(reloadDuration||2));
+        var basePos=isADS?new THREE.Vector3(0.15,-0.08,-0.28):new THREE.Vector3(0.2,-0.15,-0.35);
+        // Phase 1: Drop mag (0-25%)
+        if(rp<0.25){
+          var t=rp/0.25;
+          gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y-t*0.02;gunGroup.position.z=basePos.z-t*0.02;
+          gunGroup.rotation.x=t*0.04;gunGroup.rotation.y=0;gunGroup.rotation.z=t*0.06;
+          if(magazineMesh)magazineMesh.position.y=-t*0.08;
+          boltTarget=-0.01;
+        // Phase 2: Insert mag (25-55%)
+        }else if(rp<0.55){
+          var t=(rp-0.25)/0.3;
+          gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y-0.02+0.01*(t);gunGroup.position.z=basePos.z-0.02+0.01*(t);
+          gunGroup.rotation.x=0.04*(1-t);gunGroup.rotation.y=0;gunGroup.rotation.z=0.06*(1-t);
+          if(magazineMesh)magazineMesh.position.y=-(1-t)*0.08;
+          boltTarget=-0.01;
+        // Phase 3: Bolt pull (55-82%)
+        }else if(rp<0.82){
+          var t=(rp-0.55)/0.27;
+          var pullPos=0.04;var pullRot=0.08;
+          if(t<0.4){
+            var pt=t/0.4;
+            gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y-0.01;gunGroup.position.z=basePos.z-0.01-pt*pullPos;
+            gunGroup.rotation.x=pt*pullRot;gunGroup.rotation.z=pt*0.04;
+            boltTarget=-0.04;
+          }else if(t<0.7){
+            var pt=(t-0.4)/0.3;
+            gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y-0.01;gunGroup.position.z=basePos.z-0.01-pullPos+pt*pullPos;
+            gunGroup.rotation.x=pullRot*(1-pt);gunGroup.rotation.z=0.04*(1-pt);
+            boltTarget=-0.04+pt*0.03;
+          }else{
+            var pt=(t-0.7)/0.3;
+            gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y-0.01+pt*0.01;gunGroup.position.z=basePos.z-0.01+pt*0.01;
+            gunGroup.rotation.x=0;gunGroup.rotation.z=0;
+            boltTarget=-0.01+pt*0.01;
+          }
+        // Phase 4: Settle (82-100%)
         }else{
-          var t=(rp-0.5)/0.5;
-          if(magazineMesh)magazineMesh.position.y=-(1-t)*0.1;
+          var t=(rp-0.82)/0.18;
+          gunGroup.position.x=basePos.x;gunGroup.position.y=basePos.y+t*0.01;gunGroup.position.z=basePos.z+t*0.01;
+          gunGroup.rotation.x*=0.85;gunGroup.rotation.y*=0.85;gunGroup.rotation.z*=0.85;
+          boltTarget=0;
+        }
+        // Apply bolt offset to charging handle mesh
+        if(gunGroup.userData&&gunGroup.userData.boltMesh){
+          gunGroup.userData.boltMesh.position.z=boltOffset;
         }
       }else if(inspectTimer>0){
         var ip=1-inspectTimer/1.8;
@@ -5366,15 +5455,15 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
         else if(gt<0.5){var thrust=(gt-0.2)/0.3;gunGroup.position.x=0.07-thrust*0.15;gunGroup.position.y=-0.17+thrust*0.15;gunGroup.position.z=-0.38+thrust*0.2;gunGroup.rotation.x=0.5-thrust*0.8;gunGroup.rotation.z=-0.3+thrust*0.5;}
         else if(!grenadeThrown){grenadeThrown=true;throwPlayerGrenade();gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.rotation.set(0,0,0);}
         else{gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.rotation.set(0,0,0);if(grenadeAnim<=0)grenadeAnim=0;}
-      }else if(currentGun==='awp'){var tPos=isADS?new THREE.Vector3(0.15,-0.08,-0.28):new THREE.Vector3(0.2,-0.15,-0.35);gunGroup.position.lerp(tPos,Math.min(1,dt*12));gunGroup.rotation.x*=0.9;gunGroup.rotation.y*=0.9;gunGroup.rotation.z*=0.9;}
-      else if(currentGun==='grapple'){
-        var tPos=isADS?new THREE.Vector3(0.18,-0.08,-0.28):new THREE.Vector3(0.2,-0.15,-0.35);
-        gunGroup.position.lerp(tPos,Math.min(1,dt*10));
-        gunGroup.rotation.x*=0.9;gunGroup.rotation.y*=0.9;gunGroup.rotation.z*=0.9;
       }else{
-        var tPos=isADS?new THREE.Vector3(0.15,-0.08,-0.28):new THREE.Vector3(0.2,-0.15,-0.35);
+        var isDefGren=currentGun==='grenade';
+        var baseX=isADS?0.15:(isDefGren?0.12:0.2);
+        var baseY=isADS?-0.08:(isDefGren?-0.12:-0.15);
+        var baseZ=isADS?-0.28:(isDefGren?-0.32:-0.35);
+        var tPos=new THREE.Vector3(baseX+recoilKick,baseY,baseZ-recoilKick);
         gunGroup.position.lerp(tPos,Math.min(1,dt*10));
-        gunGroup.rotation.x*=0.9;gunGroup.rotation.y*=0.9;gunGroup.rotation.z*=0.9;
+        gunGroup.rotation.x+=recoilRotX;gunGroup.rotation.x*=0.9;
+        gunGroup.rotation.y*=0.9;gunGroup.rotation.z*=0.9;
       }
     }
     for(var i=impacts.length-1;i>=0;i--){impacts[i].time+=dt;if(impacts[i].time>2){scene.remove(impacts[i].mesh);impacts.splice(i,1);}}
@@ -5804,7 +5893,7 @@ function playSniper(){playShort('dingman081130--286379.mp3',0.6,0.5);}
 function playSMG(){playShort('ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3',0.1);}
 function playKnife(){playShort('alexis_gaming_cam-katana-370403.mp3');}
 function playGunSound(gun){
-  if(gun==='ak47'||gun==='radrifle')playAK47();
+  if(gun==='ak47'||gun==='radrifle'||gun==='deagle')playAK47();
   else if(gun==='awp'||gun==='sniper')playSniper();
   else if(gun==='smg')playSMG();
 }
