@@ -2001,7 +2001,16 @@ var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x66
 function getEquippedSkin(type){var s;try{s=localStorage.getItem('oc_skin_'+type);}catch(e){}return s||'default';}
 function setSkin(type,id){try{localStorage.setItem('oc_skin_'+type,id);}catch(e){}if(type===currentGun&&gunGroup){detachFlashlightMesh();cam.remove(gunGroup);gunGroup=createGunModel(type);gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.scale.set(1.5,1.5,1.5);cam.add(gunGroup);gunGroup.rotation.set(0,0,0);attachFlashlightMesh();createMagazine();}}
 function getProfLevel(gun){return Math.floor((weaponProf[gun]||0)/10)+1;}
-function getSkinColors(type){var sk=gunSkins[type];if(!sk)return null;var id=getEquippedSkin(type);if(id==='dark_flame'&&getProfLevel(type)<20)id='default';for(var i=0;i<sk.length;i++){if(sk[i].id===id)return sk[i].colors;}return sk[0]?sk[0].colors:null;}
+function getSkinColors(type){
+  var sk=gunSkins[type];if(!sk)return null;
+  var id=getEquippedSkin(type);
+  if(id==='dark_flame'&&getProfLevel(type)<20)id='default';
+  var colors=null;
+  for(var i=0;i<sk.length;i++){if(sk[i].id===id){colors={};for(var k in sk[i].colors)colors[k]=sk[i].colors[k];break;}}
+  if(!colors&&sk[0]){colors={};for(var k in sk[0].colors)colors[k]=sk[0].colors[k];}
+  try{var custom=JSON.parse(localStorage.getItem('oc_custom_'+type));if(custom)for(var k in custom)if(custom[k]!==undefined)colors[k]=custom[k];}catch(e){}
+  return colors;
+}
 function recalcProdBonuses(){
   var dmgMult=1,reloadMult=1;
   for(var si=0;si<playerLoadout.length;si++){
@@ -2197,6 +2206,7 @@ function openSkinPanel(){
         if(sk.id===cur){skinCustomColors={};for(var k in sk.colors)skinCustomColors[k]=sk.colors[k];break;}
       }
     }else{skinCustomColors={dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111};}
+    try{var custom=JSON.parse(localStorage.getItem('oc_custom_'+skinSelectedGun));if(custom)for(var k in custom)if(custom[k]!==undefined)skinCustomColors[k]=custom[k];}catch(e){}
     renderSkinPartPicker();renderSkinColorGrid();
     setTimeout(function(){buildSkinPreviewGun();},50);
     renderSkinList();
@@ -2276,13 +2286,17 @@ document.getElementById('range-exit').onclick=function(){
 document.getElementById('prof-close').onclick=function(){document.getElementById('prof-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
 document.getElementById('prof-bg').onclick=function(){document.getElementById('prof-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
 document.getElementById('skin-bg').onclick=function(){document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
+function saveSkinCustomColors(){
+  if(skinMode==='char'){try{localStorage.setItem('oc_char_skin',JSON.stringify(skinCustomColors));}catch(e){}}
+  else if(skinMode==='gun'){try{localStorage.setItem('oc_custom_'+skinSelectedGun,JSON.stringify(skinCustomColors));}catch(e){}}
+}
 document.getElementById('skin-close').onclick=function(){
   document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';
-  if(skinMode==='char'){try{localStorage.setItem('oc_char_skin',JSON.stringify(skinCustomColors));}catch(e){}}
+  saveSkinCustomColors();
 };
 document.getElementById('skin-bg').onclick=function(){
   document.getElementById('skin-overlay').style.display='none';document.getElementById('menu').style.display='flex';
-  if(skinMode==='char'){try{localStorage.setItem('oc_char_skin',JSON.stringify(skinCustomColors));}catch(e){}}
+  saveSkinCustomColors();
 };
 var eventEndDate=(function(){try{var d=localStorage.getItem('oc_event_end');if(d)return new Date(d);}catch(e){}var nd=new Date(Date.now()+30*86400000);try{localStorage.setItem('oc_event_end',nd.toISOString());}catch(e){}return nd;})();
 var seasonPoints=parseInt(localStorage.getItem('oc_sp'))||0;
