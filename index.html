@@ -6290,6 +6290,7 @@ try{
   var sd=localStorage.getItem('ocgame_save');
   if(sd){document.getElementById('resume-prompt').style.display='flex';document.getElementById('save-exit-btn').style.display='none';}
 }catch(ex){}
+
 preloadSFX();
 document.addEventListener('click',function(){if(!audioCtx)initAudio();if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();},{once:true});
 requestAnimationFrame(animate);
