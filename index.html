@@ -944,9 +944,10 @@ if(authToken){
 }
 // Online presence heartbeat + team polling
 if(authToken){
+  authFetch('/api/team/ping',{method:'POST',body:{}}).catch(function(){});
   setInterval(function(){
     authFetch('/api/team/ping',{method:'POST',body:{}}).catch(function(){});
-  },30000);
+  },15000);
   setInterval(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},5000);
   setTimeout(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},100);
 }
