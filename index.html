@@ -2069,6 +2069,7 @@ window.checkTeamStatus=function(){
       // Add teammate characters on main stage
       window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);});
       window._menuCharTeammates=[];
+      var tc=document.getElementById('team-chars');
       d.members.forEach(function(name,i){
         var tm=createOpponentMesh();
         tm.scale.set(1.3,1.3,1.3);tm.position.set(1.4+(i*1.1),0.35,0);
@@ -3137,11 +3138,21 @@ document.getElementById('settlement-btn').onclick=function(){
   document.getElementById('mobile-controls').style.display='none';
   document.getElementById('settlement').style.display='none';
   document.getElementById('settlement-daily').style.display='none';
-  document.getElementById('menu').style.display='flex';
+  if(document.getElementById('multi-end-options').style.display==='flex'){
+    // Already showing multi-end-options, just go to menu
+    document.getElementById('menu').style.display='flex';
+    if(authToken)checkTeamStatus();
+    updateCoinsDisplay();updateArmoryGunCounts();
+  }else if(window._pendingMultiEnd){
+    window._pendingMultiEnd=false;
+    document.getElementById('multi-end-options').style.display='flex';
+  }else{
+    document.getElementById('menu').style.display='flex';
+    if(authToken)checkTeamStatus();
+    updateCoinsDisplay();updateArmoryGunCounts();
+  }
   document.getElementById('session-sp').style.display='none';
-  if(authToken)checkTeamStatus();
   updateLevelDisplay();
-  updateCoinsDisplay();updateArmoryGunCounts();
   var dbEl=document.getElementById('daily-best');
   var todayKey=new Date();todayKey=todayKey.getFullYear()+'-'+(todayKey.getMonth()+1)+'-'+todayKey.getDate();
   if(dailyBest[todayKey]){dbEl.style.display='block';dbEl.textContent='🔥 今日最佳：'+dailyBest[todayKey].rounds+' 波 / '+dailyBest[todayKey].score+' 分';}
@@ -3496,13 +3507,31 @@ document.getElementById('multi-cancel').onclick=function(){
   document.getElementById('menu').style.display='flex';
   if(authToken)checkTeamStatus();
 };
+function showMultiSettlement(reason){
+  if(didPlayGame){
+    didPlayGame=false;
+    var xp=10+Math.max(0,(roundNum-1)*2);
+    addXP(xp);
+    document.getElementById('settlement-xp').textContent='+'+xp;
+    var li=getLevelInfo(playerXP);
+    document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';
+    document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';
+    document.getElementById('settlement-daily').style.display='none';
+    document.getElementById('settlement-xp-label').textContent='經 驗 值';
+    document.getElementById('multi-end-reason').textContent=reason;
+    window._pendingMultiEnd=true;
+    document.getElementById('settlement').style.display='flex';
+  }else{
+    document.getElementById('multi-end-reason').textContent=reason;
+    document.getElementById('multi-end-options').style.display='flex';
+  }
+}
 document.getElementById('multi-quit-btn').onclick=function(){
   document.getElementById('multi-death-prompt').style.display='none';
   relaySend({type:'round_quit'});
   isMultiplayer=false;
   rankEvaluateMatch(-1);
-  document.getElementById('multi-end-reason').textContent='你選擇結束比賽';
-  document.getElementById('multi-end-options').style.display='flex';
+  showMultiSettlement('你選擇結束比賽');
   if(window.multiSI)clearInterval(window.multiSI);
 };
 document.getElementById('multi-continue-btn').onclick=function(){
@@ -3771,26 +3800,24 @@ function processServerMessage(data){
       // Re-create alive opponents list
       opponentStates.forEach(function(s){s.alive=true;});
       break;
-    case 'round_quit':
-      document.getElementById('multi-death-prompt').style.display='none';
-      document.getElementById('multi-waiting').style.display='none';
-      rankEvaluateMatch(1);
-      document.getElementById('multi-end-reason').textContent='對手選擇結束比賽';
-      document.getElementById('multi-end-options').style.display='flex';
-      if(document.pointerLockElement)document.exitPointerLock();
-      isMultiplayer=false;
-      break;
-    case 'opponent_disconnected':
-      if(window.multiSI)clearInterval(window.multiSI);
-      document.getElementById('multi-death-prompt').style.display='none';
-      document.getElementById('multi-waiting').style.display='none';
-      rankEvaluateMatch(1);
-      document.getElementById('multi-end-reason').textContent='對手已離開對局';
-      document.getElementById('multi-end-options').style.display='flex';
-      if(document.pointerLockElement)document.exitPointerLock();
-      isMultiplayer=false;
-      if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
-      break;
+      case 'round_quit':
+        document.getElementById('multi-death-prompt').style.display='none';
+        document.getElementById('multi-waiting').style.display='none';
+        rankEvaluateMatch(1);
+        isMultiplayer=false;
+        showMultiSettlement('對手選擇結束比賽');
+        if(document.pointerLockElement)document.exitPointerLock();
+        break;
+      case 'opponent_disconnected':
+        if(window.multiSI)clearInterval(window.multiSI);
+        document.getElementById('multi-death-prompt').style.display='none';
+        document.getElementById('multi-waiting').style.display='none';
+        rankEvaluateMatch(1);
+        isMultiplayer=false;
+        showMultiSettlement('對手已離開對局');
+        if(document.pointerLockElement)document.exitPointerLock();
+        if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
+        break;
     case 'flashbang':
       if(data.pos){
         var fbDist=pos.distanceTo(new THREE.Vector3(data.pos[0],data.pos[1],data.pos[2]));
