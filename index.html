@@ -2067,15 +2067,27 @@ window.checkTeamStatus=function(){
       currentTeamId=d.teamId||null;
       clearTeamPreviews();
       // Add teammate characters on main stage
-      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);});
+      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.label&&window._menuCharScene)window._menuCharScene.remove(t.label);});
       window._menuCharTeammates=[];
       var tc=document.getElementById('team-chars');
       d.members.forEach(function(name,i){
         var tm=createOpponentMesh();
-        tm.scale.set(1.3,1.3,1.3);tm.position.set(1.4+(i*1.1),0.35,0);
+        tm.scale.set(1.3,1.3,1.3);tm.position.set(0.9+(i*0.9),0.35,0);
         tm.traverse(function(c){if(c.isMesh){c.material=new THREE.MeshStandardMaterial({color:0x222222,roughness:0.8,metalness:0.3,emissive:0x222244,emissiveIntensity:0.05});}});
         if(window._menuCharScene)window._menuCharScene.add(tm);
-        window._menuCharTeammates.push({mesh:tm,name:name});
+        // Name label sprite
+        var nameCanvas=document.createElement('canvas');nameCanvas.width=256;nameCanvas.height=48;
+        var nctx=nameCanvas.getContext('2d');
+        nctx.shadowColor='rgba(0,0,0,0.8)';nctx.shadowBlur=8;
+        nctx.font='bold 28px Arial';nctx.textAlign='center';nctx.textBaseline='middle';
+        nctx.fillStyle='rgba(255,255,255,0.9)';nctx.fillText(name,128,24);
+        var nameTex=new THREE.CanvasTexture(nameCanvas);nameTex.needsUpdate=true;
+        var nameMat=new THREE.SpriteMaterial({map:nameTex,transparent:true,depthWrite:false,opacity:0.9});
+        var nameSprite=new THREE.Sprite(nameMat);
+        nameSprite.position.set(0.9+(i*0.9),1.9,0);
+        nameSprite.scale.set(1.2,0.22,1);
+        if(window._menuCharScene)window._menuCharScene.add(nameSprite);
+        window._menuCharTeammates.push({mesh:tm,name:name,label:nameSprite});
         // Also keep the small canvas preview
         var wrap=document.createElement('div');wrap.className='team-char-wrap';
         var cv=document.createElement('canvas');cv.width=40;cv.height=58;cv.style.cssText='width:100%;height:100%;display:block';
@@ -2099,7 +2111,7 @@ window.checkTeamStatus=function(){
       ts.style.display='none';
       currentTeamId=null;
       clearTeamPreviews();
-      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);});
+      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.label&&window._menuCharScene)window._menuCharScene.remove(t.label);});
       window._menuCharTeammates=[];
     }
     document.getElementById('play-btn').classList.toggle('team-blocked',blocked);
