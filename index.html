@@ -4150,10 +4150,14 @@ function getLevel(xp){var l=1;while(xp>=xpForLevel(l)){xp-=xpForLevel(l);l++;}re
 function getLevelInfo(xp){var l=getLevel(xp),cur=xp,prev=0;for(var i=1;i<l;i++){cur-=xpForLevel(i);prev+=xpForLevel(i);}return{level:l,current:cur,needed:xpForLevel(l),prevTotal:prev};}
 function updateLevelDisplay(){var li=getLevelInfo(playerXP);document.getElementById('level-num').textContent=li.level;var lmn=document.getElementById('level-num-menu');if(lmn)lmn.textContent=li.level;document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';var dbEl=document.getElementById('daily-best');var todayKey=new Date();todayKey=todayKey.getFullYear()+'-'+(todayKey.getMonth()+1)+'-'+todayKey.getDate();if(dailyBest[todayKey]){dbEl.style.display='block';dbEl.textContent='🔥 今日最佳：'+dailyBest[todayKey].rounds+' 波 / '+dailyBest[todayKey].score+' 分';}else{dbEl.style.display='none';}}
 function addXP(amt){playerXP+=amt;localStorage.setItem('oc_level',playerXP+'');updateLevelDisplay();}
-var seasonStart=localStorage.getItem('oc_season_start')?parseInt(localStorage.getItem('oc_season_start')):Date.now();
 var seasonDays=30;
 function updateSeasonDisplay(){
-  if(!localStorage.getItem('oc_season_start'))localStorage.setItem('oc_season_start',seasonStart+'');
+  var saved=localStorage.getItem('oc_season_start');
+  if(!saved||(Date.now()-parseInt(saved))/86400000>seasonDays){
+    var freshStart=Date.now()-2*86400000;
+    localStorage.setItem('oc_season_start',freshStart+'');
+    seasonStart=freshStart;
+  }else{seasonStart=parseInt(saved);}
   var elapsed=Date.now()-seasonStart;
   var remaining=Math.max(0,seasonDays-Math.floor(elapsed/86400000));
   document.getElementById('season-timer').textContent=remaining+' 天';var sd=document.getElementById('season-display');if(sd)sd.innerHTML='💧 S2 窒息 &nbsp;'+remaining+' 天';
