@@ -978,7 +978,7 @@ var bulletHoles=[],maxBulletHoles=50,impactPool=[],bulletHolePool=[],flashMesh=n
 var dailyChallenge=false,dailyKills=0,dailyRounds=0;
 var dailyBest=(function(){try{return JSON.parse(localStorage.getItem('oc_daily_best'))||{}}catch(e){return{}}})();
 var radWattage=0,radImmuneTimer=0,nuclearClears=0,nuclearWave=1,bossActive=false,bossSpawned=false,boss=null,reactorGlow=null,radZoneRadius=5,bossRushMode=false,bossRushWave=0,bossRushMaxWave=0,bossType='nuclear',bossChargeTimer=0,bossTeleportCD=0,bossLaserAngle=0,bossTurretAngle=0,bossSummoned=[];
-var floodedWave=1,floodedClears=0,abyssalMaw=null,bossFloodedActive=false,bossFloodedSpawned=false,airBubbles=[],floodedBossPhase=1,harpoonProjectiles=[],floodedBossPhaseCD=0,bubbleTimer=0,isUnderwater=false,playerO2=100,maxO2=100,waterLevel=3.0,floodedMapElements=[],underwaterAmbient=null;
+var floodedWave=1,floodedClears=0,abyssalMaw=null,bossFloodedActive=false,bossFloodedSpawned=false,airBubbles=[],floodedBossPhase=1,harpoonProjectiles=[],floodedBossPhaseCD=0,bubbleTimer=0,isUnderwater=false,playerO2=100,maxO2=100,waterLevel=3.0,floodedMapElements=[],underwaterAmbient=null,oxyVents=[];
 var radRifleCharge=0,radRifleCharging=false,radRifleChargeTouchId=null,radiationZones=[];
 var sliding=false,slideTimer=0,slideCD=0,slidePromptTimer=0,slideSpeed=14,slideKeyWas=false,slowTimer=0;
 var isDowned=false,downTimer=0;
@@ -3273,6 +3273,7 @@ function applyMapSettings(){
     document.getElementById('boss-hp-wrap').style.display='none';
     airBubbles.forEach(function(b){try{scene.remove(b.mesh);}catch(eb){}});airBubbles=[];
     harpoonProjectiles.forEach(function(h){try{scene.remove(h.mesh);}catch(eh){}});harpoonProjectiles=[];
+    oxyVents.forEach(function(v){if(v.base)try{scene.remove(v.base);}catch(e){}if(v.glow)try{scene.remove(v.glow);}catch(e){}});oxyVents=[];
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
     var sgrd=sctx.createLinearGradient(0,0,0,512);
@@ -4840,6 +4841,7 @@ function onPlayerDeath(){
     bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;
     airBubbles.forEach(function(b){scene.remove(b.mesh);});airBubbles=[];
     harpoonProjectiles.forEach(function(h){scene.remove(h.mesh);});harpoonProjectiles=[];
+    oxyVents.forEach(function(v){if(v.base)scene.remove(v.base);if(v.glow)scene.remove(v.glow);});oxyVents=[];
     document.getElementById('boss-hp-wrap').style.display='none';
   }
   if(rangeMode){playerHP=100;playerArmor=0;pos.set(0,0.8,1.5);vel.set(0,0,0);isDowned=false;downTimer=0;return;}
@@ -5922,7 +5924,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];bubbleTimer=2;for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -6795,6 +6797,7 @@ function updateFlooded(dt){
   bubbleTimer-=dt;
   if(bubbleTimer<=0){spawnAirBubble();bubbleTimer=1.5+Math.random()*1.5;}
   updateAirBubbles(dt);
+  updateOxyVents(dt);
   var ft=Date.now()/1000;
   var waterPulse=0.15+0.08*Math.sin(ft*0.5);
   document.getElementById('underwater-overlay').style.background='radial-gradient(ellipse at center,rgba(0,40,80,'+waterPulse+'),rgba(0,20,60,0.4))';
@@ -7007,6 +7010,45 @@ function updateAirBubbles(dt){
     if(ab.life<=0||ab.pos.y>waterLevel-0.1){scene.remove(ab.mesh);airBubbles.splice(bi,1);continue;}
     if(pos.distanceTo(ab.pos)<0.5){playerO2=Math.min(maxO2,playerO2+15);showDmgNum(pos.clone(),15,'#4af');scene.remove(ab.mesh);airBubbles.splice(bi,1);}
   }
+}
+function spawnOxyVents(){
+  var ventPositions=[
+    {x:-10,z:-10},{x:-10,z:10},{x:10,z:-10},{x:10,z:10},
+    {x:0,z:-14},{x:0,z:14},{x:-14,z:0},{x:14,z:0},
+    {x:-6,z:-6},{x:6,z:6},{x:-6,z:6},{x:6,z:-6},
+    {x:-12,z:-5},{x:-12,z:5},{x:12,z:-5},{x:12,z:5}
+  ];
+  ventPositions.forEach(function(vp){
+    var ventBase=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.3,0.08,8),new THREE.MeshStandardMaterial({color:0x4488aa,roughness:0.6,metalness:0.4,emissive:0x226688,emissiveIntensity:0.3}));
+    ventBase.position.set(vp.x,0.02,vp.z);scene.add(ventBase);
+    var ventGlow=new THREE.Mesh(new THREE.SphereGeometry(0.15,6,6),new THREE.MeshBasicMaterial({color:0x44ddff,transparent:true,opacity:0.25}));
+    ventGlow.position.set(vp.x,0.12,vp.z);scene.add(ventGlow);
+    oxyVents.push({pos:new THREE.Vector3(vp.x,0.12,vp.z),cooldown:0,base:ventBase,glow:ventGlow,particles:[]});
+  });
+}
+function updateOxyVents(dt){
+  oxyVents.forEach(function(v){
+    v.cooldown-=dt;
+    if(v.cooldown<0)v.cooldown=0;
+    var dist=pos.distanceTo(v.pos);
+    if(dist<1.2&&v.cooldown<=0){
+      playerO2=Math.min(maxO2,playerO2+20);
+      showDmgNum(pos.clone(),20,'#4af');
+      v.cooldown=3;
+    }
+    var pulse=0.15+0.1*Math.sin(Date.now()/1000*2+v.pos.x*0.5);
+    if(v.cooldown>0){
+      if(v.glow)v.glow.material.opacity=0.05;
+      if(v.base)v.base.material.emissiveIntensity=0.05;
+    }else{
+      if(v.glow)v.glow.material.opacity=pulse;
+      if(v.base)v.base.material.emissiveIntensity=0.3+0.2*Math.sin(Date.now()/1000*2+v.pos.x*0.5);
+    }
+    if(v.cooldown<=0){
+      v.particles.push({life:1+Math.random()*0.5,vy:0.3+Math.random()*0.4});
+      v.particles=v.particles.filter(function(p){p.life-=dt;return p.life>0;});
+    }else{v.particles=[];}
+  });
 }
 function updateHarpoonProjectiles(dt){
   for(var hpi=harpoonProjectiles.length-1;hpi>=0;hpi--){
