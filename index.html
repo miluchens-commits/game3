@@ -235,6 +235,9 @@ body.mobile-mode #scope-overlay{display:none!important}
 #rad-label{font-size:10px;color:rgba(0,255,100,.7);letter-spacing:2px}
 #rad-watt{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px}
 #nuclear-wave{position:fixed;top:110px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:Arial;font-size:13px;color:#0f0;letter-spacing:3px;display:none;text-shadow:0 0 10px rgba(0,255,0,.3)}
+#o2-wrap{position:fixed;bottom:130px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:Arial;display:none;flex-direction:column;align-items:center;gap:2px}
+#o2-label{font-size:11px;color:#4af;letter-spacing:2px;text-shadow:0 0 8px rgba(68,170,255,.3)}
+#o2-fill{height:100%;width:100%;background:linear-gradient(90deg,#08f,#4df,#8ff);border-radius:4px;transition:width .2s}
 #boss-hp-wrap{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:Arial;display:none;flex-direction:column;align-items:center;gap:3px}
 #boss-hp-bar{width:300px;height:12px;background:rgba(0,0,0,.7);border:2px solid rgba(255,50,50,.5);border-radius:6px;overflow:hidden}
 #boss-hp-fill{height:100%;width:100%;background:linear-gradient(90deg,#800,#f00,#f80);border-radius:6px;transition:width .2s}
@@ -601,7 +604,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
   <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
-  <div class="map-option" data-map="s2" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.06)"><div class="map-name">💧 窒息</div><div class="map-desc">S2賽季 — 水下窒息</div></div></div></div>
+  <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
@@ -656,7 +659,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="round-earnings"></div>
 <div id="nuclear-ui"><div id="rad-label">☢ 輻射</div><div id="rad-bar-wrap"><div id="rad-bar-fill"></div></div><div id="rad-watt">0 / 1200 W</div></div>
 <div id="nuclear-wave"></div>
-<div id="underwater-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;display:none;background:radial-gradient(ellipse at center 60%,transparent 40%,rgba(0,40,80,.35) 70%,rgba(0,20,60,.5) 100%)"></div>
+<div id="o2-wrap" style="display:none;position:fixed;bottom:130px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:Arial;flex-direction:column;align-items:center;gap:2px"><div id="o2-label" style="font-size:11px;color:#4af;letter-spacing:2px;text-shadow:0 0 8px rgba(68,170,255,.3)">O₂</div><div style="width:180px;height:8px;background:rgba(0,0,0,.6);border:1px solid rgba(68,170,255,.3);border-radius:4px;overflow:hidden"><div id="o2-fill" style="height:100%;width:100%;background:linear-gradient(90deg,#08f,#4df,#8ff);border-radius:4px;transition:width .2s"></div></div></div>
+<div id="underwater-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,rgba(0,40,80,.15),rgba(0,20,60,.4));z-index:4;pointer-events:none;display:none"></div>
 <div id="boss-hp-wrap"><div id="boss-label">☠ 核子特攻</div><div id="boss-hp-bar"><div id="boss-hp-fill"></div></div></div>
 <div id="awp-block"></div>
 <div id="range-hud" style="display:none;position:fixed;top:12px;right:12px;z-index:7;pointer-events:none;font-family:Arial;text-align:right"><div id="range-score" style="font-size:36px;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(255,255,255,.2);letter-spacing:2px">0</div><div id="range-stat" style="font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:2px">命中 0 / 0 發</div><div id="range-timer" style="font-size:15px;color:rgba(255,255,255,.2);letter-spacing:1px;margin-top:2px"></div></div>
@@ -694,7 +698,7 @@ body.mobile-mode #scope-overlay{display:none!important}
     <div class="map-option" data-map="fog" id="vote-fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>
     <div class="map-option" data-map="dragonboat" id="vote-dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定</div></div>
     <div class="map-option" data-map="nuclear" id="vote-nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
-    <div class="map-option" data-map="s2" id="vote-s2" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.06)"><div class="map-name">💧 窒息</div><div class="map-desc">S2賽季 — 水下窒息</div></div>
+    <div class="map-option" data-map="flooded" id="vote-flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div>
   </div>
 </div>
 <div id="gun-overlay"><div id="gun-bg"></div><div id="gun-box"><div id="gun-close">✕</div><div id="gun-left"><div id="gun-left-title">已擁有 <span id="gun-own-count">0</span></div><div id="gun-left-list"></div></div><div id="gun-right"><div id="gun-preview"><canvas id="gun-canvas"></canvas></div><div id="gun-attach-slots"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🔫 槍口</div><div id="gun-slot-muzzle" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🎯 瞄具</div><div id="gun-slot-sight" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">📦 彈匣</div><div id="gun-slot-mag" class="gun-a-slot"></div></div></div><button id="gun-buy-all" style="display:none">一 鍵 購 買</button></div></div></div>
@@ -974,6 +978,7 @@ var bulletHoles=[],maxBulletHoles=50,impactPool=[],bulletHolePool=[],flashMesh=n
 var dailyChallenge=false,dailyKills=0,dailyRounds=0;
 var dailyBest=(function(){try{return JSON.parse(localStorage.getItem('oc_daily_best'))||{}}catch(e){return{}}})();
 var radWattage=0,radImmuneTimer=0,nuclearClears=0,nuclearWave=1,bossActive=false,bossSpawned=false,boss=null,reactorGlow=null,radZoneRadius=5,bossRushMode=false,bossRushWave=0,bossRushMaxWave=0,bossType='nuclear',bossChargeTimer=0,bossTeleportCD=0,bossLaserAngle=0,bossTurretAngle=0,bossSummoned=[];
+var floodedWave=1,floodedClears=0,abyssalMaw=null,bossFloodedActive=false,bossFloodedSpawned=false,airBubbles=[],floodedBossPhase=1,harpoonProjectiles=[],floodedBossPhaseCD=0,bubbleTimer=0,isUnderwater=false,playerO2=100,maxO2=100,waterLevel=3.0,floodedMapElements=[],underwaterAmbient=null;
 var radRifleCharge=0,radRifleCharging=false,radRifleChargeTouchId=null,radiationZones=[];
 var sliding=false,slideTimer=0,slideCD=0,slidePromptTimer=0,slideSpeed=14,slideKeyWas=false,slowTimer=0;
 var isDowned=false,downTimer=0;
@@ -3188,7 +3193,7 @@ function applyMapSettings(){
   // Toggle dragon boat elements
   if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
   if(lanternLights)lanternLights.forEach(function(l){l.visible=currentMap==='dragonboat';});
-  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2';});
+  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2'&&currentMap!=='flooded';});
   // Toggle nuclear elements
   if(nuclearMapElements)nuclearMapElements.forEach(function(b){b.mesh.visible=currentMap==='nuclear';});
   // Toggle arena2 elements
@@ -3208,7 +3213,7 @@ function applyMapSettings(){
     }
   }
   // Base map: show all non-special mapBoxes
-  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'){
+  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'&&currentMap!=='flooded'){
     for(var mxi3=0;mxi3<mapBoxes.length;mxi3++){
       var bx3=mapBoxes[mxi3];
       if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat)bx3.mesh.visible=true;
@@ -3246,14 +3251,28 @@ function applyMapSettings(){
     scene.fog=new THREE.Fog(0x2a2a3e,40,60);
     amb.color.setHex(0xccccff);amb.intensity=0.7;
     dir.color.setHex(0xffffff);dir.intensity=2.0;
-  }else if(currentMap==='s2'){
+  }else if(currentMap==='flooded'){
     scene.background=new THREE.Color(0x0a1a2a);
     scene.fog=new THREE.Fog(0x0a1a2a,6,18);
-    amb.color.setHex(0x224466);amb.intensity=0.3;
-    dir.color.setHex(0x66aacc);dir.intensity=0.5;
-    startRain();
+    amb.color.setHex(0x224466);amb.intensity=0.25;
+    dir.color.setHex(0x4488bb);dir.intensity=0.3;
+    if(!floodedMapElements.length)createFloodedMapElements();
+    floodedMapElements.forEach(function(b){b.mesh.visible=true;});
+    for(var mxi4=0;mxi4<mapBoxes.length;mxi4++){
+      var bx4=mapBoxes[mxi4];
+      if(!bx4.isFlooded&&!bx4.isRange)bx4.mesh.visible=false;
+    }
+    isUnderwater=true;startUnderwaterAmbient();
+    document.getElementById('o2-wrap').style.display='flex';
     document.getElementById('underwater-overlay').style.display='block';
   }else{
+    isUnderwater=false;stopUnderwaterAmbient();
+    document.getElementById('o2-wrap').style.display='none';
+    document.getElementById('underwater-overlay').style.display='none';
+    document.getElementById('nuclear-wave').style.display='none';
+    document.getElementById('boss-hp-wrap').style.display='none';
+    airBubbles.forEach(function(b){try{scene.remove(b.mesh);}catch(eb){}});airBubbles=[];
+    harpoonProjectiles.forEach(function(h){try{scene.remove(h.mesh);}catch(eh){}});harpoonProjectiles=[];
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
     var sgrd=sctx.createLinearGradient(0,0,0,512);
@@ -3264,7 +3283,6 @@ function applyMapSettings(){
     scene.fog=new THREE.Fog(0x8899aa,25,50);
     amb.color.setHex(0x556070);amb.intensity=0.6;
     dir.color.setHex(0xffeedd);dir.intensity=1.2;
-    document.getElementById('underwater-overlay').style.display='none';
   }
 }
 var rangeElements=[];
@@ -3386,9 +3404,20 @@ mapOptions.forEach(function(opt){
       var today=new Date();dailySeed=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
       return;
     }
-    if(opt.dataset.map==='nuclear'){
+    if(opt.dataset.map==='nuclear'||opt.dataset.map==='flooded'){
       document.getElementById('map-select').style.display='none';
+      document.getElementById('diff-title').textContent=opt.dataset.map==='nuclear'?'☢ 核電站 — 難度選擇':'🌊 淹水房子 — 難度選擇';
+      var isFloodedM=opt.dataset.map==='flooded';
+      document.querySelectorAll('.diff-option').forEach(function(dopt){
+        var desc=dopt.querySelector('.diff-desc');
+        if(!desc)return;
+        var dname=dopt.dataset.diff;
+        if(dname==='normal')desc.textContent='敵人強度 ×1.0 • 分數 ×1.0';
+        else if(dname==='conf')desc.textContent=isFloodedM?'敵人強度 ×1.5 • 分數 ×1.5 • 氧氣加速消耗':'敵人強度 ×1.5 • 分數 ×1.5 • 輻射加速';
+        else desc.textContent=isFloodedM?'敵人強度 ×2.0 • 分數 ×2.5 • 氧氣加速消耗':'敵人強度 ×2.0 • 分數 ×2.5 • 輻射加速';
+      });
       document.getElementById('diff-select').style.display='flex';
+      window.pendingMap=opt.dataset.map;
       return;
     }
     currentMap=opt.dataset.map;
@@ -3405,6 +3434,7 @@ mapOptions.forEach(function(opt){
     try{localStorage.removeItem('ocgame_save')}catch(ex){}
     applyClassPassives();
     if(currentMap==='arena2')pos.set(-17,1.9,0);
+    if(currentMap==='flooded')pos.set(0,2,0);
     applyMapSettings();
     if(bossRushMode){
       bossRushWave=1;bossRushMaxWave=0;bossActive=false;bossSpawned=false;boss=null;bossType='nuclear';
@@ -3427,7 +3457,7 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
   opt.onclick=function(){
     gameDifficulty=opt.dataset.diff;
     diffMult=gameDifficulty==='normal'?1:(gameDifficulty==='conf'?1.5:2);
-    currentMap='nuclear';
+    currentMap=window.pendingMap||'nuclear';
     if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
     radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
     projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
@@ -3439,6 +3469,7 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
     isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
     try{localStorage.removeItem('ocgame_save')}catch(ex){}
     applyClassPassives();
+    if(currentMap==='flooded')pos.set(0,2,0);
     applyMapSettings();
     document.body.requestPointerLock().catch(function(){});
   };
@@ -3575,7 +3606,7 @@ document.getElementById('vote-fog').onclick=function(){sendMapVote('fog');};
 document.getElementById('vote-dragonboat').onclick=function(){sendMapVote('dragonboat');};
 document.getElementById('vote-nuclear').onclick=function(){sendMapVote('nuclear');};
 document.getElementById('vote-arena2').onclick=function(){sendMapVote('arena2');};
-document.getElementById('vote-s2').onclick=function(){sendMapVote('s2');};
+document.getElementById('vote-flooded').onclick=function(){sendMapVote('flooded');};
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -3687,7 +3718,7 @@ function processServerMessage(data){
       if(window.voteTimer)clearInterval(window.voteTimer);
       var voteSecs=15;
       document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
-      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','s2'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
+      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','flooded'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
       break;
     case 'opponent_vote':
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
@@ -3702,8 +3733,8 @@ function processServerMessage(data){
       document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','s2':'S2窒息'};
-      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2')};
+      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','flooded':'淹水房子'};
+      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2'),'flooded':document.getElementById('vote-flooded')};
       if(uniqueVotes.length<=1){
         // All votes same — skip animation, start game directly
         Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
@@ -4192,6 +4223,27 @@ function updatePhysics(dt){
   mDir.addScaledVector(rgt,moveX);mDir.addScaledVector(fwd,moveZ);
   if(mDir.length()>1)mDir.normalize();
   if(isDowned){vel.x=mDir.x*2;vel.z=mDir.z*2;pos.x+=vel.x*dt;pos.y+=vel.y*dt;pos.z+=vel.z*dt;return;}
+  if(isUnderwater&&currentMap==='flooded'){
+    if(!bossFloodedActive)playerO2-=3*dt;
+    if(playerO2<=0){playerO2=0;playerHP-=5*dt;if(playerHP<=0){onPlayerDeath();}}
+    var swSpd=(SPEED*(window.skillMoveSpeed||1))*0.55;
+    if(isADS)swSpd*=0.45;
+    if(slowTimer>0)swSpd*=0.55;
+    vel.x=mDir.x*swSpd;vel.z=mDir.z*swSpd;
+    if(keys['Space']||mobileJumping){vel.y=4;mobileJumping=false;}
+    var swSlideKey=keys['ShiftLeft']||keys['ShiftRight']||mobileSlide;
+    if(swSlideKey&&!sliding){vel.y=-3.5;sliding=true;slideTimer=0.1;}else if(!swSlideKey)sliding=false;
+    if(sliding){slideTimer-=dt;if(slideTimer<=0)sliding=false;}
+    vel.y-=3*dt;
+    pos.x+=vel.x*dt;pos.y+=vel.y*dt;pos.z+=vel.z*dt;
+    if(pos.y>waterLevel-0.2){pos.y=waterLevel-0.2;vel.y=0;}
+    if(pos.y<=0.6){pos.y=0.6;vel.y=0;onGround=true;}
+    resolveCollisions();
+    if(pos.y<-10||pos.x<-18||pos.x>18||pos.z<-18||pos.z>18){pos.set(0,2,0);vel.set(0,0,0);playerHP-=5;showDmgNum(pos.clone(),5,'#ff4444');if(playerHP<=0){onPlayerDeath();}}
+    if(!bossFloodedActive)playerO2-=3*dt;
+    if(playerO2<=0){playerO2=0;playerHP-=5*dt;if(playerHP<=0){onPlayerDeath();}}
+    return;
+  }
   if(wallJumpCD>0)wallJumpCD-=dt;
   // Slide
   if(slideCD>0)slideCD-=dt;
@@ -4283,6 +4335,7 @@ function shoot(){
     var meshes=[];for(var i=0;i<mapBoxes.length;i++){if(mapBoxes[i].mesh.visible!==false)meshes.push(mapBoxes[i].mesh);}
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
@@ -4341,6 +4394,7 @@ function shoot(){
       var smeshes=[];for(var i=0;i<mapBoxes.length;i++){if(mapBoxes[i].mesh.visible!==false)smeshes.push(mapBoxes[i].mesh);}
       if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)smeshes.push(c)});}
       if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
+      if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
       if(rangeMode){rangeTargets.forEach(function(rt){smeshes.push(rt.meshBody);smeshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});});if(rangeWalkwayTarget)smeshes.push(rangeWalkwayTarget);}
       var shits=src.intersectObjects(smeshes);
       if(shits.length>0){
@@ -4419,6 +4473,7 @@ function shoot(){
     var meshes=[];for(var i=0;i<mapBoxes.length;i++){if(mapBoxes[i].mesh.visible!==false)meshes.push(mapBoxes[i].mesh);}
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
@@ -4475,6 +4530,21 @@ function shoot(){
         hitMarkerTimer=0.15;
         boss.hp-=dmg;
         boss.hitTimer=0.3;
+        showDmgNum(hits[0].point,dmg,'#ff4444');
+      }
+    }
+    // Flooded boss hit check
+    if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh){
+      var hitBossF=false;
+      abyssalMaw.mesh.traverse(function(child){if(child===hitMesh)hitBossF=true;});
+      if(hitBossF){
+        var dist=hits[0].distance;
+        var falloff=1;
+        if(gd.damageRange!==undefined&&dist>gd.damageRange){var excess=dist-gd.damageRange;var maxRd=gd.damageRange*3;falloff=Math.max(gd.damageFalloff||0.3,1-excess/maxRd);}
+        var dmg=Math.round(gunData[currentGun].dmg*falloff*(window.dmgMult||1));
+        hitMarkerTimer=0.15;
+        abyssalMaw.hp-=dmg;
+        abyssalMaw.hitTimer=0.3;
         showDmgNum(hits[0].point,dmg,'#ff4444');
       }
     }
@@ -4763,6 +4833,15 @@ function removeMagazine(){
 }
 function onPlayerDeath(){
   if(currentMap==='nuclear'){achData.nuclearStreak=0;saveAch();}
+  if(currentMap==='flooded'){
+    isUnderwater=false;stopUnderwaterAmbient();
+    document.getElementById('o2-wrap').style.display='none';
+    document.getElementById('underwater-overlay').style.display='none';
+    bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;
+    airBubbles.forEach(function(b){scene.remove(b.mesh);});airBubbles=[];
+    harpoonProjectiles.forEach(function(h){scene.remove(h.mesh);});harpoonProjectiles=[];
+    document.getElementById('boss-hp-wrap').style.display='none';
+  }
   if(rangeMode){playerHP=100;playerArmor=0;pos.set(0,0.8,1.5);vel.set(0,0,0);isDowned=false;downTimer=0;return;}
   if(isMultiplayer){
     rankMatchDeaths++;
@@ -5778,6 +5857,7 @@ function useClassSkill(){
 function getMapBounds(){
   if(currentMap==='nuclear')return{minX:-20,maxX:20,minZ:-20,maxZ:20};
   if(currentMap==='arena2')return{minX:-22,maxX:22,minZ:-16,maxZ:16};
+  if(currentMap==='flooded')return{minX:-16,maxX:16,minZ:-16,maxZ:16};
   return{minX:-15,maxX:15,minZ:-15,maxZ:15};
 }
 function drawMinimap(){
@@ -5842,7 +5922,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];bubbleTimer=2;for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -6128,7 +6208,7 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
     // Shield break timer
     if(sbActive){sbTimer+=dt;if(sbTimer>1.2){sbActive=false;document.getElementById('sb').style.display='none';}}
     // Enemies
-    if(!isMultiplayer&&!rangeMode&&!bossRushMode)updateEnemies(dt);
+    if(!isMultiplayer&&!rangeMode&&!bossRushMode&&currentMap!=='flooded')updateEnemies(dt);
     if(!isMultiplayer&&!rangeMode)updateSniperLasers();
     // Pickups
     updatePickups(dt);
@@ -6248,7 +6328,7 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
       }
     }
 // Round clear
-if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
+if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
     var alive=0;for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].hp>0)alive++}
     if(alive===0&&enemies.length>0&&clearTimer<0&&gameStarted)clearTimer=0;
     if(alive===0&&enemies.length>0&&clearTimer>=0&&gameStarted){
@@ -6265,6 +6345,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
     // Rain
     if(currentMap==='rain')updateRain(dt);
     if(currentMap==='nuclear'){updateNuclear(dt);updateRadWater(dt);}
+    if(currentMap==='flooded'){updateFlooded(dt);updateHarpoonProjectiles(dt);}
     if(bossRushMode){updateBossRush(dt);updateBossProjectiles(dt);}
     // Grapple shot visual
     if(grappleShot){
@@ -6329,7 +6410,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
       if(!pj.isGrenade&&pj.life<=0){scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
       // Grenade handling
       if(pj.isGrenade){
-        pj.vel.y-=9.8*dt; // gravity
+        if(isUnderwater&&currentMap==='flooded')pj.vel.y+=4*dt;else pj.vel.y-=9.8*dt;
         // Bounce off ground
         if(pj.pos.y<0.1){pj.pos.y=0.1;pj.vel.y*=-0.3;pj.vel.x*=0.8;pj.vel.z*=0.8;}
         // Bounce off walls
@@ -6362,6 +6443,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
             var distToP=pj.pos.distanceTo(pos);
             if(distToP<expR){var aoeDmg=Math.round(expDmg*(1-distToP/expR));playerDamage(aoeDmg);slowTimer=0.5;playerArmor=0;showDmgNum(pos.clone(),aoeDmg,'#ff8844');}
             for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;var distToE=pj.pos.distanceTo(ee.pos);if(distToE<expR){var edmg=Math.round(expDmg*0.8*(1-distToE/expR));ee.hp-=edmg;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;}}
+            if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh){var distB=pj.pos.distanceTo(abyssalMaw.pos);if(distB<expR){abyssalMaw.hp-=Math.round(expDmg*0.5*(1-distB/expR));abyssalMaw.hitTimer=0.3;hitMarkerTimer=0.15;showDmgNum(abyssalMaw.pos,Math.round(expDmg*0.5*(1-distB/expR)),'#44ddff');}}
           }else if(st==='flashbang'){
             var fbMesh=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.6}));
             fbMesh.position.copy(pj.pos);scene.add(fbMesh);
@@ -6463,6 +6545,12 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&!rangeMode){
   document.getElementById('hp-txt').textContent=Math.ceil(playerHP);
   document.getElementById('armor-fill').style.width=Math.min(100,playerArmor)+'%';
   document.getElementById('armor-txt').textContent=Math.ceil(playerArmor);
+  if(currentMap==='flooded'){
+    var o2pct=playerO2/maxO2*100;
+    document.getElementById('o2-fill').style.width=o2pct+'%';
+    document.getElementById('o2-label').style.color=o2pct<25?'#f44':(o2pct<50?'#fa4':'#4af');
+    document.getElementById('o2-wrap').style.display='flex';
+  }else{document.getElementById('o2-wrap').style.display='none';}
   // Ammo HUD
   var ammoEl=document.getElementById('ammo-hud');
   if(currentGun==='grapple'){ammoEl.innerHTML='<span style="font-size:20px;color:#4af;letter-spacing:2px">∞ 勾爪</span>';}
@@ -6571,6 +6659,395 @@ function playFootstep(){
     src.connect(lp);lp.connect(g);g.connect(audioCtx.destination);
     src.start(now);src.stop(now+0.08);
   }catch(e){}
+}
+// ---- Flooded Map System ----
+function addFloodedBox(p,s,c){
+  addBox(p,s,c);var b=mapBoxes[mapBoxes.length-1];b.isFlooded=true;floodedMapElements.push(b);return b;
+}
+function createFloodedMapElements(){
+  floodedMapElements=[];
+  var seabed=new THREE.Mesh(new THREE.PlaneGeometry(36,36),new THREE.MeshStandardMaterial({color:0x2a4a3a,roughness:0.9,metalness:0}));
+  seabed.rotation.x=-Math.PI/2;seabed.position.set(0,-0.05,0);seabed.receiveShadow=true;scene.add(seabed);floodedMapElements.push({mesh:seabed});
+  addFloodedBox(new THREE.Vector3(0,-0.1,0),new THREE.Vector3(34,0.2,34),0x2a4a3a);
+  addFloodedBox(new THREE.Vector3(0,2,-17),new THREE.Vector3(34,4,1),0x3a4a5a);
+  addFloodedBox(new THREE.Vector3(0,2,17),new THREE.Vector3(34,4,1),0x3a4a5a);
+  addFloodedBox(new THREE.Vector3(-17,2,0),new THREE.Vector3(1,4,34),0x3a4a5a);
+  addFloodedBox(new THREE.Vector3(17,2,0),new THREE.Vector3(1,4,34),0x3a4a5a);
+  addFloodedBox(new THREE.Vector3(0,2.2,0),new THREE.Vector3(5,0.4,5),0x4a5a6a);
+  addFloodedBox(new THREE.Vector3(0,2.6,0),new THREE.Vector3(3.5,0.4,3.5),0x5a6a7a);
+  addFloodedBox(new THREE.Vector3(0,3.1,0),new THREE.Vector3(2,0.6,2),0x6a7a8a);
+  var ruinPos=[[-8,0,-7],[9,0,-6],[-9,0,8],[7,0,9],[-6,0,-9],[10,0,4],[-10,0,-4]];
+  for(var ri=0;ri<ruinPos.length;ri++){
+    var rp=ruinPos[ri],rh=1.2+Math.random()*1.5;
+    var col=new THREE.Mesh(new THREE.CylinderGeometry(0.3+Math.random()*0.15,0.35+Math.random()*0.15,rh,6),new THREE.MeshStandardMaterial({color:0x6a7a6a,roughness:0.8}));
+    col.position.set(rp[0],rh/2,rp[2]);col.castShadow=true;col.receiveShadow=true;scene.add(col);
+    var cap=new THREE.Mesh(new THREE.CylinderGeometry(0.35+Math.random()*0.1,0.2,0.1,6),new THREE.MeshStandardMaterial({color:0x7a8a7a,roughness:0.9}));
+    cap.position.set(rp[0],rh+0.05,rp[2]);scene.add(cap);
+    floodedMapElements.push({mesh:col});floodedMapElements.push({mesh:cap});
+    if(rh>2){
+      var debris=new THREE.Mesh(new THREE.BoxGeometry(0.3+Math.random()*0.2,0.08,0.4+Math.random()*0.3),new THREE.MeshStandardMaterial({color:0x5a6a5a}));
+      debris.position.set(rp[0]+(Math.random()-0.5)*0.8,rh+0.09,rp[2]+(Math.random()-0.5)*0.8);debris.rotation.z=(Math.random()-0.5)*0.3;scene.add(debris);
+      floodedMapElements.push({mesh:debris});
+    }
+  }
+  for(var si=0;si<20;si++){
+    var sx=(Math.random()-0.5)*28,sy=0.1+Math.random()*0.3,sz=(Math.random()-0.5)*28;
+    var alga=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.04,0.3+Math.random()*0.4,4),new THREE.MeshStandardMaterial({color:0x2a5a2a,roughness:0.9}));
+    alga.position.set(sx,sy,sz);alga.rotation.x=(Math.random()-0.5)*0.2;alga.rotation.z=(Math.random()-0.5)*0.2;scene.add(alga);
+    floodedMapElements.push({mesh:alga});
+  }
+  for(var ci=0;ci<8;ci++){
+    var cx=(Math.random()-0.5)*24,cz=(Math.random()-0.5)*24;
+    var coral=new THREE.Group();
+    for(var cj=0;cj<5;cj++){
+      var br=new THREE.Mesh(new THREE.SphereGeometry(0.06+Math.random()*0.1,5,5),new THREE.MeshStandardMaterial({color:0xcc6644+Math.floor(Math.random()*0x442200)}));
+      br.position.set((Math.random()-0.5)*0.2,Math.random()*0.15,(Math.random()-0.5)*0.2);coral.add(br);
+    }
+    coral.position.set(cx,0.08,cz);scene.add(coral);floodedMapElements.push({mesh:coral});
+  }
+}
+function createDiverEnemy(px,pz){
+  var g=new THREE.Group();
+  var bodyClr=0x1a2a3a;
+  var bd=new THREE.Mesh(new THREE.SphereGeometry(0.5,10,10),new THREE.MeshStandardMaterial({color:bodyClr,roughness:0.6,metalness:0.2}));
+  bd.scale.set(0.85,1.0,0.85);bd.position.y=0.38;g.add(bd);
+  var vs=new THREE.Mesh(new THREE.SphereGeometry(0.18,10,10,0,Math.PI*2,0,Math.PI*0.5),new THREE.MeshStandardMaterial({color:0x44ddff,emissive:0x44ddff,emissiveIntensity:0.2,transparent:true,opacity:0.5}));
+  vs.scale.set(1.2,1.6,0.6);vs.position.set(0,0.62,0.42);vs.rotation.x=-0.15;g.add(vs);
+  var eyeL=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));
+  eyeL.position.set(-0.09,0.66,0.48);g.add(eyeL);
+  var eyeR=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));
+  eyeR.position.set(0.09,0.66,0.48);g.add(eyeR);
+  var tank=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.15,0.25,8),new THREE.MeshStandardMaterial({color:0x888888,metalness:0.6}));
+  tank.position.set(0,0.3,-0.2);tank.rotation.x=0.15;g.add(tank);
+  var tank2=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,0.2,8),new THREE.MeshStandardMaterial({color:0x666666,metalness:0.5}));
+  tank2.position.set(0,0.25,-0.25);tank2.rotation.x=0.1;g.add(tank2);
+  var hndMat=new THREE.MeshStandardMaterial({color:bodyClr});
+  for(var s=-1;s<=1;s+=2){var hnd=new THREE.Mesh(new THREE.SphereGeometry(0.1,6,6),hndMat);hnd.position.set(s*0.48,0.26,0);g.add(hnd);}
+  for(var s=-1;s<=1;s+=2){var ft=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.02,0.12),new THREE.MeshStandardMaterial({color:0x445566}));ft.position.set(s*0.2,0.02,0.1);g.add(ft);}
+  var hg=new THREE.Group();
+  var hBarrel=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.02,0.25,6),new THREE.MeshStandardMaterial({color:0x555555,metalness:0.7}));
+  hBarrel.rotation.x=Math.PI/2;hBarrel.position.set(0,0,-0.15);hg.add(hBarrel);
+  var hBody=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.04,0.1),new THREE.MeshStandardMaterial({color:0x444444,metalness:0.5}));
+  hBody.position.set(0,0,0);hg.add(hBody);
+  hg.position.set(0.18,0.18,0.2);g.add(hg);
+  g.position.set(px,0.3,pz);
+  scene.add(g);
+  var hBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.06),new THREE.MeshBasicMaterial({color:0x44cc44,depthTest:false}));
+  hBar.position.set(px,0.95,pz);scene.add(hBar);
+  enemies.push({
+    mesh:g,pos:new THREE.Vector3(px,0.3,pz),hp:60,armor:60,maxHp:60,maxArmor:60,
+    state:'patrol',waypoint:new THREE.Vector3(px+8-16*Math.random(),0.3,pz+8-16*Math.random()),
+    shootCD:0,detectCD:0,walkTime:0,gun:hg,color:bodyClr,
+    hBar:hBar,aBar:null,knifeHits:0,type:'diver',
+    weaponType:'harpoon',chargeTimer:0,burnTimer:0
+  });
+}
+function spawnDiverWave(){
+  var count=Math.min(floodedWave+1,6);
+  var spawned=0;
+  for(var dxi=0;dxi<enemies.length&&spawned<count;dxi++){
+    var e=enemies[dxi];
+    if(e.hp<=0){
+      var hpMul=1+floodedWave*0.2,dmgMul=1+floodedWave*0.15;
+      var ed=diffMult||1;
+      e.hp=Math.round(60*hpMul*ed);e.maxHp=e.hp;e.armor=Math.round(60*hpMul*ed);e.maxArmor=e.armor;
+      e.type='diver';e.shootCD=0;e.knifeHits=0;e.burnTimer=0;e.diverDead=false;
+      var rp_=new THREE.Vector3((Math.random()-0.5)*26,0.3,(Math.random()-0.5)*26);
+      var a_=Math.random()*Math.PI*2;rp_.x+=Math.cos(a_)*6;rp_.z+=Math.sin(a_)*6;
+      rp_.x=Math.max(-14,Math.min(14,rp_.x));rp_.z=Math.max(-14,Math.min(14,rp_.z));
+      e.pos.copy(rp_);e.mesh.position.copy(rp_);
+      e.mesh.visible=true;if(e.gun)e.gun.visible=true;
+      if(e.hBar){e.hBar.visible=true;e.hBar.position.set(rp_.x,0.95,rp_.z);}
+      spawned++;
+    }
+  }
+  document.getElementById('nuclear-wave').textContent='🌊 波 '+floodedWave+' 進度 '+floodedClears+'/'+(floodedWave*3);
+  document.getElementById('nuclear-wave').style.display='block';
+  document.getElementById('nuclear-wave').style.color='#4af';
+}
+function updateFlooded(dt){
+  if(currentMap!=='flooded'||!gameStarted)return;
+  if(!bossFloodedSpawned){
+    var alive=0;
+    for(var fci=0;fci<enemies.length;fci++){var fc=enemies[fci];if(fc.type==='diver'&&fc.mesh.visible&&fc.hp>0)alive++;}
+    if(alive===0&&floodedClears>0&&floodedWave<3){floodedWave++;spawnDiverWave();}
+    if(floodedClears>=9&&!bossFloodedSpawned){spawnAbyssalMaw();}
+    var killsThisWave=Math.min(floodedClears-((floodedWave-1)*3),3);
+    document.getElementById('nuclear-wave').textContent='🌊 波 '+floodedWave+' 進度 '+Math.max(0,killsThisWave)+'/'+3;
+  }
+  for(var di=0;di<enemies.length;di++){
+    var e=enemies[di];if(e.type!=='diver')continue;
+    if(e.hp<=0&&!e.diverDead){
+      e.diverDead=true;floodedClears++;
+      if(e.mesh.visible!==false){
+        e.mesh.visible=false;
+        if(e.hBar)e.hBar.visible=false;
+        earnCoins(1000);checkKillAch();roundEarnings+=1000;
+        showDmgNum(e.pos.clone(),1000,'#fa4');
+        if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}
+      }
+      continue;
+    }
+    if(e.hp<=0){e.mesh.visible=false;continue;}
+    updateDiverAI(e,dt);
+  }
+  if(bossFloodedActive&&abyssalMaw)updateAbyssalMaw(dt);
+  bubbleTimer-=dt;
+  if(bubbleTimer<=0){spawnAirBubble();bubbleTimer=1.5+Math.random()*1.5;}
+  updateAirBubbles(dt);
+  var ft=Date.now()/1000;
+  var waterPulse=0.15+0.08*Math.sin(ft*0.5);
+  document.getElementById('underwater-overlay').style.background='radial-gradient(ellipse at center,rgba(0,40,80,'+waterPulse+'),rgba(0,20,60,0.4))';
+}
+function updateDiverAI(e,dt){
+  e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
+  if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
+  if(!e.hitTimer)e.hitTimer=0;else e.hitTimer-=dt;
+  if(window.ghostInvis){e.hasDetected=false;}
+  else if(e.detectCD<=0){
+    var toP=new THREE.Vector3().copy(pos);toP.y+=0.3;toP.sub(e.pos);
+    var dist=toP.length();e.hasDetected=dist<35;e.detectCD=0.3;
+  }
+  if(e.hasDetected){e.state='chase';}else if(e.state==='chase'){e.state='search';e.searchTimer=2;}
+  else if(e.state==='search'){e.searchTimer-=dt;if(e.searchTimer<=0){e.state='patrol';e.waypoint.set(e.pos.x+8-16*Math.random(),0.3,e.pos.z+8-16*Math.random());}}
+  var spd=e.state==='chase'?3.5:1.2;
+  var aimAtPlayer=false,moveTarget=null;
+  if(e.state==='chase'){
+    aimAtPlayer=true;
+    var toPlayer=new THREE.Vector3().copy(pos);toPlayer.y=0;toPlayer.sub(e.pos);
+    var d=toPlayer.length();
+    if(e.strafeCD<=0){e.strafeDir=(Math.random()-0.5)*2;e.strafeCD=0.5+Math.random()*0.5;}
+    var fwd=toPlayer.clone().normalize();
+    var rgt=new THREE.Vector3(-fwd.z,0,fwd.x);
+    var desired=new THREE.Vector3();
+    var idealDist=d<8?6:12+Math.random()*4;
+    if(d>idealDist+2)desired.add(fwd);else if(d<idealDist-3)desired.sub(fwd);
+    desired.add(rgt.clone().multiplyScalar(e.strafeDir*0.5));
+    var avoidDir=new THREE.Vector3();
+    for(var bi=0;bi<mapBoxes.length;bi++){
+      var bx=mapBoxes[bi];
+      if(!bx.mesh.visible)continue;
+      var toBox=new THREE.Vector3().copy(bx.pos).sub(e.pos);var bd=toBox.length();
+      if(bd<3&&bd>0.1)avoidDir.sub(toBox.normalize().multiplyScalar(3/bd));
+    }
+    desired.add(avoidDir);
+    if(desired.length()>1)desired.normalize();
+    moveTarget=e.pos.clone().add(desired.multiplyScalar(3));
+    if(e.shootCD<=0&&d<25){
+      var hDmg=Math.round((10+floodedWave*2)*(diffMult||1));
+      var hDir=new THREE.Vector3(pos.x-e.pos.x,pos.y+0.3-e.pos.y,pos.z-e.pos.z).normalize();
+      hDir.x+=(Math.random()-0.5)*0.08;hDir.y+=(Math.random()-0.5)*0.06;hDir.normalize();
+      var hMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,0.15,4),new THREE.MeshBasicMaterial({color:0x88bbff}));
+      hMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),hDir);hMesh.position.copy(e.pos);hMesh.position.y+=0.3;scene.add(hMesh);
+      harpoonProjectiles.push({mesh:hMesh,pos:e.pos.clone().add(new THREE.Vector3(0,0.3,0)),vel:hDir.clone().multiplyScalar(20),life:3,dmg:hDmg});
+      e.shootCD=1+Math.random()*0.5;e.state='shoot';
+    }
+  }else if(e.state==='shoot'){
+    aimAtPlayer=true;
+    moveTarget=e.pos.clone().add(new THREE.Vector3((Math.random()-0.5)*2,0,(Math.random()-0.5)*2));
+    e.state='chase';
+  }else if(e.state==='patrol'){
+    moveTarget=e.waypoint;
+    if(e.pos.distanceTo(e.waypoint)<1.5){e.waypoint.set(e.pos.x+8-16*Math.random(),0.3,e.pos.z+8-16*Math.random());e.waypoint.x=Math.max(-13,Math.min(13,e.waypoint.x));e.waypoint.z=Math.max(-13,Math.min(13,e.waypoint.z));}
+  }else if(e.state==='search'){
+    moveTarget=e.pos.clone().add(new THREE.Vector3().copy(pos).sub(e.pos).normalize().multiplyScalar(5));
+  }
+  if(moveTarget){
+    var dir=new THREE.Vector3().copy(moveTarget).sub(e.pos);dir.y=0;
+    if(dir.length()>0.3){dir.normalize();
+      e.pos.x+=dir.x*spd*dt;e.pos.z+=dir.z*spd*dt;
+      for(var bi=0;bi<mapBoxes.length;bi++){
+        var bx=mapBoxes[bi];if(bx.size.y<0.3||!bx.mesh.visible)continue;
+        if(e.pos.y>bx.pos.y+bx.size.y/2||e.pos.y+0.5<bx.pos.y-bx.size.y/2)continue;
+        var dx=e.pos.x-bx.pos.x,dz=e.pos.z-bx.pos.z;
+        var ox=bx.size.x/2+0.4-Math.abs(dx),oz=bx.size.z/2+0.4-Math.abs(dz);
+        if(ox>0&&oz>0){if(ox<oz)e.pos.x+=dx>0?ox:-ox;else e.pos.z+=dz>0?oz:-oz;}
+      }
+      e.pos.x=Math.max(-14,Math.min(14,e.pos.x));e.pos.z=Math.max(-14,Math.min(14,e.pos.z));
+      e.mesh.position.set(e.pos.x,0.3,e.pos.z);
+      if(aimAtPlayer)e.mesh.rotation.y=Math.atan2(pos.x-e.pos.x,pos.z-e.pos.z);
+      else e.mesh.rotation.y=Math.atan2(dir.x,dir.z);
+    }
+  }
+  if(e.hBar){e.hBar.position.set(e.pos.x,0.95,e.pos.z);e.hBar.scale.x=Math.max(0,e.hp/e.maxHp);e.hBar.position.x=e.pos.x-(1-Math.max(0,e.hp/e.maxHp))*0.3;}
+}
+function spawnAbyssalMaw(){
+  if(bossFloodedSpawned)return;
+  bossFloodedSpawned=true;bossFloodedActive=true;
+  var bg=new THREE.Group();
+  var bodyMat=new THREE.MeshStandardMaterial({color:0x0a1a2a,roughness:0.5,metalness:0.3,emissive:0x002040,emissiveIntensity:0.2});
+  var body=new THREE.Mesh(new THREE.SphereGeometry(0.8,12,12),bodyMat);body.scale.set(1.1,0.9,1.2);body.position.y=0.5;bg.add(body);
+  var tailMat=new THREE.MeshStandardMaterial({color:0x0a1a2a,roughness:0.6});
+  var tail=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.6,8),tailMat);tail.position.set(0,0.3,-0.7);tail.rotation.x=Math.PI/6;bg.add(tail);
+  var jawMat=new THREE.MeshStandardMaterial({color:0x0a1a2a,roughness:0.5});
+  var jaw=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.2,0.3),jawMat);jaw.position.set(0,0.2,0.7);bg.add(jaw);
+  var toothMat=new THREE.MeshStandardMaterial({color:0xeeeeee});
+  for(var ti=0;ti<5;ti++){var tt=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.06,4),toothMat);tt.position.set(-0.2+ti*0.1,0.15,0.75+Math.sin(ti)*0.05);tt.rotation.x=Math.PI;bg.add(tt);}
+  for(var ti=0;ti<5;ti++){var tt=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.05,4),toothMat);tt.position.set(-0.2+ti*0.1,0.29,0.72+Math.sin(ti)*0.05);bg.add(tt);}
+  var eyeMat=new THREE.MeshStandardMaterial({color:0x88ff44,emissive:0x44ff22,emissiveIntensity:0.8});
+  var eyeL=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),eyeMat);eyeL.position.set(-0.25,0.7,0.5);bg.add(eyeL);
+  var eyeR=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),eyeMat);eyeR.position.set(0.25,0.7,0.5);bg.add(eyeR);
+  var stalkMat=new THREE.MeshStandardMaterial({color:0x0a1a2a});
+  var stalk=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.03,0.25,6),stalkMat);stalk.position.set(0,0.7,0.35);stalk.rotation.x=-0.5;bg.add(stalk);
+  var lureMat=new THREE.MeshStandardMaterial({color:0x44ddff,emissive:0x44ddff,emissiveIntensity:2});
+  var lure=new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8),lureMat);lure.position.set(0,0.85,0.2);bg.add(lure);
+  var finMat=new THREE.MeshStandardMaterial({color:0x0a1a2a,roughness:0.5});
+  var finL=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.25,4),finMat);finL.position.set(-0.55,0.55,0.1);finL.rotation.z=0.8;bg.add(finL);
+  var finR=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.25,4),finMat);finR.position.set(0.55,0.55,0.1);finR.rotation.z=-0.8;bg.add(finR);
+  var bPos=pos.clone();bPos.x+=Math.cos(yaw)*10;bPos.z+=Math.sin(yaw)*10;bPos.y=0.5;
+  bg.position.copy(bPos);
+  document.getElementById('boss-hp-wrap').style.display='flex';
+  document.getElementById('boss-label').textContent='🐟 深淵巨口';
+  scene.add(bg);
+  abyssalMaw={mesh:bg,pos:bPos.clone(),hp:800,maxHp:800,shootCD:0,hitTimer:0,moveTimer:0,dir:new THREE.Vector3(1,0,0),phase:1};
+  document.getElementById('nuclear-wave').textContent='🦈 深淵巨口 已出現！';
+  document.getElementById('nuclear-wave').style.color='#f44';
+}
+function updateAbyssalMaw(dt){
+  if(!abyssalMaw||!bossFloodedActive)return;
+  if(abyssalMaw.hp<=0){
+    bossFloodedActive=false;
+    if(abyssalMaw.mesh){scene.remove(abyssalMaw.mesh);}
+    document.getElementById('boss-hp-wrap').style.display='none';
+    document.getElementById('nuclear-wave').textContent='✅ 深淵已遭殲滅！';
+    document.getElementById('nuclear-wave').style.color='#4f4';
+    document.getElementById('round-clear').textContent='任務成功 — 淹水房子通關！';
+    document.getElementById('round-clear').style.display='block';
+    weaponInventory.watergun=(weaponInventory.watergun||0)+1;
+    try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}
+    updateArmoryGunCounts();
+    setTimeout(function(){document.getElementById('round-clear').style.display='none';},2500);
+    floodedMapElements.forEach(function(fme){if(fme.mesh)scene.remove(fme.mesh);});
+    floodedMapElements=[];
+    document.getElementById('o2-wrap').style.display='none';
+    document.getElementById('underwater-overlay').style.display='none';
+    isUnderwater=false;
+    stopUnderwaterAmbient();
+    gameStarted=false;didPlayGame=false;
+    if(document.pointerLockElement)document.exitPointerLock();
+    document.getElementById('blocker').style.display='none';
+    currentMap='base';applyMapSettings();
+    var xpEarned=10+Math.max(0,(roundNum-1)*2)+50;
+    addXP(xpEarned);addProficiency();
+    var mpEarned=Math.floor(roundNum/3)+1;playerMP+=mpEarned;localStorage.setItem('oc_mp',playerMP+'');
+    document.getElementById('settlement-xp').textContent='+'+xpEarned;
+    var li=getLevelInfo(playerXP);
+    document.getElementById('settlement-level').textContent='Lv.'+li.level+' ('+li.current+' / '+li.needed+')';
+    document.getElementById('settlement-progress-fill').style.width=(li.current/li.needed*100)+'%';
+    document.getElementById('settlement-daily').style.display='none';
+    document.getElementById('settlement-xp-label').textContent='經 驗 值';
+    document.getElementById('settlement-title').textContent='🌊 淹水房子 通關！';
+    document.getElementById('settlement').style.display='flex';
+    return;
+  }
+  var bpct=abyssalMaw.hp/abyssalMaw.maxHp*100;
+  document.getElementById('boss-hp-fill').style.width=bpct+'%';
+  document.getElementById('boss-hp-wrap').style.display='flex';
+  abyssalMaw.moveTimer-=dt;abyssalMaw.shootCD-=dt;
+  var toPos=new THREE.Vector3().copy(pos);toPos.y=0;
+  var distToPlayer=abyssalMaw.pos.distanceTo(toPos);
+  if(abyssalMaw.hp<abyssalMaw.maxHp*0.5&&abyssalMaw.phase===1){
+    abyssalMaw.phase=2;floodedBossPhase=2;
+    document.getElementById('boss-label').textContent='🐟 深淵巨口 — 第二階段';
+    document.getElementById('boss-hp-wrap').style.display='flex';
+  }
+  if(abyssalMaw.phase===1){
+    if(distToPlayer>4){var moveDir=new THREE.Vector3().copy(toPos).sub(abyssalMaw.pos).normalize();abyssalMaw.pos.x+=moveDir.x*2.5*dt;abyssalMaw.pos.z+=moveDir.z*2.5*dt;}
+    if(distToPlayer<8&&abyssalMaw.moveTimer<=0){abyssalMaw.moveTimer=0.5+Math.random()*0.5;var rgt=new THREE.Vector3(-(pos.x-abyssalMaw.pos.x),0,pos.z-abyssalMaw.pos.z).normalize();abyssalMaw.dir=rgt.clone().multiplyScalar(Math.random()<0.5?1:-1);}
+    if(distToPlayer<8){abyssalMaw.pos.x+=abyssalMaw.dir.x*1.5*dt;abyssalMaw.pos.z+=abyssalMaw.dir.z*1.5*dt;}
+    if(distToPlayer<1.5&&abyssalMaw.shootCD<=0.4){playerDamage(Math.round(12*diffMult));slowTimer=0.3;showDmgNum(pos.clone(),Math.round(12*diffMult),'#ff4444');}
+    if(abyssalMaw.shootCD<=0){
+      abyssalMaw.shootCD=1.2;
+      for(var hi=-1;hi<=1;hi++){
+        var hDir=new THREE.Vector3(pos.x-abyssalMaw.pos.x+hi*0.5,pos.y+0.5-abyssalMaw.pos.y-0.4,pos.z-abyssalMaw.pos.z).normalize();
+        hDir.x+=(Math.random()-0.5)*0.12;hDir.y+=(Math.random()-0.5)*0.08;hDir.normalize();
+        var hMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.015,0.2,4),new THREE.MeshBasicMaterial({color:0x88bbff}));
+        hMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),hDir);
+        hMesh.position.copy(abyssalMaw.pos);hMesh.position.y+=0.5;scene.add(hMesh);
+        harpoonProjectiles.push({mesh:hMesh,pos:abyssalMaw.pos.clone().add(new THREE.Vector3(0,0.5,0)),vel:hDir.clone().multiplyScalar(18),life:4,dmg:15});
+      }
+    }
+    if(abyssalMaw.shootCD<0.3&&Math.random()<0.1&&enemies.filter(function(ex){return ex.type==='diver'&&ex.hp>0;}).length<3){
+      for(var sxi=0;sxi<enemies.length;sxi++){var sx=enemies[sxi];if(sx.hp<=0&&sx.type==='diver'){
+        sx.hp=40;sx.maxHp=40;sx.armor=20;sx.maxArmor=20;sx.pos.set((Math.random()-0.5)*20,0.3,(Math.random()-0.5)*20);sx.mesh.position.copy(sx.pos);sx.mesh.visible=true;if(sx.hBar){sx.hBar.visible=true;sx.hBar.position.set(sx.pos.x,0.95,sx.pos.z);}sx.shootCD=0;sx.knifeHits=0;break;
+      }}
+    }
+  }else{
+    var pullStr=3.5;
+    var pullDir=new THREE.Vector3().copy(abyssalMaw.pos).sub(pos);pullDir.y=0;
+    var pullDist=pullDir.length();
+    if(pullDist>0.5){pullDir.normalize().multiplyScalar(pullStr*dt);pos.x+=pullDir.x;pos.z+=pullDir.z;}
+    if(distToPlayer>3){var moveDir=new THREE.Vector3().copy(toPos).sub(abyssalMaw.pos).normalize();abyssalMaw.pos.x+=moveDir.x*3.5*dt;abyssalMaw.pos.z+=moveDir.z*3.5*dt;}
+    if(distToPlayer<1.5){playerDamage(Math.round(18*diffMult));slowTimer=0.5;showDmgNum(pos.clone(),Math.round(18*diffMult),'#ff4444');abyssalMaw.shootCD=0.5;}
+    if(abyssalMaw.shootCD<=0&&distToPlayer<12){
+      abyssalMaw.shootCD=0.8;
+      var cDir=new THREE.Vector3(pos.x-abyssalMaw.pos.x,pos.y+0.3-abyssalMaw.pos.y-0.4,pos.z-abyssalMaw.pos.z).normalize();
+      cDir.x+=(Math.random()-0.5)*0.06;cDir.y+=(Math.random()-0.5)*0.05;cDir.normalize();
+      var cMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.25,4),new THREE.MeshBasicMaterial({color:0xff8844}));
+      cMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),cDir);
+      cMesh.position.copy(abyssalMaw.pos);cMesh.position.y+=0.5;scene.add(cMesh);
+      harpoonProjectiles.push({mesh:cMesh,pos:abyssalMaw.pos.clone().add(new THREE.Vector3(0,0.5,0)),vel:cDir.clone().multiplyScalar(22),life:4,dmg:22});
+    }
+  }
+  abyssalMaw.pos.x=Math.max(-16,Math.min(16,abyssalMaw.pos.x));abyssalMaw.pos.z=Math.max(-16,Math.min(16,abyssalMaw.pos.z));
+  abyssalMaw.mesh.position.copy(abyssalMaw.pos);
+  abyssalMaw.mesh.rotation.y=Math.atan2(pos.x-abyssalMaw.pos.x,pos.z-abyssalMaw.pos.z);
+  var lureGlow=abyssalMaw.mesh.children[abyssalMaw.mesh.children.length-1];
+  if(lureGlow&&lureGlow.material&&lureGlow.material.emissiveIntensity!==undefined)lureGlow.material.emissiveIntensity=1.5+Math.sin(Date.now()/1000*3)*0.5;
+}
+function spawnAirBubble(){
+  var bPos=new THREE.Vector3((Math.random()-0.5)*30,0.2+Math.random()*0.5,(Math.random()-0.5)*30);
+  var bMesh=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshBasicMaterial({color:0x88ddff,transparent:true,opacity:0.35}));
+  bMesh.position.copy(bPos);scene.add(bMesh);
+  airBubbles.push({mesh:bMesh,pos:bPos,vy:0.4+Math.random()*0.6,life:4+Math.random()*3});
+}
+function updateAirBubbles(dt){
+  for(var bi=airBubbles.length-1;bi>=0;bi--){
+    var ab=airBubbles[bi];ab.life-=dt;ab.pos.y+=ab.vy*dt;ab.mesh.position.y=ab.pos.y;ab.mesh.position.x=ab.pos.x+(Math.sin(ab.life*3))*0.05;ab.mesh.position.z=ab.pos.z;
+    if(ab.life<=0||ab.pos.y>waterLevel-0.1){scene.remove(ab.mesh);airBubbles.splice(bi,1);continue;}
+    if(pos.distanceTo(ab.pos)<0.5){playerO2=Math.min(maxO2,playerO2+15);showDmgNum(pos.clone(),15,'#4af');scene.remove(ab.mesh);airBubbles.splice(bi,1);}
+  }
+}
+function updateHarpoonProjectiles(dt){
+  for(var hpi=harpoonProjectiles.length-1;hpi>=0;hpi--){
+    var hp=harpoonProjectiles[hpi];hp.life-=dt;hp.pos.add(hp.vel.clone().multiplyScalar(dt));hp.mesh.position.copy(hp.pos);
+    if(hp.life<=0){scene.remove(hp.mesh);harpoonProjectiles.splice(hpi,1);continue;}
+    var hitP=false;
+    if(pos.distanceTo(hp.pos)<0.5){
+      var hpd=hp.dmg||12;playerDamage(hpd);slowTimer=0.5;screenShake=1;showDmgNum(pos.clone(),hpd,'#ff4444');hitP=true;
+    }
+    for(var bi=0;bi<mapBoxes.length;bi++){
+      var b=mapBoxes[bi];if(!b.mesh.visible)continue;
+      if(Math.abs(hp.pos.x-b.pos.x)<b.size.x/2+0.05&&Math.abs(hp.pos.y-b.pos.y)<b.size.y/2+0.05&&Math.abs(hp.pos.z-b.pos.z)<b.size.z/2+0.05){hitP=true;break;}
+    }
+    if(hitP){scene.remove(hp.mesh);harpoonProjectiles.splice(hpi,1);}
+  }
+}
+function startUnderwaterAmbient(){
+  if(!audioCtx)initAudio();
+  if(!audioCtx||audioCtx.state==='suspended')return;
+  if(underwaterAmbient)return;
+  var now=audioCtx.currentTime;
+  var src=audioCtx.createBufferSource();
+  var bufLen=audioCtx.sampleRate*2;
+  var buf=audioCtx.createBuffer(1,bufLen,audioCtx.sampleRate);
+  var d=buf.getChannelData(0);
+  for(var i=0;i<bufLen;i++)d[i]=Math.sin(2*Math.PI*120*i/audioCtx.sampleRate)*(0.3+0.2*Math.sin(2*Math.PI*0.3*i/audioCtx.sampleRate))+Math.sin(2*Math.PI*55*i/audioCtx.sampleRate)*0.2+(Math.random()-0.5)*0.05;
+  src.buffer=buf;src.loop=true;
+  var lp=audioCtx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=400;lp.Q.value=1.5;
+  var bp=audioCtx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=180;bp.Q.value=0.8;
+  var g=audioCtx.createGain();g.gain.setValueAtTime(0.015,now);
+  src.connect(lp);lp.connect(bp);bp.connect(g);g.connect(audioCtx.destination);
+  src.start();underwaterAmbient={src:src,gain:g,lp:lp,bp:bp};
+}
+function stopUnderwaterAmbient(){
+  if(!underwaterAmbient)return;
+  try{underwaterAmbient.src.stop();}catch(e){}
+  try{underwaterAmbient.src.disconnect();}catch(e){}
+  try{underwaterAmbient.gain.disconnect();}catch(e){}
+  try{underwaterAmbient.lp.disconnect();}catch(e){}
+  try{underwaterAmbient.bp.disconnect();}catch(e){}
+  underwaterAmbient=null;
 }
 // Save/Load
 try{
