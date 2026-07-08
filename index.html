@@ -600,7 +600,8 @@ body.mobile-mode #scope-overlay{display:none!important}
   </div>
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
-  <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div></div></div>
+  <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
+  <div class="map-option" data-map="s2" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.06)"><div class="map-name">💧 窒息</div><div class="map-desc">S2賽季 — 水下窒息</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
@@ -655,6 +656,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="round-earnings"></div>
 <div id="nuclear-ui"><div id="rad-label">☢ 輻射</div><div id="rad-bar-wrap"><div id="rad-bar-fill"></div></div><div id="rad-watt">0 / 1200 W</div></div>
 <div id="nuclear-wave"></div>
+<div id="underwater-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;display:none;background:radial-gradient(ellipse at center 60%,transparent 40%,rgba(0,40,80,.35) 70%,rgba(0,20,60,.5) 100%)"></div>
 <div id="boss-hp-wrap"><div id="boss-label">☠ 核子特攻</div><div id="boss-hp-bar"><div id="boss-hp-fill"></div></div></div>
 <div id="awp-block"></div>
 <div id="range-hud" style="display:none;position:fixed;top:12px;right:12px;z-index:7;pointer-events:none;font-family:Arial;text-align:right"><div id="range-score" style="font-size:36px;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(255,255,255,.2);letter-spacing:2px">0</div><div id="range-stat" style="font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:2px">命中 0 / 0 發</div><div id="range-timer" style="font-size:15px;color:rgba(255,255,255,.2);letter-spacing:1px;margin-top:2px"></div></div>
@@ -692,6 +694,7 @@ body.mobile-mode #scope-overlay{display:none!important}
     <div class="map-option" data-map="fog" id="vote-fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>
     <div class="map-option" data-map="dragonboat" id="vote-dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定</div></div>
     <div class="map-option" data-map="nuclear" id="vote-nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
+    <div class="map-option" data-map="s2" id="vote-s2" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.06)"><div class="map-name">💧 窒息</div><div class="map-desc">S2賽季 — 水下窒息</div></div>
   </div>
 </div>
 <div id="gun-overlay"><div id="gun-bg"></div><div id="gun-box"><div id="gun-close">✕</div><div id="gun-left"><div id="gun-left-title">已擁有 <span id="gun-own-count">0</span></div><div id="gun-left-list"></div></div><div id="gun-right"><div id="gun-preview"><canvas id="gun-canvas"></canvas></div><div id="gun-attach-slots"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🔫 槍口</div><div id="gun-slot-muzzle" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🎯 瞄具</div><div id="gun-slot-sight" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">📦 彈匣</div><div id="gun-slot-mag" class="gun-a-slot"></div></div></div><button id="gun-buy-all" style="display:none">一 鍵 購 買</button></div></div></div>
@@ -1004,7 +1007,7 @@ window._menuCharScene.add(grp);
 window._menuCharMain=grp;
 window._menuCharTeammates=[];
 var mt=0;
-(function anim(){requestAnimationFrame(anim);mt+=0.016;grp.rotation.y=Math.sin(mt*0.3)*0.1;grp.position.y=0.35+Math.sin(mt*1.5)*0.015;if(grp.userData.visor)grp.userData.visor.material.emissiveIntensity=0.2+0.15*Math.sin(mt*2);window._menuCharTeammates.forEach(function(t){if(t.mesh){t.mesh.rotation.y=Math.sin(mt*0.3+1)*0.1;t.mesh.position.y=0.35+Math.sin(mt*1.5+1)*0.015;}});ren.render(window._menuCharScene,cam);})();
+(function anim(){requestAnimationFrame(anim);mt+=0.016;grp.rotation.y=Math.sin(mt*0.3)*0.1;grp.position.y=0.35+Math.sin(mt*1.5)*0.015;if(grp.userData.visor)grp.userData.visor.material.emissiveIntensity=0.2+0.15*Math.sin(mt*2);window._menuCharTeammates.forEach(function(t){if(t.mesh){t.mesh.rotation.y=Math.sin(mt*0.3+1)*0.1;t.mesh.position.y=0.35+Math.sin(mt*1.5+1)*0.015;}if(t.tag&&window._menuCharCam){var p=new THREE.Vector3().copy(t.mesh.position);p.y+=1.4;p.project(window._menuCharCam);var r=parent.getBoundingClientRect();t.tag.style.left=((p.x*0.5+0.5)*r.width)+'px';t.tag.style.top=((-p.y*0.5+0.5)*r.height)+'px';}});ren.render(window._menuCharScene,cam);})();
 new ResizeObserver(function(){var r=parent.getBoundingClientRect();canvas.width=r.width*devicePixelRatio;canvas.height=r.height*devicePixelRatio;canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ren.setSize(r.width,r.height);cam.aspect=r.width/r.height;cam.updateProjectionMatrix();}).observe(parent);
 }catch(e){console.log('menu char:',e);}})();
 // Sky gradient
@@ -2067,27 +2070,19 @@ window.checkTeamStatus=function(){
       currentTeamId=d.teamId||null;
       clearTeamPreviews();
       // Add teammate characters on main stage
-      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.label&&window._menuCharScene)window._menuCharScene.remove(t.label);});
+      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.tag&&t.tag.parentNode)t.tag.parentNode.removeChild(t.tag);});
       window._menuCharTeammates=[];
       var tc=document.getElementById('team-chars');
       d.members.forEach(function(name,i){
         var tm=createOpponentMesh();
-        tm.scale.set(1.3,1.3,1.3);tm.position.set(0.9+(i*0.9),0.35,0);
+        tm.scale.set(1.2,1.2,1.2);tm.position.set(1.0+(i*0.9),0.35,0);
         tm.traverse(function(c){if(c.isMesh){c.material=new THREE.MeshStandardMaterial({color:0x222222,roughness:0.8,metalness:0.3,emissive:0x222244,emissiveIntensity:0.05});}});
         if(window._menuCharScene)window._menuCharScene.add(tm);
-        // Name label sprite
-        var nameCanvas=document.createElement('canvas');nameCanvas.width=256;nameCanvas.height=48;
-        var nctx=nameCanvas.getContext('2d');
-        nctx.shadowColor='rgba(0,0,0,0.8)';nctx.shadowBlur=8;
-        nctx.font='bold 28px Arial';nctx.textAlign='center';nctx.textBaseline='middle';
-        nctx.fillStyle='rgba(255,255,255,0.9)';nctx.fillText(name,128,24);
-        var nameTex=new THREE.CanvasTexture(nameCanvas);nameTex.needsUpdate=true;
-        var nameMat=new THREE.SpriteMaterial({map:nameTex,transparent:true,depthWrite:false,opacity:0.9});
-        var nameSprite=new THREE.Sprite(nameMat);
-        nameSprite.position.set(0.9+(i*0.9),1.9,0);
-        nameSprite.scale.set(1.2,0.22,1);
-        if(window._menuCharScene)window._menuCharScene.add(nameSprite);
-        window._menuCharTeammates.push({mesh:tm,name:name,label:nameSprite});
+        // Name tag div
+        var tag=document.createElement('div');tag.className='team-char-tag';tag.textContent=name;
+        tag.style.cssText='position:absolute;color:#8cf;font-size:11px;font-weight:bold;letter-spacing:2px;text-shadow:0 0 8px rgba(68,170,255,.6),0 0 16px rgba(68,170,255,.3),0 0 30px rgba(0,0,0,.8);pointer-events:none;white-space:nowrap;font-family:Arial;transform:translateX(-50%);z-index:5';
+        document.getElementById('character-stage').appendChild(tag);
+        window._menuCharTeammates.push({mesh:tm,name:name,tag:tag});
         // Also keep the small canvas preview
         var wrap=document.createElement('div');wrap.className='team-char-wrap';
         var cv=document.createElement('canvas');cv.width=40;cv.height=58;cv.style.cssText='width:100%;height:100%;display:block';
@@ -2111,7 +2106,7 @@ window.checkTeamStatus=function(){
       ts.style.display='none';
       currentTeamId=null;
       clearTeamPreviews();
-      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.label&&window._menuCharScene)window._menuCharScene.remove(t.label);});
+      window._menuCharTeammates.forEach(function(t){if(t.mesh&&window._menuCharScene)window._menuCharScene.remove(t.mesh);if(t.tag&&t.tag.parentNode)t.tag.parentNode.removeChild(t.tag);});
       window._menuCharTeammates=[];
     }
     document.getElementById('play-btn').classList.toggle('team-blocked',blocked);
@@ -3251,6 +3246,13 @@ function applyMapSettings(){
     scene.fog=new THREE.Fog(0x2a2a3e,40,60);
     amb.color.setHex(0xccccff);amb.intensity=0.7;
     dir.color.setHex(0xffffff);dir.intensity=2.0;
+  }else if(currentMap==='s2'){
+    scene.background=new THREE.Color(0x0a1a2a);
+    scene.fog=new THREE.Fog(0x0a1a2a,6,18);
+    amb.color.setHex(0x224466);amb.intensity=0.3;
+    dir.color.setHex(0x66aacc);dir.intensity=0.5;
+    startRain();
+    document.getElementById('underwater-overlay').style.display='block';
   }else{
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
     var sctx=skyCanvas.getContext('2d');
@@ -3262,6 +3264,7 @@ function applyMapSettings(){
     scene.fog=new THREE.Fog(0x8899aa,25,50);
     amb.color.setHex(0x556070);amb.intensity=0.6;
     dir.color.setHex(0xffeedd);dir.intensity=1.2;
+    document.getElementById('underwater-overlay').style.display='none';
   }
 }
 var rangeElements=[];
@@ -3572,6 +3575,7 @@ document.getElementById('vote-fog').onclick=function(){sendMapVote('fog');};
 document.getElementById('vote-dragonboat').onclick=function(){sendMapVote('dragonboat');};
 document.getElementById('vote-nuclear').onclick=function(){sendMapVote('nuclear');};
 document.getElementById('vote-arena2').onclick=function(){sendMapVote('arena2');};
+document.getElementById('vote-s2').onclick=function(){sendMapVote('s2');};
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -3683,7 +3687,7 @@ function processServerMessage(data){
       if(window.voteTimer)clearInterval(window.voteTimer);
       var voteSecs=15;
       document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
-      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
+      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','s2'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
       break;
     case 'opponent_vote':
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
@@ -3698,7 +3702,7 @@ function processServerMessage(data){
       document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)'};
+      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','s2':'S2窒息'};
       var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2')};
       if(uniqueVotes.length<=1){
         // All votes same — skip animation, start game directly
