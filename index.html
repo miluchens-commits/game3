@@ -4332,6 +4332,7 @@ function startMultiGame(mapName){
     for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
     var bosshp=document.getElementById('boss-hp-wrap');if(bosshp){bosshp.style.display='none';}
   }
+  if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}
   gameStarted=true;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   document.getElementById('blocker').style.display='flex';
