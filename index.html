@@ -3994,6 +3994,12 @@ function updateUFO(dt){
   ufo.mesh.position.copy(ufo.pos);
   ufo.mesh.rotation.y=patAngle+Math.PI;
   ufo.mesh.rotation.z=Math.sin(Date.now()/2000)*0.05;
+  // Show who is abducted
+  var targetLabel='';
+  if(ufoTargetIdx===0)targetLabel='🛸 你被 UFO 綁架了！';
+  else targetLabel='🛸 '+playerCount+'號 玩家被 UFO 綁架了！';
+  var biEl=document.getElementById('buff-indicator');
+  if(biEl&&ufoActive){biEl.textContent=targetLabel;biEl.style.opacity='1';biEl.style.color='#4df';}
   ufoTargetSwitchCD-=dt;
   if(ufoTargetSwitchCD<=0){
     ufoTargetSwitchCD=12+Math.random()*6;
@@ -4009,6 +4015,17 @@ function updateUFO(dt){
     }else{ufoTargetIdx=0;}
   }
   var tpos=ufoTargetIdx===0?pos.clone():(opponentStates[ufoTargetIdx-1]?opponentStates[ufoTargetIdx-1].pos.clone():pos.clone());
+  // UFO abduction: pull target player upward
+  if(ufoTargetIdx===0&&playerHP>0){
+    var liftAmount=Math.sin(Date.now()/500)*0.15+0.2;
+    var liftY=0.1+liftAmount;
+    pos.y+=liftY*dt;
+    if(pos.y>2.5)pos.y=2.5;
+  }else if(ufoTargetIdx>0&&opponentStates[ufoTargetIdx-1]&&opponentStates[ufoTargetIdx-1].alive){
+    var liftAmount=Math.sin(Date.now()/500)*0.15+0.2;
+    opponentStates[ufoTargetIdx-1].pos.y+=liftAmount*dt;
+    if(opponentStates[ufoTargetIdx-1].pos.y>2.5)opponentStates[ufoTargetIdx-1].pos.y=2.5;
+  }
   if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);}
   var beamGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ufo.pos.x,ufo.pos.y-0.3,ufo.pos.z),new THREE.Vector3(tpos.x,0.1,tpos.z)]);
   ufoBeamMesh=new THREE.Line(beamGeo,new THREE.LineBasicMaterial({color:0x44aaff,transparent:true,opacity:0.3+Math.sin(Date.now()/300)*0.15}));
@@ -4154,6 +4171,7 @@ function processServerMessage(data){
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
       break;
     case 'map_result':
+      if(ufoMode&&gameStarted){break;}
       var chosenMap=data.map||'base';
       var votedMaps=data.votes||[];
       var uniqueVotes=[];
