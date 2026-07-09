@@ -26,7 +26,7 @@ canvas{display:block}
 .shop-item .s-name{font-weight:bold;color:#fff;min-width:80px}
 .shop-item .s-count{color:rgba(255,255,255,.5);font-size:12px;min-width:50px;text-align:center}
 .shop-item .s-price{color:#fa4;font-size:13px;min-width:60px;text-align:right}
-.shop-item button{padding:5px 16px;font-size:13px;font-weight:bold;color:#fff;background:transparent;border:1px solid rgba(255,170,68,.4);border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .2s;font-family:Arial}
+.shop-item button{padding:7px 18px;font-size:15px;font-weight:bold;color:#fff;background:transparent;border:1px solid rgba(255,170,68,.4);border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .2s;font-family:Arial}
 .shop-item button:hover{background:rgba(255,170,68,.15);border-color:#fa4;box-shadow:0 0 15px rgba(255,170,68,.3)}
 .shop-item button:disabled{opacity:.3;cursor:default;border-color:rgba(100,100,100,.3);background:transparent}
 #shop-close{position:absolute;top:12px;right:16px;color:#667;font-size:20px;cursor:pointer;transition:color .2s;font-family:Arial}
@@ -42,7 +42,7 @@ canvas{display:block}
 #armor-fill{background:linear-gradient(90deg,#38c,#5af);width:100%}
 body.mobile-mode #hud{bottom:calc(6vh + 26vmin);left:2vw}
 #killfeed{position:fixed;top:80px;right:16px;z-index:5;pointer-events:none;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
-.kf-entry{padding:5px 12px;border-radius:4px;font-size:12px;font-weight:bold;letter-spacing:1px;font-family:Arial;white-space:nowrap;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(4px);color:#fff;animation:kfIn .25s ease-out;transition:opacity .4s}
+.kf-entry{padding:6px 14px;border-radius:4px;font-size:14px;font-weight:bold;letter-spacing:1px;font-family:Arial;white-space:nowrap;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(4px);color:#fff;animation:kfIn .25s ease-out;transition:opacity .4s}
 .kf-entry .kf-killer{color:#f8a}
 .kf-entry .kf-weapon{color:#ffd;margin:0 4px;font-size:10px}
 .kf-entry .kf-victim{color:#8cf}
@@ -85,13 +85,13 @@ body.mobile-mode #scope-overlay{display:none!important}
 #mode-title{font-size:24px;color:#f0d060;letter-spacing:4px;margin-bottom:8px;font-weight:bold;text-shadow:0 0 20px rgba(240,208,96,.2)}
 #mode-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px;letter-spacing:1px}
 #mode-buttons{display:flex;flex-direction:column;gap:14px}
-#mode-pc-btn,#mode-mobile-btn{padding:14px 28px;font-size:16px;font-weight:bold;border-radius:8px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff}
+#mode-pc-btn,#mode-mobile-btn{padding:16px 32px;font-size:18px;font-weight:bold;border-radius:8px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff}
 #mode-pc-btn:hover,#mode-mobile-btn:hover{transform:scale(1.04)}
 #mode-pc-btn{color:#4af;border-color:rgba(68,170,255,.4)}
 #mode-pc-btn:hover{border-color:#4af;box-shadow:0 0 30px rgba(68,170,255,.3);color:#fff}
 #mode-mobile-btn{color:#f8a;border-color:rgba(255,136,170,.4)}
 #mode-mobile-btn:hover{border-color:#f8a;box-shadow:0 0 30px rgba(255,136,170,.3);color:#fff}
-#mode-skip-btn{margin-top:18px;padding:6px 16px;font-size:11px;color:rgba(255,255,255,.25);background:transparent;border:none;cursor:pointer;letter-spacing:2px;font-family:Arial;transition:color .2s;text-decoration:underline}
+#mode-skip-btn{margin-top:18px;padding:8px 18px;font-size:13px;color:rgba(255,255,255,.25);background:transparent;border:none;cursor:pointer;letter-spacing:2px;font-family:Arial;transition:color .2s;text-decoration:underline}
 #mode-skip-btn:hover{color:rgba(255,255,255,.5)}
 #menu{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 40%,#1a0a2e,#0a0a1a 50%,#000 80%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:30;font-family:Arial;animation:bgDrift 10s ease-in-out infinite alternate}
 @keyframes bgDrift{0%{background-size:100% 100%}100%{background-size:130% 130%;background-position:60% 30%}}
@@ -108,7 +108,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #top-bar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;padding:10px 24px;background:linear-gradient(180deg,rgba(8,8,20,.98) 60%,transparent);z-index:3;gap:30px}
 #logo{font-size:42px;font-weight:900;letter-spacing:8px;background:linear-gradient(90deg,#f4a,#4af,#4fa,#a4f,#f4a);background-size:200%;background-clip:text;-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 25px rgba(255,68,170,.5)) drop-shadow(0 0 60px rgba(68,170,255,.3)) drop-shadow(0 0 100px rgba(68,255,170,.15));white-space:nowrap;animation:textPulse 3s ease-in-out infinite}
 #top-nav{display:flex;gap:8px}
-.top-nav-btn{all:unset;display:flex;align-items:center;gap:4px;padding:8px 18px;font-size:12px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;letter-spacing:2px;font-family:Arial;transition:all .3s;position:relative;overflow:hidden;text-shadow:0 0 12px rgba(255,255,255,.3),0 0 25px rgba(255,255,255,.12),0 0 50px rgba(255,255,255,.05);box-shadow:0 0 15px rgba(255,255,255,.05),0 0 30px rgba(255,255,255,.02)}
+.top-nav-btn{all:unset;display:flex;align-items:center;gap:4px;padding:10px 22px;font-size:14px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;letter-spacing:2px;font-family:Arial;transition:all .3s;position:relative;overflow:hidden;text-shadow:0 0 12px rgba(255,255,255,.3),0 0 25px rgba(255,255,255,.12),0 0 50px rgba(255,255,255,.05);box-shadow:0 0 15px rgba(255,255,255,.05),0 0 30px rgba(255,255,255,.02)}
 .top-nav-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,68,170,.12),rgba(68,170,255,.08),rgba(68,255,170,.12),transparent 75%);animation:btnSpin 4s linear infinite;opacity:.5;transition:opacity .4s;z-index:-1}
 .top-nav-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,transparent,#f4a 20%,#4af 50%,#4fa 80%,transparent);transition:width .3s;border-radius:2px}
 .top-nav-btn:hover{color:#fff;background:rgba(255,255,255,.06);border-color:rgba(68,170,255,.3);transform:translateY(-2px);box-shadow:0 0 30px rgba(68,170,255,.15),0 0 60px rgba(68,170,255,.06);text-shadow:0 0 20px rgba(68,170,255,.6),0 0 40px rgba(68,170,255,.25)}
@@ -117,15 +117,15 @@ body.mobile-mode #scope-overlay{display:none!important}
 #player-info-bar{display:flex;align-items:center;gap:16px;margin-left:auto;font-family:Arial;font-size:12px;color:rgba(255,255,255,.35);letter-spacing:1px}
 #player-info-bar span{transition:all .3s;position:relative;text-shadow:0 0 6px rgba(255,255,255,.04),0 0 15px rgba(255,255,255,.01)}
 #player-info-bar span:hover{color:#fff;text-shadow:0 0 15px rgba(68,170,255,.6),0 0 40px rgba(68,170,255,.2)}
-#friends-btn{background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:6px;color:rgba(255,255,255,.6);font-size:14px;cursor:pointer;padding:5px 10px;font-family:Arial;letter-spacing:1px;flex-shrink:0;transition:all .3s;position:relative;overflow:hidden;text-shadow:0 0 6px rgba(255,255,255,.06);box-shadow:0 0 8px rgba(68,170,255,.05),inset 0 0 8px rgba(68,170,255,.02)}
+#friends-btn{background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:6px;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;padding:6px 12px;font-family:Arial;letter-spacing:1px;flex-shrink:0;transition:all .3s;position:relative;overflow:hidden;text-shadow:0 0 6px rgba(255,255,255,.06);box-shadow:0 0 8px rgba(68,170,255,.05),inset 0 0 8px rgba(68,170,255,.02)}
 #friends-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.08),transparent,rgba(255,68,170,.08),transparent 75%);animation:btnSpin 5s linear infinite;opacity:0;transition:opacity .4s;z-index:-1}
 #friends-btn:hover{color:#4af;border-color:#4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.1),inset 0 0 20px rgba(68,170,255,.08);transform:scale(1.08);text-shadow:0 0 15px rgba(68,170,255,.5),0 0 30px rgba(68,170,255,.15)}
 #friends-btn:hover::before{opacity:1}
 #loadout-strip{position:fixed;top:56px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:3;padding:6px 12px;background:rgba(0,0,0,.3);border-radius:10px;backdrop-filter:blur(4px)}
 .loadout-slot{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);cursor:pointer;transition:all .3s;font-family:Arial;min-width:80px}
 .loadout-slot:hover{background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.2);transform:translateY(-2px);box-shadow:0 0 15px rgba(68,170,255,.06),inset 0 0 10px rgba(68,170,255,.03)}
-.loadout-slot .slot-num{font-size:10px;color:rgba(255,255,255,.3);font-weight:bold;min-width:12px;transition:all .3s}
-.loadout-slot .slot-gun{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:1px;font-weight:bold;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.06),0 0 15px rgba(255,255,255,.02)}
+.loadout-slot .slot-num{font-size:12px;color:rgba(255,255,255,.3);font-weight:bold;min-width:14px;transition:all .3s}
+.loadout-slot .slot-gun{font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px;font-weight:bold;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.06),0 0 15px rgba(255,255,255,.02)}
 .loadout-slot:hover .slot-gun{text-shadow:0 0 10px rgba(68,170,255,.4),0 0 25px rgba(68,170,255,.15)}
 .loadout-slot .slot-num{text-shadow:0 0 6px rgba(255,255,255,.06)}
 .loadout-slot.active{background:rgba(68,170,255,.1);border-color:rgba(68,170,255,.3);box-shadow:0 0 20px rgba(68,170,255,.1),inset 0 0 15px rgba(68,170,255,.04)}
@@ -134,38 +134,38 @@ body.mobile-mode #scope-overlay{display:none!important}
 #character-stage{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:400px;height:480px;z-index:0}
 #menu-character-canvas{width:100%;height:100%;display:block}
 #bottom-right{position:absolute;bottom:90px;right:40px;display:flex;flex-direction:column;gap:10px;z-index:2;align-items:stretch;min-width:220px}
-#play-btn{padding:24px 60px;font-size:22px;font-weight:bold;color:#fff;background:linear-gradient(135deg,#4af,#4fa,#4af);background-size:200%;border:none;border-radius:14px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;position:relative;overflow:hidden;text-shadow:0 0 30px rgba(68,170,255,.8),0 0 60px rgba(68,170,255,.5),0 0 120px rgba(68,170,255,.25);box-shadow:0 0 60px rgba(68,170,255,.4),0 0 120px rgba(68,170,255,.15),inset 0 0 40px rgba(255,255,255,.08)}
+#play-btn{padding:28px 68px;font-size:26px;font-weight:bold;color:#fff;background:linear-gradient(135deg,#4af,#4fa,#4af);background-size:200%;border:none;border-radius:14px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;position:relative;overflow:hidden;text-shadow:0 0 30px rgba(68,170,255,.8),0 0 60px rgba(68,170,255,.5),0 0 120px rgba(68,170,255,.25);box-shadow:0 0 60px rgba(68,170,255,.4),0 0 120px rgba(68,170,255,.15),inset 0 0 40px rgba(255,255,255,.08)}
 #play-btn::before{content:'';position:absolute;top:0;left:0;width:200%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),rgba(255,255,255,.08),transparent);animation:sweepShine 2.5s ease-in-out infinite;pointer-events:none}
 #play-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,255,255,.12),transparent,rgba(68,255,170,.12),transparent 75%);animation:btnSpin 4s linear infinite;z-index:-1;opacity:.6;transition:opacity .4s}
 #play-btn:hover{transform:translateY(-4px);box-shadow:0 0 60px rgba(68,170,255,.4),0 0 120px rgba(68,170,255,.12),inset 0 0 40px rgba(255,255,255,.08);filter:brightness(1.15)}
 #play-btn:hover::after{opacity:1}
 #play-btn:active{transform:translateY(-1px)}
-#mode-btn{padding:18px 42px;font-size:17px;font-weight:bold;color:#fff;background:rgba(255,255,255,.03);border:1px solid rgba(68,170,255,.2);border-radius:11px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;text-align:center;width:100%;position:relative;overflow:hidden;text-shadow:0 0 15px rgba(68,170,255,.5),0 0 30px rgba(68,170,255,.2),0 0 60px rgba(68,170,255,.1);box-shadow:0 0 20px rgba(68,170,255,.15),0 0 40px rgba(68,170,255,.06)}
+#mode-btn{padding:20px 48px;font-size:20px;font-weight:bold;color:#fff;background:rgba(255,255,255,.03);border:1px solid rgba(68,170,255,.2);border-radius:11px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;text-align:center;width:100%;position:relative;overflow:hidden;text-shadow:0 0 15px rgba(68,170,255,.5),0 0 30px rgba(68,170,255,.2),0 0 60px rgba(68,170,255,.1);box-shadow:0 0 20px rgba(68,170,255,.15),0 0 40px rgba(68,170,255,.06)}
 #mode-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.12),rgba(255,68,170,.08),rgba(68,255,170,.12),transparent 75%);animation:btnSpin 5s linear infinite;opacity:.5;transition:opacity .5s;z-index:-1}
 #mode-btn::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:sweepShine 3s ease-in-out infinite;pointer-events:none}
 #mode-btn:hover{color:#fff;border-color:rgba(68,170,255,.5);background:rgba(68,170,255,.1);transform:translateY(-2px);box-shadow:0 0 50px rgba(68,170,255,.3),0 0 100px rgba(68,170,255,.1);text-shadow:0 0 25px rgba(68,170,255,.7),0 0 50px rgba(68,170,255,.3)}
 #mode-btn:hover::before{opacity:1}
 #mode-btn:active{transform:translateY(0)}
-#mode-btn .mode-arrow{display:inline-block;margin-left:8px;font-size:11px;transition:transform .3s;filter:drop-shadow(0 0 0 transparent)}
+#mode-btn .mode-arrow{display:inline-block;margin-left:8px;font-size:13px;transition:transform .3s;filter:drop-shadow(0 0 0 transparent)}
 #mode-btn:hover .mode-arrow{transform:translateX(5px);filter:drop-shadow(0 0 8px rgba(68,170,255,.4))}
 #mode-dropdown{position:absolute;bottom:calc(100% + 6px);right:0;left:0;background:rgba(8,8,20,.96);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:5px;display:none;flex-direction:column;gap:2px;backdrop-filter:blur(16px);box-shadow:0 0 35px rgba(0,0,0,.5);z-index:10}
 #mode-dropdown.show{display:flex}
-.mode-opt{padding:11px 20px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);background:transparent;border:none;border-radius:6px;cursor:pointer;letter-spacing:2px;transition:all .25s;font-family:Arial;text-align:left;position:relative;overflow:hidden}
+.mode-opt{padding:13px 24px;font-size:15px;font-weight:bold;color:rgba(255,255,255,.5);background:transparent;border:none;border-radius:6px;cursor:pointer;letter-spacing:2px;transition:all .25s;font-family:Arial;text-align:left;position:relative;overflow:hidden}
 .mode-opt::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(68,170,255,.04),transparent);transform:translateX(-100%);transition:transform .5s;pointer-events:none}
 .mode-opt{text-shadow:0 0 6px rgba(255,255,255,.04)}
 .mode-opt:hover{color:#fff;background:rgba(68,170,255,.1);transform:translateX(5px);text-shadow:0 0 20px rgba(68,170,255,.5),0 0 40px rgba(68,170,255,.15)}
 .mode-opt:hover::before{transform:translateX(100%)}
 .mode-opt.selected{color:#4af;background:rgba(68,170,255,.12);box-shadow:inset 3px 0 0 #4af,0 0 20px rgba(68,170,255,.08);text-shadow:0 0 20px rgba(68,170,255,.6),0 0 40px rgba(68,170,255,.2)}
 #bottom-bar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:8px;padding:10px 20px;background:linear-gradient(0deg,rgba(8,8,20,.98) 60%,transparent);z-index:30}
-.bottom-btn{all:unset;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 18px;font-size:11px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;letter-spacing:1px;transition:all .3s;font-family:Arial;position:relative;overflow:hidden;min-width:55px;box-shadow:0 0 15px rgba(68,170,255,.04),0 0 30px rgba(68,170,255,.02),inset 0 0 10px rgba(68,170,255,.01)}
+.bottom-btn{all:unset;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;letter-spacing:1px;transition:all .3s;font-family:Arial;position:relative;overflow:hidden;min-width:55px;box-shadow:0 0 15px rgba(68,170,255,.04),0 0 30px rgba(68,170,255,.02),inset 0 0 10px rgba(68,170,255,.01)}
 .bottom-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.08),rgba(255,68,170,.05),rgba(68,255,170,.08),transparent 75%);animation:btnSpin 5s linear infinite;opacity:0.4;transition:opacity .5s;z-index:-1}
 .bottom-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:2px;background:linear-gradient(90deg,transparent,#f4a 20%,#4af 50%,#4fa 80%,transparent);transition:width .3s;border-radius:2px;opacity:0.3}
 .bottom-btn:hover{color:#fff;background:rgba(255,255,255,.05);border-color:rgba(68,170,255,.25);transform:translateY(-3px);box-shadow:0 0 40px rgba(68,170,255,.25),0 0 80px rgba(68,170,255,.1),inset 0 0 20px rgba(68,170,255,.04);text-shadow:0 0 15px rgba(255,255,255,.4),0 0 30px rgba(68,170,255,.2)}
 .bottom-btn:hover::before{opacity:1}
 .bottom-btn:hover::after{width:70%;opacity:0.7}
-.bottom-btn .ico{font-size:18px;line-height:1;transition:all .3s;filter:drop-shadow(0 0 6px rgba(68,170,255,.2)) drop-shadow(0 0 15px rgba(68,170,255,.08))}
+.bottom-btn .ico{font-size:20px;line-height:1;transition:all .3s;filter:drop-shadow(0 0 6px rgba(68,170,255,.2)) drop-shadow(0 0 15px rgba(68,170,255,.08))}
 .bottom-btn:hover .ico{filter:drop-shadow(0 0 12px rgba(68,170,255,.5)) drop-shadow(0 0 30px rgba(68,170,255,.2));transform:scale(1.15)}
-.bottom-btn .lbl{font-size:10px;opacity:.8;letter-spacing:2px;transition:all .3s;text-shadow:0 0 8px rgba(68,170,255,.15),0 0 20px rgba(68,170,255,.05)}
+.bottom-btn .lbl{font-size:12px;opacity:.8;letter-spacing:2px;transition:all .3s;text-shadow:0 0 8px rgba(68,170,255,.15),0 0 20px rgba(68,170,255,.05)}
 .bottom-btn:hover .lbl{opacity:1;letter-spacing:3px;text-shadow:0 0 12px rgba(68,170,255,.4),0 0 30px rgba(68,170,255,.15)}
 #menu-coins,#coin-display{color:#fa4;letter-spacing:1px;text-shadow:0 0 15px rgba(255,170,68,.3),0 0 40px rgba(255,170,68,.15),0 0 80px rgba(255,170,68,.05);font-size:13px;transition:all .3s}
 #coin-display:hover{text-shadow:0 0 25px rgba(255,170,68,.5),0 0 60px rgba(255,170,68,.2);filter:brightness(1.3)}
@@ -180,13 +180,13 @@ body.mobile-mode #scope-overlay{display:none!important}
 #play-btn.team-blocked,#daily-btn.team-blocked{opacity:.4;cursor:not-allowed;filter:grayscale(.7)}
 #play-btn.team-blocked:hover,#daily-btn.team-blocked:hover{transform:none;box-shadow:none;color:#f4a;background:transparent;border-color:rgba(255,68,170,.5)}
 #play-btn.team-blocked::before,#daily-btn.team-blocked::before{content:'✕';position:absolute;top:-6px;right:-6px;width:24px;height:24px;font-size:13px;color:#f44;background:rgba(20,10,10,.95);border:2px solid #f44;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;font-weight:bold;line-height:24px;box-shadow:0 0 10px rgba(255,68,68,.4)}
-#bossrush-btn{padding:16px 34px;font-size:18px;font-weight:bold;color:#f88;background:transparent;border:2px solid rgba(255,68,68,.5);border-radius:4px;cursor:pointer;letter-spacing:8px;transition:all .3s;box-shadow:0 0 25px rgba(255,68,68,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
+#bossrush-btn{padding:18px 38px;font-size:20px;font-weight:bold;color:#f88;background:transparent;border:2px solid rgba(255,68,68,.5);border-radius:4px;cursor:pointer;letter-spacing:8px;transition:all .3s;box-shadow:0 0 25px rgba(255,68,68,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
 #bossrush-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,68,68,.12),rgba(68,170,255,.08),rgba(255,170,68,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 #bossrush-btn:hover{color:#000;border-color:#f44;box-shadow:0 0 60px rgba(255,68,68,.5),0 0 80px rgba(255,170,68,.3);transform:scale(1.08);background:linear-gradient(135deg,#f44,#fa4)}
-#daily-btn{padding:14px 44px;font-size:16px;font-weight:bold;color:#fa4;background:transparent;border:2px solid rgba(255,170,68,.5);border-radius:4px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(255,170,68,.1),inset 0 0 20px rgba(255,170,68,.05);z-index:1;font-family:Arial;position:relative;overflow:hidden;margin-top:6px}
+#daily-btn{padding:16px 48px;font-size:18px;font-weight:bold;color:#fa4;background:transparent;border:2px solid rgba(255,170,68,.5);border-radius:4px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(255,170,68,.1),inset 0 0 20px rgba(255,170,68,.05);z-index:1;font-family:Arial;position:relative;overflow:hidden;margin-top:6px}
 #daily-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,170,68,.1),rgba(255,68,170,.06),rgba(68,255,170,.1),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 #daily-btn:hover{color:#000;border-color:#fa4;box-shadow:0 0 60px rgba(255,170,68,.5),0 0 80px rgba(255,68,170,.2);transform:scale(1.08);background:linear-gradient(135deg,#fa4,#f4a)}
-#daily-share-btn{padding:8px 24px;font-size:12px;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;margin-top:8px}
+#daily-share-btn{padding:10px 28px;font-size:14px;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;margin-top:8px}
 #daily-share-btn:hover{color:#000;background:#fa4;border-color:#fa4}
 #class-select{position:fixed;top:0;left:0;width:100%;height:100%;z-index:35;font-family:Arial;display:none;align-items:center;justify-content:center}
 #class-select-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
@@ -195,20 +195,20 @@ body.mobile-mode #scope-overlay{display:none!important}
 #class-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:660px}
 .class-card{background:linear-gradient(145deg,#1a1a28,#222236);border:1px solid rgba(200,170,70,.2);border-radius:10px;padding:16px 14px;cursor:pointer;transition:all .3s;text-align:center;width:100%;box-sizing:border-box}
 .class-card:hover{border-color:#f0d060;transform:translateY(-4px);box-shadow:0 4px 20px rgba(200,170,70,.15)}
-.class-card-icon{font-size:28px;margin-bottom:4px}
-.class-card-name{font-size:16px;font-weight:bold;color:#fff;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 10px rgba(255,255,255,.1),0 0 25px rgba(255,255,255,.03)}
-.class-card-desc{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;text-shadow:0 0 6px rgba(255,255,255,.04)}
-.class-card-passive{font-size:11px;color:rgba(255,255,255,.7);line-height:1.3;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:4px;text-shadow:0 0 6px rgba(255,255,255,.06)}
-.class-card-perks{font-size:10px;color:rgba(240,208,96,.3);margin-top:6px;letter-spacing:1px;text-shadow:0 0 6px rgba(240,208,96,.08)}
-#class-back{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);padding:6px 20px;font-size:12px;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.03)}
+.class-card-icon{font-size:32px;margin-bottom:4px}
+.class-card-name{font-size:18px;font-weight:bold;color:#fff;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 10px rgba(255,255,255,.1),0 0 25px rgba(255,255,255,.03)}
+.class-card-desc{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:8px;text-shadow:0 0 6px rgba(255,255,255,.04)}
+.class-card-passive{font-size:12px;color:rgba(255,255,255,.7);line-height:1.3;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:4px;text-shadow:0 0 6px rgba(255,255,255,.06)}
+.class-card-perks{font-size:11px;color:rgba(240,208,96,.3);margin-top:6px;letter-spacing:1px;text-shadow:0 0 6px rgba(240,208,96,.08)}
+#class-back{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);padding:8px 24px;font-size:14px;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.03)}
 #class-back:hover{color:#fff;border-color:rgba(255,255,255,.4);text-shadow:0 0 10px rgba(255,255,255,.2),0 0 25px rgba(255,255,255,.05);box-shadow:0 0 15px rgba(255,255,255,.06)}
-#multi-btn{padding:8px 36px;margin-top:10px;font-size:13px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(68,170,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
+#multi-btn{padding:10px 40px;margin-top:10px;font-size:15px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(68,170,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
 #multi-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.12),rgba(68,255,170,.08),rgba(255,68,170,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 #multi-btn:hover{color:#000;border-color:#4af;box-shadow:0 0 60px rgba(68,170,255,.5),0 0 80px rgba(68,255,170,.3);transform:scale(1.08);background:linear-gradient(135deg,#4af,#4fa)}
-#multi4-btn{padding:8px 36px;margin-top:8px;font-size:13px;font-weight:bold;color:#c6f;background:transparent;border:1px solid rgba(204,102,255,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(204,102,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
+#multi4-btn{padding:10px 40px;margin-top:8px;font-size:15px;font-weight:bold;color:#c6f;background:transparent;border:1px solid rgba(204,102,255,.4);border-radius:3px;cursor:pointer;letter-spacing:6px;transition:all .3s;box-shadow:0 0 25px rgba(204,102,255,.1);z-index:1;font-family:Arial;position:relative;overflow:hidden}
 #multi4-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(204,102,255,.12),rgba(255,68,170,.08),rgba(68,170,255,.12),transparent 75%);animation:btnSpin 5s linear infinite;z-index:-1}
 #multi4-btn:hover{color:#000;border-color:#c6f;box-shadow:0 0 60px rgba(204,102,255,.5),0 0 80px rgba(255,68,170,.3);transform:scale(1.08);background:linear-gradient(135deg,#c6f,#f4a)}
-#armory-btn{padding:8px 24px;font-size:12px;font-weight:bold;color:#4fa;background:transparent;border:1px solid rgba(68,255,170,.3);border-radius:3px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
+#armory-btn{padding:10px 28px;font-size:14px;font-weight:bold;color:#4fa;background:transparent;border:1px solid rgba(68,255,170,.3);border-radius:3px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
 #armory-btn:hover{opacity:1;border-color:#4fa;box-shadow:0 0 25px rgba(68,255,170,.4);transform:scale(1.04);color:#fff}
 #loadout-display{display:flex;gap:8px;margin-top:14px;z-index:1}
 .loadout-slot{display:flex;flex-direction:column;align-items:center;background:rgba(255,68,170,.06);border:1px solid rgba(255,68,170,.15);border-radius:4px;padding:6px 14px;min-width:60px}
@@ -246,15 +246,15 @@ body.mobile-mode #scope-overlay{display:none!important}
 
 
 @keyframes fadeUp{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-30px)}}
-#armory-btn,#gun-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
+#armory-btn,#gun-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1}
 #armory-btn:hover,#gun-btn:hover{opacity:1;border-color:#4af;box-shadow:0 0 20px rgba(68,170,255,.4);transform:scale(1.04)}
-#shop-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1;text-shadow:0 0 10px rgba(255,170,68,.4),0 0 25px rgba(255,170,68,.15),0 0 50px rgba(255,170,68,.05);box-shadow:0 0 10px rgba(255,170,68,.15),0 0 25px rgba(255,170,68,.05)}
+#shop-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#fa4;background:transparent;border:1px solid rgba(255,170,68,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7;z-index:1;text-shadow:0 0 10px rgba(255,170,68,.4),0 0 25px rgba(255,170,68,.15),0 0 50px rgba(255,170,68,.05);box-shadow:0 0 10px rgba(255,170,68,.15),0 0 25px rgba(255,170,68,.05)}
 #shop-btn:hover{opacity:1;border-color:#fa4;box-shadow:0 0 35px rgba(255,170,68,.5),0 0 70px rgba(255,170,68,.15);transform:scale(1.04);color:#fff;text-shadow:0 0 15px rgba(255,170,68,.6),0 0 30px rgba(255,170,68,.25)}
-#season-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;text-shadow:0 0 10px rgba(68,255,68,.5),0 0 25px rgba(68,255,68,.2),0 0 50px rgba(68,255,68,.08);box-shadow:0 0 12px rgba(68,255,68,.2),0 0 30px rgba(68,255,68,.08)}
-#season-btn:hover{opacity:1;border-color:#4f4;box-shadow:0 0 40px rgba(68,255,68,.6),0 0 80px rgba(68,255,68,.2);transform:scale(1.04);color:#fff;text-shadow:0 0 20px rgba(68,255,68,.7),0 0 40px rgba(68,255,68,.3)}#event-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#f62;background:transparent;border:1px solid rgba(255,100,34,.4);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;animation:eventPulse 2s ease-in-out infinite;text-shadow:0 0 10px rgba(255,100,34,.5),0 0 25px rgba(255,100,34,.2),0 0 50px rgba(255,100,34,.08);box-shadow:0 0 12px rgba(255,100,34,.2),0 0 30px rgba(255,100,34,.08)}
+#season-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;text-shadow:0 0 10px rgba(68,255,68,.5),0 0 25px rgba(68,255,68,.2),0 0 50px rgba(68,255,68,.08);box-shadow:0 0 12px rgba(68,255,68,.2),0 0 30px rgba(68,255,68,.08)}
+#season-btn:hover{opacity:1;border-color:#4f4;box-shadow:0 0 40px rgba(68,255,68,.6),0 0 80px rgba(68,255,68,.2);transform:scale(1.04);color:#fff;text-shadow:0 0 20px rgba(68,255,68,.7),0 0 40px rgba(68,255,68,.3)}#event-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#f62;background:transparent;border:1px solid rgba(255,100,34,.4);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;animation:eventPulse 2s ease-in-out infinite;text-shadow:0 0 10px rgba(255,100,34,.5),0 0 25px rgba(255,100,34,.2),0 0 50px rgba(255,100,34,.08);box-shadow:0 0 12px rgba(255,100,34,.2),0 0 30px rgba(255,100,34,.08)}
 @keyframes eventPulse{0%,100%{box-shadow:0 0 12px rgba(255,100,34,.3),0 0 30px rgba(255,100,34,.1);border-color:rgba(255,100,34,.4)}50%{box-shadow:0 0 35px rgba(255,100,34,.6),0 0 70px rgba(255,100,34,.2);border-color:#f62}}
 #event-btn:hover{opacity:1;border-color:#f62;box-shadow:0 0 40px rgba(255,100,34,.6),0 0 80px rgba(255,100,34,.2);transform:scale(1.04);color:#fff;text-shadow:0 0 20px rgba(255,100,34,.7),0 0 40px rgba(255,100,34,.3)}
-#rank-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#c6f;background:transparent;border:1px solid rgba(204,102,255,.4);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;animation:rankPulse 3s ease-in-out infinite;text-shadow:0 0 10px rgba(204,102,255,.5),0 0 25px rgba(204,102,255,.2),0 0 50px rgba(204,102,255,.08);box-shadow:0 0 12px rgba(204,102,255,.2),0 0 30px rgba(204,102,255,.08)}
+#rank-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#c6f;background:transparent;border:1px solid rgba(204,102,255,.4);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.9;z-index:1;animation:rankPulse 3s ease-in-out infinite;text-shadow:0 0 10px rgba(204,102,255,.5),0 0 25px rgba(204,102,255,.2),0 0 50px rgba(204,102,255,.08);box-shadow:0 0 12px rgba(204,102,255,.2),0 0 30px rgba(204,102,255,.08)}
 @keyframes rankPulse{0%,100%{box-shadow:0 0 12px rgba(204,102,255,.3),0 0 30px rgba(204,102,255,.1);border-color:rgba(204,102,255,.4)}50%{box-shadow:0 0 35px rgba(204,102,255,.6),0 0 70px rgba(204,102,255,.2);border-color:#c6f}}
 #rank-btn:hover{opacity:1;border-color:#c6f;box-shadow:0 0 40px rgba(204,102,255,.6),0 0 80px rgba(204,102,255,.2);transform:scale(1.04);color:#fff;text-shadow:0 0 20px rgba(204,102,255,.7),0 0 40px rgba(204,102,255,.3)}
 
@@ -272,8 +272,48 @@ body.mobile-mode #scope-overlay{display:none!important}
 #rank-stats span{color:#c6f;font-weight:bold}
 #rank-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial;z-index:1}
 #rank-close:hover{color:#fff}
-#skin-btn,#gun-btn,#charskin-btn,#prof-btn,#range-btn,#ach-btn{padding:8px 20px;font-size:12px;font-weight:bold;color:#f8a;background:transparent;border:1px solid rgba(255,136,170,.35);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.8;z-index:1}
-#skin-btn:hover,#gun-btn:hover,#charskin-btn:hover,#prof-btn:hover,#range-btn:hover,#ach-btn:hover{opacity:1;border-color:#f8a;box-shadow:0 0 25px rgba(255,136,170,.5);transform:scale(1.04);color:#fff}
+#skin-btn,#gun-btn,#charskin-btn,#prof-btn,#range-btn,#ach-btn,#pet-btn,#daily-login-btn{padding:10px 24px;font-size:14px;font-weight:bold;color:#f8a;background:transparent;border:1px solid rgba(255,136,170,.35);border-radius:3px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.8;z-index:1}
+#skin-btn:hover,#gun-btn:hover,#charskin-btn:hover,#prof-btn:hover,#range-btn:hover,#ach-btn:hover,#pet-btn:hover,#daily-login-btn:hover{opacity:1;border-color:#f8a;box-shadow:0 0 25px rgba(255,136,170,.5);transform:scale(1.04);color:#fff}
+#daily-login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
+#daily-login-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#daily-login-box{position:relative;background:linear-gradient(135deg,#1a2a2a,#0a1a1a);border:2px solid rgba(100,255,200,.25);border-radius:14px;padding:28px 30px;max-width:520px;width:92%;text-align:center;box-shadow:0 0 60px rgba(100,255,200,.1)}
+#daily-login-title{font-size:26px;font-weight:bold;color:#4fa;letter-spacing:6px;margin-bottom:4px;text-shadow:0 0 20px rgba(68,255,170,.2)}
+#daily-login-streak{font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:16px}
+#daily-login-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
+.dl-day{width:70px;padding:10px 6px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);text-align:center;transition:all .2s}
+.dl-day.dl-current{border-color:#4fa;background:rgba(68,255,170,.08);box-shadow:0 0 15px rgba(68,255,170,.15)}
+.dl-day.dl-done{border-color:rgba(68,255,170,.2);background:rgba(68,255,170,.04);opacity:.6}
+.dl-day.dl-locked{opacity:.35}
+.dl-day-num{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-bottom:2px}
+.dl-day-reward{font-size:14px;font-weight:bold;color:#fff}
+.dl-day-reward.sub{font-size:11px;color:rgba(255,255,255,.5)}
+#daily-login-claim{padding:12px 44px;font-size:17px;font-weight:bold;border-radius:6px;cursor:pointer;letter-spacing:4px;font-family:Arial;border:1px solid;transition:all .3s}
+.dl-claim-yes{color:#000;background:#4fa;border-color:#4fa}
+.dl-claim-yes:hover{box-shadow:0 0 30px rgba(68,255,170,.4);transform:scale(1.05)}
+.dl-claim-no{color:rgba(255,255,255,.3);background:transparent;border-color:rgba(255,255,255,.1);cursor:default}
+#pet-shop-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
+#pet-shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#1a2a1a,#080808)}
+#pet-shop-box{position:relative;background:linear-gradient(135deg,#0a1a0a,#080808);border:2px solid rgba(100,255,136,.25);border-radius:12px;padding:24px;max-width:600px;width:92%;max-height:85vh;box-shadow:0 0 80px rgba(100,255,136,.12)}
+#pet-shop-title{font-size:26px;font-weight:bold;color:#4f4;letter-spacing:6px;margin-bottom:8px;text-align:center;text-shadow:0 0 20px rgba(68,255,68,.2)}
+#pet-shop-coins{font-size:13px;color:rgba(255,255,255,.4);text-align:center;letter-spacing:2px;margin-bottom:16px}
+#pet-shop-list{display:flex;flex-direction:column;gap:8px}
+.pet-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(100,255,136,.15);border-radius:8px;padding:12px 14px;transition:all .2s}
+.pet-card:hover{border-color:rgba(100,255,136,.4);background:rgba(100,255,136,.06)}
+.pet-card-icon{font-size:32px;width:48px;text-align:center}
+.pet-card-info{flex:1}
+.pet-card-name{font-size:15px;font-weight:bold;color:#fff;letter-spacing:2px}
+.pet-card-desc{font-size:12px;color:rgba(255,255,255,.45);margin-top:2px}
+.pet-card-price{font-size:14px;color:#fa4;font-weight:bold;min-width:70px;text-align:right}
+.pet-card-btn{padding:6px 16px;font-size:13px;font-weight:bold;border-radius:4px;cursor:pointer;letter-spacing:1px;font-family:Arial;border:1px solid;transition:all .2s;min-width:60px;text-align:center}
+.pet-own-btn{color:#4f4;border-color:rgba(68,255,68,.3);background:rgba(68,255,68,.08)}
+.pet-own-btn:hover{background:rgba(68,255,68,.15);border-color:#4f4}
+.pet-buy-btn{color:#fa4;border-color:rgba(255,170,68,.3);background:rgba(255,170,68,.08)}
+.pet-buy-btn:hover{background:rgba(255,170,68,.15);border-color:#fa4}
+.pet-equip-btn{color:#4af;border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.08)}
+.pet-equip-btn:hover{background:rgba(68,170,255,.15);border-color:#4af}
+.pet-card.equipped{border-color:#4f4;background:rgba(68,255,68,.08)}
+.pet-close{position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;transition:color .2s;font-family:Arial}
+.pet-close:hover{color:#fff}
 #gun-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
 #gun-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#1a2a1a,#080808);overflow:hidden}
 #gun-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(100,255,136,.03) 30px,rgba(100,255,136,.03) 31px);pointer-events:none}
@@ -284,7 +324,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #gun-left-list::-webkit-scrollbar{width:3px}
 #gun-left-list::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
 #gun-left-list::-webkit-scrollbar-thumb{background:rgba(100,255,136,.3);border-radius:2px}
-.gun-item{padding:6px 8px;border-radius:4px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.08);transition:all .2s;background:rgba(255,255,255,.03);letter-spacing:1px;text-align:center}
+.gun-item{padding:8px 10px;border-radius:4px;cursor:pointer;font-size:14px;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.08);transition:all .2s;background:rgba(255,255,255,.03);letter-spacing:1px;text-align:center}
 .gun-item:hover{border-color:rgba(100,255,136,.4);color:#fff;background:rgba(100,255,136,.08)}
 .gun-item.active{border-color:#4f4;color:#4f4;background:rgba(100,255,136,.15);box-shadow:0 0 10px rgba(100,255,136,.15)}
 .gun-item .gi-attach{font-size:8px;color:rgba(100,255,136,.5);display:block;margin-top:2px}
@@ -295,12 +335,12 @@ body.mobile-mode #scope-overlay{display:none!important}
 #gun-attach-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .gun-a-slot{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px;flex:1}
 .gun-a-slot-title{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px}
-.gun-a-btn{width:100%;padding:6px 4px;border-radius:4px;cursor:pointer;font-size:10px;text-align:center;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);transition:all .2s;letter-spacing:1px}
+.gun-a-btn{width:100%;padding:8px 6px;border-radius:4px;cursor:pointer;font-size:12px;text-align:center;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);transition:all .2s;letter-spacing:1px}
 .gun-a-btn:hover{border-color:rgba(100,255,136,.4);color:#fff}
 .gun-a-btn.equipped{border-color:#4f4;color:#4f4;background:rgba(100,255,136,.12)}
 .gun-a-btn .gab-price{font-size:8px;color:#fa4;display:block;margin-top:1px}
 .gun-a-btn .gab-bought{font-size:8px;color:#4f4;display:block;margin-top:1px}
-#gun-buy-all{padding:8px 24px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:bold;color:#000;background:linear-gradient(135deg,#4f4,#4fa);border:none;letter-spacing:2px;transition:all .3s;margin-top:4px}
+#gun-buy-all{padding:10px 28px;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;color:#000;background:linear-gradient(135deg,#4f4,#4fa);border:none;letter-spacing:2px;transition:all .3s;margin-top:4px}
 #gun-buy-all:hover{transform:scale(1.04);box-shadow:0 0 20px rgba(68,255,68,.4)}
 #gun-buy-all:disabled{opacity:.3;cursor:default;transform:none;box-shadow:none}
 #gun-close{position:absolute;top:10px;right:14px;color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;transition:color .2s;z-index:1;font-family:Arial}
@@ -335,7 +375,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #skin-preview-wrap canvas{width:100%!important;height:100%!important;display:block}
 #skin-preview-hint{position:absolute;bottom:6px;right:10px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1px;pointer-events:none}
 #skin-part-picker{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
-.skin-part-btn{padding:4px 12px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;background:rgba(255,255,255,.04);letter-spacing:1px}
+.skin-part-btn{padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;background:rgba(255,255,255,.04);letter-spacing:1px}
 .skin-part-btn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 .skin-part-btn.active{color:#f8a;border-color:#f8a;background:rgba(255,136,170,.15)}
 #skin-color-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:12px;width:100%}
@@ -346,7 +386,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 .skin-color-swatch.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;line-height:1;pointer-events:none}
 .skin-color-swatch.locked:hover{opacity:.7;border-color:rgba(255,255,255,.15)}
 #skin-gun-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
-.skin-gun-tab{padding:6px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.04)}
+.skin-gun-tab{padding:8px 20px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:bold;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.04)}
 .skin-gun-tab:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 .skin-gun-tab.active{color:#f8a;border-color:rgba(255,136,170,.5);background:rgba(255,136,170,.12)}
 #skin-list{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-height:140px;overflow-y:auto;width:100%;padding:2px}
@@ -381,7 +421,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 .event-quest-progress-fill.pending{background:linear-gradient(90deg,#f62,#fa4)}
 .event-quest-reward{font-size:12px;color:#fa4;white-space:nowrap;letter-spacing:1px}
 #event-expired{text-align:center;padding:40px 20px;color:rgba(255,255,255,.3);font-size:16px;letter-spacing:2px}
-.qtab{padding:6px 20px;border-radius:6px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.03)}
+.qtab{padding:8px 22px;border-radius:6px;cursor:pointer;font-size:15px;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.03)}
 .qtab.active{color:#4f4;border-color:rgba(68,255,68,.4);background:rgba(68,255,68,.08)}
 .qtab:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 #event-sp{text-align:center;margin-top:16px;padding:8px;background:rgba(255,200,68,.06);border:1px solid rgba(255,200,68,.15);border-radius:6px}
@@ -412,9 +452,39 @@ body.mobile-mode #scope-overlay{display:none!important}
 .sb-badge{font-size:10px;color:#4f4;letter-spacing:4px;border:1px solid rgba(68,255,68,.3);border-radius:10px;padding:2px 14px;background:rgba(68,255,68,.1);font-weight:bold}
 .sb-title{font-size:28px;font-weight:900;color:transparent;background:linear-gradient(90deg,#4f4,#8f8,#4f4);background-clip:text;-webkit-background-clip:text;letter-spacing:12px;text-shadow:none;filter:drop-shadow(0 0 15px rgba(68,255,68,.3))}
 .sb-sub{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:6px;margin-top:2px}
-.seasontab{padding:6px 20px;border-radius:6px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.08);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.02)}
+.seasontab{padding:8px 22px;border-radius:6px;cursor:pointer;font-size:15px;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.08);transition:all .2s;letter-spacing:2px;background:rgba(255,255,255,.02)}
 .seasontab.active{color:#4f4;border-color:rgba(68,255,68,.35);background:rgba(68,255,68,.06)}
 .seasontab:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+#pet-shop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
+#pet-shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7)}
+#pet-shop-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(100,255,136,.25);border-radius:14px;padding:28px 30px;max-width:560px;width:92%;text-align:center;box-shadow:0 0 60px rgba(100,255,136,.1)}
+#pet-shop-title{font-size:26px;font-weight:bold;color:#4f4;letter-spacing:6px;margin-bottom:6px;text-shadow:0 0 20px rgba(68,255,68,.2)}
+#pet-shop-coins{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:16px}
+#pet-list{display:flex;flex-direction:column;gap:8px}
+.pet-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(100,255,136,.15);border-radius:8px;padding:12px 14px;transition:all .2s;text-align:left}
+.pet-card:hover{border-color:rgba(100,255,136,.4);background:rgba(100,255,136,.06)}
+.pet-card-icon{font-size:28px;width:44px;text-align:center}
+.pet-card-info{flex:1}
+.pet-card-name{font-size:15px;font-weight:bold;color:#fff;letter-spacing:2px}
+.pet-card-desc{font-size:12px;color:rgba(255,255,255,.45);margin-top:2px}
+.pet-card-price{font-size:14px;color:#fa4;font-weight:bold;min-width:60px;text-align:right}
+.pet-card-btn{padding:6px 16px;font-size:13px;font-weight:bold;border-radius:4px;cursor:pointer;letter-spacing:1px;font-family:Arial;border:1px solid;transition:all .2s;min-width:56px}
+.pet-card-btn.buy{color:#fa4;border-color:rgba(255,170,68,.3);background:rgba(255,170,68,.08)}
+.pet-card-btn.buy:hover{background:rgba(255,170,68,.15);border-color:#fa4}
+.pet-card-btn.own{color:#4f4;border-color:rgba(68,255,68,.3);background:rgba(68,255,68,.08)}
+.pet-card-btn.own:hover{background:rgba(68,255,68,.15);border-color:#4f4}
+.pet-card.equipped{border-color:#4f4;background:rgba(68,255,68,.08)}
+#skill-tree-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:45;font-family:Arial;display:none;align-items:center;justify-content:center}
+#skill-tree-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8)}
+#skill-tree-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(100,255,100,.25);border-radius:14px;padding:28px 30px;max-width:560px;width:92%;text-align:center;box-shadow:0 0 60px rgba(100,255,100,.08)}
+#skill-tree-title{font-size:24px;font-weight:bold;color:#4f4;letter-spacing:6px;margin-bottom:16px;text-shadow:0 0 20px rgba(68,255,68,.2)}
+#skill-tree-class{font-size:16px;color:#fff;letter-spacing:2px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid rgba(255,255,255,.08)}
+#skill-tree-perks{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:8px}
+#skill-tree-perks .st-perk{background:linear-gradient(145deg,#1a2a1a,#122212);border:1px solid rgba(100,255,100,.2);border-radius:8px;padding:12px 14px;min-width:140px;flex:1;text-align:center}
+#skill-tree-perks .st-perk .st-p-icon{font-size:28px;margin-bottom:4px}
+#skill-tree-perks .st-perk .st-p-name{font-size:13px;font-weight:bold;color:#4f4;letter-spacing:1px}
+#skill-tree-perks .st-perk .st-p-desc{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+#skill-tree-perks .st-perk.st-active{border-color:#4f4;background:linear-gradient(145deg,#1a3a1a,#142814);box-shadow:0 0 15px rgba(68,255,68,.15)}
 #perk-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
 #perk-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75)}
 #perk-box{position:relative;background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:2px solid rgba(200,170,70,.3);border-radius:14px;padding:28px 30px;max-width:520px;width:92%;text-align:center;box-shadow:0 0 60px rgba(200,170,70,.1)}
@@ -454,9 +524,9 @@ body.mobile-mode #scope-overlay{display:none!important}
 .a-slot-gun{color:#8bf;font-size:14px;font-weight:bold}
 #armory-guns-title{color:#4af;font-size:12px;letter-spacing:6px;margin-bottom:12px;opacity:.5}
 #armory-guns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px}
-.a-gun-btn{padding:8px 20px;font-size:13px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.25);border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7}
+.a-gun-btn{padding:10px 24px;font-size:15px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.25);border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;opacity:.7}
 .a-gun-btn:hover{opacity:1;border-color:#4af;box-shadow:0 0 15px rgba(68,170,255,.3);transform:scale(1.05)}
-#armory-confirm{padding:10px 40px;font-size:16px;font-weight:bold;color:#000;background:#4af;border:none;border-radius:4px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;box-shadow:0 0 25px rgba(68,170,255,.3)}
+#armory-confirm{padding:12px 44px;font-size:18px;font-weight:bold;color:#000;background:#4af;border:none;border-radius:4px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;box-shadow:0 0 25px rgba(68,170,255,.3)}
 #armory-confirm:hover{box-shadow:0 0 40px rgba(68,170,255,.6);transform:scale(1.05)}
 #friend-btn{background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0;transition:all .3s}
 #friend-btn:hover{border-color:#4af;color:#4af;box-shadow:0 0 12px rgba(68,170,255,.2)}
@@ -471,18 +541,18 @@ body.mobile-mode #scope-overlay{display:none!important}
 #friend-list .f-item .f-name{font-weight:bold;color:#8bf}
 #friend-list .f-item .f-status{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px}
 #friend-actions{display:flex;gap:10px;width:100%}
-#friend-actions button{flex:1;padding:8px 0;font-size:13px;font-weight:bold;border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;border:1px solid}
+#friend-actions button{flex:1;padding:10px 0;font-size:15px;font-weight:bold;border-radius:4px;cursor:pointer;letter-spacing:3px;transition:all .3s;font-family:Arial;border:1px solid}
 #friend-tabs{display:flex;gap:6px;margin-bottom:12px;width:100%}
-#friend-tabs .f-tab{flex:1;padding:6px 0;font-size:12px;font-weight:bold;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .3s;font-family:Arial}
+#friend-tabs .f-tab{flex:1;padding:8px 0;font-size:14px;font-weight:bold;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .3s;font-family:Arial}
 #friend-tabs .f-tab.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.1)}
 #friend-tabs .f-tab:hover:not(.active){border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
 #f-req-badge{background:#f64;color:#fff;font-size:10px;border-radius:8px;padding:1px 6px;margin-left:3px}
 #friend-search-bar{display:flex;gap:6px;width:100%;margin-bottom:10px}
 #friend-search-input{flex:1;padding:8px 10px;border-radius:4px;border:1px solid rgba(68,170,255,.2);background:rgba(68,170,255,.06);color:#fff;font-size:13px;outline:none;font-family:Arial;box-sizing:border-box}
 #friend-search-input:focus{border-color:#4af}
-#friend-search-btn{padding:8px 14px;font-size:12px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
+#friend-search-btn{padding:10px 16px;font-size:14px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
 #friend-search-btn:hover{background:rgba(68,170,255,.1);border-color:#4af}
-#friend-list .f-item .f-btn{padding:4px 10px;font-size:11px;font-weight:bold;border-radius:3px;cursor:pointer;letter-spacing:1px;font-family:Arial;border:1px solid;transition:all .2s}
+#friend-list .f-item .f-btn{padding:6px 12px;font-size:13px;font-weight:bold;border-radius:3px;cursor:pointer;letter-spacing:1px;font-family:Arial;border:1px solid;transition:all .2s}
 #friend-list .f-item .f-add-btn{color:#4f4;border-color:rgba(68,255,68,.3);background:transparent}
 #friend-list .f-item .f-add-btn:hover{background:rgba(68,255,68,.1);border-color:#4f4}
 #friend-list .f-item .f-accept-btn{color:#4f4;border-color:rgba(68,255,68,.3);background:transparent}
@@ -512,7 +582,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #chat-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid rgba(68,170,255,.15)}
 #chat-input{flex:1;padding:8px 10px;border-radius:4px;border:1px solid rgba(68,170,255,.2);background:rgba(68,170,255,.06);color:#fff;font-size:13px;outline:none;font-family:Arial;box-sizing:border-box}
 #chat-input:focus{border-color:#4af}
-#chat-send-btn{padding:8px 16px;font-size:12px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
+#chat-send-btn{padding:10px 18px;font-size:14px;font-weight:bold;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial}
 #chat-send-btn:hover{background:rgba(68,170,255,.1);border-color:#4af}
 #slot-hud{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5;pointer-events:none;font-family:Arial}
 #slot-hud .sh-slot{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;transition:all .2s}
@@ -542,21 +612,21 @@ body.mobile-mode #scope-overlay{display:none!important}
 #map-select-box{position:relative;display:flex;flex-direction:column;align-items:center;z-index:1;overflow-y:auto;max-height:85vh;padding:20px 10px 30px;box-sizing:border-box;-webkit-overflow-scrolling:touch}
 #diff-select{position:fixed;top:0;left:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;z-index:20;font-family:Arial}#diff-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7)}
 #diff-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(0,255,100,.4);border-radius:12px;padding:30px;text-align:center;max-width:400px;width:90%;box-shadow:0 0 60px rgba(0,255,100,.15)}
-#diff-title{font-size:22px;font-weight:bold;color:#4f4;letter-spacing:4px;margin-bottom:6px;text-shadow:0 0 15px rgba(68,255,68,.3),0 0 30px rgba(68,255,68,.1)}
+#diff-title{font-size:24px;font-weight:bold;color:#4f4;letter-spacing:4px;margin-bottom:6px;text-shadow:0 0 15px rgba(68,255,68,.3),0 0 30px rgba(68,255,68,.1)}
 #diff-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px;text-shadow:0 0 6px rgba(255,255,255,.04)}
-.diff-option{padding:14px 20px;margin:8px 0;background:rgba(0,255,100,.06);border:1px solid rgba(0,255,100,.2);border-radius:8px;cursor:pointer;transition:all .2s;text-shadow:0 0 6px rgba(68,255,68,.05)}
+.diff-option{padding:16px 24px;margin:8px 0;background:rgba(0,255,100,.06);border:1px solid rgba(0,255,100,.2);border-radius:8px;cursor:pointer;transition:all .2s;text-shadow:0 0 6px rgba(68,255,68,.05)}
 .diff-option:hover{background:rgba(0,255,100,.15);border-color:rgba(0,255,100,.6);text-shadow:0 0 12px rgba(68,255,68,.3),0 0 25px rgba(68,255,68,.1)}
-.diff-name{font-size:18px;font-weight:bold;color:#4f4;letter-spacing:3px;text-shadow:0 0 10px rgba(68,255,68,.15)}
-.diff-desc{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px;letter-spacing:1px;text-shadow:0 0 4px rgba(255,255,255,.03)}
-#diff-back{padding:8px 30px;margin-top:16px;font-size:13px;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.03)}
+.diff-name{font-size:20px;font-weight:bold;color:#4f4;letter-spacing:3px;text-shadow:0 0 10px rgba(68,255,68,.15)}
+.diff-desc{font-size:13px;color:rgba(255,255,255,.35);margin-top:4px;letter-spacing:1px;text-shadow:0 0 4px rgba(255,255,255,.03)}
+#diff-back{padding:10px 34px;margin-top:16px;font-size:15px;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:2px;transition:all .3s;text-shadow:0 0 6px rgba(255,255,255,.03)}
 #diff-back:hover{color:#fff;border-color:rgba(255,255,255,.4);text-shadow:0 0 10px rgba(255,255,255,.2),0 0 25px rgba(255,255,255,.05);box-shadow:0 0 15px rgba(255,255,255,.06)}
 #diff-back:hover{color:#fff;border-color:rgba(255,255,255,.4)}
 
 #map-select-title{font-size:32px;font-weight:900;color:#fff;letter-spacing:8px;margin-bottom:30px;text-shadow:0 0 25px rgba(255,255,255,.3),0 0 50px rgba(255,255,255,.1),0 0 100px rgba(255,255,255,.03)}
-.map-option{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:20px 36px;margin-bottom:12px;cursor:pointer;transition:all .3s;min-width:280px}
+.map-option{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:22px 40px;margin-bottom:12px;cursor:pointer;transition:all .3s;min-width:300px}
 .map-option:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);transform:scale(1.04);box-shadow:0 0 25px rgba(255,255,255,.1)}
-.map-option .map-name{font-size:22px;font-weight:bold;color:#fff;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px rgba(255,255,255,.15),0 0 30px rgba(255,255,255,.04)}
-.map-option .map-desc{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;text-shadow:0 0 8px rgba(255,255,255,.05)}
+.map-option .map-name{font-size:24px;font-weight:bold;color:#fff;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px rgba(255,255,255,.15),0 0 30px rgba(255,255,255,.04)}
+.map-option .map-desc{font-size:15px;color:rgba(255,255,255,.4);letter-spacing:1px;text-shadow:0 0 8px rgba(255,255,255,.05)}
 #error{display:none}
 
 #level-enemy{position:relative;width:40px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -583,23 +653,23 @@ body.mobile-mode #scope-overlay{display:none!important}
 #settlement-progress{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin:16px 0 8px;overflow:hidden}
 #settlement-progress-fill{height:100%;background:linear-gradient(90deg,#f0d060,#ff8844);border-radius:3px;transition:width .8s ease-out}
 #settlement-level{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:2px;margin:8px 0 20px}
-#settlement-btn{padding:10px 40px;font-size:14px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px;transition:all .3s}
+#settlement-btn{padding:12px 44px;font-size:16px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px;transition:all .3s}
 #settlement-btn:hover{color:#000;background:#4af;border-color:#4af}
 </style>
 </head>
 <body>
 <div id="blocker">
   <div id="start-msg">點擊繼續<br><small>WASD = 移動 | Shift = 滑鏟 | Space = 跳躍 | 滑鼠 = 射擊 | 1-5 = 武器 | G = 勾爪 | R = 換彈 | ESC = 釋放滑鼠</small></div>
-  <button id="save-exit-btn" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);padding:10px 30px;font-size:14px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:3px;display:none">離開遊戲並儲存進度</button>
-  <button id="back-menu-btn" style="position:absolute;bottom:90px;left:50%;transform:translateX(-50%);padding:8px 24px;font-size:13px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:3px;display:none">回 選 單</button>
+  <button id="save-exit-btn" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);padding:12px 34px;font-size:16px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:3px;display:none">離開遊戲並儲存進度</button>
+  <button id="back-menu-btn" style="position:absolute;bottom:90px;left:50%;transform:translateX(-50%);padding:10px 28px;font-size:15px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.3);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:3px;display:none">回 選 單</button>
   <div id="error" style="display:none;color:#ff6"><div>Three.js 載入失敗。<br>執行 <b>setup.bat</b> 下載到本地，<br>或檢查網路連線。</div></div>
 </div>
 <div id="resume-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:4px;margin-bottom:20px">偵測到上一局紀錄</div>
   <div style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:30px">是否回到上一局對局？</div>
   <div style="display:flex;gap:20px">
-    <button id="resume-yes" style="padding:12px 40px;font-size:16px;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">要</button>
-    <button id="resume-no" style="padding:12px 40px;font-size:16px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">不要</button>
+    <button id="resume-yes" style="padding:14px 44px;font-size:18px;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">要</button>
+    <button id="resume-no" style="padding:14px 44px;font-size:18px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">不要</button>
   </div>
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
@@ -607,10 +677,10 @@ body.mobile-mode #scope-overlay{display:none!important}
   <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
-<div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
-<div id="menu"><div id="top-bar"><div id="logo">OCGAME</div><div id="top-nav"><button id="armory-btn" class="top-nav-btn">🔫 武器庫</button><button id="event-btn" class="top-nav-btn">🎏 活動</button><button id="season-btn" class="top-nav-btn">☢ 賽季</button><button id="rank-btn" class="top-nav-btn">🏆 排位</button></div><div id="player-info-bar"><span id="coin-display">🪙 特種幣 $<span id="menu-coins">0</span></span><span id="sp-display">⚡ SP：<span id="menu-sp-val">0</span></span><span id="level-display" style="font-size:11px;letter-spacing:1px">Lv.<strong id="level-num-menu">1</strong></span><span id="season-display" style="font-size:11px;letter-spacing:1px">S2</span><span id="level-nickname" style="display:none;font-size:12px;color:#f0d060;font-weight:bold;letter-spacing:2px;text-shadow:0 0 10px rgba(240,208,96,.3)"></span><span id="level-enemy" style="display:none"></span><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">🚪 登出</button><button id="friends-btn">👥</button></div></div><div id="loadout-strip"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="main-area"><div id="character-stage"><canvas id="menu-character-canvas"></canvas></div><div id="bottom-right"><button id="play-btn">開 始 遊 戲</button><button id="mode-btn">🎮 單人模式 <span class="mode-arrow">▶</span></button><div id="mode-dropdown"><button class="mode-opt selected" data-mode="solo">🎮 單人模式</button><button class="mode-opt" data-mode="multi2">👥 多人連線 (2人)</button><button class="mode-opt" data-mode="multi4">👥 多人連線 (4人)</button><button class="mode-opt" data-mode="daily">🔥 每日挑戰</button><button class="mode-opt" data-mode="bossrush">💀 Boss大戰</button></div></div></div><div id="bottom-bar"><button id="shop-btn" class="bottom-btn"><span class="ico">🏪</span><span class="lbl">軍火交易所</span></button><button id="skin-btn" class="bottom-btn"><span class="ico">🎨</span><span class="lbl">槍械</span></button><button id="charskin-btn" class="bottom-btn"><span class="ico">👤</span><span class="lbl">角色</span></button><button id="prof-btn" class="bottom-btn"><span class="ico">⭐</span><span class="lbl">熟練度</span></button><button id="skill-btn" class="bottom-btn"><span class="ico">🔮</span><span class="lbl">技能</span></button><button id="range-btn" class="bottom-btn"><span class="ico">🎯</span><span class="lbl">射擊訓練</span></button><button id="ach-btn" class="bottom-btn"><span class="ico">🏅</span><span class="lbl">成就</span></button><button id="lb-btn" class="bottom-btn"><span class="ico">📊</span><span class="lbl">排行榜</span></button></div><div style="display:none"><button id="gun-btn">🔧 改裝</button><button id="bossrush-btn">👹 Boss 大戰</button><button id="daily-btn">🔥 每日挑戰</button><button id="multi-btn">多人連線 (2人)</button><button id="multi4-btn">多人連線 (4人)</button></div><div id="season-frame" style="display:none"><span id="season-icon">💧</span><div id="season-info"><div id="season-name">S2 窒息</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none"><span>👥</span><span id="team-status-text">組隊中</span><div id="team-chars" style="display:flex;gap:4px;margin-left:8px"></div></div><div id="team-block-tip" style="display:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">🚫 無法組隊</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊狀態下無法進行此模式<br>請先解散隊伍</div></div><span id="menu-sp" style="display:none"></span><div id="daily-best" style="display:none"></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="team-block-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;background:rgba(0,0,0,.92);border:1px solid rgba(255,68,68,.4);border-radius:10px;padding:20px 30px;font-family:Arial;text-align:center;pointer-events:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">⚠ 無法遊玩</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊中無法進行此模式<br>請先離開隊伍</div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
-<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">🔫 武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:11px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:2px 8px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">🔫 AK-47</button><button class="a-gun-btn" data-gun="deagle">🔫 沙鷹</button><button class="a-gun-btn" data-gun="awp">🔫 AWP</button><button class="a-gun-btn" data-gun="shotgun">🔫 龍息霰彈</button><button class="a-gun-btn" data-gun="smg">🔫 衝鋒槍</button><button class="a-gun-btn" data-gun="knife">🔪 刀</button><button class="a-gun-btn" data-gun="grapple">🪝 勾爪槍</button><button class="a-gun-btn" data-gun="grenade_frag">💣 手雷</button><button class="a-gun-btn" data-gun="grenade_flashbang">💥 閃光彈</button><button class="a-gun-btn" data-gun="grenade_smoke">🌫 煙霧彈</button><button class="a-gun-btn" data-gun="grenade_incendiary">🔥 燃燒弹</button></div><button id="armory-confirm">確 認</button></div></div>
-<div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="team-info" style="display:none;width:100%;padding:6px 10px;margin-bottom:8px;background:rgba(68,255,170,.08);border:1px solid rgba(68,255,170,.2);border-radius:4px;font-size:12px;color:#4fa;letter-spacing:1px;box-sizing:border-box;text-align:center">👥 隊伍：<span id="team-members"></span> <button id="team-leave-btn" style="margin-left:6px;padding:2px 8px;font-size:10px;color:#f64;background:transparent;border:1px solid rgba(255,102,68,.3);border-radius:3px;cursor:pointer;font-family:Arial">離開</button></div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
+<div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:12px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:17px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
+<div id="menu"><div id="top-bar"><div id="logo">OCGAME</div><div id="top-nav"><button id="armory-btn" class="top-nav-btn">🔫 武器庫</button><button id="event-btn" class="top-nav-btn">🎏 活動</button><button id="season-btn" class="top-nav-btn">☢ 賽季</button><button id="rank-btn" class="top-nav-btn">🏆 排位</button></div><div id="player-info-bar"><span id="coin-display">🪙 特種幣 $<span id="menu-coins">0</span></span><span id="sp-display">⚡ SP：<span id="menu-sp-val">0</span></span><span id="level-display" style="font-size:11px;letter-spacing:1px">Lv.<strong id="level-num-menu">1</strong></span><span id="season-display" style="font-size:11px;letter-spacing:1px">S2</span><span id="level-nickname" style="display:none;font-size:12px;color:#f0d060;font-weight:bold;letter-spacing:2px;text-shadow:0 0 10px rgba(240,208,96,.3)"></span><span id="level-enemy" style="display:none"></span><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;padding:6px 10px;font-family:Arial;letter-spacing:1px;flex-shrink:0">🚪 登出</button><button id="friends-btn">👥</button></div></div><div id="loadout-strip"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="main-area"><div id="character-stage"><canvas id="menu-character-canvas"></canvas></div><div id="bottom-right"><button id="play-btn">開 始 遊 戲</button><button id="mode-btn">🎮 單人模式 <span class="mode-arrow">▶</span></button><div id="mode-dropdown"><button class="mode-opt selected" data-mode="solo">🎮 單人模式</button><button class="mode-opt" data-mode="multi2">👥 多人連線 (2人)</button><button class="mode-opt" data-mode="multi4">👥 多人連線 (4人)</button><button class="mode-opt" data-mode="daily">🔥 每日挑戰</button><button class="mode-opt" data-mode="bossrush">🎯 Boss大戰💀 Boss大戰</button><button class="mode-opt" data-mode="ufo2">🛸 UFO大戰 (2人)</button><button class="mode-opt" data-mode="ufo4">🛸 UFO大戰 (4人)</button></div></div></div><div id="bottom-bar"><button id="shop-btn" class="bottom-btn"><span class="ico">🏪</span><span class="lbl">軍火交易所</span></button><button id="skin-btn" class="bottom-btn"><span class="ico">🎨</span><span class="lbl">槍械</span></button><button id="charskin-btn" class="bottom-btn"><span class="ico">👤</span><span class="lbl">角色</span></button><button id="prof-btn" class="bottom-btn"><span class="ico">⭐</span><span class="lbl">熟練度</span></button><button id="daily-login-btn" class="bottom-btn"><span class="ico">📅</span><span class="lbl">每日登入</span></button><button id="pet-btn" class="bottom-btn"><span class="ico">🐾</span><span class="lbl">寵物商店</span></button><button id="skill-btn" class="bottom-btn"><span class="ico">🔮</span><span class="lbl">技能</span></button><button id="range-btn" class="bottom-btn"><span class="ico">🎯</span><span class="lbl">射擊訓練</span></button><button id="ach-btn" class="bottom-btn"><span class="ico">🏅</span><span class="lbl">成就</span></button><button id="lb-btn" class="bottom-btn"><span class="ico">📊</span><span class="lbl">排行榜</span></button></div><div style="display:none"><button id="gun-btn">🔧 改裝</button><button id="bossrush-btn">👹 Boss 大戰</button><button id="daily-btn">🔥 每日挑戰</button><button id="multi-btn">多人連線 (2人)</button><button id="multi4-btn">多人連線 (4人)</button></div><div id="season-frame" style="display:none"><span id="season-icon">💧</span><div id="season-info"><div id="season-name">S2 窒息</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none"><span>👥</span><span id="team-status-text">組隊中</span><div id="team-chars" style="display:flex;gap:4px;margin-left:8px"></div></div><div id="team-block-tip" style="display:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">🚫 無法組隊</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊狀態下無法進行此模式<br>請先解散隊伍</div></div><span id="menu-sp" style="display:none"></span><div id="daily-best" style="display:none"></div></div><div id="level-nickname" style="display:none;color:#f0d060;font-size:14px;font-weight:bold;letter-spacing:2px;font-family:Arial;text-shadow:0 0 10px rgba(240,208,96,.3);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><div><div id="level-num">1</div><div id="level-label">L E V E L</div></div><button id="logout-btn" style="display:none;background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);border-radius:4px;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;padding:4px 8px;font-family:Arial;letter-spacing:1px;flex-shrink:0">📤 登出</button><button id="friend-btn">👥</button></div><div id="season-frame"><div id="season-icon">☢</div><div id="season-info"><div id="season-name">S1 核動力</div><div id="season-timer">30 天</div></div></div><div id="team-status" style="display:none;position:absolute;top:140px;right:20px;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:6px;background:rgba(68,255,170,.1);border:1px solid rgba(68,255,170,.25);z-index:2;font-size:11px;color:#4fa;letter-spacing:1px;font-family:Arial"><span>👥</span><span id="team-status-text">組隊中</span></div><div id="team-block-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;background:rgba(0,0,0,.92);border:1px solid rgba(255,68,68,.4);border-radius:10px;padding:20px 30px;font-family:Arial;text-align:center;pointer-events:none"><div style="font-size:18px;color:#f44;margin-bottom:8px;letter-spacing:2px">⚠ 無法遊玩</div><div style="font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px">組隊中無法進行此模式<br>請先離開隊伍</div></div><div id="loadout-display"><div class="loadout-slot" data-slot="0"><span class="slot-num">1</span><span class="slot-gun">AK-47</span></div><div class="loadout-slot" data-slot="1"><span class="slot-num">2</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="2"><span class="slot-num">3</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="3"><span class="slot-num">4</span><span class="slot-gun">─</span></div><div class="loadout-slot" data-slot="4"><span class="slot-num">5</span><span class="slot-gun">─</span></div></div><div id="daily-best" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,200,100,.5);letter-spacing:2px;font-family:Arial;z-index:1"></div></div>
+<div id="armory" style="display:none"><div id="armory-bg"></div><div id="armory-box"><div id="armory-title">🔫 武 器 庫</div><div id="armory-slots"><div class="a-slot" data-slot="0"><div class="a-slot-label">插槽 1</div><div class="a-slot-gun" data-slot="0">AK-47</div><div class="slot-fl-btn" data-slot="0" style="margin-top:6px;font-size:13px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:4px 10px">🔦 綁定</div></div><div class="a-slot" data-slot="1"><div class="a-slot-label">插槽 2</div><div class="a-slot-gun" data-slot="1">─</div><div class="slot-fl-btn" data-slot="1" style="margin-top:6px;font-size:13px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:4px 10px">🔦 綁定</div></div><div class="a-slot" data-slot="2"><div class="a-slot-label">插槽 3</div><div class="a-slot-gun" data-slot="2">─</div><div class="slot-fl-btn" data-slot="2" style="margin-top:6px;font-size:13px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:4px 10px">🔦 綁定</div></div><div class="a-slot" data-slot="3"><div class="a-slot-label">插槽 4</div><div class="a-slot-gun" data-slot="3">─</div><div class="slot-fl-btn" data-slot="3" style="margin-top:6px;font-size:13px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:4px 10px">🔦 綁定</div></div><div class="a-slot" data-slot="4"><div class="a-slot-label">插槽 5</div><div class="a-slot-gun" data-slot="4">─</div><div class="slot-fl-btn" data-slot="4" style="margin-top:6px;font-size:13px;color:#884;cursor:pointer;letter-spacing:1px;border:1px solid #442;border-radius:3px;padding:4px 10px">🔦 綁定</div></div></div><div id="armory-guns-title">─ 倉 庫 ─</div><div id="armory-guns"><button class="a-gun-btn" data-gun="ak47">🔫 AK-47</button><button class="a-gun-btn" data-gun="deagle">🔫 沙鷹</button><button class="a-gun-btn" data-gun="awp">🔫 AWP</button><button class="a-gun-btn" data-gun="shotgun">🔫 龍息霰彈</button><button class="a-gun-btn" data-gun="smg">🔫 衝鋒槍</button><button class="a-gun-btn" data-gun="knife">🔪 刀</button><button class="a-gun-btn" data-gun="grapple">🪝 勾爪槍</button><button class="a-gun-btn" data-gun="grenade_frag">💣 手雷</button><button class="a-gun-btn" data-gun="grenade_flashbang">💥 閃光彈</button><button class="a-gun-btn" data-gun="grenade_smoke">🌫 煙霧彈</button><button class="a-gun-btn" data-gun="grenade_incendiary">🔥 燃燒弹</button></div><button id="armory-confirm">確 認</button></div></div>
+<div id="friend-panel"><div id="friend-bg"></div><div id="friend-box"><div id="friend-title">社 交</div><div id="team-info" style="display:none;width:100%;padding:6px 10px;margin-bottom:8px;background:rgba(68,255,170,.08);border:1px solid rgba(68,255,170,.2);border-radius:4px;font-size:12px;color:#4fa;letter-spacing:1px;box-sizing:border-box;text-align:center">👥 隊伍：<span id="team-members"></span> <button id="team-leave-btn" style="margin-left:6px;padding:4px 10px;font-size:12px;color:#f64;background:transparent;border:1px solid rgba(255,102,68,.3);border-radius:3px;cursor:pointer;font-family:Arial">離開</button></div><div id="friend-tabs"><button class="f-tab active" data-view="friends">好友</button><button class="f-tab" data-view="requests">請求 <span id="f-req-badge" style="display:none">0</span></button><button class="f-tab" data-view="blacklist">黑名單</button></div><div id="friend-search-bar" style="display:none"><input id="friend-search-input" placeholder="輸入好友名稱搜尋..." maxlength="12"><button id="friend-search-btn">搜尋</button></div><div id="friend-list"></div><div id="friend-actions"><button id="friend-add-btn">＋ 添加好友</button><button id="friend-ban-btn">🚫 黑名單</button></div></div></div>
 <div id="chat-panel"><div id="chat-bg"></div><div id="chat-box"><div id="chat-header"><span id="chat-friend-name">好友</span><button id="chat-close">✕</button></div><div id="chat-messages"></div><div id="chat-input-row"><input id="chat-input" placeholder="輸入訊息..." maxlength="500"><button id="chat-send-btn">發送</button></div></div></div>
 <div id="multi-connecting" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
   <div style="font-size:28px;color:#4af;letter-spacing:6px;margin-bottom:10px">正 在 配 對</div>
@@ -619,7 +689,7 @@ body.mobile-mode #scope-overlay{display:none!important}
     <label style="color:rgba(255,255,255,.25);font-size:11px;letter-spacing:2px;margin-bottom:4px">伺 服 器 位 址</label>
     <input id="server-ip" value="localhost" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 12px;border-radius:4px;text-align:center;font-size:14px;width:200px;font-family:Arial;outline:none">
   </div>
-  <div style="font-size:12px;color:rgba(255,255,255,.2);letter-spacing:2px;cursor:pointer" id="multi-cancel">取 消</div>
+  <div style="font-size:14px;color:rgba(255,255,255,.2);letter-spacing:2px;cursor:pointer" id="multi-cancel">取 消</div>
 </div>
 <div id="scope-overlay"><div id="scope-ring"></div><div id="scope-cross"></div><div id="scope-dots"></div></div>
 <div id="slot-hud"></div>
@@ -638,12 +708,15 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="skin-overlay"><div id="skin-bg"></div><div id="skin-box"><div id="skin-close">✕</div><div id="skin-title">皮 膚</div><div id="skin-preview-wrap"><canvas id="skin-canvas"></canvas><div id="skin-preview-hint">⇄ 拖曳旋轉</div></div><div id="skin-part-picker"></div><div id="skin-color-grid"></div><div id="skin-gun-tabs"></div><div id="skin-list"></div></div></div>
 <div id="prof-overlay"><div id="prof-bg"></div><div id="prof-box"><div id="prof-close">✕</div><div id="prof-title">⭐ 武 器 熟 練 度</div><div id="prof-list"></div></div></div>
 <div id="season-overlay"><div id="season-bg"></div><div id="season-box"><div id="season-close">✕</div><div id="season-banner"><div class="sb-corner"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="10" fill="#4f4" opacity=".6"/><circle cx="30" cy="30" r="4" fill="#0a0"/><path d="M30,2 L38,22 L58,22 L42,34 L48,54 L30,44 L12,54 L18,34 L2,22 L22,22 Z" fill="none" stroke="#4f4" stroke-width="1.5" opacity=".3"/></svg></div><div class="sb-corner sb-skull"><svg viewBox="0 0 60 60"><circle cx="30" cy="28" r="16" fill="#fff" opacity=".1"/><circle cx="22" cy="26" r="3" fill="#4f4" opacity=".6"/><circle cx="38" cy="26" r="3" fill="#4f4" opacity=".6"/><path d="M18,36 Q30,44 42,36" fill="none" stroke="#4f4" stroke-width="2" opacity=".5"/><rect x="25" y="42" width="10" height="8" rx="2" fill="#4f4" opacity=".3"/></svg></div><div class="sb-title-row"><div class="sb-badge">S1 核動力</div><div class="sb-title">賽 季 任 務</div><div class="sb-sub">S E A S O N  1  •  N U C L E A R</div></div></div><div id="season-body"><div id="season-countdown"></div><div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px"><div class="seasontab active" id="stab-daily">📅 每日</div><div class="seasontab" id="stab-weekly">📆 每週</div></div><div id="season-quests"></div><div id="season-sp"><span id="ssp-display">SP 0</span></div></div></div></div>
-<div id="perk-overlay"><div id="perk-bg"></div><div id="perk-box"><div id="perk-title">🎴 選擇強化</div><div id="perk-cards"></div></div></div>
+  <div id="skill-tree-overlay"><div id="skill-tree-bg"></div><div id="skill-tree-box"><div id="skill-tree-title">🌳 技 能 樹</div><div id="skill-tree-class"></div><div id="skill-tree-perks"></div><button id="skill-tree-close" style="margin-top:16px;padding:10px 32px;font-size:15px;color:rgba(255,255,255,.4);background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial">關 閉</button></div></div>
+  <div id="daily-login-overlay"><div id="daily-login-bg"></div><div id="daily-login-box"><span id="daily-login-close" style="position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;z-index:1">✕</span><div id="daily-login-title">📅 每 日 登 入</div><div id="daily-login-streak"></div><div id="daily-login-grid"></div><button id="daily-login-claim" style="display:none">領 取</button></div></div>
+  <div id="pet-shop"><div id="pet-shop-bg"></div><div id="pet-shop-box"><span id="pet-shop-close" style="position:absolute;top:12px;right:16px;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;z-index:1">✕</span><div id="pet-shop-title">🐾 寵 物 商 店</div><div id="pet-shop-coins"></div><div id="pet-list"></div></div></div>
+  <div id="perk-overlay"><div id="perk-bg"></div><div id="perk-box"><div id="perk-title">🎴 選擇強化</div><div id="perk-cards"></div></div></div>
 <div id="hud"><div><div id="hp-fill"></div><span id="hp-txt">100</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">血量</span></div><div><div id="armor-fill"></div><span id="armor-txt">0</span><span style="position:absolute;left:6px;top:0;color:#fff;font-size:13px;line-height:20px;font-family:monospace">護甲</span></div></div>
 <div id="session-sp" style="position:fixed;top:162px;right:12px;z-index:5;pointer-events:none;font-size:13px;font-weight:bold;color:#ffd;letter-spacing:1px;font-family:Arial;text-shadow:0 0 10px rgba(255,255,200,.2);display:none">SP +<span id="session-sp-val">0</span></div>
 <div id="skill-cd" style="position:fixed;bottom:150px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:Arial;font-size:13px;font-weight:bold;color:#f0d060;letter-spacing:2px;text-shadow:0 0 10px rgba(240,208,96,.5);display:none">F 技能</div>
 <canvas id="minimap" width="140" height="140" style="position:fixed;top:12px;right:12px;width:140px;height:140px;z-index:5;border-radius:6px;border:2px solid rgba(200,170,70,.35);box-shadow:0 0 20px rgba(0,0,0,.6);pointer-events:none;display:none"></canvas>
-<div id="unlock-dialog" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;align-items:center;justify-content:center;font-family:Arial"><div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6)" id="unlock-bg"></div><div style="position:relative;background:linear-gradient(135deg,#1a1220,#0a0810);border:2px solid rgba(170,136,255,.3);border-radius:12px;padding:24px 32px;text-align:center;max-width:300px;box-shadow:0 0 60px rgba(170,136,255,.15)"><div style="font-size:16px;font-weight:bold;color:#a8f;letter-spacing:2px;margin-bottom:6px">🔓 解鎖顏色</div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;letter-spacing:1px">花費 <span style="color:#ffd;font-weight:bold">5 SP</span> 解鎖此顏色？</div><div style="display:flex;gap:12px;justify-content:center"><button id="unlock-confirm" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:#a8f;background:rgba(170,136,255,.12);border:1px solid rgba(170,136,255,.4);cursor:pointer;letter-spacing:2px;transition:all .2s">✓ 解鎖</button><button id="unlock-cancel" style="padding:7px 20px;border-radius:5px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);cursor:pointer;letter-spacing:2px">✕ 取消</button></div></div></div>
+<div id="unlock-dialog" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;align-items:center;justify-content:center;font-family:Arial"><div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6)" id="unlock-bg"></div><div style="position:relative;background:linear-gradient(135deg,#1a1220,#0a0810);border:2px solid rgba(170,136,255,.3);border-radius:12px;padding:24px 32px;text-align:center;max-width:300px;box-shadow:0 0 60px rgba(170,136,255,.15)"><div style="font-size:16px;font-weight:bold;color:#a8f;letter-spacing:2px;margin-bottom:6px">🔓 解鎖顏色</div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;letter-spacing:1px">花費 <span style="color:#ffd;font-weight:bold">5 SP</span> 解鎖此顏色？</div><div style="display:flex;gap:12px;justify-content:center"><button id="unlock-confirm" style="padding:9px 24px;border-radius:5px;font-size:15px;font-weight:bold;color:#a8f;background:rgba(170,136,255,.12);border:1px solid rgba(170,136,255,.4);cursor:pointer;letter-spacing:2px;transition:all .2s">✓ 解鎖</button><button id="unlock-cancel" style="padding:9px 24px;border-radius:5px;font-size:15px;font-weight:bold;color:rgba(255,255,255,.3);background:transparent;border:1px solid rgba(255,255,255,.1);cursor:pointer;letter-spacing:2px">✕ 取消</button></div></div></div>
 <div id="killfeed"></div>
 <div id="mobile-controls"><div id="joystick-zone"><div id="joystick-knob"></div></div><button id="mobile-shoot-btn"><svg viewBox="0 0 100 80"><rect x="18" y="32" width="55" height="18" rx="3" fill="#fff"/><rect x="10" y="28" width="12" height="26" rx="3" fill="#fff"/><rect x="55" y="18" width="8" height="14" rx="1" fill="#fff"/><rect x="55" y="50" width="8" height="14" rx="1" fill="#fff"/><path d="M30,26 L30,56" stroke="#222" stroke-width="2"/><rect x="20" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="44" y="56" width="14" height="20" rx="4" fill="#fff"/><rect x="33" y="40" width="12" height="4" rx="2" fill="#222"/></svg></button><button id="mobile-jump-btn">跳</button><button id="mobile-slide-btn">滑</button><button id="mobile-reload-btn">換</button><button id="mobile-aim-btn">準</button><button id="mobile-skill-btn">技</button></div><div id="mobile-slots"></div>
 <div id="rotate-device"><svg viewBox="0 0 120 120"><path d="M60,10 L60,50 M50,40 L60,50 L70,40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="80" rx="6" fill="none" stroke="#fff" stroke-width="4"/><rect x="35" y="25" width="50" height="60" rx="4" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"/><line x1="50" y1="90" x2="70" y2="90" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><div>請旋轉手機</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Please rotate your device to landscape</div></div>
@@ -664,7 +737,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="boss-hp-wrap"><div id="boss-label">☠ 核子特攻</div><div id="boss-hp-bar"><div id="boss-hp-fill"></div></div></div>
 <div id="awp-block"></div>
 <div id="range-hud" style="display:none;position:fixed;top:12px;right:12px;z-index:7;pointer-events:none;font-family:Arial;text-align:right"><div id="range-score" style="font-size:36px;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(255,255,255,.2);letter-spacing:2px">0</div><div id="range-stat" style="font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:2px">命中 0 / 0 發</div><div id="range-timer" style="font-size:15px;color:rgba(255,255,255,.2);letter-spacing:1px;margin-top:2px"></div></div>
-<button id="range-exit" style="display:none;position:fixed;top:12px;left:12px;z-index:10;padding:6px 16px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.6);background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial">✕ 離開靶場</button>
+<button id="range-exit" style="display:none;position:fixed;top:12px;left:12px;z-index:10;padding:8px 20px;font-size:15px;font-weight:bold;color:rgba(255,255,255,.6);background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial">✕ 離開靶場</button>
 <div id="ach-panel"><div id="ach-bg"></div><div id="ach-box"><div id="ach-header"><span>🏅 成 就</span><button id="ach-close">✕</button></div><div id="ach-list"></div></div></div>
 <div id="ach-popup"></div>
 <div id="multi-death-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
@@ -707,7 +780,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="lb-title" style="font-size:22px;font-weight:900;color:#88ccff;letter-spacing:6px;margin-bottom:16px;text-shadow:0 0 15px rgba(136,204,255,.3)">📊 排 行 榜</div>
 <div id="lb-sub" style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px">Boss 大戰   最高波數排行</div>
 <div id="lb-list" style="width:100%;overflow-y:auto;flex:1;min-height:160px"></div>
-<button id="lb-close-btn" style="margin-top:14px;padding:8px 36px;font-size:14px;font-weight:bold;color:#88ccff;background:transparent;border:1px solid rgba(136,204,255,.3);border-radius:4px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial" onmouseover="this.style.color='#000';this.style.background='#88ccff'" onmouseout="this.style.color='#88ccff';this.style.background='transparent'">關 閉</button>
+<button id="lb-close-btn" style="margin-top:14px;padding:10px 40px;font-size:16px;font-weight:bold;color:#88ccff;background:transparent;border:1px solid rgba(136,204,255,.3);border-radius:4px;cursor:pointer;letter-spacing:4px;transition:all .3s;font-family:Arial" onmouseover="this.style.color='#000';this.style.background='#88ccff'" onmouseout="this.style.color='#88ccff';this.style.background='transparent'">關 閉</button>
 </div>
 </div>
 <script>
@@ -782,18 +855,29 @@ function switchFriendTab(view){
   if(tab)tab.classList.add('active');
   document.getElementById('friend-search-bar').style.display='none';
 }
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function disposeMesh(m){if(!m)return;if(m.geometry)m.geometry.dispose();if(m.material){if(Array.isArray(m.material))m.material.forEach(function(mt){mt.dispose();});else m.material.dispose();}if(m.children)m.children.forEach(function(c){disposeMesh(c);});try{m.parent&&m.parent.remove(m)}catch(e){}}
 function fetchFriendList(){
   var list=document.getElementById('friend-list');
   list.innerHTML='<div class="f-empty">載入中...</div>';
   authFetch('/api/friends/list').then(function(d){
-    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(d.error){list.innerHTML='<div class="f-empty">'+escH(d.error)+'</div>';return;}
     if(!d.friends||!d.friends.length){list.innerHTML='<div class="f-empty">暫無好友</div>';return;}
     list.innerHTML='';
     d.friends.forEach(function(f){
       var item=document.createElement('div');item.className='f-item';
       var isOnline=f.online?'🟢':'⚫';
-      var teamBtn=f.online?'<button class="f-btn f-add-btn f-team-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">組隊</button>':'<span style="color:rgba(255,255,255,.15);font-size:11px;margin-right:4px">離線</span>';
-      item.innerHTML='<span class="f-name">'+isOnline+' '+f.nickname+'</span><div>'+teamBtn+'<button class="f-btn f-add-btn f-chat-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">💬</button><button class="f-btn f-remove-btn" data-user="'+f.username+'" style="margin-right:4px">移除</button><button class="f-btn f-reject-btn" data-user="'+f.username+'">封鎖</button></div>';
+      var nameSpan=document.createElement('span');nameSpan.className='f-name';nameSpan.textContent=isOnline+' '+f.nickname;
+      var btnDiv=document.createElement('div');
+      if(f.online){
+        var tBtn=document.createElement('button');tBtn.className='f-btn f-add-btn f-team-btn';tBtn.style.marginRight='4px';tBtn.setAttribute('data-user',f.username);tBtn.setAttribute('data-nick',f.nickname);tBtn.textContent='組隊';btnDiv.appendChild(tBtn);
+      }else{
+        var offSpan=document.createElement('span');offSpan.style.cssText='color:rgba(255,255,255,.15);font-size:11px;margin-right:4px';offSpan.textContent='離線';btnDiv.appendChild(offSpan);
+      }
+      var cBtn=document.createElement('button');cBtn.className='f-btn f-add-btn f-chat-btn';cBtn.style.marginRight='4px';cBtn.setAttribute('data-user',f.username);cBtn.setAttribute('data-nick',f.nickname);cBtn.textContent='💬';btnDiv.appendChild(cBtn);
+      var rBtn=document.createElement('button');rBtn.className='f-btn f-remove-btn';rBtn.style.marginRight='4px';rBtn.setAttribute('data-user',f.username);rBtn.textContent='移除';btnDiv.appendChild(rBtn);
+      var bBtn=document.createElement('button');bBtn.className='f-btn f-reject-btn';bBtn.setAttribute('data-user',f.username);bBtn.textContent='封鎖';btnDiv.appendChild(bBtn);
+      item.appendChild(nameSpan);item.appendChild(btnDiv);
       list.appendChild(item);
     });
     list.querySelectorAll('.f-chat-btn').forEach(function(el){
@@ -834,25 +918,33 @@ function fetchFriendRequests(){
   var list=document.getElementById('friend-list');
   list.innerHTML='<div class="f-empty">載入中...</div>';
   authFetch('/api/friends/requests').then(function(d){
-    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(d.error){list.innerHTML='<div class="f-empty">'+escH(d.error)+'</div>';return;}
     var total=(d.incoming?d.incoming.length:0)+(d.outgoing?d.outgoing.length:0);
     var badge=document.getElementById('f-req-badge');
     if(total>0){badge.textContent=total;badge.style.display='inline';}else{badge.style.display='none';}
-    var html='';
+    list.innerHTML='';
     if(d.incoming&&d.incoming.length){
-      html+='<div style="color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px">收到的邀請</div>';
+      var hdr=document.createElement('div');hdr.style.cssText='color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px';hdr.textContent='收到的邀請';list.appendChild(hdr);
       d.incoming.forEach(function(f){
-        html+='<div class="f-item"><span class="f-name">'+f.nickname+'</span><div><button class="f-btn f-add-btn f-chat-btn" data-user="'+f.username+'" data-nick="'+f.nickname+'" style="margin-right:4px">💬</button><button class="f-btn f-accept-btn" data-user="'+f.username+'">接受</button><button class="f-btn f-reject-btn" data-user="'+f.username+'">拒絕</button></div></div>';
+        var item=document.createElement('div');item.className='f-item';
+        var ns=document.createElement('span');ns.className='f-name';ns.textContent=f.nickname;item.appendChild(ns);
+        var g=document.createElement('div');
+        var cb=document.createElement('button');cb.className='f-btn f-add-btn f-chat-btn';cb.style.marginRight='4px';cb.setAttribute('data-user',f.username);cb.setAttribute('data-nick',f.nickname);cb.textContent='💬';g.appendChild(cb);
+        var ab=document.createElement('button');ab.className='f-btn f-accept-btn';ab.setAttribute('data-user',f.username);ab.textContent='接受';g.appendChild(ab);
+        var rb=document.createElement('button');rb.className='f-btn f-reject-btn';rb.setAttribute('data-user',f.username);rb.textContent='拒絕';g.appendChild(rb);
+        item.appendChild(g);list.appendChild(item);
       });
     }
     if(d.outgoing&&d.outgoing.length){
-      html+='<div style="color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px">已發送的邀請</div>';
+      var hdr2=document.createElement('div');hdr2.style.cssText='color:#667;font-size:11px;letter-spacing:2px;padding:6px 10px';hdr2.textContent='已發送的邀請';list.appendChild(hdr2);
       d.outgoing.forEach(function(f){
-        html+='<div class="f-item"><span class="f-name">'+f.nickname+'</span><span class="f-status">等待中</span></div>';
+        var item2=document.createElement('div');item2.className='f-item';
+        var ns2=document.createElement('span');ns2.className='f-name';ns2.textContent=f.nickname;item2.appendChild(ns2);
+        var st=document.createElement('span');st.className='f-status';st.textContent='等待中';item2.appendChild(st);
+        list.appendChild(item2);
       });
     }
-    if(!html)html='<div class="f-empty">暫無請求</div>';
-    list.innerHTML=html;
+    if(!list.childNodes.length)list.innerHTML='<div class="f-empty">暫無請求</div>';
     list.querySelectorAll('.f-chat-btn').forEach(function(el){
       el.onclick=function(){openChat(this.dataset.user,this.dataset.nick);};
     });
@@ -872,12 +964,13 @@ function fetchBlacklist(){
   var list=document.getElementById('friend-list');
   list.innerHTML='<div class="f-empty">載入中...</div>';
   authFetch('/api/friends/blacklist').then(function(d){
-    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(d.error){list.innerHTML='<div class="f-empty">'+escH(d.error)+'</div>';return;}
     if(!d.blacklist||!d.blacklist.length){list.innerHTML='<div class="f-empty">黑名單為空</div>';return;}
     list.innerHTML='';
     d.blacklist.forEach(function(f){
       var item=document.createElement('div');item.className='f-item';
-      item.innerHTML='<span class="f-name">'+f.nickname+'</span><button class="f-btn f-unban-btn" data-user="'+f.username+'">解除封鎖</button>';
+      var ns=document.createElement('span');ns.className='f-name';ns.textContent=f.nickname;item.appendChild(ns);
+      var ub=document.createElement('button');ub.className='f-btn f-unban-btn';ub.setAttribute('data-user',f.username);ub.textContent='解除封鎖';item.appendChild(ub);
       list.appendChild(item);
     });
     list.querySelectorAll('.f-unban-btn').forEach(function(b){
@@ -891,7 +984,7 @@ function searchUsers(q){
   var list=document.getElementById('friend-list');
   list.innerHTML='<div class="f-empty">搜尋中...</div>';
   authFetch('/api/users/search?q='+encodeURIComponent(q)).then(function(d){
-    if(d.error){list.innerHTML='<div class="f-empty">'+d.error+'</div>';return;}
+    if(d.error){list.innerHTML='<div class="f-empty">'+escH(d.error)+'</div>';return;}
     if(!d.users||!d.users.length){list.innerHTML='<div class="f-empty">找不到符合的玩家</div>';return;}
     list.innerHTML='';
     d.users.forEach(function(u){
@@ -901,10 +994,11 @@ function searchUsers(q){
       else if(u.status==='blocked')btnText='已封鎖';
       else if(u.status==='friend')btnText='已是好友';
       var disabled=(u.status==='pending'||u.status==='blocked'||u.status==='friend')?'disabled':'';
-      var blockBtn='';
-      if(u.status!=='blocked')blockBtn='<button class="f-btn f-reject-btn f-block-btn" data-user="'+u.username+'">封鎖</button>';
-      item.innerHTML='<span class="f-name">'+u.nickname+'</span><div><button class="f-btn f-add-btn" data-user="'+u.username+'" '+disabled+'>'+btnText+'</button>'+blockBtn+'</div>';
-      list.appendChild(item);
+      var ns=document.createElement('span');ns.className='f-name';ns.textContent=u.nickname;item.appendChild(ns);
+      var g=document.createElement('div');
+      var ab=document.createElement('button');ab.className='f-btn f-add-btn';ab.setAttribute('data-user',u.username);if(disabled)ab.disabled=true;ab.textContent=btnText;g.appendChild(ab);
+      if(u.status!=='blocked'){var bb=document.createElement('button');bb.className='f-btn f-reject-btn f-block-btn';bb.setAttribute('data-user',u.username);bb.textContent='封鎖';g.appendChild(bb);}
+      item.appendChild(g);list.appendChild(item);
     });
     list.querySelectorAll('.f-block-btn').forEach(function(b){
       b.onclick=function(){
@@ -952,10 +1046,10 @@ if(authToken){
 // Online presence heartbeat + team polling
 if(authToken){
   authFetch('/api/team/ping',{method:'POST',body:{}}).catch(function(){});
-  setInterval(function(){
+  window._teamPingInt=setInterval(function(){
     authFetch('/api/team/ping',{method:'POST',body:{}}).catch(function(){});
   },15000);
-  setInterval(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},5000);
+  window._teamStatusInt=setInterval(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},5000);
   setTimeout(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},100);
 }
 function bootGame() {
@@ -986,6 +1080,7 @@ var scene = new THREE.Scene();
 var currentMap='base';
 var gameDifficulty='normal';
 var diffMult=1;
+var ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoProjectiles=[];
 var rangeMode=false,rangeScore=0,rangeShots=0,rangeHits=0,rangeTime=0,rangeTargets=[],rangeDrones=[],rangeWalkwayTarget=null,rangeWalkwayDir=1,rangeWalkwayPos=2;
 updateLevelDisplay();
 (function(){try{
@@ -1011,8 +1106,20 @@ applyCharSkin(grp);
 window._menuCharScene.add(grp);
 window._menuCharMain=grp;
 window._menuCharTeammates=[];
+window._menuCharPet=null;
+window._menuCharPetType=null;
+window.updateMenuPet=function(){
+  var pt=null;try{pt=localStorage.getItem('oc_pet_equip');}catch(e){}
+  if(pt===window._menuCharPetType&&window._menuCharPet)return;
+  if(window._menuCharPet){window._menuCharScene.remove(window._menuCharPet);disposeMesh(window._menuCharPet);window._menuCharPet=null;}
+  window._menuCharPetType=pt;
+  if(pt){
+    var pm=createPetMesh(pt);pm.scale.set(1.2,1.2,1.2);pm.position.set(1.0,0.35,0);window._menuCharScene.add(pm);window._menuCharPet=pm;
+  }
+}
+updateMenuPet();
 var mt=0;
-(function anim(){requestAnimationFrame(anim);mt+=0.016;grp.rotation.y=mt*0.4;grp.position.y=0.35+Math.sin(mt*1.5)*0.015;if(grp.userData.visor)grp.userData.visor.material.emissiveIntensity=0.2+0.15*Math.sin(mt*2);window._menuCharTeammates.forEach(function(t){if(t.mesh){t.mesh.rotation.y=mt*0.4+1;t.mesh.position.y=0.35+Math.sin(mt*1.5+1)*0.015;}if(t.tag&&window._menuCharCam){var p=new THREE.Vector3().copy(t.mesh.position);p.y+=1.4;p.project(window._menuCharCam);var r=parent.getBoundingClientRect();t.tag.style.left=((p.x*0.5+0.5)*r.width)+'px';t.tag.style.top=((-p.y*0.5+0.5)*r.height)+'px';}});ren.render(window._menuCharScene,cam);})();
+(function anim(){requestAnimationFrame(anim);mt+=0.016;grp.rotation.y=mt*0.4;grp.position.y=0.35+Math.sin(mt*1.5)*0.015;if(grp.userData.visor)grp.userData.visor.material.emissiveIntensity=0.2+0.15*Math.sin(mt*2);window._menuCharTeammates.forEach(function(t){if(t.mesh){t.mesh.rotation.y=mt*0.4+1;t.mesh.position.y=0.35+Math.sin(mt*1.5+1)*0.015;}if(t.tag&&window._menuCharCam){var p=new THREE.Vector3().copy(t.mesh.position);p.y+=1.4;p.project(window._menuCharCam);var r=parent.getBoundingClientRect();t.tag.style.left=((p.x*0.5+0.5)*r.width)+'px';t.tag.style.top=((-p.y*0.5+0.5)*r.height)+'px';}});if(window._menuCharPet){window._menuCharPet.rotation.y=mt*0.4;window._menuCharPet.position.y=0.35+Math.sin(mt*1.5+0.5)*0.015;window._menuCharPet.position.x=1.0+Math.sin(mt*0.5)*0.05;}ren.render(window._menuCharScene,cam);})();
 new ResizeObserver(function(){var r=parent.getBoundingClientRect();canvas.width=r.width*devicePixelRatio;canvas.height=r.height*devicePixelRatio;canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ren.setSize(r.width,r.height);cam.aspect=r.width/r.height;cam.updateProjectionMatrix();}).observe(parent);
 }catch(e){console.log('menu char:',e);}})();
 // Sky gradient
@@ -1074,17 +1181,17 @@ function addBox(p,s,c,shadows){
   scene.add(mesh);
   mapBoxes.push({pos:p.clone(),size:s.clone(),mesh:mesh});
 }
-addBox(new THREE.Vector3(0,-0.1,0),new THREE.Vector3(30,0.2,30),0x333333);
+addBox(new THREE.Vector3(0,-0.1,0),new THREE.Vector3(30,0.2,30),0x333333);mapBoxes[mapBoxes.length-1].isPermanent=true;
 var bw=1.0,bh=4,bc=0x4a4a55;
-addBox(new THREE.Vector3(0,bh/2,-15),new THREE.Vector3(30,bh,bw),bc);
-addBox(new THREE.Vector3(0,bh/2,15),new THREE.Vector3(30,bh,bw),bc);
-addBox(new THREE.Vector3(-15,bh/2,0),new THREE.Vector3(bw,bh,30),bc);
-addBox(new THREE.Vector3(15,bh/2,0),new THREE.Vector3(bw,bh,30),bc);
+addBox(new THREE.Vector3(0,bh/2,-15),new THREE.Vector3(30,bh,bw),bc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(0,bh/2,15),new THREE.Vector3(30,bh,bw),bc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(-15,bh/2,0),new THREE.Vector3(bw,bh,30),bc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(15,bh/2,0),new THREE.Vector3(bw,bh,30),bc);mapBoxes[mapBoxes.length-1].isPermanent=true;
 // Thickened corners
-var cc=0x556677;addBox(new THREE.Vector3(15,bh/2,-15),new THREE.Vector3(1.5,bh,1.5),cc);
-addBox(new THREE.Vector3(15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);
-addBox(new THREE.Vector3(-15,bh/2,-15),new THREE.Vector3(1.5,bh,1.5),cc);
-addBox(new THREE.Vector3(-15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);
+var cc=0x556677;addBox(new THREE.Vector3(15,bh/2,-15),new THREE.Vector3(1.5,bh,1.5),cc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(-15,bh/2,-15),new THREE.Vector3(1.5,bh,1.5),cc);mapBoxes[mapBoxes.length-1].isPermanent=true;
+addBox(new THREE.Vector3(-15,bh/2,15),new THREE.Vector3(1.5,bh,1.5),cc);mapBoxes[mapBoxes.length-1].isPermanent=true;
 var centerStruct=[];
 addBox(new THREE.Vector3(0,0.75,0),new THREE.Vector3(5,1.5,5),0x8899aa);centerStruct.push(mapBoxes[mapBoxes.length-1]);
 addBox(new THREE.Vector3(0,1.55,0),new THREE.Vector3(3.5,0.8,3.5),0x9999aa);centerStruct.push(mapBoxes[mapBoxes.length-1]);
@@ -2469,6 +2576,107 @@ document.getElementById('gun-close').onclick=function(){document.getElementById(
 document.getElementById('gun-bg').onclick=function(){document.getElementById('gun-overlay').style.display='none';document.getElementById('menu').style.display='flex';document.querySelectorAll('.loadout-slot').forEach(function(s,i){s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';});};
 document.getElementById('charskin-btn').onclick=function(){skinMode='char';openSkinPanel();};
 document.getElementById('prof-btn').onclick=function(){openProficiencyPanel();};
+document.getElementById('skill-btn').onclick=function(){
+  document.getElementById('menu').style.display='none';
+  var el=document.getElementById('skill-tree-class');var html='';
+  if(playerClass){var cData=null;for(var i=0;i<classData.length;i++){if(classData[i].id===playerClass){cData=classData[i];break;}}if(cData)html='<div style="font-size:13px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:4px">目前職業</div><div style="font-size:22px">'+cData.icon+'</div><div style="font-size:18px;font-weight:bold;color:#4f4;letter-spacing:2px;margin:4px 0">'+cData.name+'</div><div style="font-size:12px;color:rgba(255,255,255,.5)">'+cData.passive+'</div>';}else{html='<div style="font-size:16px;color:rgba(255,255,255,.3);letter-spacing:2px">尚未選擇職業</div><div style="font-size:12px;color:rgba(255,255,255,.2);margin-top:4px">請先開始遊戲以選擇職業</div>';}
+  el.innerHTML=html;
+  var pkEl=document.getElementById('skill-tree-perks');pkEl.innerHTML='';
+  if(playerClass){var cData2=null;for(var i=0;i<classData.length;i++){if(classData[i].id===playerClass){cData2=classData[i];break;}}if(cData2){cData2.perks.forEach(function(pid){var pl=classPerkLabels[pid]||pid;var parts=pl.split(' ');var pIcon=parts[0]||'';var pName=parts.slice(1).join(' ')||pid;var pDesc=perkPool.filter(function(p){return p.id===pid;})[0];var active=playerPerks.indexOf(pid)>=0;var d=document.createElement('div');d.className='st-perk'+(active?' st-active':'');d.innerHTML='<div class="st-p-icon">'+pIcon+'</div><div class="st-p-name">'+pName+'</div><div class="st-p-desc">'+(pDesc?pDesc.desc:'')+'</div>';pkEl.appendChild(d);});}}
+  document.getElementById('skill-tree-overlay').style.display='flex';
+};
+document.getElementById('skill-tree-close').onclick=function(){document.getElementById('skill-tree-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
+document.getElementById('skill-tree-bg').onclick=function(){document.getElementById('skill-tree-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
+var petShopData=[
+  {id:'mech_dog',name:'機械犬',icon:'🐕',desc:'自動拾取半徑 6m 內的補給品',price:5000,color:0x888888},
+  {id:'ghost_orb',name:'幽靈球',icon:'👻',desc:'標記半徑 15m 內的隱藏敵人',price:8000,color:0x4488ff},
+  {id:'healer_bee',name:'治療蜂',icon:'🐝',desc:'每 3 秒自動回復 2 HP',price:12000,color:0xffcc00},
+  {id:'guardian',name:'守護盾',icon:'🛡',desc:'15% 機率格擋傷害',price:15000,color:0x44aaff},
+  {id:'scavenger',name:'拾荒機器人',icon:'🤖',desc:'自動拾取彈藥',price:6000,color:0x888866},
+  {id:'mini_dragon',name:'迷你龍',icon:'🐉',desc:'自動攻擊附近敵人（每次 5 傷）',price:20000,color:0xff4400}
+];
+var petInventory=[];try{var pi=JSON.parse(localStorage.getItem('oc_pets'));if(pi)petInventory=pi;}catch(e){}
+var equippedPet=null;try{var ep=localStorage.getItem('oc_pet_equip');if(ep)equippedPet=ep;}catch(e){}
+function savePetInv(){try{localStorage.setItem('oc_pets',JSON.stringify(petInventory));}catch(e){}}
+function savePetEquip(){if(equippedPet)try{localStorage.setItem('oc_pet_equip',equippedPet);}catch(e){}else try{localStorage.removeItem('oc_pet_equip');}catch(e){}}
+document.getElementById('pet-btn').onclick=function(){
+  document.getElementById('menu').style.display='none';
+  var coins=0;try{coins=parseInt(localStorage.getItem('oc_coin'))||0;}catch(e){}
+  document.getElementById('pet-shop-coins').textContent='🪙 持有特種幣：$'+coins;
+  var list=document.getElementById('pet-list');list.innerHTML='';
+  petShopData.forEach(function(p){
+    var owned=petInventory.indexOf(p.id)>=0;
+    var isEquip=equippedPet===p.id;
+    var card=document.createElement('div');card.className='pet-card'+(isEquip?' equipped':'');
+    card.innerHTML='<div class="pet-card-icon">'+p.icon+'</div><div class="pet-card-info"><div class="pet-card-name">'+p.name+'</div><div class="pet-card-desc">'+p.desc+'</div></div><div class="pet-card-price">$'+p.price+'</div>';
+    var btn=document.createElement('button');
+    if(owned&&isEquip){btn.className='pet-card-btn own';btn.textContent='✓ 使用中';btn.disabled=true;}
+    else if(owned){btn.className='pet-card-btn own';btn.textContent='裝備';btn.onclick=function(){equippedPet=p.id;savePetEquip();if(window.updateMenuPet)window.updateMenuPet();document.getElementById('pet-btn').onclick();};}
+    else{var canBuy=coins>=p.price;btn.className='pet-card-btn buy';btn.textContent=canBuy?'購買':'$不足';btn.disabled=!canBuy;
+      if(canBuy)btn.onclick=function(){if(!confirm('花費 $'+p.price+' 購買 '+p.name+'？'))return;coins-=p.price;try{localStorage.setItem('oc_coin',String(coins));}catch(e){}petInventory.push(p.id);savePetInv();document.getElementById('pet-btn').onclick();};}
+    card.appendChild(btn);list.appendChild(card);
+  });
+  document.getElementById('pet-shop').style.display='flex';
+};
+document.getElementById('pet-shop-close').onclick=function(){document.getElementById('pet-shop').style.display='none';document.getElementById('menu').style.display='flex';};
+document.getElementById('pet-shop-bg').onclick=function(){document.getElementById('pet-shop').style.display='none';document.getElementById('menu').style.display='flex';};
+var dailyRewards=[
+  {day:1,rewards:[{type:'coin',amt:500}]},
+  {day:2,rewards:[{type:'coin',amt:800}]},
+  {day:3,rewards:[{type:'coin',amt:1000},{type:'sp',amt:50}]},
+  {day:4,rewards:[{type:'coin',amt:1500}]},
+  {day:5,rewards:[{type:'coin',amt:2000},{type:'sp',amt:100}]},
+  {day:6,rewards:[{type:'coin',amt:2500}]},
+  {day:7,rewards:[{type:'coin',amt:5000},{type:'sp',amt:200},{type:'pet_random',amt:1}]}
+];
+var rewardLabels={coin:'$',sp:'⚡ SP',pet_random:'🎁 隨機寵物'};
+function getDailyData(){var d={last:'',streak:0};try{var r=JSON.parse(localStorage.getItem('oc_daily'));if(r&&r.last)d=r;}catch(e){}return d;}
+function saveDailyData(d){try{localStorage.setItem('oc_daily',JSON.stringify(d));}catch(e){}}
+function getDateStr(){var t=new Date();return t.getFullYear()+'-'+(t.getMonth()+1).toString().padStart(2,'0')+'-'+t.getDate().toString().padStart(2,'0');}
+function openDailyLogin(){
+  document.getElementById('menu').style.display='none';
+  var dd=getDailyData();var today=getDateStr();
+  var claimedToday=dd.last===today;var streak=claimedToday?dd.streak:0;
+  var dayIdx=(streak%7)||7;var canClaim=!claimedToday;
+  document.getElementById('daily-login-streak').textContent='連續登入 '+(claimedToday?streak:(dd.last===today.substr(0,10)+'-'?'?':streak))+' 天';
+  var grid=document.getElementById('daily-login-grid');grid.innerHTML='';
+  for(var di=0;di<7;di++){
+    var rw=dailyRewards[di];var el=document.createElement('div');el.className='dl-day';
+    var st='locked';if(di<dayIdx-1||(claimedToday&&di<dayIdx))st='done';else if(di===dayIdx-1&&canClaim)st='current';else if(di===dayIdx-1&&claimedToday)st='done';
+    el.className='dl-day dl-'+st;
+    var html='<div class="dl-day-num">第'+(di+1)+'天</div>';
+    rw.rewards.forEach(function(r){var lbl=rewardLabels[r.type]||'';html+='<div class="dl-day-reward'+(r.type==='sp'||r.type==='pet_random'?' sub':'')+'">'+lbl+ (r.type==='pet_random'?'':r.amt)+'</div>';});
+    el.innerHTML=html;grid.appendChild(el);
+  }
+  var claimBtn=document.getElementById('daily-login-claim');claimBtn.style.display=canClaim?'inline-block':'none';
+  claimBtn.className=canClaim?'dl-claim-yes':'dl-claim-no';
+  claimBtn.textContent=canClaim?'🎁 領取第 '+(dayIdx)+' 天獎勵':'✅ 今日已領取';
+  claimBtn.onclick=function(){
+    if(!canClaim)return;
+    var dd2=getDailyData();var today2=getDateStr();
+    if(dd2.last===today2)return;
+    var newStreak=1;if(dd2.last){var lastD=new Date(dd2.last);var now=new Date(today2);var diff=Math.round((now-lastD)/86400000);if(diff===1)newStreak=dd2.streak+1;else newStreak=1;}
+    if(newStreak>7)newStreak=1;
+    var idx=newStreak-1;var rw2=dailyRewards[idx];
+    rw2.rewards.forEach(function(r){
+      if(r.type==='coin'){var c=parseInt(localStorage.getItem('oc_coin'))||0;c+=r.amt;try{localStorage.setItem('oc_coin',String(c));}catch(e){}}
+      else if(r.type==='sp'){var s=parseInt(localStorage.getItem('oc_sp'))||0;s+=r.amt;try{localStorage.setItem('oc_sp',String(s));}catch(e){}}
+      else if(r.type==='pet_random'&&petShopData.length>0){
+        var owned=[];try{owned=JSON.parse(localStorage.getItem('oc_pets'))||[];}catch(e){}
+        var avail=petShopData.filter(function(p){return owned.indexOf(p.id)<0;});
+        if(avail.length>0){var pick=avail[Math.floor(Math.random()*avail.length)];owned.push(pick.id);try{localStorage.setItem('oc_pets',JSON.stringify(owned));}catch(e){}petInventory=owned;alert('🎁 獲得寵物：'+pick.name+'！');}
+        else{var c2=parseInt(localStorage.getItem('oc_coin'))||0;c2+=3000;try{localStorage.setItem('oc_coin',String(c2));}catch(e){}alert('🎁 已擁有全部寵物，獲得 $3,000 補償！');}
+      }
+    });
+    saveDailyData({last:today2,streak:newStreak});
+    alert('🎉 領取成功！連續登入 '+newStreak+' 天');
+    openDailyLogin();
+  };
+  document.getElementById('daily-login-overlay').style.display='flex';
+}
+document.getElementById('daily-login-btn').onclick=openDailyLogin;
+document.getElementById('daily-login-close').onclick=function(){document.getElementById('daily-login-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
+document.getElementById('daily-login-bg').onclick=function(){document.getElementById('daily-login-overlay').style.display='none';document.getElementById('menu').style.display='flex';};
 document.getElementById('range-btn').onclick=function(){
   if(currentTeamId){window.showTeamBlockTip();return;}
   rangeMode=true;currentMap='range';rangeScore=0;rangeShots=0;rangeHits=0;rangeTime=0;
@@ -2640,7 +2848,7 @@ document.addEventListener('click',function(e){
   }
 });
 var prevSeasonRound=roundNum;
-setInterval(function(){
+window._seasonInt=setInterval(function(){
   if(roundNum>prevSeasonRound&&!isMultiplayer){seasonProgress.round++;questProgress.round++;prevSeasonRound=roundNum;saveSeasonProgress();saveDragonboatProgress();}
   if(roundNum<prevSeasonRound)prevSeasonRound=roundNum;
 },2000);
@@ -2958,8 +3166,8 @@ function fireGrapple(){
 }
 function releaseGrapple(){
   grappleActive=false;grapplePoint=null;grappleEnemy=null;grapplePullDmgAccum=0;
-  if(grappleLine){scene.remove(grappleLine);grappleLine=null;}
-  if(grappleShot){scene.remove(grappleShot.mesh);grappleShot=null;}
+  if(grappleLine){disposeMesh(grappleLine);grappleLine=null;}
+  if(grappleShot){disposeMesh(grappleShot.mesh);grappleShot=null;}
 }
 // ── Zipline system ──
 function tryGrabZipline(){
@@ -3136,15 +3344,26 @@ document.getElementById('back-menu-btn').onclick=function(){
   document.getElementById('nuclear-ui').style.display='none';
   document.getElementById('nuclear-wave').style.display='none';
   document.getElementById('boss-hp-wrap').style.display='none';
-  if(boss&&boss.mesh){scene.remove(boss.mesh);boss=null;bossActive=false;bossSpawned=false;}
-  if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
-  radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
-  projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
-  smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
-  incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
-  if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
+  if(ufo&&ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);ufo=null;ufoActive=false;ufoSpawned=false;}if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];ufoMode=false;
+  if(boss&&boss.mesh){disposeMesh(boss.mesh);boss=null;bossActive=false;bossSpawned=false;}
+  if(window.radRifleDrop){disposeMesh(window.radRifleDrop.mesh);disposeMesh(window.radRifleDrop.glow);disposeMesh(window.radRifleDrop.light);window.radRifleDrop=null;}
+  radiationZones.forEach(function(rz){disposeMesh(rz.mesh);if(rz.light)disposeMesh(rz.light);});radiationZones=[];
+  projectiles.forEach(function(rp){disposeMesh(rp.mesh);if(rp.light)disposeMesh(rp.light);});projectiles=[];
+  smokeParticles.forEach(function(sp){if(sp.light)disposeMesh(sp.light);else disposeMesh(sp);});smokeParticles=[];smokeZoneCenters=[];
+  incendiaryZones.forEach(function(iz){disposeMesh(iz.mesh);disposeMesh(iz.mesh2);disposeMesh(iz.light);});incendiaryZones=[];
+  if(window.opponentBars){window.opponentBars.forEach(function(b){disposeMesh(b.h);disposeMesh(b.a);});window.opponentBars=[];}
+  if(petMesh){scene.remove(petMesh);disposeMesh(petMesh);petMesh=null;}
+  enemies.forEach(function(pe){if(pe.mesh.userData&&pe.mesh.userData._ghostGlow){pe.mesh.remove(pe.mesh.userData._ghostGlow);disposeMesh(pe.mesh.userData._ghostGlow);delete pe.mesh.userData._ghostGlow;}});
   if(window.multiSI)clearInterval(window.multiSI);
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
+  if(window._teamPingInt)clearInterval(window._teamPingInt);
+  if(window._teamStatusInt)clearInterval(window._teamStatusInt);
+  if(window.fpTeamInt)clearInterval(window.fpTeamInt);
+  if(window._seasonInt)clearInterval(window._seasonInt);
+  if(window.wsHB)clearInterval(window.wsHB);
+  if(window.multiPInt)clearInterval(window.multiPInt);
+  if(window.votePoll)clearInterval(window.votePoll);
+  if(window.voteTimer)clearInterval(window.voteTimer);
 };
 document.getElementById('settlement-btn').onclick=function(){
   document.getElementById('mobile-controls').style.display='none';
@@ -3179,7 +3398,7 @@ document.getElementById('resume-yes').onclick=function(){
   document.getElementById('scanlines').style.display='none';
   document.getElementById('scope-overlay').style.display='none';
   isADS=false;isReloading=false;reloadTimer=0;cam.fov=80;cam.updateProjectionMatrix();
-  var sd=JSON.parse(localStorage.getItem('ocgame_save'));
+  var sd;try{sd=JSON.parse(localStorage.getItem('ocgame_save'))}catch(e){sd=null}
   if(sd){loadGame(sd);gameStarted=true;didPlayGame=true;countdown=0;}
   if(localStorage.getItem('oc_ui_mode')==='mobile'){locked=true;document.getElementById('mobile-controls').style.display='block';document.getElementById('blocker').style.display='none';}
   else{document.body.requestPointerLock().catch(function(){});}
@@ -3217,6 +3436,13 @@ function applyMapSettings(){
     for(var mxi3=0;mxi3<mapBoxes.length;mxi3++){
       var bx3=mapBoxes[mxi3];
       if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat)bx3.mesh.visible=true;
+    }
+  }
+  // Hide non-dragonBoat mapBoxes when dragonboat is active (walls/floor kept via isPermanent)
+  if(currentMap==='dragonboat'){
+    for(var mxi5=0;mxi5<mapBoxes.length;mxi5++){
+      var bx5=mapBoxes[mxi5];
+      if(!bx5.isDragonBoat&&!bx5.isPermanent&&!bx5.isRange)bx5.mesh.visible=false;
     }
   }
   if(currentMap==='dragonboat'){
@@ -3271,7 +3497,7 @@ function applyMapSettings(){
     document.getElementById('underwater-overlay').style.display='none';
     document.getElementById('nuclear-wave').style.display='none';
     document.getElementById('boss-hp-wrap').style.display='none';
-    airBubbles.forEach(function(b){try{scene.remove(b.mesh);}catch(eb){}});airBubbles=[];
+    airBubbles.forEach(function(b){try{disposeMesh(b.mesh);}catch(eb){}});airBubbles=[];
     harpoonProjectiles.forEach(function(h){try{scene.remove(h.mesh);}catch(eh){}});harpoonProjectiles=[];
     oxyVents.forEach(function(v){if(v.base)try{scene.remove(v.base);}catch(e){}if(v.glow)try{scene.remove(v.glow);}catch(e){}});oxyVents=[];
     var skyCanvas=document.createElement('canvas');skyCanvas.width=2;skyCanvas.height=512;
@@ -3423,11 +3649,11 @@ mapOptions.forEach(function(opt){
     }
     currentMap=opt.dataset.map;
     gameDifficulty='normal';diffMult=1;
-    if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
-    radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
-    projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
-    smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
-    incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
+    if(window.radRifleDrop){disposeMesh(window.radRifleDrop.mesh);disposeMesh(window.radRifleDrop.glow);disposeMesh(window.radRifleDrop.light);window.radRifleDrop=null;}
+    radiationZones.forEach(function(rz){disposeMesh(rz.mesh);if(rz.light)disposeMesh(rz.light);});radiationZones=[];
+    projectiles.forEach(function(rp){disposeMesh(rp.mesh);if(rp.light)disposeMesh(rp.light);});projectiles=[];
+    smokeParticles.forEach(function(sp){if(sp.light)disposeMesh(sp.light);else disposeMesh(sp);});smokeParticles=[];smokeZoneCenters=[];
+    incendiaryZones.forEach(function(iz){disposeMesh(iz.mesh);disposeMesh(iz.mesh2);disposeMesh(iz.light);});incendiaryZones=[];
     document.getElementById('map-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -3439,7 +3665,7 @@ mapOptions.forEach(function(opt){
     applyMapSettings();
     if(bossRushMode){
       bossRushWave=1;bossRushMaxWave=0;bossActive=false;bossSpawned=false;boss=null;bossType='nuclear';
-      bossProjectiles.forEach(function(bp){scene.remove(bp.mesh);scene.remove(bp.trail);});
+      bossProjectiles.forEach(function(bp){disposeMesh(bp.mesh);disposeMesh(bp.trail);});
       bossProjectiles.length=0;
       enemies.forEach(function(e){e.mesh.visible=false;if(e.hBar)e.hBar.visible=false;if(e.aBar)e.aBar.visible=false;});
       enemies.length=0;
@@ -3459,11 +3685,11 @@ document.querySelectorAll('.diff-option').forEach(function(opt){
     gameDifficulty=opt.dataset.diff;
     diffMult=gameDifficulty==='normal'?1:(gameDifficulty==='conf'?1.5:2);
     currentMap=window.pendingMap||'nuclear';
-    if(window.radRifleDrop){scene.remove(window.radRifleDrop.mesh);scene.remove(window.radRifleDrop.glow);scene.remove(window.radRifleDrop.light);window.radRifleDrop=null;}
-    radiationZones.forEach(function(rz){scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);});radiationZones=[];
-    projectiles.forEach(function(rp){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);});projectiles=[];
-    smokeParticles.forEach(function(sp){if(sp.light)scene.remove(sp.light);else scene.remove(sp);});smokeParticles=[];smokeZoneCenters=[];
-    incendiaryZones.forEach(function(iz){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);});incendiaryZones=[];
+    if(window.radRifleDrop){disposeMesh(window.radRifleDrop.mesh);disposeMesh(window.radRifleDrop.glow);disposeMesh(window.radRifleDrop.light);window.radRifleDrop=null;}
+    radiationZones.forEach(function(rz){disposeMesh(rz.mesh);if(rz.light)disposeMesh(rz.light);});radiationZones=[];
+    projectiles.forEach(function(rp){disposeMesh(rp.mesh);if(rp.light)disposeMesh(rp.light);});projectiles=[];
+    smokeParticles.forEach(function(sp){if(sp.light)disposeMesh(sp.light);else disposeMesh(sp);});smokeParticles=[];smokeZoneCenters=[];
+    incendiaryZones.forEach(function(iz){disposeMesh(iz.mesh);disposeMesh(iz.mesh2);disposeMesh(iz.light);});incendiaryZones=[];
     document.getElementById('diff-select').style.display='none';
     document.getElementById('scanlines').style.display='none';
     document.getElementById('scope-overlay').style.display='none';
@@ -3516,6 +3742,11 @@ document.getElementById('play-btn').onclick=function(){
     bossRushMode=true;
     renderClassSelect();
     document.getElementById('class-select').style.display='flex';
+  }else if(modeVal==='ufo2'||modeVal==='ufo4'){
+    ufoMode=true;
+    renderClassSelect();
+    document.getElementById('class-select').style.display='flex';
+    document.getElementById('class-select').dataset.multi=modeVal==='ufo2'?'2':'4';
   }else{
     renderClassSelect();
     document.getElementById('class-select').style.display='flex';
@@ -3644,6 +3875,7 @@ function addKillFeed(killer,victim,gun){
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
 var relayIframe=null,httpClientId=null;
 function connectMultiplayer(mode){
+  ufoMode=false;
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
@@ -3674,6 +3906,188 @@ function createOpponentMesh(classId){
   ogg.position.set(0.18,0.2,0.2);og.add(ogg);
   og.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.renderOrder=1;}});
   return og;
+}
+function createUFOMesh(){
+  var g=new THREE.Group();
+  var disc=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,0.2,24),new THREE.MeshStandardMaterial({color:0x334466,emissive:0x224488,emissiveIntensity:0.2,metalness:0.7,roughness:0.3}));
+  disc.position.y=0;g.add(disc);
+  var rim=new THREE.Mesh(new THREE.TorusGeometry(1.45,0.06,8,24),new THREE.MeshStandardMaterial({color:0x66aaff,emissive:0x4488ff,emissiveIntensity:0.5}));
+  rim.position.y=0;rim.rotation.x=1.57;g.add(rim);
+  var dome=new THREE.Mesh(new THREE.SphereGeometry(0.5,16,16,0,Math.PI*2,0,Math.PI*0.5),new THREE.MeshStandardMaterial({color:0x4488cc,emissive:0x2266aa,emissiveIntensity:0.3,transparent:true,opacity:0.6}));
+  dome.position.y=0.12;dome.scale.set(1,0.5,1);g.add(dome);
+  var core=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),new THREE.MeshBasicMaterial({color:0x88ddff}));
+  core.position.y=0.03;g.add(core);
+  for(var i=0;i<16;i++){
+    var angle=(i/16)*Math.PI*2;
+    var bl=new THREE.Mesh(new THREE.SphereGeometry(0.035,6,6),new THREE.MeshStandardMaterial({color:0x44aaff,emissive:0x44ccff,emissiveIntensity:1.5}));
+    bl.position.set(Math.cos(angle)*1.3,0.02,Math.sin(angle)*1.3);g.add(bl);
+  }
+  var glow=new THREE.Mesh(new THREE.CircleGeometry(1.0,16),new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x4488ff,emissiveIntensity:0.2,transparent:true,opacity:0.15,side:THREE.DoubleSide}));
+  glow.position.y=-0.1;glow.rotation.x=-1.57;g.add(glow);
+  g.scale.set(0.7,0.7,0.7);
+  g.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.castShadow=true;}});
+  return g;
+}
+function spawnUFO(){
+  if(ufoSpawned||!ufoMode)return;
+  ufoSpawned=true;ufoActive=true;
+  ufoHP=ufoMaxHP=300+50*(playerCount||1);
+  ufoTargetIdx=0;
+  ufoAttackTimer=2;
+  ufoLaserCD=0;
+  ufoTargetSwitchCD=15;
+  var mesh=createUFOMesh();
+  mesh.position.set(0,6,-3);
+  scene.add(mesh);
+  ufo={mesh:mesh,pos:new THREE.Vector3(0,6,-3),hp:ufoHP,maxHp:ufoMaxHP,hitTimer:0,phase:0,chargeTimer:0};
+  document.getElementById('boss-hp-wrap').style.display='flex';
+  document.getElementById('boss-label').textContent='🛸 UFO';document.getElementById('boss-hp-fill').style.width='100%';
+}
+function updateUFO(dt){
+  if(!ufoActive||!ufo||!ufo.mesh)return;
+  if(ufo.hp<=0){
+    ufoActive=false;
+    if(ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);}
+    ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];
+    if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
+    document.getElementById('boss-hp-wrap').style.display='none';
+    playerHP=Math.min(100,playerHP+40);playerArmor=Math.min(100,playerArmor+30);
+    for(var gk in gunAmmo){if(gunData[gk]&&gunData[gk].mag)gunAmmo[gk]=gunData[gk].mag;}
+    document.getElementById('round-clear').textContent='🎉 UFO 擊破！';document.getElementById('round-clear').style.color='#4f4';document.getElementById('round-clear').style.display='block';
+    setTimeout(function(){document.getElementById('round-clear').style.display='none';},3000);
+    earnCoins(3000);
+    roundEarnings+=3000;
+    if(isMultiplayer){
+      rankEvaluateMatch(1);
+      showMultiSettlement('UFO 被擊敗，你贏了！');
+    }else{
+      gameStarted=false;
+      document.getElementById('back-menu-btn').click();
+    }
+    return;
+  }
+  var allDead=playerHP<=0;
+  if(isMultiplayer){
+    var anyAlive=playerHP>0;
+    opponentStates.forEach(function(s){if(s.alive)anyAlive=true;});
+    if(!anyAlive)allDead=true;
+  }
+  if(allDead){
+    ufoActive=false;
+    if(ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);}
+    ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];
+    if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
+    document.getElementById('boss-hp-wrap').style.display='none';
+    if(isMultiplayer){
+      rankEvaluateMatch(-1);
+      showMultiSettlement('全員陣亡，UFO 獲勝！');
+    }else{
+      gameStarted=false;
+      document.getElementById('back-menu-btn').click();
+    }
+    return;
+  }
+  var patAngle=Date.now()/4000;
+  var targetY=6+Math.sin(Date.now()/3000)*0.4;
+  ufo.pos.x=Math.sin(patAngle)*9;
+  ufo.pos.z=Math.cos(patAngle)*9-2;
+  ufo.pos.y+=(targetY-ufo.pos.y)*dt*2;
+  ufo.mesh.position.copy(ufo.pos);
+  ufo.mesh.rotation.y=patAngle+Math.PI;
+  ufo.mesh.rotation.z=Math.sin(Date.now()/2000)*0.05;
+  ufoTargetSwitchCD-=dt;
+  if(ufoTargetSwitchCD<=0){
+    ufoTargetSwitchCD=12+Math.random()*6;
+    if(isMultiplayer&&playerCount>1){
+      var candidates=[];
+      if(playerHP>0)candidates.push(0);
+      opponentStates.forEach(function(s,i){if(s.alive)candidates.push(i+1);});
+      if(candidates.length>1){
+        var curIdx=candidates.indexOf(ufoTargetIdx);
+        if(curIdx>=0)candidates.splice(curIdx,1);
+      }
+      ufoTargetIdx=candidates[Math.floor(Math.random()*candidates.length)];
+    }else{ufoTargetIdx=0;}
+  }
+  var tpos=ufoTargetIdx===0?pos.clone():(opponentStates[ufoTargetIdx-1]?opponentStates[ufoTargetIdx-1].pos.clone():pos.clone());
+  if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);}
+  var beamGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ufo.pos.x,ufo.pos.y-0.3,ufo.pos.z),new THREE.Vector3(tpos.x,0.1,tpos.z)]);
+  ufoBeamMesh=new THREE.Line(beamGeo,new THREE.LineBasicMaterial({color:0x44aaff,transparent:true,opacity:0.3+Math.sin(Date.now()/300)*0.15}));
+  scene.add(ufoBeamMesh);
+  ufoAttackTimer-=dt;
+  if(ufoAttackTimer<=0){
+    ufoAttackTimer=1.2+Math.random()*0.8;
+    var bDir=new THREE.Vector3(tpos.x-ufo.pos.x+0.3*(Math.random()-0.5),tpos.y+0.6-ufo.pos.y+0.3*(Math.random()-0.5),tpos.z-ufo.pos.z+0.3*(Math.random()-0.5)).normalize();
+    spawnUFOProj(ufo.pos.clone().add(new THREE.Vector3(0,-0.1,0)),bDir,12,20,Math.round(10*(1+diffMult*0.3)),0x44ff88,0.07);
+  }
+  updateUFOProj(dt);
+  if(ufo.hitTimer>0){ufo.hitTimer-=dt;ufo.mesh.children.forEach(function(c){if(c.material&&c.material.emissive){c.material.emissiveIntensity=0.5+Math.sin(ufo.hitTimer*30)*0.5;}});}
+  var pct=ufo.hp/ufo.maxHp*100;document.getElementById('boss-hp-fill').style.width=Math.max(0,pct)+'%';
+}
+var ufoProjectiles=[];
+function spawnUFOProj(origin,dir,speed,maxRange,dmg,color,size){
+  var sz=size||0.06;
+  var mesh=new THREE.Mesh(new THREE.SphereGeometry(sz,6,6),new THREE.MeshBasicMaterial({color:color||0x44ff88}));
+  mesh.position.copy(origin);scene.add(mesh);
+  var trail=new THREE.Mesh(new THREE.SphereGeometry(sz*0.5,4,4),new THREE.MeshBasicMaterial({color:color||0x44ff88,transparent:true,opacity:0.4}));
+  trail.position.copy(origin);scene.add(trail);
+  ufoProjectiles.push({mesh:mesh,trail:trail,pos:origin.clone(),vel:dir.clone().multiplyScalar(speed),range:maxRange,dist:0,dmg:dmg,alive:true});
+}
+function updateUFOProj(dt){
+  for(var i=ufoProjectiles.length-1;i>=0;i--){
+    var up=ufoProjectiles[i];
+    if(!up.alive)continue;
+    up.trail.position.copy(up.pos);
+    up.pos.x+=up.vel.x*dt;up.pos.y+=up.vel.y*dt;up.pos.z+=up.vel.z*dt;
+    up.mesh.position.copy(up.pos);
+    up.dist+=up.vel.length()*dt;
+    if(up.pos.distanceTo(pos)<0.6&&playerHP>0){up.alive=false;disposeMesh(up.mesh);disposeMesh(up.trail);hitMarkerTimer=0.15;playerDamage(up.dmg);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),up.dmg,'#44ff88');ufoProjectiles.splice(i,1);continue;}
+    if(isMultiplayer&&opponentStates.length>0){
+      for(var oi=0;oi<opponentStates.length;oi++){
+        var os=opponentStates[oi];if(!os.alive)continue;
+        if(up.pos.distanceTo(os.pos)<0.8){up.alive=false;disposeMesh(up.mesh);disposeMesh(up.trail);os.hp-=up.dmg;if(os.hp<=0){os.hp=0;os.alive=false;}showDmgNum(os.pos.clone(),up.dmg,'#44ff88');ufoProjectiles.splice(i,1);break;}
+      }
+    }
+    if(up.dist>up.range){up.alive=false;disposeMesh(up.mesh);disposeMesh(up.trail);ufoProjectiles.splice(i,1);}
+  }
+}
+var petMesh=null;
+function createPetMesh(type){
+  var g=new THREE.Group();var mat=function(c,em){return new THREE.MeshStandardMaterial({color:c,emissive:em||0,emissiveIntensity:em?0.4:0});};
+  if(type==='mech_dog'){
+    var body=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.5),mat(0x666666));body.position.y=0.08;g.add(body);
+    var head=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.12,0.14),mat(0x777777));head.position.set(0,0.16,0.28);g.add(head);
+    for(var s=-1;s<=1;s+=2){var leg=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.1,0.04),mat(0x444444));leg.position.set(s*0.1,0,0.12+s*0.1);g.add(leg);}
+    var tail=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.02,0.12),mat(0x555555));tail.position.set(0,0.12,-0.28);tail.rotation.x=0.3;g.add(tail);
+    for(var s=-1;s<=1;s+=2){var eye=new THREE.Mesh(new THREE.SphereGeometry(0.025,6,6),mat(0xff0000,0xff0000));eye.position.set(s*0.05,0.19,0.33);g.add(eye);}
+  }else if(type==='ghost_orb'){
+    var core=new THREE.Mesh(new THREE.SphereGeometry(0.15,12,12),new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x4488ff,emissiveIntensity:0.8,transparent:true,opacity:0.7}));g.add(core);
+    var glow=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,12),new THREE.MeshBasicMaterial({color:0x4488ff,transparent:true,opacity:0.15}));g.add(glow);
+    g.userData.orbitalAngle=0;
+  }else if(type==='healer_bee'){
+    var bodyB=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8),mat(0xffcc00));bodyB.scale.set(1,1.2,1);bodyB.position.y=0.05;g.add(bodyB);
+    for(var s=-1;s<=1;s+=2){var stripe=new THREE.Mesh(new THREE.TorusGeometry(0.08,0.015,4,8),mat(0x222222));stripe.position.y=0.05;stripe.rotation.x=1.57;stripe.scale.set(1,1,0.6);g.add(stripe);}
+    for(var s=-1;s<=1;s+=2){var wing=new THREE.Mesh(new THREE.PlaneGeometry(0.08,0.12),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:0.3,side:THREE.DoubleSide}));wing.position.set(s*0.08,0.12,0);wing.rotation.z=s*0.4;g.add(wing);}
+    var e1=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),mat(0x000000));e1.position.set(-0.04,0.1,0.07);g.add(e1);
+    var e2=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),mat(0x000000));e2.position.set(0.04,0.1,0.07);g.add(e2);
+  }else if(type==='guardian'){
+    var shield=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.28,0.04,16),new THREE.MeshStandardMaterial({color:0x44aaff,emissive:0x4488ff,emissiveIntensity:0.3,transparent:true,opacity:0.8}));shield.position.y=0.3;g.add(shield);
+    var rim=new THREE.Mesh(new THREE.TorusGeometry(0.25,0.015,8,16),mat(0x66ccff,0x4488ff));rim.position.y=0.3;rim.rotation.x=1.57;g.add(rim);
+    g.userData.bobPhase=0;
+  }else if(type==='scavenger'){
+    var box=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.16,0.2),mat(0x888866));box.position.y=0.08;g.add(box);
+    for(var s=-1;s<=1;s+=2){var wheel=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.03,8),mat(0x444444));wheel.rotation.z=1.57;wheel.position.set(s*0.13,0.04,0);g.add(wheel);}
+    var antenna=new THREE.Mesh(new THREE.CylinderGeometry(0.005,0.005,0.1,4),mat(0xaaaaaa));antenna.position.set(0,0.2,0.06);g.add(antenna);
+    var tip=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),mat(0xff4400,0xff4400));tip.position.set(0,0.25,0.06);g.add(tip);
+  }else if(type==='mini_dragon'){
+    var bodyD=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.25,8),mat(0xcc4400));bodyD.position.y=0.1;g.add(bodyD);
+    var headD=new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8),mat(0xdd5500));headD.position.set(0,0.22,0.08);g.add(headD);
+    for(var s=-1;s<=1;s+=2){var wingD=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.12,4),new THREE.MeshStandardMaterial({color:0xcc4400,transparent:true,opacity:0.7}));wingD.position.set(s*0.1,0.15,0);wingD.rotation.x=-0.3;wingD.rotation.z=s*0.6;g.add(wingD);}
+    var tailD=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.1,4),mat(0xcc4400));tailD.position.set(0,0.05,-0.12);tailD.rotation.x=0.5;g.add(tailD);
+    for(var s=-1;s<=1;s+=2){var eyeD=new THREE.Mesh(new THREE.SphereGeometry(0.015,6,6),mat(0xff2200,0xff2200));eyeD.position.set(s*0.03,0.24,0.11);g.add(eyeD);}
+  }
+  g.scale.set(0.6,0.6,0.6);g.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.castShadow=true;}});
+  return g;
 }
 function applyOpponentClass(om,classId){
   if(!om||!classId)return;
@@ -3866,6 +4280,12 @@ function processServerMessage(data){
         if(document.pointerLockElement)document.exitPointerLock();
         if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
         break;
+    case 'ufo_hit':
+      if(data.dmg&&ufoActive&&ufo){ufo.hp-=data.dmg;ufo.hitTimer=0.3;}
+      break;
+    case 'ufo_hit':
+      if(data.dmg&&ufoActive&&ufo){ufo.hp-=data.dmg;ufo.hitTimer=0.3;}
+      break;
     case 'flashbang':
       if(data.pos){
         var fbDist=pos.distanceTo(new THREE.Vector3(data.pos[0],data.pos[1],data.pos[2]));
@@ -3901,6 +4321,11 @@ function startMultiGame(mapName){
     var oaBar=new THREE.Mesh(new THREE.PlaneGeometry(0.6,0.04),new THREE.MeshBasicMaterial({color:0x4488ff,depthTest:false}));
     scene.add(oaBar);
     window.opponentBars.push({h:ohBar,a:oaBar});
+  }
+  if(ufoMode){
+    ufoActive=false;ufoSpawned=false;
+    for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
+    var bosshp=document.getElementById('boss-hp-wrap');if(bosshp){bosshp.style.display='none';}
   }
   gameStarted=true;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
@@ -4341,6 +4766,7 @@ function shoot(){
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
@@ -4400,6 +4826,7 @@ function shoot(){
       if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)smeshes.push(c)});}
       if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
       if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
+      if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
       if(rangeMode){rangeTargets.forEach(function(rt){smeshes.push(rt.meshBody);smeshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});});if(rangeWalkwayTarget)smeshes.push(rangeWalkwayTarget);}
       var shits=src.intersectObjects(smeshes);
       if(shits.length>0){
@@ -4442,10 +4869,22 @@ function shoot(){
             showDmgNum(shits[0].point,pd,'#ff4444');
           }
         }
+        if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh){
+          var hitUFOS=false;
+          ufo.mesh.traverse(function(child){if(child===hitMesh)hitUFOS=true;});
+          if(hitUFOS){
+            var sgd=gunData.shotgun;var sDist=shits[0].distance;var sFall=1;
+            if(sgd.damageRange!==undefined&&sDist>sgd.damageRange){var sEx=sDist-sgd.damageRange;sFall=Math.max(sgd.damageFalloff||0.3,1-sEx/(sgd.damageRange*3));}
+            var pd=Math.round(sgd.dmg*sFall*(window.dmgMult||1));
+            hitMarkerTimer=0.15;ufo.hp-=pd;ufo.hitTimer=0.3;
+            showDmgNum(shits[0].point,pd,'#44ff88');
+            if(isMultiplayer)relaySend({type:'ufo_hit',dmg:pd});
+          }
+        }
         if(rangeMode)checkRangeHit(hitMesh);
         var im=getImpactMesh();im.position.copy(shits[0].point);im.material.color.setHex(0xff6600);im.material.emissive.setHex(0xff4400);scene.add(im);impacts.push({mesh:im,time:0});
         var bh=getBulletHoleMesh();bh.position.copy(shits[0].point);bh.lookAt(cam.position);scene.add(bh);bulletHoles.push(bh);
-        if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();if(old.parent)scene.remove(old);}
+        if(bulletHoles.length>maxBulletHoles){var old=bulletHoles.shift();if(old)disposeMesh(old);}
       }
     }
     if(shotHit)playShort('deejaycoxknot-vinyl-scratches-430214.mp3',0.15,0.5);
@@ -4479,6 +4918,7 @@ function shoot(){
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
@@ -4551,6 +4991,22 @@ function shoot(){
         abyssalMaw.hp-=dmg;
         abyssalMaw.hitTimer=0.3;
         showDmgNum(hits[0].point,dmg,'#ff4444');
+      }
+    }
+    // UFO hit check
+    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh&&currentGun!=='awp'){
+      var hitUFO=false;
+      ufo.mesh.traverse(function(child){if(child===hitMesh)hitUFO=true;});
+      if(hitUFO){
+        var dist=hits[0].distance;
+        var falloff=1;
+        if(gd.damageRange!==undefined&&dist>gd.damageRange){var excess=dist-gd.damageRange;var maxRd=gd.damageRange*3;falloff=Math.max(gd.damageFalloff||0.3,1-excess/maxRd);}
+        var dmg=Math.round(gunData[currentGun].dmg*falloff*(window.dmgMult||1));
+        hitMarkerTimer=0.15;
+        ufo.hp-=dmg;
+        ufo.hitTimer=0.3;
+        showDmgNum(hits[0].point,dmg,'#44ff88');
+        if(isMultiplayer)relaySend({type:'ufo_hit',dmg:dmg});
       }
     }
     // Multiplayer: check opponent hit
@@ -4735,7 +5191,7 @@ function enemyShoot(e){
 }
 var sniperLaser=null;
 function updateSniperLasers(){
-  if(sniperLaser){scene.remove(sniperLaser);sniperLaser=null;}
+  if(sniperLaser){disposeMesh(sniperLaser);sniperLaser=null;}
   document.getElementById('sniper-warn').style.display='none';
   for(var si=0;si<enemies.length;si++){
     var e=enemies[si];if(e.type!=='sniper'||e.hp<=0||!e.mesh.visible)continue;
@@ -4843,7 +5299,7 @@ function onPlayerDeath(){
     document.getElementById('o2-wrap').style.display='none';
     document.getElementById('underwater-overlay').style.display='none';
     bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;
-    airBubbles.forEach(function(b){scene.remove(b.mesh);});airBubbles=[];
+    airBubbles.forEach(function(b){disposeMesh(b.mesh);});airBubbles=[];
     harpoonProjectiles.forEach(function(h){scene.remove(h.mesh);});harpoonProjectiles=[];
     oxyVents.forEach(function(v){if(v.base)scene.remove(v.base);if(v.glow)scene.remove(v.glow);});oxyVents=[];
     document.getElementById('boss-hp-wrap').style.display='none';
@@ -4913,6 +5369,7 @@ function onPlayerDeath(){
 function playerDamage(dmg){
   if(isDowned)return;
   inspectTimer=0;
+  if(equippedPet==='guardian'&&Math.random()<0.15){showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),dmg,'#44aaff');return;}
   if(window.rageActive)dmg=Math.round(dmg*0.6);
   if(playerArmor>0){
     var od=dmg;
@@ -5551,8 +6008,8 @@ function updateBossProjectiles(dt){
     bp.pos.x+=bp.vel.x*dt;bp.pos.y+=bp.vel.y*dt;bp.pos.z+=bp.vel.z*dt;
     bp.mesh.position.copy(bp.pos);
     bp.dist+=bp.vel.length()*dt;
-    if(bp.pos.distanceTo(pos)<0.6){bp.alive=false;scene.remove(bp.mesh);scene.remove(bp.trail);hitMarkerTimer=0.15;playerDamage(bp.dmg);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),bp.dmg,'#ff4444');bossProjectiles.splice(i,1);continue;}
-    if(bp.dist>bp.range){bp.alive=false;scene.remove(bp.mesh);scene.remove(bp.trail);bossProjectiles.splice(i,1);}
+    if(bp.pos.distanceTo(pos)<0.6){bp.alive=false;disposeMesh(bp.mesh);disposeMesh(bp.trail);hitMarkerTimer=0.15;playerDamage(bp.dmg);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),bp.dmg,'#ff4444');bossProjectiles.splice(i,1);continue;}
+    if(bp.dist>bp.range){bp.alive=false;disposeMesh(bp.mesh);disposeMesh(bp.trail);bossProjectiles.splice(i,1);}
   }
 }
 var bossRushList=[
@@ -5928,7 +6385,8 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh();if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(ufoMode){spawnUFO();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&gameStarted&&currentMap==='dragonboat'&&dragonBoatElements)dragonBoatElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
@@ -5943,7 +6401,7 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     var rp=projectiles[rpi];
     if(!rp.dir)continue;
     rp.life-=dt;
-    if(rp.life<=0){scene.remove(rp.mesh);if(rp.light)scene.remove(rp.light);projectiles.splice(rpi,1);continue;}
+    if(rp.life<=0){disposeMesh(rp.mesh);if(rp.light)disposeMesh(rp.light);projectiles.splice(rpi,1);continue;}
     var step=rp.dir.clone().multiplyScalar(rp.speed*dt);
     rp.pos.add(step);
     rp.mesh.position.copy(rp.pos);
@@ -6210,11 +6668,11 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
     else if(currentSpread>(gunData[currentGun]||{}).spread){
       var sg=gunData[currentGun];currentSpread=Math.max(sg.spread,currentSpread-(sg.accuracyRecovery||0)*dt);
     }
-    for(var i=impacts.length-1;i>=0;i--){impacts[i].time+=dt;if(impacts[i].time>2){if(impacts[i].mesh.parent)scene.remove(impacts[i].mesh);impacts.splice(i,1);}}
+    for(var i=impacts.length-1;i>=0;i--){impacts[i].time+=dt;if(impacts[i].time>2){disposeMesh(impacts[i].mesh);impacts.splice(i,1);}}
     // Shield break timer
     if(sbActive){sbTimer+=dt;if(sbTimer>1.2){sbActive=false;document.getElementById('sb').style.display='none';}}
     // Enemies
-    if(!isMultiplayer&&!rangeMode&&!bossRushMode&&currentMap!=='flooded')updateEnemies(dt);
+    if(!isMultiplayer&&!rangeMode&&!bossRushMode&&!ufoMode&&currentMap!=='flooded')updateEnemies(dt);
     if(!isMultiplayer&&!rangeMode)updateSniperLasers();
     // Pickups
     updatePickups(dt);
@@ -6353,6 +6811,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
     if(currentMap==='nuclear'){updateNuclear(dt);updateRadWater(dt);}
     if(currentMap==='flooded'){updateFlooded(dt);updateHarpoonProjectiles(dt);}
     if(bossRushMode){updateBossRush(dt);updateBossProjectiles(dt);}
+    if(ufoMode&&ufoActive){updateUFO(dt);}
     // Grapple shot visual
     if(grappleShot){
       grappleShot.progress+=dt*12;
@@ -6413,7 +6872,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
       var oldPos=pj.pos.clone();
       pj.pos.add(pj.vel.clone().multiplyScalar(dt));pj.mesh.position.copy(pj.pos);
       if(!pj.isGrenade)pj.life-=dt;
-      if(!pj.isGrenade&&pj.life<=0){scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
+      if(!pj.isGrenade&&pj.life<=0){disposeMesh(pj.mesh);projectiles.splice(pi,1);continue;}
       // Grenade handling
       if(pj.isGrenade){
         if(isUnderwater&&currentMap==='flooded')pj.vel.y+=4*dt;else pj.vel.y-=9.8*dt;
@@ -6435,7 +6894,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
         if(hitWall)continue;
         pj.fuse-=dt;
         if(pj.fuse<=0){
-          scene.remove(pj.mesh);
+          disposeMesh(pj.mesh);
           var st=pj.subType||'frag';
           if(st==='frag'){
             var expR=5,expDmg=pj.dmg;
@@ -6494,12 +6953,12 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
         pj.mesh.scale.setScalar(1+0.15*Math.sin(pj.fuse*20));
         continue; // skip normal projectile hit/remove logic
       }
-      var hitP=false;var headshot=false;var headPos=pos.clone();headPos.y+=0.75;var steps=8;for(var si=0;si<steps;si++){var t=(si+1)/steps;var cp=new THREE.Vector3().lerpVectors(oldPos,pj.pos,t);if(cp.distanceTo(pos)<P_RADIUS+0.5){hitP=true;if(pj.isSniper&&cp.distanceTo(headPos)<0.4)headshot=true;break;}else if(pj.isSniper&&cp.distanceTo(headPos)<0.4){hitP=true;headshot=true;break;}}if(hitP){var pd=pj.dmg||12;if(headshot){pd=playerArmor+30;slowTimer=1.2;screenShake=3;var hsEl=document.getElementById('hs-text');if(hsEl){hsEl.style.display='block';hsEl.style.animation='none';void hsEl.offsetWidth;hsEl.style.animation='hsAnim 0.6s ease-out forwards';var oldCb=hsEl._cb;if(oldCb)clearTimeout(oldCb);hsEl._cb=setTimeout(function(){hsEl.style.display='none';},700);}}else if(pj.isSniper){pd=40;slowTimer=0.8;screenShake=1;}if(pj.fromEnemy&&currentMap==='nuclear')pd=Math.round(pd*diffMult);playerDamage(pd);if(headshot){seasonProgress.headshot++;saveSeasonProgress();if(window.hsHeal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}slowTimer=Math.max(slowTimer,0.5);showDmgNum(pos.clone(),pd,headshot?'#ff0000':'#ff4444');scene.remove(pj.mesh);projectiles.splice(pi,1);continue;}
+      var hitP=false;var headshot=false;var headPos=pos.clone();headPos.y+=0.75;var steps=8;for(var si=0;si<steps;si++){var t=(si+1)/steps;var cp=new THREE.Vector3().lerpVectors(oldPos,pj.pos,t);if(cp.distanceTo(pos)<P_RADIUS+0.5){hitP=true;if(pj.isSniper&&cp.distanceTo(headPos)<0.4)headshot=true;break;}else if(pj.isSniper&&cp.distanceTo(headPos)<0.4){hitP=true;headshot=true;break;}}if(hitP){var pd=pj.dmg||12;if(headshot){pd=playerArmor+30;slowTimer=1.2;screenShake=3;var hsEl=document.getElementById('hs-text');if(hsEl){hsEl.style.display='block';hsEl.style.animation='none';void hsEl.offsetWidth;hsEl.style.animation='hsAnim 0.6s ease-out forwards';var oldCb=hsEl._cb;if(oldCb)clearTimeout(oldCb);hsEl._cb=setTimeout(function(){hsEl.style.display='none';},700);}}else if(pj.isSniper){pd=40;slowTimer=0.8;screenShake=1;}if(pj.fromEnemy&&currentMap==='nuclear')pd=Math.round(pd*diffMult);playerDamage(pd);if(headshot){seasonProgress.headshot++;saveSeasonProgress();if(window.hsHeal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}slowTimer=Math.max(slowTimer,0.5);showDmgNum(pos.clone(),pd,headshot?'#ff0000':'#ff4444');disposeMesh(pj.mesh);projectiles.splice(pi,1);continue;}
       for(var bi=0;bi<mapBoxes.length;bi++){
         var b=mapBoxes[bi];
         if(b.isPlatform||b.isDragonBoat||!b.mesh.visible)continue;
         if(Math.abs(pj.pos.x-b.pos.x)<b.size.x/2+0.05&&Math.abs(pj.pos.y-b.pos.y)<b.size.y/2+0.05&&Math.abs(pj.pos.z-b.pos.z)<b.size.z/2+0.05){
-          scene.remove(pj.mesh);projectiles.splice(pi,1);break;
+          disposeMesh(pj.mesh);projectiles.splice(pi,1);break;
         }
       }
     }
@@ -6509,12 +6968,12 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
     var sp=smokeParticles[spi];
     if(sp.light){
       sp.lifetime-=dt;
-      if(sp.lifetime<=0){scene.remove(sp.light);smokeParticles.splice(spi,1);continue;}
+      if(sp.lifetime<=0){disposeMesh(sp.light);smokeParticles.splice(spi,1);continue;}
     }else{
       sp.position.y+=sp.userData.vy*dt;
       var s=sp.scale.x+0.2*dt;sp.scale.setScalar(s);
       sp.material.opacity-=0.015*dt;
-      if(sp.material.opacity<=0||sp.lifetime<=0){scene.remove(sp);smokeParticles.splice(spi,1);}
+      if(sp.material.opacity<=0||sp.lifetime<=0){disposeMesh(sp);smokeParticles.splice(spi,1);}
       sp.lifetime-=dt;
     }
   }
@@ -6538,7 +6997,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
   for(var izi=incendiaryZones.length-1;izi>=0;izi--){
     var iz=incendiaryZones[izi];
     iz.timer-=dt;
-    if(iz.timer<=0){scene.remove(iz.mesh);scene.remove(iz.mesh2);scene.remove(iz.light);incendiaryZones.splice(izi,1);continue;}
+    if(iz.timer<=0){disposeMesh(iz.mesh);disposeMesh(iz.mesh2);disposeMesh(iz.light);incendiaryZones.splice(izi,1);continue;}
     // Damage enemies in zone
     for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;if(ee.pos.distanceTo(iz.pos)<2.5){ee.hp-=5*dt;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;}}
     // Damage player in zone
@@ -6559,22 +7018,26 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
   }else{document.getElementById('o2-wrap').style.display='none';}
   // Ammo HUD
   var ammoEl=document.getElementById('ammo-hud');
-  if(currentGun==='grapple'){ammoEl.innerHTML='<span style="font-size:20px;color:#4af;letter-spacing:2px">∞ 勾爪</span>';}
-  else if(currentGun==='knife'){ammoEl.innerHTML='<span style="font-size:20px;color:#f84;letter-spacing:2px">⚔ 刀</span>';}
-  else if(currentGun==='grenade'){
-    var gt=grenadeTypes[currentSlot]||'frag';
-    var gIcon=grenadeTypeIcons[gt]||'💣';
-    var gName=grenadeTypeNames[gt]||'手雷';
-    ammoEl.innerHTML='<span style="font-size:16px;color:'+(grenadeStacks[currentSlot]<=0?'#f44':'#fa4')+';letter-spacing:2px">'+gIcon+' '+gName+' ×'+grenadeStacks[currentSlot]+'</span>';
+  if(ammoEl){
+    if(currentGun==='grapple'){ammoEl.innerHTML='<span style="font-size:20px;color:#4af;letter-spacing:2px">∞ 勾爪</span>';}
+    else if(currentGun==='knife'){ammoEl.innerHTML='<span style="font-size:20px;color:#f84;letter-spacing:2px">⚔ 刀</span>';}
+    else if(currentGun==='grenade'){
+      var gt=grenadeTypes[currentSlot]||'frag';
+      var gIcon=grenadeTypeIcons[gt]||'💣';
+      var gName=grenadeTypeNames[gt]||'手雷';
+      ammoEl.innerHTML='<span style="font-size:16px;color:'+(grenadeStacks[currentSlot]<=0?'#f44':'#fa4')+';letter-spacing:2px">'+gIcon+' '+gName+' ×'+grenadeStacks[currentSlot]+'</span>';
+    }
+    else if(isReloading){ammoEl.innerHTML='<span style="color:#ff8;font-size:18px;letter-spacing:2px">RELOADING...</span>';}
+    else{ammoEl.innerHTML='<span id="ammo-txt" style="color:'+(gunAmmo[currentGun]===0?'#f44':'#fff')+'">'+gunAmmo[currentGun]+'</span><span id="ammo-sep"> / </span><span id="ammo-max">'+gunData[currentGun].mag+'</span>';}
   }
-  else if(isReloading){ammoEl.innerHTML='<span style="color:#ff8;font-size:18px;letter-spacing:2px">RELOADING...</span>';}
-  else{ammoEl.innerHTML='<span id="ammo-txt" style="color:'+(gunAmmo[currentGun]===0?'#f44':'#fff')+'">'+gunAmmo[currentGun]+'</span><span id="ammo-sep"> / </span><span id="ammo-max">'+gunData[currentGun].mag+'</span>';}
-  var kc=gunKills[currentGun]||0;document.getElementById('kill-count').textContent='☠ '+kc;
+  var kc=gunKills[currentGun]||0;var kcEl=document.getElementById('kill-count');if(kcEl)kcEl.textContent='☠ '+kc;
   // Slot HUD
-  var sh=document.getElementById('slot-hud');sh.innerHTML='';
-  for(var si=0;si<5;si++){
-    var sd=document.createElement('div');sd.className='sh-slot'+(si===currentSlot?' active':'');
-    sd.textContent=(si+1)+' '+(playerLoadout[si]?getSlotGunText(si):'-');sh.appendChild(sd);
+  var sh=document.getElementById('slot-hud');
+  if(sh){sh.innerHTML='';
+    for(var si=0;si<5;si++){
+      var sd=document.createElement('div');sd.className='sh-slot'+(si===currentSlot?' active':'');
+      sd.textContent=(si+1)+' '+(playerLoadout[si]?getSlotGunText(si):'-');sh.appendChild(sd);
+    }
   }
   // Mobile slot buttons
   var msb=document.getElementById('mobile-slots');
@@ -6586,21 +7049,25 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
   }
   // Platform HUD
   var ph=document.getElementById('plat-hud');
-  var op=skyPlat&&Math.abs(pos.x)<2.8&&Math.abs(pos.z)<2.8&&pos.y>10.2&&pos.y<11.4&&onGround;
-  if(!platActive&&platRespawnTimer>0){ph.style.display='block';ph.textContent='平台重生 '+Math.ceil(platRespawnTimer)+' 秒';ph.style.color='#4af';}
-  else if(op&&platTimer>0){ph.style.display='block';var remain=Math.max(0,10-platTimer);ph.textContent='平台倒數 '+Math.ceil(remain)+' 秒';ph.style.color=remain<3?'#f44':'#4af';}
-  else{ph.style.display=op?'block':'none';if(op){ph.textContent='平台 10 秒';ph.style.color='#4af';}}
+  if(ph){
+    var op=skyPlat&&Math.abs(pos.x)<2.8&&Math.abs(pos.z)<2.8&&pos.y>10.2&&pos.y<11.4&&onGround;
+    if(!platActive&&platRespawnTimer>0){ph.style.display='block';ph.textContent='平台重生 '+Math.ceil(platRespawnTimer)+' 秒';ph.style.color='#4af';}
+    else if(op&&platTimer>0){ph.style.display='block';var remain=Math.max(0,10-platTimer);ph.textContent='平台倒數 '+Math.ceil(remain)+' 秒';ph.style.color=remain<3?'#f44':'#4af';}
+    else{ph.style.display=op?'block':'none';if(op){ph.textContent='平台 10 秒';ph.style.color='#4af';}}
+  }
   if(hitMarkerTimer>0)hitMarkerTimer-=dt;
   var el=document.getElementById('crosshair');
   var awpEl=document.getElementById('awp-scope');
-  if(isADS&&locked&&gameStarted&&currentGun==='awp'){el.style.display='none';awpEl.style.display='block';}
-  else{awpEl.style.display='none';if(isADS&&locked&&gameStarted&&currentGun!=='grapple'&&currentGun!=='knife'){el.style.display='none';}else{el.style.display='block';}}
-  if(locked&&!gameStarted){el.textContent=Math.ceil(countdown);el.style.display='block';}
-  else if(hitMarkerTimer>0){el.textContent='✕';el.style.color='#ff4444';}
-  else{el.style.color='rgba(255,255,255,0.8)';el.textContent=wallClinging?'\u25A3':'+';}
+  if(el&&awpEl){
+    if(isADS&&locked&&gameStarted&&currentGun==='awp'){el.style.display='none';awpEl.style.display='block';}
+    else{awpEl.style.display='none';if(isADS&&locked&&gameStarted&&currentGun!=='grapple'&&currentGun!=='knife'){el.style.display='none';}else{el.style.display='block';}}
+    if(locked&&!gameStarted){el.textContent=Math.ceil(countdown);el.style.display='block';}
+    else if(hitMarkerTimer>0){el.textContent='✕';el.style.color='#ff4444';}
+    else{el.style.color='rgba(255,255,255,0.8)';el.textContent=wallClinging?'\u25A3':'+';}
+  }
   // Round earnings display
   var reEl=document.getElementById('round-earnings');
-  if(locked&&gameStarted&&!rangeMode){reEl.textContent='本局收穫 $'+roundEarnings;reEl.style.display='block';}else{reEl.style.display='none';}
+  if(reEl){if(locked&&gameStarted&&!rangeMode){reEl.textContent='本局收穫 $'+roundEarnings;reEl.style.display='block';}else{reEl.style.display='none';}}
   // Minimap
   var mm=document.getElementById('minimap');
   if(mm&&locked&&gameStarted&&!rangeMode){mm.style.display='block';drawMinimap();}else if(mm){mm.style.display='none';}
@@ -6614,12 +7081,53 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
     }
   }
   var skEl=document.getElementById('skill-cd');
-  if(playerClass&&gameStarted&&!rangeMode){
-    skEl.style.display='block';
-    if(classSkillCD>0)skEl.textContent='技能 '+Math.ceil(classSkillCD)+'s';
-    else if(classSkillActive)skEl.textContent='技能 啟動中';
-    else skEl.textContent='[F] '+classSkillData[playerClass].name;
-  }else{skEl.style.display='none';}
+  if(skEl){
+    if(playerClass&&gameStarted&&!rangeMode){
+      skEl.style.display='block';
+      if(classSkillCD>0)skEl.textContent='技能 '+Math.ceil(classSkillCD)+'s';
+      else if(classSkillActive)skEl.textContent='技能 啟動中';
+      else skEl.textContent='[F] '+classSkillData[playerClass].name;
+    }else{skEl.style.display='none';}
+  }
+  // Pet following & behavior
+  if(equippedPet&&gameStarted&&locked&&!rangeMode){
+    if(!petMesh||petMesh.userData.type!==equippedPet){
+      if(petMesh){scene.remove(petMesh);disposeMesh(petMesh);}
+      petMesh=createPetMesh(equippedPet);petMesh.userData.type=equippedPet;petMesh.userData.healTimer=0;petMesh.userData.attackTimer=0;petMesh.userData.pickCD=0;petMesh.userData.bobPhase=0;scene.add(petMesh);
+    }
+    var petTarget=pos.clone();var offset=new THREE.Vector3(0.6,0,0.8);offset.applyAxisAngle(new THREE.Vector3(0,1,0),yaw);petTarget.add(offset);
+    petMesh.position.lerp(petTarget,dt*6);
+    petMesh.userData.bobPhase=(petMesh.userData.bobPhase||0)+dt*3;
+    petMesh.position.y+=Math.sin(petMesh.userData.bobPhase)*0.04;
+    petMesh.lookAt(pos.x,petMesh.position.y,pos.z);
+    if(equippedPet==='healer_bee'){
+      petMesh.userData.healTimer=(petMesh.userData.healTimer||0)+dt;
+      if(petMesh.userData.healTimer>=3){petMesh.userData.healTimer=0;if(playerHP<100){playerHP=Math.min(100,playerHP+2);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.2,0)),2,'#44ff88');}}
+    }else if(equippedPet==='mini_dragon'){
+      petMesh.userData.attackTimer=(petMesh.userData.attackTimer||0)+dt;
+      if(petMesh.userData.attackTimer>=1.5){
+        petMesh.userData.attackTimer=0;
+        var nearest=null,nd=99;
+        for(var pei=0;pei<enemies.length;pei++){var pe=enemies[pei];if(pe.mesh.visible&&pe.hp>0){var pd_=pos.distanceTo(pe.pos);if(pd_<nd){nd=pd_;nearest=pe;}}}
+        if(nearest&&nd<10){nearest.hp=Math.max(0,nearest.hp-5);showDmgNum(nearest.pos.clone().add(new THREE.Vector3(0,1.5,0)),5,'#ff8844');if(nearest.hp<=0){nearest.mesh.visible=false;if(nearest.hBar)nearest.hBar.visible=false;if(nearest.aBar)nearest.aBar.visible=false;dailyKills++;}}
+      }
+    }else if(equippedPet==='ghost_orb'){
+      petMesh.userData.orbitalAngle=(petMesh.userData.orbitalAngle||0)+dt*2;
+      petMesh.children.forEach(function(c){if(c.geometry&&c.geometry.type==='SphereGeometry'&&c.material.transparent&&c.material.opacity<0.3){c.scale.setScalar(1+0.15*Math.sin(Date.now()*0.003));}});
+      for(var gei=0;gei<enemies.length;gei++){var ge=enemies[gei];if(ge.mesh.visible&&ge.hp>0&&pos.distanceTo(ge.pos)<15){var glowCol=0x4488ff;if(!ge.mesh.userData._ghostGlow){var gg=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,8),new THREE.MeshBasicMaterial({color:glowCol,transparent:true,opacity:0.15,depthWrite:false}));ge.mesh.add(gg);ge.mesh.userData._ghostGlow=gg;}ge.mesh.userData._ghostGlow.material.opacity=0.1+0.1*Math.sin(Date.now()*0.005);ge.mesh.userData._ghostGlow.visible=true;}else if(ge.mesh.userData&&ge.mesh.userData._ghostGlow){ge.mesh.userData._ghostGlow.visible=false;}}
+    }else if(equippedPet==='mech_dog'||equippedPet==='scavenger'){
+      petMesh.userData.pickCD=(petMesh.userData.pickCD||0)+dt;
+      if(petMesh.userData.pickCD>=0.5){
+        petMesh.userData.pickCD=0;
+        for(var ppi=pickups.length-1;ppi>=0;ppi--){
+          var pk=pickups[ppi];if(!pk||!pk.mesh)continue;
+          var dist=pos.distanceTo(pk.pos);
+          if(equippedPet==='mech_dog'&&dist<6&&pk.type!=='ammo'){pk.life=0;if(pk.collect)pk.collect();showDmgNum(pos.clone().add(new THREE.Vector3(0,1.2,0)),1,'#44ff88');pickups.splice(ppi,1);}
+          else if(equippedPet==='scavenger'&&dist<6&&pk.type==='ammo'){pk.life=0;if(pk.collect)pk.collect();showDmgNum(pos.clone().add(new THREE.Vector3(0,1.2,0)),1,'#4af');pickups.splice(ppi,1);}
+        }
+      }
+    }
+  }else if(petMesh&&petMesh.parent){scene.remove(petMesh);disposeMesh(petMesh);petMesh=null;}
   renderer.render(scene,cam);
   requestAnimationFrame(animate);
 }catch(e){console.error(e);document.getElementById("blocker").style.display="flex";document.querySelector("#blocker div").innerHTML="<b style=\"color:#f44\">錯誤：</b>"+e.message+"<br><small style=\"color:#aaa\">"+e.stack+"</small>";requestAnimationFrame(animate);}}
@@ -6924,7 +7432,7 @@ function updateAbyssalMaw(dt){
     try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}
     updateArmoryGunCounts();
     setTimeout(function(){document.getElementById('round-clear').style.display='none';},2500);
-    floodedMapElements.forEach(function(fme){if(fme.mesh)scene.remove(fme.mesh);});
+    floodedMapElements.forEach(function(fme){if(fme.mesh)disposeMesh(fme.mesh);});
     floodedMapElements=[];
     document.getElementById('o2-wrap').style.display='none';
     document.getElementById('underwater-overlay').style.display='none';
