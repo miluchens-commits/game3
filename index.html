@@ -4817,7 +4817,7 @@ function shoot(){
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
-    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
@@ -4877,7 +4877,7 @@ function shoot(){
       if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)smeshes.push(c)});}
       if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
       if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
-      if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
+      if(ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});
       if(rangeMode){rangeTargets.forEach(function(rt){smeshes.push(rt.meshBody);smeshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)smeshes.push(c);});});if(rangeWalkwayTarget)smeshes.push(rangeWalkwayTarget);}
       var shits=src.intersectObjects(smeshes);
       if(shits.length>0){
@@ -4969,7 +4969,7 @@ function shoot(){
     if(!isMultiplayer)for(var ei=0;ei<enemies.length;ei++){if(enemies[ei].mesh.visible!==false)enemies[ei].mesh.traverse(function(c){if(c.isMesh)meshes.push(c)});}
     if(!isMultiplayer&&bossActive&&boss&&boss.mesh)boss.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh)abyssalMaw.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
-    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
+    if(ufoActive&&ufo&&ufo.mesh)ufo.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});
     if(isMultiplayer)opponentMeshes.forEach(function(om){if(om)om.traverse(function(c){if(c.isMesh)meshes.push(c)});});
     if(rangeMode){rangeTargets.forEach(function(rt){meshes.push(rt.meshBody);meshes.push(rt.meshHead);});rangeDrones.forEach(function(rd){rd.mesh.traverse(function(c){if(c.isMesh)meshes.push(c);});});if(rangeWalkwayTarget)meshes.push(rangeWalkwayTarget);}
     var hits=rc.intersectObjects(meshes);
