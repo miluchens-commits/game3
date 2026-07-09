@@ -4920,7 +4920,7 @@ function shoot(){
             showDmgNum(shits[0].point,pd,'#ff4444');
           }
         }
-        if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh){
+        if(ufoActive&&ufo&&ufo.mesh){
           var hitUFOS=false;
           ufo.mesh.traverse(function(child){if(child===hitMesh)hitUFOS=true;});
           if(hitUFOS){
@@ -5045,7 +5045,7 @@ function shoot(){
       }
     }
     // UFO hit check
-    if(!isMultiplayer&&ufoActive&&ufo&&ufo.mesh&&currentGun!=='awp'){
+    if(ufoActive&&ufo&&ufo.mesh&&currentGun!=='awp'){
       var hitUFO=false;
       ufo.mesh.traverse(function(child){if(child===hitMesh)hitUFO=true;});
       if(hitUFO){
