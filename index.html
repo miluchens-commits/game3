@@ -1080,7 +1080,7 @@ var scene = new THREE.Scene();
 var currentMap='base';
 var gameDifficulty='normal';
 var diffMult=1;
-var ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoProjectiles=[];
+var ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoBeamRing=null,ufoProjectiles=[];
 var rangeMode=false,rangeScore=0,rangeShots=0,rangeHits=0,rangeTime=0,rangeTargets=[],rangeDrones=[],rangeWalkwayTarget=null,rangeWalkwayDir=1,rangeWalkwayPos=2;
 updateLevelDisplay();
 (function(){try{
@@ -3994,42 +3994,57 @@ function updateUFO(dt){
   ufo.mesh.position.copy(ufo.pos);
   ufo.mesh.rotation.y=patAngle+Math.PI;
   ufo.mesh.rotation.z=Math.sin(Date.now()/2000)*0.05;
-  // Show who is abducted
-  var targetLabel='';
-  if(ufoTargetIdx===0)targetLabel='🛸 你被 UFO 綁架了！';
-  else targetLabel='🛸 '+playerCount+'號 玩家被 UFO 綁架了！';
-  var biEl=document.getElementById('buff-indicator');
-  if(biEl&&ufoActive){biEl.textContent=targetLabel;biEl.style.opacity='1';biEl.style.color='#4df';}
   ufoTargetSwitchCD-=dt;
   if(ufoTargetSwitchCD<=0){
-    ufoTargetSwitchCD=12+Math.random()*6;
+    ufoTargetSwitchCD=10+Math.random()*4;
     if(isMultiplayer&&playerCount>1){
-      var candidates=[];
-      if(playerHP>0)candidates.push(0);
-      opponentStates.forEach(function(s,i){if(s.alive)candidates.push(i+1);});
-      if(candidates.length>1){
-        var curIdx=candidates.indexOf(ufoTargetIdx);
-        if(curIdx>=0)candidates.splice(curIdx,1);
+      var alive=[];
+      if(playerHP>0)alive.push(0);
+      opponentStates.forEach(function(s,i){if(s.alive)alive.push(i+1);});
+      if(alive.length>1){
+        var curIdx=alive.indexOf(ufoTargetIdx);
+        ufoTargetIdx=alive[(curIdx+1)%alive.length];
+      }else if(alive.length===1){
+        ufoTargetIdx=alive[0];
       }
-      ufoTargetIdx=candidates[Math.floor(Math.random()*candidates.length)];
     }else{ufoTargetIdx=0;}
   }
   var tpos=ufoTargetIdx===0?pos.clone():(opponentStates[ufoTargetIdx-1]?opponentStates[ufoTargetIdx-1].pos.clone():pos.clone());
-  // UFO abduction: pull target player upward
+  // Show who is abducted
+  var biEl=document.getElementById('buff-indicator');
+  if(biEl&&ufoActive){
+    if(ufoTargetIdx===0)biEl.textContent='🛸 你被 UFO 綁架了！';
+    else biEl.textContent='🛸 '+playerCount+'號 玩家被 UFO 綁架了！';
+    biEl.style.opacity='1';biEl.style.color='#f44';
+  }
+  // UFO abduction: lift player toward UFO
   if(ufoTargetIdx===0&&playerHP>0){
-    var liftAmount=Math.sin(Date.now()/500)*0.15+0.2;
-    var liftY=0.1+liftAmount;
-    pos.y+=liftY*dt;
-    if(pos.y>2.5)pos.y=2.5;
-  }else if(ufoTargetIdx>0&&opponentStates[ufoTargetIdx-1]&&opponentStates[ufoTargetIdx-1].alive){
-    var liftAmount=Math.sin(Date.now()/500)*0.15+0.2;
-    opponentStates[ufoTargetIdx-1].pos.y+=liftAmount*dt;
-    if(opponentStates[ufoTargetIdx-1].pos.y>2.5)opponentStates[ufoTargetIdx-1].pos.y=2.5;
+    var liftPhase=Date.now()/500;
+    var liftY=1.2+Math.sin(liftPhase)*0.5;
+    vel.y=9.8*dt+liftY;
+    var toUfoDir=new THREE.Vector3(ufo.pos.x-pos.x,0,ufo.pos.z-pos.z);
+    var toUfoDist=toUfoDir.length();
+    if(toUfoDist>1){
+      toUfoDir.normalize();
+      vel.x+=toUfoDir.x*dt*3;
+      vel.z+=toUfoDir.z*dt*3;
+    }
+    if(pos.y>3.5){pos.y=3.5;if(vel.y>0)vel.y=0;}
+    // Prevent ground clamp when above ground
+    if(pos.y>0.8&&onGround){onGround=false;}
   }
   if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);}
-  var beamGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ufo.pos.x,ufo.pos.y-0.3,ufo.pos.z),new THREE.Vector3(tpos.x,0.1,tpos.z)]);
-  ufoBeamMesh=new THREE.Line(beamGeo,new THREE.LineBasicMaterial({color:0x44aaff,transparent:true,opacity:0.3+Math.sin(Date.now()/300)*0.15}));
+  var beamColor=ufoTargetIdx===0?0xff4444:0x44aaff;
+  var beamEnd=new THREE.Vector3(tpos.x,Math.min(tpos.y+0.5,0.6),tpos.z);
+  var beamGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ufo.pos.x,ufo.pos.y-0.3,ufo.pos.z),beamEnd]);
+  ufoBeamMesh=new THREE.Line(beamGeo,new THREE.LineBasicMaterial({color:beamColor,transparent:true,opacity:0.5+Math.sin(Date.now()/200)*0.2}));
   scene.add(ufoBeamMesh);
+  // Glow ring at beam end
+  if(ufoBeamRing)scene.remove(ufoBeamRing);
+  ufoBeamRing=new THREE.Mesh(new THREE.RingGeometry(0.15,0.25,16),new THREE.MeshBasicMaterial({color:beamColor,transparent:true,opacity:0.4,side:THREE.DoubleSide}));
+  ufoBeamRing.position.set(beamEnd.x,beamEnd.y+0.05,beamEnd.z);
+  ufoBeamRing.lookAt(ufo.pos.x,ufo.pos.y,ufo.pos.z);
+  scene.add(ufoBeamRing);
   ufoAttackTimer-=dt;
   if(ufoAttackTimer<=0){
     ufoAttackTimer=1.2+Math.random()*0.8;
@@ -4359,6 +4374,8 @@ function startMultiGame(mapName){
     ufoActive=false;ufoSpawned=false;
     for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
     var bosshp=document.getElementById('boss-hp-wrap');if(bosshp){bosshp.style.display='none';}
+    if(ufoBeamRing){scene.remove(ufoBeamRing);ufoBeamRing=null;}
+    if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
   }
   if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}
   gameStarted=true;
