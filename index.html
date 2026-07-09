@@ -4115,13 +4115,23 @@ function processServerMessage(data){
     case 'match_found':
       document.getElementById('multi-connecting').style.display='none';
       isMultiplayer=true;playerCount=data.playerCount||2;opponentName=data.opponent||'對手';
+      opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
+      if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
+      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
+      var myId=data.playerId;
+      var otherCount=playerCount-1;
+      for(var oi=0;oi<otherCount;oi++){
+        opponentMeshes.push(null);
+        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null});
+        opponentPlayerIds.push(oi<myId?oi:oi+1);
+      }
       if(ufoMode){
         document.getElementById('multi-map-vote').style.display='none';
         document.getElementById('multi-vote-status').textContent='';
         setTimeout(function(){startMultiGame('base');},500);
         break;
       }
-      opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
+      document.getElementById('multi-map-vote').style.display='flex';
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
       var myId=data.playerId;
