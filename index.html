@@ -4382,6 +4382,8 @@ function startMultiGame(mapName){
     currentSlot=-1;
     switchToSlot(0);
     if(!rangeMode)document.getElementById('ammo-hud').innerHTML='∞';
+    countdown=3;
+    gameStarted=false;
   }
   if(ufoMode){
   ufoActive=false;ufoSpawned=false;
@@ -4391,7 +4393,7 @@ function startMultiGame(mapName){
     if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
   }
   if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}
-  gameStarted=true;
+  if(!bombMode)gameStarted=true;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   document.getElementById('blocker').style.display='flex';
   document.querySelector('#blocker div').innerHTML='點擊開始對戰';
