@@ -4532,7 +4532,7 @@ document.addEventListener('keydown',function(e){
   if(e.code==='Digit3'||e.code==='Numpad3')switchToSlot(2);
   if(e.code==='Digit4'||e.code==='Numpad4')switchToSlot(3);
   if(e.code==='Digit5'||e.code==='Numpad5')switchToSlot(4);
-  if(e.code==='KeyR')reload();
+  if(e.code==='KeyR'&&!bombMode)reload();
 if(bombMode)return;
       if(e.code==='KeyG'&&currentGun==='grapple')fireGrapple();
   if(e.code==='KeyF'&&gameStarted&&locked&&!isDowned)useClassSkill();
