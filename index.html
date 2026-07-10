@@ -4162,7 +4162,7 @@ function processServerMessage(data){
         opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null});
         opponentPlayerIds.push(oi<myId?oi:oi+1);
       }
-      if(ufoMode){
+      if(ufoMode||bombMode){
         document.getElementById('multi-map-vote').style.display='none';
         document.getElementById('multi-vote-status').textContent='';
         setTimeout(function(){startMultiGame('base');},500);
@@ -4191,8 +4191,7 @@ function processServerMessage(data){
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
       break;
     case 'map_result':
-      if(bombMode&&gameStarted){break;}
-      if(bombMode&&gameStarted){break;}if(ufoMode&&gameStarted){break;}
+      if((bombMode||ufoMode)&&gameStarted){break;}
       var chosenMap=data.map||'base';
       var votedMaps=data.votes||[];
       var uniqueVotes=[];
@@ -4376,8 +4375,15 @@ function startMultiGame(mapName){
     scene.add(oaBar);
     window.opponentBars.push({h:ohBar,a:oaBar});
   }
+  if(bombMode){
+    playerLoadout[0]='grenade';
+    grenadeStacks[0]=99;
+    grenadeTypes[0]='frag';
+    currentSlot=-1;
+    switchToSlot(0);
+    if(!rangeMode)document.getElementById('ammo-hud').innerHTML='∞';
+  }
   if(ufoMode){
-      if(bombMode){currentGun='grenade';currentSlot=-1;if(!rangeMode)document.getElementById('ammo-hud').textContent='∞';}
   ufoActive=false;ufoSpawned=false;
     for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
     var bosshp=document.getElementById('boss-hp-wrap');if(bosshp){bosshp.style.display='none';}
@@ -4610,7 +4616,7 @@ var mobileLookX=0,mobileLookY=0,mobileLooking=false,mobileLookId=null;
     (function(idx){
       var el=document.createElement('div');el.className='ms-slot'+(idx===currentSlot?' active':'');el.textContent=(idx+1)+' -';msc.appendChild(el);
       slotBtns.push(el);
-      el.addEventListener('touchstart',function(e){e.preventDefault();if(locked)switchToSlot(idx);},{passive:false});
+      el.addEventListener('touchstart',function(e){e.preventDefault();if(locked&&!bombMode)switchToSlot(idx);},{passive:false});
       el.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
       el.addEventListener('touchend',function(e){e.preventDefault();},{passive:false});
       el.addEventListener('touchcancel',function(){});
@@ -5316,7 +5322,7 @@ function throwPlayerGrenade(){
   gMesh.position.copy(gp);scene.add(gMesh);
   var fdmg=gtype==='frag'?gunData.grenade.dmg:(gtype==='incendiary'?20:0);
   projectiles.push({mesh:gMesh,pos:gp,vel:dir.clone().multiplyScalar(10),life:99,dmg:fdmg,isGrenade:true,fuse:gtype==='frag'?3:2,subType:gtype});
-  if(grenadeStacks[currentSlot]<=0&&playerLoadout[currentSlot]==='grenade'){playerLoadout[currentSlot]=null;switchToSlot(currentSlot<1?0:currentSlot-1);}
+  if(!bombMode&&grenadeStacks[currentSlot]<=0&&playerLoadout[currentSlot]==='grenade'){playerLoadout[currentSlot]=null;switchToSlot(currentSlot<1?0:currentSlot-1);}
   document.querySelectorAll('.loadout-slot').forEach(function(s,i){
     s.querySelector('.slot-gun').textContent=playerLoadout[i]?getSlotGunText(i):'─';
   });
