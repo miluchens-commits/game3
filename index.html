@@ -4802,7 +4802,6 @@ function getBulletHoleMesh(){
 }
 function shoot(){
   if(shootCD>0||isReloading||isDowned||inspectTimer>0)return;
-  if(bombMode){fireGrenade();shootCD=0.6;return;}
   if(window.ghostInvis)window.ghostInvis=false;
   // AWP blocked during boss fight
   if(currentGun==='awp'&&bossActive){
