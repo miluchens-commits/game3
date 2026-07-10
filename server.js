@@ -634,7 +634,7 @@ wss.on('connection', (ws) => {
     try { msg = JSON.parse(raw); } catch { return; }
     switch (msg.type) {
       case 'ping': ws.send(JSON.stringify({ type: 'pong' })); break;
-      case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
+      case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '', gameMode: msg.gameMode || 'multi' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;
@@ -661,31 +661,38 @@ const heartbeatInterval = setInterval(() => {
 wss.on('close', () => clearInterval(heartbeatInterval));
 
 function addToQueue(ws) {
-  // Check if any queued player is from the same team
+  const gm = ws.playerData.gameMode || 'multi';
+  // Check if any queued player is from the same team (same game mode)
   if (ws.playerData.teamId) {
     for (let i = 0; i < queue.length; i++) {
       const q = queue[i];
-      if (q.playerData.teamId === ws.playerData.teamId && q.readyState === WebSocket.OPEN) {
+      if (q.playerData.gameMode === gm && q.playerData.teamId === ws.playerData.teamId && q.readyState === WebSocket.OPEN) {
         queue.splice(i, 1);
-        startMatch(ws, q);
+        startMatch(ws, q, gm);
         return;
       }
     }
   }
+  // Find a queued player with the same game mode
+  for (let i = 0; i < queue.length; i++) {
+    const q = queue[i];
+    if (q.playerData.gameMode === gm && q.readyState === WebSocket.OPEN) {
+      queue.splice(i, 1);
+      startMatch(ws, q, gm);
+      return;
+    }
+  }
   queue.push(ws);
   ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
-  if (queue.length >= 2) {
-    const p1 = queue.shift(), p2 = queue.shift();
-    if (p1.readyState === WebSocket.OPEN && p2.readyState === WebSocket.OPEN) startMatch(p1, p2);
-    else { if (p1.readyState === WebSocket.OPEN) queue.unshift(p1); if (p2.readyState === WebSocket.OPEN) queue.unshift(p2); }
-  }
 }
 function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.splice(i, 1); }
-function startMatch(p1, p2) {
-  const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {} }; p1.roomId = rid; p2.roomId = rid;
+function startMatch(p1, p2, gameMode) {
+  const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {}, gameMode: gameMode || 'multi' }; p1.roomId = rid; p2.roomId = rid;
   p1.playerId = 0; p2.playerId = 1;
-    try{p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: 2 }));}catch(e){console.log('send to p1 failed');}
-    try{p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: 2 }));}catch(e){console.log('send to p2 failed');}
+  var pc = (gameMode && gameMode.endsWith('4')) ? 4 : 2;
+  // For 4-player mode, we still start with 2 — server needs 4-player queue support separately
+  try{p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: pc }));}catch(e){console.log('send to p1 failed');}
+  try{p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: pc }));}catch(e){console.log('send to p2 failed');}
   // Auto-pick map after 15s if not both voted
   const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2'];
   rooms[rid].voteTimer = setTimeout(() => {
