@@ -43,6 +43,14 @@ window.LobbySystem = (function() {
   // Crack wall texture
   var _crackTex = null;
 
+  // Multiplayer
+  var _ws = null;
+  var _lobbyName = '';
+  var _remotePlayers = {};
+  var _lastSentPos = {x:0,z:0,rot:0};
+  var _posSendThrottle = 0;
+  var _lobbyColors = [0x4488ff,0xff4444,0x44ff44,0xff8800,0xaa44ff,0xff44aa,0x44ffaa,0xffaa44,0x44ccff,0xff6644];
+
   // ============ COPIED FROM lobby-test.html ============
 
   function makeCrackTex(){
@@ -264,6 +272,35 @@ window.LobbySystem = (function() {
     return g;
   }
 
+  // ============ REMOTE PLAYER ============
+
+  function makeRemotePlayer(col, name){
+    var g=new T.Group();
+    var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
+    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
+    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
+    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshStandardMaterial({color:0x66ccff,emissive:col,emissiveIntensity:0.3}));
+    v.position.set(0,1.27,0.2);g.add(v);
+    var am=new T.Mesh(new T.BoxGeometry(0.15,0.5,0.15),bm());
+    var al=am.clone();al.position.set(-0.45,0.85,0);al.castShadow=true;g.add(al);
+    var ar=am.clone();ar.position.set(0.45,0.85,0);ar.castShadow=true;g.add(ar);
+    var lm=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),new T.MeshStandardMaterial({color:0x222244,roughness:0.7}));
+    var ll=lm.clone();ll.position.set(-0.2,0.35,0);ll.castShadow=true;g.add(ll);
+    var lr=lm.clone();lr.position.set(0.2,0.35,0);lr.castShadow=true;g.add(lr);
+    var cv=document.createElement('canvas');cv.width=128;cv.height=32;
+    var ctx=cv.getContext('2d');
+    ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();
+    if(ctx.roundRect)ctx.roundRect(0,0,128,32,4);else ctx.rect(0,0,128,32);
+    ctx.fill();
+    ctx.fillStyle='#'+col.toString(16).padStart(6,'0');
+    ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(name,64,16);
+    var tx=new T.CanvasTexture(cv);
+    var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+    sp.scale.set(1.2,0.3,1);sp.position.y=1.7;g.add(sp);
+    return g;
+  }
+
   // ============ UPDATE ============
 
   function upd(dt){
@@ -401,6 +438,27 @@ window.LobbySystem = (function() {
 
     var statEl=document.getElementById('lobby-stat');
     statEl.innerHTML='XYZ: '+_pos.x.toFixed(1)+', 0, '+_pos.z.toFixed(1);
+
+    // Multiplayer position broadcast
+    if(_ws&&_ws.readyState===1){
+      _posSendThrottle+=dt;
+      if(_posSendThrottle>0.05){
+        var px=_pos.x,pz=_pos.z,pr=_rot;
+        if(Math.abs(px-_lastSentPos.x)>0.05||Math.abs(pz-_lastSentPos.z)>0.05||Math.abs(pr-_lastSentPos.rot)>0.02){
+          _lastSentPos.x=px;_lastSentPos.z=pz;_lastSentPos.rot=pr;_posSendThrottle=0;
+          try{_ws.send(JSON.stringify({type:'lobby_pos',x:px,z:pz,rot:pr}));}catch(e){}
+        }
+      }
+    }
+    // Interpolate remote player meshes
+    Object.keys(_remotePlayers).forEach(function(nm){
+      var rp=_remotePlayers[nm];
+      if(rp.mesh){
+        rp.mesh.position.x+=(rp.pos.x-rp.mesh.position.x)*0.15;
+        rp.mesh.position.z+=(rp.pos.z-rp.mesh.position.z)*0.15;
+        rp.mesh.rotation.y+=(rp.rot-rp.mesh.rotation.y)*0.15;
+      }
+    });
   }
 
   function trigZone(zone){
@@ -414,6 +472,59 @@ window.LobbySystem = (function() {
     else if(id==='bomb4'&&_cbs.bomb)_cbs.bomb(4);
     else if(id==='ufo2'&&_cbs.ufo)_cbs.ufo(2);
     else if(id==='ufo4'&&_cbs.ufo)_cbs.ufo(4);
+  }
+
+  // ============ LOBBY MULTIPLAYER ============
+
+  function addRemotePlayer(data){
+    if(_remotePlayers[data.name]) return;
+    var col=data.color||0x4488ff;
+    var mesh=makeRemotePlayer(col,data.name);
+    mesh.position.set(data.x||0,0,data.z||0);
+    mesh.rotation.y=data.rot||0;
+    _scn.add(mesh);
+    _remotePlayers[data.name]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
+  }
+
+  function removeRemotePlayer(name){
+    var rp=_remotePlayers[name];
+    if(rp){if(rp.mesh&&_scn)_scn.remove(rp.mesh);delete _remotePlayers[name];}
+  }
+
+  function _connectLobby(){
+    if(_ws)return;
+    var ip='localhost';
+    var ipEl=document.getElementById('server-ip');
+    if(ipEl)ip=ipEl.value.trim()||'localhost';
+    _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
+    try{var url='ws://'+ip+':3000';_ws=new WebSocket(url);}catch(e){_ws=null;return;}
+    _ws.onopen=function(){
+      try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName}));}catch(e){}
+    };
+    _ws.onmessage=function(e){
+      var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
+      switch(msg.type){
+        case 'lobby_state':msg.players.forEach(function(p){if(p.name!==_lobbyName)addRemotePlayer(p);});break;
+        case 'lobby_player_join':if(msg.name!==_lobbyName)addRemotePlayer(msg);break;
+        case 'lobby_player_pos':if(_remotePlayers[msg.name]){_remotePlayers[msg.name].pos.x=msg.x;_remotePlayers[msg.name].pos.z=msg.z;_remotePlayers[msg.name].rot=msg.rot;}break;
+        case 'lobby_player_leave':removeRemotePlayer(msg.name);break;
+      }
+    };
+    _ws.onclose=function(){
+      Object.keys(_remotePlayers).forEach(function(nm){removeRemotePlayer(nm);});
+      _ws=null;
+    };
+    _ws.onerror=function(){};
+  }
+
+  function _disconnectLobby(){
+    if(_ws){
+      try{_ws.send(JSON.stringify({type:'lobby_leave'}));}catch(e){}
+      try{_ws.close();}catch(e){}
+      _ws=null;
+    }
+    Object.keys(_remotePlayers).forEach(function(nm){removeRemotePlayer(nm);});
+    _lastSentPos={x:0,z:0,rot:0};_posSendThrottle=0;
   }
 
   // ============ PUBLIC API ============
@@ -455,10 +566,12 @@ window.LobbySystem = (function() {
       _th=Math.PI;_ph=0.5;_dist=12;_animT=0;_activeZone=null;_platT=0;_occupyTimer=0;
       document.getElementById('lobby-ui').style.display='block';
       document.getElementById('menu').style.display='none';
+      _connectLobby();
     },
     deactivate: function(){
       _active=false;
       document.getElementById('lobby-ui').style.display='none';
+      _disconnectLobby();
     },
     update:function(dt){upd(dt);},
     render:function(){if(_active&&_ren&&_scn&&_cam)_ren.render(_scn,_cam);},
