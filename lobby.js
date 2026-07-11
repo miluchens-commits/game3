@@ -437,7 +437,7 @@ window.LobbySystem = (function() {
     });
 
     var statEl=document.getElementById('lobby-stat');
-    statEl.innerHTML='XYZ: '+_pos.x.toFixed(1)+', 0, '+_pos.z.toFixed(1);
+    statEl.innerHTML='XYZ: '+_pos.x.toFixed(1)+', 0, '+_pos.z.toFixed(1)+' | '+( _ws&&_ws.readyState===1 ? '🟢 '+Object.keys(_remotePlayers).length+'人' : (_ws?'🟡 連線中':'🔴 離線') );
 
     // Multiplayer position broadcast
     if(_ws&&_ws.readyState===1){
@@ -497,6 +497,7 @@ window.LobbySystem = (function() {
     var ipEl=document.getElementById('server-ip');
     if(ipEl)ip=ipEl.value.trim()||'localhost';
     _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
+    var _cid=localStorage.getItem('oc_user_id')||'anon_'+Math.random().toString(36).slice(2,10);
     try{
       var url;
       if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
@@ -507,7 +508,7 @@ window.LobbySystem = (function() {
       _ws=new WebSocket(url);
     }catch(e){_ws=null;return;}
     _ws.onopen=function(){
-      try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName}));}catch(e){}
+      try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){}
     };
     _ws.onmessage=function(e){
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}

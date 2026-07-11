@@ -633,10 +633,6 @@ function lobbyList() { const a = []; lobbyPlayers.forEach(p => a.push({ name: p.
 function broadcastLobby(except, data) { lobbyPlayers.forEach(p => { if (p.ws !== except && p.ws.readyState === WebSocket.OPEN) try { p.ws.send(JSON.stringify(data)); } catch(e){} }); }
 function handleLobbyJoin(ws, msg) {
   if (ws.lobbyData) return;
-  // Remove old connection with same name
-  let old = null;
-  lobbyPlayers.forEach((p, w) => { if (p.name === msg.name) { old = w; } });
-  if (old) try { old.close(); } catch(e) {}
   const color = lobbyColors[lobbyPlayers.size % lobbyColors.length];
   ws.lobbyData = { name: msg.name || 'Player', x: 0, z: 0, rot: 0, color };
   lobbyPlayers.set(ws, ws.lobbyData);
