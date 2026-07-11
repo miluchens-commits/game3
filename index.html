@@ -4168,16 +4168,6 @@ function processServerMessage(data){
       }
       document.getElementById('multi-connecting').style.display='none';
       document.getElementById('multi-map-vote').style.display='flex';
-      if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
-      opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
-      var myId=data.playerId;
-      var otherCount=playerCount-1;
-      for(var oi=0;oi<otherCount;oi++){
-        opponentMeshes.push(null);
-          opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null});
-        opponentPlayerIds.push(oi<myId?oi:oi+1);
-      }
-      document.getElementById('multi-map-vote').style.display='flex';
       document.getElementById('multi-vote-status').textContent='請選擇地圖';
       document.getElementById('multi-vote-timer').textContent='';
       window._voteResolved=false;
