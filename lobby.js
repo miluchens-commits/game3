@@ -497,7 +497,15 @@ window.LobbySystem = (function() {
     var ipEl=document.getElementById('server-ip');
     if(ipEl)ip=ipEl.value.trim()||'localhost';
     _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
-    try{var url='ws://'+ip+':3000';_ws=new WebSocket(url);}catch(e){_ws=null;return;}
+    try{
+      var url;
+      if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
+        url=(location.protocol==='https:'?'wss:':'ws:')+'//'+location.hostname+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:'');
+      }else{
+        url='ws://'+ip+':3000';
+      }
+      _ws=new WebSocket(url);
+    }catch(e){_ws=null;return;}
     _ws.onopen=function(){
       try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName}));}catch(e){}
     };
