@@ -506,12 +506,15 @@ window.LobbySystem = (function() {
         url='ws://'+ip+':3000';
       }
       _ws=new WebSocket(url);
-    }catch(e){_ws=null;return;}
+    }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;return;}
+    console.log('[Lobby] Connecting to',url);
     _ws.onopen=function(){
-      try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){}
+      console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
+      try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){console.log('[Lobby] send error:',e);}
     };
     _ws.onmessage=function(e){
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
+      console.log('[Lobby] recv:',msg.type,msg);
       switch(msg.type){
         case 'lobby_state':msg.players.forEach(function(p){if(p.name!==_lobbyName)addRemotePlayer(p);});break;
         case 'lobby_player_join':if(msg.name!==_lobbyName)addRemotePlayer(msg);break;
@@ -519,11 +522,12 @@ window.LobbySystem = (function() {
         case 'lobby_player_leave':removeRemotePlayer(msg.name);break;
       }
     };
-    _ws.onclose=function(){
+    _ws.onclose=function(e){
+      console.log('[Lobby] WS close code='+(e?e.code:'?')+' reason='+(e?e.reason:'?'));
       Object.keys(_remotePlayers).forEach(function(nm){removeRemotePlayer(nm);});
       _ws=null;
     };
-    _ws.onerror=function(){};
+    _ws.onerror=function(e){console.log('[Lobby] WS error',e);};
   }
 
   function _disconnectLobby(){
