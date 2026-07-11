@@ -1080,7 +1080,7 @@ var scene = new THREE.Scene();
 var currentMap='base';
 var gameDifficulty='normal';
 var diffMult=1;
-var bombMode=false,ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoBeamRing=null,ufoProjectiles=[];
+var bombMode=false,ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoBeamRing=null,ufoProjectiles=[],requestedPlayerCount=0;
 var rangeMode=false,rangeScore=0,rangeShots=0,rangeHits=0,rangeTime=0,rangeTargets=[],rangeDrones=[],rangeWalkwayTarget=null,rangeWalkwayDir=1,rangeWalkwayPos=2;
 updateLevelDisplay();
 (function(){try{
@@ -3881,7 +3881,7 @@ var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],oppone
 var relayIframe=null,httpClientId=null;
 function connectMultiplayer(mode){
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
-  isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
+  requestedPlayerCount=mode||2;isMultiplayer=false;playerCount=requestedPlayerCount;opponentMeshes=[];opponentStates=[];relayReady=false;
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   var ip=document.getElementById('server-ip').value.trim()||'localhost';
   if(location.protocol==='file:'){
@@ -4150,8 +4150,7 @@ function processServerMessage(data){
       document.getElementById('multi-status').innerHTML='佇列中 ('+data.position+')...<br><small style="color:rgba(255,255,255,.3)">需要 '+playerCount+' 位玩家</small>';
       break;
     case 'match_found':
-      document.getElementById('multi-connecting').style.display='none';
-      isMultiplayer=true;playerCount=data.playerCount||2;opponentName=data.opponent||'對手';
+      isMultiplayer=true;playerCount=data.playerCount||requestedPlayerCount||2;opponentName=data.opponent||'對手';
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
@@ -4164,10 +4163,10 @@ function processServerMessage(data){
       }
       if(ufoMode||bombMode){
         document.getElementById('multi-map-vote').style.display='none';
-        document.getElementById('multi-vote-status').textContent='';
-        setTimeout(function(){startMultiGame('base');},500);
+        if(requestedPlayerCount>2&&playerCount<requestedPlayerCount){document.getElementById('multi-status').innerHTML='⚠️ 伺服器不支援 '+(requestedPlayerCount)+' 人配對<br><small style="color:rgba(255,255,255,.3)">以 '+(playerCount)+' 人模式開始</small>';setTimeout(function(){document.getElementById('multi-connecting').style.display='none';startMultiGame('base');},2000);}else{document.getElementById('multi-connecting').style.display='none';setTimeout(function(){startMultiGame('base');},500);}
         break;
       }
+      document.getElementById('multi-connecting').style.display='none';
       document.getElementById('multi-map-vote').style.display='flex';
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
@@ -6452,7 +6451,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode&&!bombMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh(); if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh(); if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted&&currentMap==='dragonboat'&&dragonBoatElements)dragonBoatElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
