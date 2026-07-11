@@ -505,7 +505,7 @@ window.LobbySystem = (function() {
       }else{
         url='ws://'+ip+':3000';
       }
-      _ws=new WebSocket(url);
+      _ws=new WebSocket(url+'/lobby');
     }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;return;}
     console.log('[Lobby] Connecting to',url);
     _ws.onopen=function(){
