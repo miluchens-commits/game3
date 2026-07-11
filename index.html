@@ -3858,7 +3858,7 @@ function sendMapVote(map){
     }).catch(function(){});
   },500);
 }
-var opponentName='';
+var opponentName='',opponentNames=[];
 function addKillFeed(killer,victim,gun){
   var kf=document.getElementById('killfeed');
   var entry=document.createElement('div');entry.className='kf-entry';
@@ -4151,6 +4151,7 @@ function processServerMessage(data){
       break;
     case 'match_found':
       isMultiplayer=true;playerCount=data.playerCount||requestedPlayerCount||2;opponentName=data.opponent||'對手';
+      if(data.opponents){opponentNames=data.opponents.slice();}else{opponentNames=[];for(var ni=0;ni<playerCount-1;ni++){opponentNames.push((data.opponent||'對手')+(playerCount>2?' '+(ni+2)+' 號':''));}}
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
@@ -5079,7 +5080,7 @@ function shoot(){
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
-          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentName,gunData[currentGun]?gunData[currentGun].name:'??');}
+          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentNames[oidx]||opponentName,gunData[currentGun]?gunData[currentGun].name:'??');}
           showDmgNum(hits[0].point,Math.round(dmg),'#ff4444');
         }
       });
