@@ -638,8 +638,9 @@ function handleLobbyJoin(ws, msg) {
   const color = lobbyColors[lobbyPlayers.size % lobbyColors.length];
   ws.lobbyData = { name: msg.name || 'Player', clientId: msg.clientId || '', x: 0, z: 0, rot: 0, color };
   lobbyPlayers.set(ws, ws.lobbyData);
+  console.log('[Lobby] handleLobbyJoin cid='+msg.clientId+' name='+msg.name+' lobbySize='+lobbyPlayers.size);
   broadcastLobby(ws, { type: 'lobby_player_join', name: ws.lobbyData.name, clientId: ws.lobbyData.clientId, x: 0, z: 0, rot: 0, color: ws.lobbyData.color });
-  ws.send(JSON.stringify({ type: 'lobby_state', players: lobbyList() }));
+  try { ws.send(JSON.stringify({ type: 'lobby_state', players: lobbyList() })); } catch(e) { console.log('[Lobby] send lobby_state error:', e.message); }
 }
 function handleLobbyLeave(ws) {
   if (!ws.lobbyData || !lobbyPlayers.has(ws)) return;

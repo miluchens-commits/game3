@@ -470,14 +470,21 @@ window.LobbySystem = (function() {
     mesh.position.set(sx,0,sz);
     mesh.rotation.y=data.rot||0;
     _scn.add(mesh);
-    _remotePlayers[data.clientId]={mesh:mesh,pos:{x:sx,z:sz,rot:data.rot||0}};
+    var sphere=new T.Mesh(new T.SphereGeometry(0.4,8,8),new T.MeshBasicMaterial({color:0xffff00}));
+    sphere.position.set(sx,1,sz);_scn.add(sphere);
+    _remotePlayers[data.clientId]={mesh:mesh,sphere:sphere,pos:{x:sx,z:sz,rot:data.rot||0}};
   }
 
   function removeRemotePlayer(cid){
     var rp=_remotePlayers[cid];
-    if(rp){if(rp.mesh&&_scn)_scn.remove(rp.mesh);delete _remotePlayers[cid];}
+    if(rp){
+      if(rp.mesh&&_scn)_scn.remove(rp.mesh);
+      if(rp.sphere&&_scn)_scn.remove(rp.sphere);
+      delete _remotePlayers[cid];
+    }
   }
 
+  var _reconnectTimer=null;
   function _connectLobby(){
     if(_ws)return;
     var ip='localhost';
@@ -494,28 +501,37 @@ window.LobbySystem = (function() {
         url='ws://'+ip+':3000';
       }
       _ws=new WebSocket(url+'/lobby');
-    }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;return;}
+    }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;if(_active)_scheduleReconnect();return;}
     console.log('[Lobby] Connecting to',url);
     _ws.onopen=function(){
       console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
+      if(_reconnectTimer){clearTimeout(_reconnectTimer);_reconnectTimer=null;}
       try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){console.log('[Lobby] send error:',e);}
     };
     _ws.onmessage=function(e){
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
-      switch(msg.type){
-        case 'lobby_state':console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
-        case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
-        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
-        case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
-      }
+      try{
+        switch(msg.type){
+          case 'lobby_state':console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
+          case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
+          case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
+          case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
+        }
+      }catch(ex){console.log('[Lobby] onmessage error:',ex);}
     };
     _ws.onclose=function(e){
       console.log('[Lobby] WS close code='+(e?e.code:'?')+' reason='+(e?e.reason:'?'));
       Object.keys(_remotePlayers).forEach(function(cid){removeRemotePlayer(cid);});
       _ws=null;
+      if(_active)_scheduleReconnect();
     };
     _ws.onerror=function(e){console.log('[Lobby] WS error',e);};
+  }
+  function _scheduleReconnect(){
+    if(_reconnectTimer)return;
+    console.log('[Lobby] scheduling reconnect in 3s');
+    _reconnectTimer=setTimeout(function(){_reconnectTimer=null;if(_active)_connectLobby();},3000);
   }
 
   function _disconnectLobby(){
