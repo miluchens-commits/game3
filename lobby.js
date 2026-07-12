@@ -277,10 +277,25 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var g=new T.Group();
-    // ULTIMATE TEST: MeshBasicMaterial (no lighting needed, always visible)
-    var bm=function(c){return new T.MeshBasicMaterial({color:c||col})};
-    var body=new T.Mesh(new T.BoxGeometry(1.2,1.0,1.2),bm());body.position.y=0.8;g.add(body);
-    var head=new T.Mesh(new T.BoxGeometry(0.6,0.5,0.6),bm());head.position.y=1.5;g.add(head);
+    var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
+    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
+    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
+    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.5}));
+    v.position.set(0,1.27,0.2);g.add(v);
+    var am=new T.Mesh(new T.BoxGeometry(0.15,0.5,0.15),bm());
+    var al=am.clone();al.position.set(-0.45,0.85,0);al.castShadow=true;g.add(al);
+    var ar=am.clone();ar.position.set(0.45,0.85,0);ar.castShadow=true;g.add(ar);
+    var lm=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),new T.MeshStandardMaterial({color:0x222244,roughness:0.7}));
+    var ll=lm.clone();ll.position.set(-0.2,0.35,0);ll.castShadow=true;g.add(ll);
+    var lr=lm.clone();lr.position.set(0.2,0.35,0);lr.castShadow=true;g.add(lr);
+    var gg=new T.Group();
+    var gb=new T.Mesh(new T.BoxGeometry(0.05,0.05,0.3),new T.MeshStandardMaterial({color:0x666666,metalness:0.9,roughness:0.2}));
+    gb.position.set(0,0,0.18);gg.add(gb);
+    var gh=new T.Mesh(new T.BoxGeometry(0.04,0.08,0.04),new T.MeshStandardMaterial({color:0x555555}));
+    gh.position.set(0,-0.06,0.05);gg.add(gh);
+    gg.position.set(0.15,0.75,0.2);g.add(gg);
+    var pGlow=new T.Mesh(new T.SphereGeometry(0.6,12,12),new T.MeshBasicMaterial({color:col||0x4488ff,transparent:true,opacity:0.06}));
+    pGlow.position.y=0.8;g.add(pGlow);
     return g;
   }
 
@@ -420,7 +435,7 @@ window.LobbySystem = (function() {
     });
 
     var statEl=document.getElementById('lobby-stat');
-    statEl.innerHTML='XYZ: '+_pos.x.toFixed(1)+', 0, '+_pos.z.toFixed(1)+' | '+( _ws&&_ws.readyState===1 ? '🟢 '+Object.keys(_remotePlayers).length+'人' : (_ws?'🟡 連線中':'🔴 離線') );
+    statEl.innerHTML='XYZ: '+_pos.x.toFixed(1)+', 0, '+_pos.z.toFixed(1)+' | '+( _ws&&_ws.readyState===1 ? '🟢 '+Object.keys(_remotePlayers).length+'人' : (_ws?'🟡 連線中':'🔴 離線') )+' | SCN:'+(_scn?_scn.children.length:'?');
 
     // Multiplayer position broadcast
     if(_ws&&_ws.readyState===1){
@@ -464,22 +479,26 @@ window.LobbySystem = (function() {
     console.log('[Lobby] addRP',data.clientId,'serverPos',data.x,data.z);
     var col=data.color||0x4488ff;
     var mesh=makeRemotePlayer(col,data.name);
-    // Spawn at a deliberately visible offset (5 units right) to avoid overlapping local player at (0,-20)
-    var sx=5;
-    var sz=0;
+    // Spawn at same position as local player for direct comparison
+    var sx=_pos.x;
+    var sz=_pos.z;
     mesh.position.set(sx,0,sz);
     mesh.rotation.y=data.rot||0;
+    // Disable frustum culling to ensure visibility
+    mesh.traverse(function(c){if(c.isMesh)c.frustumCulled=false;});
     _scn.add(mesh);
-    var sphere=new T.Mesh(new T.SphereGeometry(0.4,8,8),new T.MeshBasicMaterial({color:0xffff00}));
-    sphere.position.set(sx,1,sz);_scn.add(sphere);
-    _remotePlayers[data.clientId]={mesh:mesh,sphere:sphere,pos:{x:sx,z:sz,rot:data.rot||0}};
+    // Bright debug arrow at same position
+    var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,0,sz),1,0xff0000);
+    _scn.add(arrow);
+    _remotePlayers[data.clientId]={mesh:mesh,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+    console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
   }
 
   function removeRemotePlayer(cid){
     var rp=_remotePlayers[cid];
     if(rp){
       if(rp.mesh&&_scn)_scn.remove(rp.mesh);
-      if(rp.sphere&&_scn)_scn.remove(rp.sphere);
+      if(rp.arrow&&_scn)_scn.remove(rp.arrow);
       delete _remotePlayers[cid];
     }
   }
