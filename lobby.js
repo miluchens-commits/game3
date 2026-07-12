@@ -276,27 +276,23 @@ window.LobbySystem = (function() {
   // ============ REMOTE PLAYER ============
 
   function makeRemotePlayer(col, name){
-    var g=new T.Group();
+    // All meshes added directly to an array — caller adds to scene
+    var parts=[];
     var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
-    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
-    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
-    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshStandardMaterial({color:0x66ccff,emissive:0x4488ff,emissiveIntensity:0.5}));
-    v.position.set(0,1.27,0.2);g.add(v);
+    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.set(0,0.8,0);body.castShadow=true;parts.push(body);
+    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.set(0,1.25,0);head.castShadow=true;parts.push(head);
+    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshBasicMaterial({color:0x66ccff}));v.position.set(0,1.27,0.2);parts.push(v);
     var am=new T.Mesh(new T.BoxGeometry(0.15,0.5,0.15),bm());
-    var al=am.clone();al.position.set(-0.45,0.85,0);al.castShadow=true;g.add(al);
-    var ar=am.clone();ar.position.set(0.45,0.85,0);ar.castShadow=true;g.add(ar);
-    var lm=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),new T.MeshStandardMaterial({color:0x222244,roughness:0.7}));
-    var ll=lm.clone();ll.position.set(-0.2,0.35,0);ll.castShadow=true;g.add(ll);
-    var lr=lm.clone();lr.position.set(0.2,0.35,0);lr.castShadow=true;g.add(lr);
-    var gg=new T.Group();
-    var gb=new T.Mesh(new T.BoxGeometry(0.05,0.05,0.3),new T.MeshStandardMaterial({color:0x666666,metalness:0.9,roughness:0.2}));
-    gb.position.set(0,0,0.18);gg.add(gb);
-    var gh=new T.Mesh(new T.BoxGeometry(0.04,0.08,0.04),new T.MeshStandardMaterial({color:0x555555}));
-    gh.position.set(0,-0.06,0.05);gg.add(gh);
-    gg.position.set(0.15,0.75,0.2);g.add(gg);
-    var pGlow=new T.Mesh(new T.SphereGeometry(0.6,12,12),new T.MeshBasicMaterial({color:col||0x4488ff,transparent:true,opacity:0.06}));
-    pGlow.position.y=0.8;g.add(pGlow);
-    return g;
+    var al=am.clone();al.position.set(-0.45,0.85,0);al.castShadow=true;parts.push(al);
+    var ar=am.clone();ar.position.set(0.45,0.85,0);ar.castShadow=true;parts.push(ar);
+    var lMat=new T.MeshBasicMaterial({color:0x222244});
+    var ll=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),lMat);ll.position.set(-0.2,0.35,0);parts.push(ll);
+    var lr=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),lMat);lr.position.set(0.2,0.35,0);parts.push(lr);
+    var gMat=new T.MeshStandardMaterial({color:0x666666,metalness:0.9,roughness:0.2});
+    var gb=new T.Mesh(new T.BoxGeometry(0.05,0.05,0.3),gMat);gb.position.set(0.15,0.75,0.38);parts.push(gb);
+    var gh=new T.Mesh(new T.BoxGeometry(0.04,0.08,0.04),new T.MeshBasicMaterial({color:0x555555}));gh.position.set(0.15,0.69,0.25);parts.push(gh);
+    var pGlow=new T.Mesh(new T.SphereGeometry(0.6,12,12),new T.MeshBasicMaterial({color:col||0x4488ff,transparent:true,opacity:0.06}));pGlow.position.set(0,0.8,0);parts.push(pGlow);
+    return parts;
   }
 
   // ============ UPDATE ============
@@ -479,20 +475,19 @@ window.LobbySystem = (function() {
     console.log('[Lobby] addRP',data.clientId,'serverPos',data.x,data.z);
     try {
       var col=data.color||0x4488ff;
-      var mesh=makeRemotePlayer(col,data.name);
-      if(!mesh){console.log('[Lobby] addRP mesh is null!');return;}
-      // Spawn at server-reported position so remote player appears where they actually are
+      var parts=makeRemotePlayer(col,data.name);
+      if(!parts||!parts.length){console.log('[Lobby] addRP parts empty!');return;}
       var sx=data.x||_pos.x;
       var sz=data.z||_pos.z;
-      mesh.position.set(sx,0,sz);
-      mesh.rotation.y=data.rot||0;
-      // Disable frustum culling to ensure visibility
-      mesh.traverse(function(c){if(c.isMesh)c.frustumCulled=false;});
-      _scn.add(mesh);
+      var container=new T.Group();
+      container.position.set(sx,0,sz);
+      container.rotation.y=data.rot||0;
+      parts.forEach(function(p){p.frustumCulled=false;container.add(p);});
+      _scn.add(container);
       // Bright debug arrow at same position
-      var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,0,sz),2,0xff0000);
+      var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
       _scn.add(arrow);
-      _remotePlayers[data.clientId]={mesh:mesh,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={mesh:container,parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
       console.log('[Lobby] addRP error:',e.message,'stack:',e.stack);
