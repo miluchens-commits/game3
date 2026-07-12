@@ -444,13 +444,18 @@ window.LobbySystem = (function() {
         }
       }
     }
-    // Interpolate remote player meshes
+    // Interpolate remote player meshes (each part directly on scene, no Group)
     Object.keys(_remotePlayers).forEach(function(cid){
       var rp=_remotePlayers[cid];
-      if(rp.mesh){
-        rp.mesh.position.x+=(rp.pos.x-rp.mesh.position.x)*0.15;
-        rp.mesh.position.z+=(rp.pos.z-rp.mesh.position.z)*0.15;
-        rp.mesh.rotation.y+=(rp.rot-rp.mesh.rotation.y)*0.15;
+      if(rp.parts&&rp.parts.length){
+        var ref=rp.parts[0];
+        var dx=(rp.pos.x-ref.position.x)*0.15;
+        var dz=(rp.pos.z-ref.position.z)*0.15;
+        var drot=(rp.rot-ref.rotation.y)*0.15;
+        rp.parts.forEach(function(p){
+          p.position.x+=dx; p.position.z+=dz;
+          p.rotation.y+=drot;
+        });
       }
     });
   }
@@ -477,32 +482,32 @@ window.LobbySystem = (function() {
       var col=data.color||0x4488ff;
       var parts=makeRemotePlayer(col,data.name);
       if(!parts||!parts.length){console.log('[Lobby] addRP parts empty!');return;}
-      var sx=(data.x||_pos.x)+3;
+      var sx=data.x||_pos.x;
       var sz=data.z||_pos.z;
-      var container=new T.Group();
-      container.position.set(sx,0,sz);
-      container.rotation.y=data.rot||0;
-      parts.forEach(function(p){p.frustumCulled=false;container.add(p);});
-      _scn.add(container);
-      // TEST: standalone cube directly on scene
-      var testCube=new T.Mesh(new T.BoxGeometry(0.8,0.8,0.8),new T.MeshBasicMaterial({color:0x00ff00}));
-      testCube.position.set(sx,1.2,sz);testCube.frustumCulled=false;_scn.add(testCube);
-      // Bright debug arrow at same position
+      // Add each mesh directly to scene (NO Group) with world positions
+      parts.forEach(function(p){
+        p.position.x+=sx;
+        p.position.z+=sz;
+        p.frustumCulled=false;
+        _scn.add(p);
+      });
+      // Keep arrow for now to confirm position
       var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
       _scn.add(arrow);
-      _remotePlayers[data.clientId]={mesh:container,parts:parts,arrow:arrow,cube:testCube,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      console.log('[Lobby] addRP parts:',parts.length,'firstPart pos:',parts[0].position.x.toFixed(2),parts[0].position.y.toFixed(2),parts[0].position.z.toFixed(2));
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
       console.log('[Lobby] addRP error:',e.message,'stack:',e.stack);
     }
   }
+  }
 
   function removeRemotePlayer(cid){
     var rp=_remotePlayers[cid];
     if(rp){
-      if(rp.mesh&&_scn)_scn.remove(rp.mesh);
+      if(rp.parts)rp.parts.forEach(function(p){if(_scn)_scn.remove(p);});
       if(rp.arrow&&_scn)_scn.remove(rp.arrow);
-      if(rp.cube&&_scn)_scn.remove(rp.cube);
       delete _remotePlayers[cid];
     }
   }
