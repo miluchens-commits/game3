@@ -518,9 +518,9 @@ window.LobbySystem = (function() {
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
       switch(msg.type){
-        case 'lobby_state':msg.players.forEach(function(p){if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
-        case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
-        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
+        case 'lobby_state':console.log('[Lobby] players count:',msg.players.length,JSON.stringify(msg.players.map(function(p){return p.clientId;})));msg.players.forEach(function(p){if(p.clientId!==_localClientId){try{addRemotePlayer(p);console.log('[Lobby] addRemotePlayer OK for',p.clientId);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}});break;
+        case 'lobby_player_join':if(msg.clientId!==_localClientId){try{addRemotePlayer(msg);console.log('[Lobby] addRemotePlayer (join) OK for',msg.clientId);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}break;
+        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}else{console.log('[Lobby] pos for unknown clientId:',msg.clientId);}break;
         case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
       }
     };
