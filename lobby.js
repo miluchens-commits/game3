@@ -547,8 +547,12 @@ window.LobbySystem = (function() {
 
   // ============ PUBLIC API ============
 
+  var _inited=false;
   return {
     init: function(ren,cbs){
+      if(_inited){console.log('[Lobby] init skipped (already inited)');return;}
+      _inited=true;
+      console.log('[Lobby] init called');
       T=window.THREE; _ren=ren; _cbs=cbs||{};
       _clock=new T.Clock(); _pos=new T.Vector3(0,0,0);
       _scn=new T.Scene(); _scn.background=new T.Color(0x0a0a18); _scn.fog=new T.Fog(0x0a0a18,35,55);

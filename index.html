@@ -1127,6 +1127,8 @@ if(authToken){
   setTimeout(function(){if(typeof checkTeamStatus==='function')checkTeamStatus();},100);
 }
 function bootGame() {
+if(window._bootGameDone){console.log('[bootGame] skipped');return;}
+window._bootGameDone=true;
 var THREE = window.THREE;
 if (!THREE) { document.getElementById('error').style.display='block'; document.getElementById('start-msg').style.display='none'; return; }
 
