@@ -484,10 +484,13 @@ window.LobbySystem = (function() {
       container.rotation.y=data.rot||0;
       parts.forEach(function(p){p.frustumCulled=false;container.add(p);});
       _scn.add(container);
+      // TEST: standalone cube directly on scene
+      var testCube=new T.Mesh(new T.BoxGeometry(0.8,0.8,0.8),new T.MeshBasicMaterial({color:0x00ff00}));
+      testCube.position.set(sx,1.2,sz);testCube.frustumCulled=false;_scn.add(testCube);
       // Bright debug arrow at same position
       var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
       _scn.add(arrow);
-      _remotePlayers[data.clientId]={mesh:container,parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={mesh:container,parts:parts,arrow:arrow,cube:testCube,pos:{x:sx,z:sz,rot:data.rot||0}};
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
       console.log('[Lobby] addRP error:',e.message,'stack:',e.stack);
@@ -499,6 +502,7 @@ window.LobbySystem = (function() {
     if(rp){
       if(rp.mesh&&_scn)_scn.remove(rp.mesh);
       if(rp.arrow&&_scn)_scn.remove(rp.arrow);
+      if(rp.cube&&_scn)_scn.remove(rp.cube);
       delete _remotePlayers[cid];
     }
   }
