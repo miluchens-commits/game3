@@ -498,7 +498,7 @@ window.LobbySystem = (function() {
     var ipEl=document.getElementById('server-ip');
     if(ipEl)ip=ipEl.value.trim()||'localhost';
     _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
-    _localClientId=localStorage.getItem('oc_user_id')||'anon_'+Math.random().toString(36).slice(2,10);
+    _localClientId='sess_'+Math.random().toString(36).slice(2,12);
     var _cid=_localClientId;
     try{
       var url;

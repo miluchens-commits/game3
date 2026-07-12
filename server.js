@@ -633,6 +633,8 @@ function lobbyList() { const a = []; lobbyPlayers.forEach(p => a.push({ name: p.
 function broadcastLobby(except, data) { lobbyPlayers.forEach((p, w) => { if (w !== except && w.readyState === WebSocket.OPEN) try { w.send(JSON.stringify(data)); } catch(e){} }); }
 function handleLobbyJoin(ws, msg) {
   if (ws.lobbyData) return;
+  // Remove old connection with same clientId (reconnection)
+  lobbyPlayers.forEach((p, w) => { if (p.clientId === msg.clientId && w !== ws) { try { w.close(); } catch(e){} } });
   const color = lobbyColors[lobbyPlayers.size % lobbyColors.length];
   ws.lobbyData = { name: msg.name || 'Player', clientId: msg.clientId || '', x: 0, z: 0, rot: 0, color };
   lobbyPlayers.set(ws, ws.lobbyData);
@@ -642,8 +644,10 @@ function handleLobbyJoin(ws, msg) {
 function handleLobbyLeave(ws) {
   if (!ws.lobbyData || !lobbyPlayers.has(ws)) return;
   const cid = ws.lobbyData.clientId;
+  const name = ws.lobbyData.name;
   lobbyPlayers.delete(ws);
   ws.lobbyData = null;
+  console.log('[Lobby] player_leave cid='+cid+' name='+name+' lobbySize='+lobbyPlayers.size);
   broadcastLobby(null, { type: 'lobby_player_leave', clientId: cid });
 }
 wss.on('connection', (ws) => {
