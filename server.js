@@ -630,7 +630,7 @@ let nextRoomId = 1;
 const lobbyPlayers = new Map();
 const lobbyColors = [0x4488ff,0xff4444,0x44ff44,0xff8800,0xaa44ff,0xff44aa,0x44ffaa,0xffaa44,0x44ccff,0xff6644];
 function lobbyList() { const a = []; lobbyPlayers.forEach(p => a.push({ name: p.name, x: p.x, z: p.z, rot: p.rot, color: p.color })); return a; }
-function broadcastLobby(except, data) { lobbyPlayers.forEach(p => { if (p.ws !== except && p.ws.readyState === WebSocket.OPEN) try { p.ws.send(JSON.stringify(data)); } catch(e){} }); }
+function broadcastLobby(except, data) { lobbyPlayers.forEach((p, w) => { if (w !== except && w.readyState === WebSocket.OPEN) try { w.send(JSON.stringify(data)); } catch(e){} }); }
 function handleLobbyJoin(ws, msg) {
   if (ws.lobbyData) return;
   const color = lobbyColors[lobbyPlayers.size % lobbyColors.length];
