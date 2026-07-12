@@ -277,9 +277,9 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var g=new T.Group();
-    // DEBUG: giant sphere so it's unmistakable even when overlapping
-    var dbg=new T.Mesh(new T.SphereGeometry(3,16,16),new T.MeshBasicMaterial({color:0xff0000,transparent:true,opacity:0.5}));
-    dbg.position.y=2.5;g.add(dbg);
+    // DEBUG: red sphere with depthTest:false so it ALWAYS renders
+    var dbg=new T.Mesh(new T.SphereGeometry(1,16,16),new T.MeshBasicMaterial({color:0xff0000,depthTest:false}));
+    dbg.position.y=1;g.add(dbg);
     var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
     var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
     var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
@@ -493,6 +493,12 @@ window.LobbySystem = (function() {
       var dm=new T.Mesh(new T.BoxGeometry(1,1,1),new T.MeshBasicMaterial({color:0xffaa00}));
       dm.position.set(10,1,-5);_scn.add(dm);window._lobbyDebugMarker=dm;
     }
+    // Direct sphere at remote position (NOT inside group)
+    if(window._lobbyDirectSphere) _scn.remove(window._lobbyDirectSphere);
+    var ds=new T.Mesh(new T.SphereGeometry(0.8,12,12),new T.MeshBasicMaterial({color:0x00ff00,depthTest:false}));
+    ds.position.set(data.x||0,1.5,data.z||0);
+    _scn.add(ds);
+    window._lobbyDirectSphere=ds;
   }
 
   function removeRemotePlayer(cid){
