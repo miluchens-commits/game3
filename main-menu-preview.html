@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>OCGAME 主選單</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#000;font-family:'Segoe UI',Arial,sans-serif;color:#fff;user-select:none}
+
+#menu{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 50%,#1a1a2e,#0a0a1a 60%,#000);display:flex;flex-direction:column;z-index:30;font-family:Arial}
+#menu::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background-image:radial-gradient(2px 2px at 12% 22%,rgba(68,170,255,.1),transparent 1px),radial-gradient(1px 1px at 70% 28%,rgba(255,68,170,.08),transparent 1px),radial-gradient(2px 2px at 45% 60%,rgba(170,68,255,.08),transparent 1px),radial-gradient(1px 1px at 82% 72%,rgba(68,255,170,.06),transparent 1px);background-size:160px 160px;pointer-events:none;animation:starDrift 14s linear infinite}
+@keyframes starDrift{0%{background-position:0 0}100%{background-position:160px 160px}}
+#menu::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.6));pointer-events:none;z-index:0}
+
+/* ===== TOP BAR ===== */
+#top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:8px}
+#logo{font-size:20px;font-weight:900;letter-spacing:6px;background:linear-gradient(90deg,#4af,#a4f,#f4a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 25px rgba(68,170,255,.15)}
+#top-nav{display:flex;gap:5px;flex-wrap:wrap}
+.top-btn{padding:8px 16px;font-size:12px;font-weight:bold;color:rgba(255,255,255,.5);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;cursor:pointer;letter-spacing:2px;transition:all .25s;font-family:Arial;position:relative;overflow:hidden}
+.top-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(68,170,255,.08),transparent 30%);animation:btnSpin 3s linear infinite;opacity:0;transition:opacity .4s}
+@keyframes btnSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.top-btn:hover{color:#fff;border-color:rgba(68,170,255,.25);background:rgba(68,170,255,.07);transform:translateY(-2px);box-shadow:0 0 20px rgba(68,170,255,.1)}
+.top-btn:hover::after{opacity:1}
+.top-btn:active{transform:translateY(0)}
+.top-btn.active{color:#4af;border-color:#4af;background:rgba(68,170,255,.1);box-shadow:0 0 18px rgba(68,170,255,.12)}
+
+#player-info-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#player-info-bar>span{padding:5px 12px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:12px}
+#coin-display{color:#fa4;letter-spacing:1px;text-shadow:0 0 10px rgba(255,170,68,.15)}
+#sp-display{color:#fd4;letter-spacing:1px}
+#level-display{color:rgba(255,255,255,.5);letter-spacing:2px}
+#level-display strong{color:#f0d060;font-size:14px}
+#season-display{color:#4af;letter-spacing:1px;background:rgba(68,170,255,.06)!important;border-color:rgba(68,170,255,.15)!important}
+#season-display .s2{color:#88ddff;font-weight:bold}
+#friends-btn{cursor:pointer;padding:5px 10px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:16px;transition:all .25s}
+#friends-btn:hover{background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.2)}
+
+/* ===== WEAPON LOADOUT STRIP ===== */
+#loadout-strip{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-bottom:1px solid rgba(255,255,255,.05)}
+.loadout-slot{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);cursor:pointer;transition:all .25s;font-family:Arial;min-width:90px}
+.loadout-slot:hover{background:rgba(68,170,255,.06);border-color:rgba(68,170,255,.15);transform:translateY(-1px)}
+.loadout-slot .slot-num{font-size:10px;color:rgba(255,255,255,.3);font-weight:bold;min-width:12px}
+.loadout-slot .slot-name{font-size:12px;color:rgba(255,255,255,.6);letter-spacing:1px;font-weight:bold}
+.loadout-slot.active{background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.25)}
+.loadout-slot.active .slot-num,.loadout-slot.active .slot-name{color:#4af}
+.loadout-slot .slot-empty{font-size:11px;color:rgba(255,255,255,.2);letter-spacing:2px}
+
+/* ===== MAIN AREA ===== */
+#main-area{position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+#character-stage{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:400px;height:480px}
+#character-canvas{width:100%;height:100%;display:block}
+#character-name{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.25);letter-spacing:3px;white-space:nowrap}
+#character-name strong{color:rgba(255,255,255,.5)}
+
+/* ===== BOTTOM RIGHT ===== */
+#bottom-right{position:absolute;z-index:3;bottom:24px;right:28px;display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:240px}
+
+#start-btn{padding:16px 36px;font-size:20px;font-weight:bold;color:#fff;background:linear-gradient(135deg,rgba(68,170,255,.3),rgba(68,170,255,.08));border:1.5px solid rgba(68,170,255,.45);border-radius:11px;cursor:pointer;letter-spacing:6px;transition:all .3s;font-family:Arial;position:relative;overflow:hidden;text-align:center;box-shadow:0 0 25px rgba(68,170,255,.12)}
+#start-btn::before{content:'';position:absolute;top:-60%;left:-60%;width:220%;height:220%;background:conic-gradient(transparent,rgba(68,170,255,.1),rgba(68,170,255,.15),transparent 40%);animation:spinGlow 3s linear infinite;pointer-events:none}
+@keyframes spinGlow{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+#start-btn::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(68,170,255,.08),transparent);animation:sweepShine 2.5s ease-in-out infinite;pointer-events:none}
+@keyframes sweepShine{0%{transform:translateX(-100%)}50%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+#start-btn:hover{background:linear-gradient(135deg,rgba(68,170,255,.45),rgba(68,170,255,.15));border-color:#4af;box-shadow:0 0 45px rgba(68,170,255,.25),0 0 70px rgba(68,170,255,.08);transform:translateY(-3px)}
+#start-btn:active{transform:translateY(0);box-shadow:0 0 25px rgba(68,170,255,.15)}
+
+#mode-btn{padding:12px 28px;font-size:14px;font-weight:bold;color:rgba(255,255,255,.6);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:9px;cursor:pointer;letter-spacing:3px;transition:all .25s;font-family:Arial;text-align:center;width:100%;position:relative;overflow:hidden}
+#mode-btn::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);animation:sweepShine 3s ease-in-out infinite;pointer-events:none}
+#mode-btn:hover{color:#fff;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);transform:translateY(-2px);box-shadow:0 0 25px rgba(255,255,255,.06)}
+#mode-btn:active{transform:translateY(0)}
+#mode-btn .mode-arrow{display:inline-block;margin-left:8px;font-size:11px;transition:transform .3s}
+#mode-btn:hover .mode-arrow{transform:translateX(4px)}
+
+#mode-dropdown{position:absolute;bottom:calc(100% + 6px);right:0;left:0;background:rgba(8,8,20,.96);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:5px;display:none;flex-direction:column;gap:2px;backdrop-filter:blur(16px);box-shadow:0 0 35px rgba(0,0,0,.5)}
+#mode-dropdown.show{display:flex}
+.mode-opt{padding:10px 18px;font-size:13px;font-weight:bold;color:rgba(255,255,255,.5);background:transparent;border:none;border-radius:5px;cursor:pointer;letter-spacing:2px;transition:all .2s;font-family:Arial;text-align:left}
+.mode-opt:hover{color:#fff;background:rgba(68,170,255,.12);transform:translateX(3px)}
+.mode-opt.selected{color:#4af;background:rgba(68,170,255,.1);box-shadow:inset 3px 0 0 #4af}
+
+/* ===== BOTTOM BAR ===== */
+#bottom-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 20px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+.bottom-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 16px;font-size:11px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;cursor:pointer;letter-spacing:1px;transition:all .25s;font-family:Arial;position:relative;overflow:hidden;min-width:60px}
+.bottom-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,transparent,#4af,transparent);transition:width .25s;border-radius:2px}
+.bottom-btn:hover{color:#fff;background:rgba(68,170,255,.05);border-color:rgba(68,170,255,.12);transform:translateY(-2px);box-shadow:0 0 20px rgba(68,170,255,.04)}
+.bottom-btn:hover::after{width:50%}
+.bottom-btn:active{transform:translateY(0)}
+.bottom-btn .ico{font-size:18px}
+.bottom-btn .lbl{font-size:10px;font-weight:bold;letter-spacing:1px}
+
+@media(max-width:900px){
+  #top-bar{padding:8px 16px}
+  #top-nav{gap:4px}
+  .top-btn{padding:6px 10px;font-size:10px;letter-spacing:1px}
+  #player-info-bar{gap:6px}
+  #player-info-bar>span{font-size:10px;padding:4px 8px}
+  #loadout-strip{gap:4px;padding:6px 10px;flex-wrap:wrap}
+  .loadout-slot{padding:4px 10px;min-width:60px}
+  .loadout-slot .slot-name{font-size:10px}
+  #bottom-right{right:12px;bottom:70px;min-width:auto;left:12px}
+  #start-btn{padding:12px 20px;font-size:16px;letter-spacing:3px}
+  #mode-btn{padding:10px 16px;font-size:12px}
+  #character-stage{width:240px;height:320px}
+  #bottom-bar{gap:3px;padding:6px 8px}
+  .bottom-btn{padding:7px 10px;min-width:44px}
+  .bottom-btn .ico{font-size:15px}
+  .bottom-btn .lbl{font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <div id="logo">OCGAME</div>
+    <div id="top-nav">
+      <button class="top-btn active">🔫 武器庫</button>
+      <button class="top-btn">🎏 活動</button>
+      <button class="top-btn">☢ 賽季</button>
+      <button class="top-btn">🏆 排位</button>
+    </div>
+    <div id="player-info-bar">
+      <span id="coin-display">🪙 特種幣 $47,621</span>
+      <span id="sp-display">⚡ SP：0</span>
+      <span id="level-display">Lv.<strong>24</strong> &nbsp;LEVEL</span>
+      <span id="season-display">💧 <span class="s2">S2 窒息</span> &nbsp;9 天</span>
+      <button id="friends-btn">👥</button>
+    </div>
+  </div>
+
+  <!-- LOADOUT STRIP -->
+  <div id="loadout-strip">
+    <div class="loadout-slot active"><span class="slot-num">1</span><span class="slot-name">AK-47</span></div>
+    <div class="loadout-slot"><span class="slot-num">2</span><span class="slot-name">AWP</span></div>
+    <div class="loadout-slot"><span class="slot-num">3</span><span class="slot-empty">─ 空</span></div>
+    <div class="loadout-slot"><span class="slot-num">4</span><span class="slot-empty">─ 空</span></div>
+    <div class="loadout-slot"><span class="slot-num">5</span><span class="slot-name">衝鋒槍</span></div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div id="main-area">
+    <div id="character-stage">
+      <canvas id="character-canvas"></canvas>
+      <div id="character-name"><strong>玩家名稱</strong> · 生存專家</div>
+    </div>
+    <div id="bottom-right">
+      <button id="start-btn">開 始 遊 戲</button>
+      <button id="mode-btn">🎮 單人模式 <span class="mode-arrow">▶</span></button>
+      <div id="mode-dropdown">
+        <button class="mode-opt selected">🎮 單人模式</button>
+        <button class="mode-opt">👥 多人模式</button>
+        <button class="mode-opt">🔥 生存模式</button>
+        <button class="mode-opt">💀 Boss Rush</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bottom-bar">
+    <button class="bottom-btn"><span class="ico">🏪</span><span class="lbl">軍火交易所</span></button>
+    <button class="bottom-btn"><span class="ico">🎨</span><span class="lbl">槍械</span></button>
+    <button class="bottom-btn"><span class="ico">👤</span><span class="lbl">角色</span></button>
+    <button class="bottom-btn"><span class="ico">⭐</span><span class="lbl">熟練度</span></button>
+    <button class="bottom-btn"><span class="ico">🔮</span><span class="lbl">技能</span></button>
+    <button class="bottom-btn"><span class="ico">🎯</span><span class="lbl">射擊訓練</span></button>
+    <button class="bottom-btn"><span class="ico">🏅</span><span class="lbl">成就</span></button>
+    <button class="bottom-btn"><span class="ico">📊</span><span class="lbl">排行榜</span></button>
+  </div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const canvas=document.getElementById('character-canvas');
+const parent=canvas.parentElement;
+const resizeCanvas=()=>{
+  const r=parent.getBoundingClientRect();
+  canvas.width=r.width*devicePixelRatio;
+  canvas.height=r.height*devicePixelRatio;
+  canvas.style.width=r.width+'px';
+  canvas.style.height=r.height+'px';
+};
+resizeCanvas();
+
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setSize(parent.offsetWidth,parent.offsetHeight);
+renderer.setPixelRatio(devicePixelRatio);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.5;
+
+const scene=new THREE.Scene();
+scene.background=null;
+
+const cam=new THREE.PerspectiveCamera(35,parent.offsetWidth/parent.offsetHeight,0.1,100);
+cam.position.set(2.2,1.8,3);
+cam.lookAt(0,0.6,0);
+
+const amb=new THREE.AmbientLight(0x446688,0.8);scene.add(amb);
+const dir=new THREE.DirectionalLight(0xffeedd,2.5);dir.position.set(3,6,4);scene.add(dir);
+const rim=new THREE.DirectionalLight(0x4488ff,1);rim.position.set(-3,2,-4);scene.add(rim);
+const fill=new THREE.DirectionalLight(0xff8844,0.5);fill.position.set(-1,1,3);scene.add(fill);
+
+const floor=new THREE.Mesh(new THREE.CircleGeometry(2.2,32),new THREE.MeshStandardMaterial({color:0x222244,roughness:0.7,metalness:0.2,transparent:true,opacity:0.35,side:THREE.DoubleSide}));
+floor.rotation.x=-Math.PI/2;floor.position.y=-0.01;scene.add(floor);
+
+// ===== AMONG US STYLE CREWMATE =====
+const player=new THREE.Group();
+const bodyColor=0x3388ff;
+const bodyColorLight=0x55aaff;
+
+// Bean/egg body
+const bodyGeom=new THREE.CylinderGeometry(0.5,0.55,0.75,16,1);
+bodyGeom.translate(0,0.375,0);
+const bp=bodyGeom.attributes.position;
+for(let i=0;i<bp.count;i++){
+  const y=bp.getY(i),x=bp.getX(i),z=bp.getZ(i);
+  const r=Math.sqrt(x*x+z*z);
+  if(r>0.01){
+    const ny=y/0.75;
+    const bulge=1+0.15*Math.sin(ny*Math.PI)*Math.sin(ny*Math.PI*2)*0.5;
+    bp.setXYZ(i,x/r*r*bulge,y,z/r*r*bulge);
+  }
+}
+bp.needsUpdate=true;bodyGeom.computeVertexNormals();
+const bodyMat=new THREE.MeshStandardMaterial({color:bodyColor,roughness:0.5,metalness:0.05});
+const body=new THREE.Mesh(bodyGeom,bodyMat);
+body.position.y=0.37;body.castShadow=true;player.add(body);
+
+// Backpack
+const bpk=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.3,0.18),new THREE.MeshStandardMaterial({color:0x2255aa,roughness:0.6}));
+bpk.position.set(0,0.45,-0.5);player.add(bpk);
+
+// Visor
+const visorMat=new THREE.MeshStandardMaterial({color:0x88ddff,roughness:0.05,metalness:0.3,emissive:0x4488ff,emissiveIntensity:0.3,transparent:true,opacity:0.85});
+const visor=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,10,0,Math.PI*2,0,Math.PI*0.5),visorMat);
+visor.position.set(0,0.62,0.45);visor.rotation.x=-0.15;visor.scale.set(1,0.5,0.6);player.add(visor);
+const rimM=new THREE.MeshStandardMaterial({color:0x112244,roughness:0.3});
+const visorRim=new THREE.Mesh(new THREE.TorusGeometry(0.2,0.025,8,16,Math.PI),rimM);
+visorRim.position.set(0,0.58,0.44);visorRim.rotation.x=0.1;visorRim.scale.set(1,1,0.6);player.add(visorRim);
+
+// Eyes
+const eyeMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x88eeff,emissiveIntensity:0.5});
+[-0.06,0.06].forEach(x=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.035,8,8),eyeMat);e.position.set(x,0.62,0.48);player.add(e);});
+
+// Legs
+const legMat=new THREE.MeshStandardMaterial({color:bodyColorLight,roughness:0.6});
+[-0.12,0.12].forEach(x=>{
+  const l=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.09,0.12,8),legMat);
+  l.position.set(x,0.06,0);player.add(l);
+  const f=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.04,0.14),new THREE.MeshStandardMaterial({color:0x2255aa,roughness:0.7}));
+  f.position.set(x,0,0.03);player.add(f);
+});
+
+// Shadow
+const shadowMat=new THREE.MeshStandardMaterial({color:0x000011,transparent:true,opacity:0.12,roughness:1,metalness:0});
+const shadow=new THREE.Mesh(new THREE.RingGeometry(0.25,0.55,24),shadowMat);
+shadow.rotation.x=-Math.PI/2;shadow.position.y=0.001;shadow.scale.set(1.2,1.2,1);scene.add(shadow);
+
+player.position.set(0,0,0);scene.add(player);
+
+// Animation
+let t=0;
+function animate(){
+  requestAnimationFrame(animate);
+  t+=0.016;
+  player.rotation.y=Math.sin(t*0.3)*0.2;
+  player.position.y=Math.sin(t*1.5)*0.012;
+  visorMat.emissiveIntensity=0.2+0.15*Math.sin(t*2);
+  shadow.position.x=player.position.x;
+  shadow.position.z=player.position.z;
+  renderer.render(scene,cam);
+}
+animate();
+
+new ResizeObserver(()=>{
+  const r=parent.getBoundingClientRect();
+  canvas.width=r.width*devicePixelRatio;
+  canvas.height=r.height*devicePixelRatio;
+  canvas.style.width=r.width+'px';
+  canvas.style.height=r.height+'px';
+  renderer.setSize(r.width,r.height);
+  cam.aspect=r.width/r.height;
+  cam.updateProjectionMatrix();
+}).observe(parent);
+
+// Mode dropdown
+const modeBtn=document.getElementById('mode-btn');
+const modeDD=document.getElementById('mode-dropdown');
+if(modeBtn&&modeDD){
+  modeBtn.addEventListener('click',e=>{e.stopPropagation();modeDD.classList.toggle('show');});
+  modeDD.querySelectorAll('.mode-opt').forEach(o=>{
+    o.addEventListener('click',e=>{
+      e.stopPropagation();
+      modeDD.querySelectorAll('.mode-opt').forEach(x=>x.classList.remove('selected'));
+      o.classList.add('selected');
+      modeBtn.innerHTML='🎮 '+o.textContent.trim()+' <span class="mode-arrow">▶</span>';
+      modeDD.classList.remove('show');
+    });
+  });
+  document.addEventListener('click',()=>modeDD.classList.remove('show'));
+}
+
+document.getElementById('start-btn').addEventListener('click',function(){
+  this.style.transform='scale(0.96)';
+  setTimeout(()=>this.style.transform='',150);
+});
+document.querySelectorAll('.top-btn,.bottom-btn,.loadout-slot').forEach(b=>{
+  b.addEventListener('click',function(){
+    if(this.classList.contains('loadout-slot')){
+      document.querySelectorAll('.loadout-slot').forEach(s=>s.classList.remove('active'));
+    }
+    this.classList.toggle('active');
+  });
+});
+</script>
+</body>
+</html>

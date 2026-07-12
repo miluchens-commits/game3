@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>方塊人 + AK-47 預覽</title>
+<style>
+body{margin:0;overflow:hidden;background:#1a1a2e;color:#fff;font-family:Arial}
+#info{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:8px 20px;border-radius:6px;font-size:14px;z-index:10;pointer-events:none;text-align:center}
+#info small{display:block;color:#888;font-size:11px;margin-top:4px}
+#controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);padding:8px 16px;border-radius:6px;font-size:12px;color:#aaa;z-index:10;pointer-events:none}
+#controls kbd{background:#333;color:#fff;padding:2px 6px;border-radius:3px;font-size:11px}
+</style></head><body>
+<div id="info">🧊 方塊人 + AK-47 <small>滑鼠拖曳旋轉 · 滾輪縮放</small></div>
+<div id="controls">按 <kbd>R</kbd> 換彈 — 右手移至彈匣 → 拉槍柄</div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x1a1a2e);
+const cam=new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,0.1,100);
+cam.position.set(4,3,6);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.2;
+document.body.appendChild(renderer.domElement);
+new OrbitControls(cam,renderer.domElement);
+
+const amb=new THREE.AmbientLight(0x334466,0.6);scene.add(amb);
+const dir=new THREE.DirectionalLight(0xffeedd,2);dir.position.set(5,8,4);dir.castShadow=true;dir.shadow.mapSize.set(1024,1024);scene.add(dir);
+scene.add(new THREE.DirectionalLight(0x4488ff,0.4).position.set(-3,2,-4));
+
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshStandardMaterial({color:0x2a2a3e,roughness:0.8,metalness:0.1}));
+gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;scene.add(gnd);
+scene.add(new THREE.GridHelper(10,10,0x444466,0x333355));
+
+function box(w,h,d,color,pos,emissive){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color,roughness:0.6,metalness:0.1,emissive:emissive||0,emissiveIntensity:emissive?0.15:0}));
+  if(pos)m.position.set(pos[0],pos[1],pos[2]);
+  m.castShadow=true;
+  return m;
+}
+
+// ===== BLOCKY CHARACTER =====
+const player=new THREE.Group();
+
+// Torso
+const torso=box(0.8,0.8,0.5,0x3388ff,[0,0.8,0]);
+player.add(torso);
+// Head
+const head=box(0.5,0.5,0.5,0xffcc88,[0,1.45,0],0xffeedd);
+const eyeMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x88ddff,emissiveIntensity:0.3});
+const pupilMat=new THREE.MeshStandardMaterial({color:0x222244});
+[-0.12,0.12].forEach(x=>{
+  const eye=new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8),eyeMat);
+  eye.position.set(x,1.52,0.26);player.add(eye);
+  const pupil=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),pupilMat);
+  pupil.position.set(x,1.52,0.3);player.add(pupil);
+});
+player.add(head);
+// Arms
+const lArm=box(0.25,0.7,0.25,0x6699ff,[-0.55,0.7,0]);
+const rArm=box(0.25,0.7,0.25,0x6699ff,[0.55,0.7,0]);
+const handMat=new THREE.MeshStandardMaterial({color:0xffcc88});
+const lHand=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.2),handMat);
+lHand.position.set(-0.55,0.35,0);
+const rHand=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.2),handMat);
+rHand.position.set(0.55,0.35,0);
+player.add(lHand);player.add(rHand);
+player.add(lArm);player.add(rArm);
+// Legs
+const lLeg=box(0.3,0.7,0.3,0x2266cc,[-0.22,0.35,0]);
+const rLeg=box(0.3,0.7,0.3,0x2266cc,[0.22,0.35,0]);
+const shoeMat=new THREE.MeshStandardMaterial({color:0x554433});
+const lFoot=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.12,0.35),shoeMat);
+lFoot.position.set(-0.22,0,0.05);player.add(lFoot);
+const rFoot=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.12,0.35),shoeMat);
+rFoot.position.set(0.22,0,0.05);player.add(rFoot);
+player.add(lLeg);player.add(rLeg);
+const belt=box(0.85,0.08,0.45,0x445566,[0,0.55,0]);
+const buckle=box(0.12,0.12,0.06,0xccaa44,[0,0.55,0.28]);
+player.add(belt);player.add(buckle);
+const lPad=box(0.12,0.12,0.3,0x2255aa,[-0.5,1.05,0]);
+const rPad=box(0.12,0.12,0.3,0x2255aa,[0.5,1.05,0]);
+player.add(lPad);player.add(rPad);
+player.position.set(0,0,0);
+scene.add(player);
+
+// ===== AK-47 =====
+const ak=new THREE.Group();
+
+// Barrel
+ak.add(box(0.06,0.06,1.1,0x222233,[0,0.06,-0.75]));
+// Barrel shroud/gas tube
+ak.add(box(0.08,0.08,0.45,0x333344,[0,0.06,-0.3]));
+// Receiver
+ak.add(box(0.12,0.1,0.3,0x444455,[0,0.05,0]));
+// Dust cover
+ak.add(box(0.1,0.02,0.2,0x333344,[0,0.11,0.02]));
+// Front sight
+ak.add(box(0.04,0.06,0.02,0x222233,[0,0.12,-0.6]));
+// Rear sight
+ak.add(box(0.04,0.04,0.02,0x222233,[0,0.11,0.12]));
+// Handguard
+ak.add(box(0.1,0.06,0.25,0x554422,[0,0.04,-0.25]));
+// Grip
+ak.add(box(0.08,0.12,0.06,0x554422,[0,-0.06,0.07]));
+// Stock
+ak.add(box(0.08,0.02,0.2,0x444455,[0,0.06,0.22]));
+ak.add(box(0.06,0.04,0.18,0x555566,[0,0.03,0.24]));
+// Magazine
+const magGroup=new THREE.Group();
+const magBody=box(0.06,0.16,0.06,0x444455,[0,-0.1,0]);
+const magCurve=box(0.06,0.04,0.06,0x444455,[0,-0.18,0.03]);
+magGroup.add(magBody);magGroup.add(magCurve);
+magGroup.position.set(0,-0.04,0.04);
+ak.add(magGroup);
+// Charging handle
+const chHandle=box(0.02,0.02,0.04,0x666677,[0.08,0.1,0.05]);
+ak.add(chHandle);
+// Muzzle brake
+ak.add(box(0.08,0.08,0.04,0x333344,[0,0.06,-1.12]));
+
+// Position AK in right hand
+ak.position.set(0.55,0.32,-0.1);
+ak.rotation.x=-0.15;ak.rotation.z=0.1;
+player.add(ak);
+
+// Left hand on handguard position
+const lHandTarget=new THREE.Vector3(0.55,0.32,-0.25);
+
+// ===== RELOAD SYSTEM =====
+let reloading=false;
+let reloadPhase=0; // 0=idle, 1=hand to mag, 2=mag out, 3=mag in, 4=hand to CH, 5=pull CH, 6=hand back
+let reloadTimer=0;
+const rHandOrigin=new THREE.Vector3(0.55,0.35,0);
+const rHandMagPos=new THREE.Vector3(0.4,0.22,0.15);
+const rHandCHPos=new THREE.Vector3(0.5,0.38,0.1);
+const magOrigin=new THREE.Vector3(0,-0.04,0.04);
+const magDropPos=new THREE.Vector3(0,-0.2,0.04);
+let chPulled=false;
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='r'||e.key==='R'){
+    if(reloading)return;
+    reloading=true;reloadPhase=1;reloadTimer=0;chPulled=false;
+  }
+});
+
+function updateReload(dt){
+  if(!reloading)return;
+  reloadTimer+=dt;
+  const dur=0.15; // seconds per phase
+  const t=Math.min(reloadTimer/dur,1);
+  const ease=t<0.5?2*t*t:1-(-2*t+2)*(-2*t+2)/2;
+
+  if(reloadPhase===1){
+    // Hand moves to magazine
+    rHand.position.lerpVectors(rHandOrigin,rHandMagPos,ease);
+    if(t>=1){reloadPhase=2;reloadTimer=0;}
+  }else if(reloadPhase===2){
+    // Magazine drops out
+    magGroup.position.lerpVectors(magOrigin,magDropPos,ease);
+    if(t>=1){reloadPhase=3;reloadTimer=0;}
+  }else if(reloadPhase===3){
+    // Magazine comes back in
+    magGroup.position.lerpVectors(magDropPos,magOrigin,ease);
+    if(t>=1){reloadPhase=4;reloadTimer=0;}
+  }else if(reloadPhase===4){
+    // Hand moves to charging handle
+    rHand.position.lerpVectors(rHandMagPos,rHandCHPos,ease);
+    if(t>=1){reloadPhase=5;reloadTimer=0;}
+  }else if(reloadPhase===5){
+    // Pull charging handle (pull back)
+    if(!chPulled){
+      const pull=ease*0.06;
+      chHandle.position.x=0.08+pull;
+      chHandle.position.z=0.05+pull*0.3;
+      if(t>=1){chPulled=true;reloadTimer=0;}
+    }else{
+      // Release charging handle
+      const release=1-ease;
+      chHandle.position.x=0.08+0.06*release;
+      chHandle.position.z=0.05+0.02*release;
+      if(t>=1){reloadPhase=6;reloadTimer=0;}
+    }
+  }else if(reloadPhase===6){
+    // Hand back to grip
+    rHand.position.lerpVectors(rHandCHPos,rHandOrigin,ease);
+    if(t>=1){reloading=false;reloadPhase=0;rHand.position.copy(rHandOrigin);chHandle.position.set(0.08,0.1,0.05);}
+  }
+}
+
+// ===== ANIMATION LOOP =====
+let t=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=0.016;
+  t+=dt;
+
+  // Reload
+  updateReload(dt);
+
+  if(!reloading){
+    // Idle bob
+    const bob=Math.sin(t*2)*0.015;
+    player.position.y=bob;
+    lArm.rotation.x=Math.sin(t*1.5)*0.15;
+    rArm.rotation.x=Math.sin(t*1.5+Math.PI)*0.15;
+    lLeg.rotation.x=Math.sin(t*1.5+Math.PI)*0.08;
+    rLeg.rotation.x=Math.sin(t*1.5)*0.08;
+    head.position.y=1.45+Math.sin(t*3)*0.005;
+    torso.position.y=0.8+Math.sin(t*3)*0.003;
+  }else{
+    // During reload: minimal breathing, arms follow hand
+    player.position.y=Math.sin(t*4)*0.005;
+    lArm.rotation.x=0.2;
+    rArm.rotation.x=0;
+    lLeg.rotation.x=Math.sin(t*6)*0.03;
+    rLeg.rotation.x=Math.sin(t*6+Math.PI)*0.03;
+  }
+  renderer.render(scene,cam);
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  cam.aspect=window.innerWidth/window.innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+</script></body></html>
