@@ -283,19 +283,6 @@ window.LobbySystem = (function() {
     var head=new T.Mesh(new T.BoxGeometry(0.6,0.5,0.6),bm());head.position.y=1.5;g.add(head);
     return g;
   }
-    var cv=document.createElement('canvas');cv.width=128;cv.height=32;
-    var ctx=cv.getContext('2d');
-    ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();
-    if(ctx.roundRect)ctx.roundRect(0,0,128,32,4);else ctx.rect(0,0,128,32);
-    ctx.fill();
-    ctx.fillStyle='#'+col.toString(16).padStart(6,'0');
-    ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(name,64,16);
-    var tx=new T.CanvasTexture(cv);
-    var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
-    sp.scale.set(1.2,0.3,1);sp.position.y=1.7;g.add(sp);
-    return g;
-  }
 
   // ============ UPDATE ============
 
