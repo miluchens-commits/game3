@@ -477,21 +477,26 @@ window.LobbySystem = (function() {
   function addRemotePlayer(data){
     if(!data.clientId||_remotePlayers[data.clientId]) return;
     console.log('[Lobby] addRP',data.clientId,'serverPos',data.x,data.z);
-    var col=data.color||0x4488ff;
-    var mesh=makeRemotePlayer(col,data.name);
-    // Spawn at same position as local player for direct comparison
-    var sx=_pos.x;
-    var sz=_pos.z;
-    mesh.position.set(sx,0,sz);
-    mesh.rotation.y=data.rot||0;
-    // Disable frustum culling to ensure visibility
-    mesh.traverse(function(c){if(c.isMesh)c.frustumCulled=false;});
-    _scn.add(mesh);
-    // Bright debug arrow at same position
-    var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,0,sz),1,0xff0000);
-    _scn.add(arrow);
-    _remotePlayers[data.clientId]={mesh:mesh,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
-    console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
+    try {
+      var col=data.color||0x4488ff;
+      var mesh=makeRemotePlayer(col,data.name);
+      if(!mesh){console.log('[Lobby] addRP mesh is null!');return;}
+      // Spawn at same position as local player for direct comparison
+      var sx=_pos.x;
+      var sz=_pos.z;
+      mesh.position.set(sx,0,sz);
+      mesh.rotation.y=data.rot||0;
+      // Disable frustum culling to ensure visibility
+      mesh.traverse(function(c){if(c.isMesh)c.frustumCulled=false;});
+      _scn.add(mesh);
+      // Bright debug arrow at same position
+      var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,0,sz),2,0xff0000);
+      _scn.add(arrow);
+      _remotePlayers[data.clientId]={mesh:mesh,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
+    } catch(e) {
+      console.log('[Lobby] addRP error:',e.message,'stack:',e.stack);
+    }
   }
 
   function removeRemotePlayer(cid){
@@ -544,9 +549,9 @@ window.LobbySystem = (function() {
       console.log('[Lobby] recv:',msg.type,msg);
       try{
         switch(msg.type){
-          case 'lobby_state':_stateReceived=true;if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
+          case 'lobby_state':_stateReceived=true;if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});if(msg.players.length===0)console.log('[Lobby] state empty!');break;
           case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
-          case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
+          case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}else{console.log('[Lobby] pos for unknown cid='+msg.clientId);}break;
           case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
         }
       }catch(ex){console.log('[Lobby] onmessage error:',ex);}
