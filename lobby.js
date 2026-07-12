@@ -505,11 +505,18 @@ window.LobbySystem = (function() {
       }else{
         url='ws://'+ip+':3000';
       }
-      _ws=new WebSocket(url+'/lobby');
+      _ws=new WebSocket(url);
     }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;return;}
-    console.log('[Lobby] Connecting to',url);
+    console.log('[Lobby] Connecting to',_ws.url);
+    var _wsTimer=setTimeout(function(){
+      if(_ws&&_ws.readyState!==1){
+        console.log('[Lobby] WS timeout - not open after 5s, state='+_ws.readyState);
+        try{_ws.close();}catch(ex){}
+      }
+    },5000);
     _ws.onopen=function(){
-      console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
+      console.log('[Lobby] WS open, readyState='+_ws.readyState+', sending lobby_join name='+_lobbyName);
+      clearTimeout(_wsTimer);
       try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){console.log('[Lobby] send error:',e);}
     };
     _ws.onmessage=function(e){
