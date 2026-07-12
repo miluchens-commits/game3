@@ -522,7 +522,7 @@ window.LobbySystem = (function() {
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
       switch(msg.type){
-        case 'lobby_state':msg.players.forEach(function(p){if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
+        case 'lobby_state':console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
         case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
         case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
         case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
