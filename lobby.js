@@ -479,13 +479,16 @@ window.LobbySystem = (function() {
 
   function addRemotePlayer(data){
     if(!data.clientId||_remotePlayers[data.clientId]) return;
-    console.log('[Lobby] addRP',data.clientId);
+    console.log('[Lobby] addRP',data.clientId,'serverPos',data.x,data.z);
     var col=data.color||0x4488ff;
     var mesh=makeRemotePlayer(col,data.name);
-    mesh.position.set(data.x||0,0,data.z||0);
+    // Spawn at a deliberately visible offset (5 units right) to avoid overlapping local player at (0,-20)
+    var sx=5;
+    var sz=0;
+    mesh.position.set(sx,0,sz);
     mesh.rotation.y=data.rot||0;
     _scn.add(mesh);
-    _remotePlayers[data.clientId]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
+    _remotePlayers[data.clientId]={mesh:mesh,pos:{x:sx,z:sz,rot:data.rot||0}};
   }
 
   function removeRemotePlayer(cid){
