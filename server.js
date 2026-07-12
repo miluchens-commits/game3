@@ -664,6 +664,7 @@ wss.on('connection', (ws) => {
       case 'lobby_join': handleLobbyJoin(ws, msg); break;
       case 'lobby_pos': if (ws.lobbyData) { ws.lobbyData.x = msg.x; ws.lobbyData.z = msg.z; ws.lobbyData.rot = msg.rot; broadcastLobby(ws, { type: 'lobby_player_pos', clientId: ws.lobbyData.clientId, name: ws.lobbyData.name, x: msg.x, z: msg.z, rot: msg.rot }); } break;
       case 'lobby_leave': handleLobbyLeave(ws); break;
+      case 'lobby_state_req': if (ws.lobbyData) { try { ws.send(JSON.stringify({ type: 'lobby_state', players: lobbyList() })); } catch(e) { console.log('[Lobby] state_req send error:', e.message); } } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;
       case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;

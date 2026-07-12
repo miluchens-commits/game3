@@ -485,6 +485,8 @@ window.LobbySystem = (function() {
   }
 
   var _reconnectTimer=null;
+  var _stateTimer=null;
+  var _stateReceived=false;
   function _connectLobby(){
     if(_ws)return;
     var ip='localhost';
@@ -493,6 +495,7 @@ window.LobbySystem = (function() {
     _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
     _localClientId='sess_'+Math.random().toString(36).slice(2,12);
     var _cid=_localClientId;
+    _stateReceived=false;
     try{
       var url;
       if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
@@ -507,13 +510,22 @@ window.LobbySystem = (function() {
       console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
       if(_reconnectTimer){clearTimeout(_reconnectTimer);_reconnectTimer=null;}
       try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){console.log('[Lobby] send error:',e);}
+      // If lobby_state not received in 2s, request it again
+      if(_stateTimer)clearTimeout(_stateTimer);
+      _stateTimer=setTimeout(function(){
+        _stateTimer=null;
+        if(!_stateReceived&&_ws&&_ws.readyState===1){
+          console.log('[Lobby] lobby_state not received, requesting...');
+          try{_ws.send(JSON.stringify({type:'lobby_state_req'}));}catch(e){}
+        }
+      },2000);
     };
     _ws.onmessage=function(e){
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
       try{
         switch(msg.type){
-          case 'lobby_state':console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
+          case 'lobby_state':_stateReceived=true;if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
           case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
           case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
           case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
@@ -522,6 +534,7 @@ window.LobbySystem = (function() {
     };
     _ws.onclose=function(e){
       console.log('[Lobby] WS close code='+(e?e.code:'?')+' reason='+(e?e.reason:'?'));
+      if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}
       Object.keys(_remotePlayers).forEach(function(cid){removeRemotePlayer(cid);});
       _ws=null;
       if(_active)_scheduleReconnect();
