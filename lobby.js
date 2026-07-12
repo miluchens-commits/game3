@@ -46,6 +46,7 @@ window.LobbySystem = (function() {
   // Multiplayer
   var _ws = null;
   var _lobbyName = '';
+  var _localClientId = '';
   var _remotePlayers = {};
   var _lastSentPos = {x:0,z:0,rot:0};
   var _posSendThrottle = 0;
@@ -497,7 +498,8 @@ window.LobbySystem = (function() {
     var ipEl=document.getElementById('server-ip');
     if(ipEl)ip=ipEl.value.trim()||'localhost';
     _lobbyName=localStorage.getItem('oc_display_name')||localStorage.getItem('oc_nickname')||'Player';
-    var _cid=localStorage.getItem('oc_user_id')||'anon_'+Math.random().toString(36).slice(2,10);
+    _localClientId=localStorage.getItem('oc_user_id')||'anon_'+Math.random().toString(36).slice(2,10);
+    var _cid=_localClientId;
     try{
       var url;
       if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
@@ -505,26 +507,19 @@ window.LobbySystem = (function() {
       }else{
         url='ws://'+ip+':3000';
       }
-      _ws=new WebSocket(url);
+      _ws=new WebSocket(url+'/lobby');
     }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;return;}
-    console.log('[Lobby] Connecting to',_ws.url);
-    var _wsTimer=setTimeout(function(){
-      if(_ws&&_ws.readyState!==1){
-        console.log('[Lobby] WS timeout - not open after 5s, state='+_ws.readyState);
-        try{_ws.close();}catch(ex){}
-      }
-    },5000);
+    console.log('[Lobby] Connecting to',url);
     _ws.onopen=function(){
-      console.log('[Lobby] WS open, readyState='+_ws.readyState+', sending lobby_join name='+_lobbyName);
-      clearTimeout(_wsTimer);
+      console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
       try{_ws.send(JSON.stringify({type:'lobby_join',name:_lobbyName,clientId:_cid}));}catch(e){console.log('[Lobby] send error:',e);}
     };
     _ws.onmessage=function(e){
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
       switch(msg.type){
-        case 'lobby_state':msg.players.forEach(function(p){if(p.name!==_lobbyName)addRemotePlayer(p);});break;
-        case 'lobby_player_join':if(msg.name!==_lobbyName)addRemotePlayer(msg);break;
+        case 'lobby_state':msg.players.forEach(function(p){if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
+        case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
         case 'lobby_player_pos':if(_remotePlayers[msg.name]){_remotePlayers[msg.name].pos.x=msg.x;_remotePlayers[msg.name].pos.z=msg.z;_remotePlayers[msg.name].rot=msg.rot;}break;
         case 'lobby_player_leave':removeRemotePlayer(msg.name);break;
       }
