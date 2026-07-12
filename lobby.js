@@ -277,6 +277,9 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var g=new T.Group();
+    // DEBUG: bright red sphere so it's unmistakable
+    var dbg=new T.Mesh(new T.SphereGeometry(1,12,12),new T.MeshBasicMaterial({color:0xff0000}));
+    dbg.position.y=1;g.add(dbg);
     var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
     var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
     var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
