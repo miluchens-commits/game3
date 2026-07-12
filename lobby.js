@@ -501,7 +501,6 @@ window.LobbySystem = (function() {
       console.log('[Lobby] addRP error:',e.message,'stack:',e.stack);
     }
   }
-  }
 
   function removeRemotePlayer(cid){
     var rp=_remotePlayers[cid];
