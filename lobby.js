@@ -477,7 +477,7 @@ window.LobbySystem = (function() {
       var col=data.color||0x4488ff;
       var parts=makeRemotePlayer(col,data.name);
       if(!parts||!parts.length){console.log('[Lobby] addRP parts empty!');return;}
-      var sx=data.x||_pos.x;
+      var sx=(data.x||_pos.x)+3;
       var sz=data.z||_pos.z;
       var container=new T.Group();
       container.position.set(sx,0,sz);
