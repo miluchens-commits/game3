@@ -482,7 +482,8 @@ window.LobbySystem = (function() {
       var col=data.color||0x4488ff;
       var parts=makeRemotePlayer(col,data.name);
       if(!parts||!parts.length){console.log('[Lobby] addRP parts empty!');return;}
-      var sx=data.x||_pos.x;
+      // Offset +3 on X so remote player NEVER overlaps local player
+      var sx=(data.x||_pos.x)+3;
       var sz=data.z||_pos.z;
       // Add each mesh directly to scene (NO Group) with world positions
       parts.forEach(function(p){
