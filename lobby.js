@@ -481,9 +481,9 @@ window.LobbySystem = (function() {
       var col=data.color||0x4488ff;
       var mesh=makeRemotePlayer(col,data.name);
       if(!mesh){console.log('[Lobby] addRP mesh is null!');return;}
-      // Spawn at same position as local player for direct comparison
-      var sx=_pos.x;
-      var sz=_pos.z;
+      // Spawn at server-reported position so remote player appears where they actually are
+      var sx=data.x||_pos.x;
+      var sz=data.z||_pos.z;
       mesh.position.set(sx,0,sz);
       mesh.rotation.y=data.rot||0;
       // Disable frustum culling to ensure visibility
