@@ -277,20 +277,12 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var g=new T.Group();
-    // Use EXACT same material function as local player (MeshStandardMaterial)
-    var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
-    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
-    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
-    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshStandardMaterial({color:0x66ccff,emissive:col,emissiveIntensity:0.3}));
-    v.position.set(0,1.27,0.2);g.add(v);
-    var am=new T.Mesh(new T.BoxGeometry(0.15,0.5,0.15),bm());
-    var al=am.clone();al.position.set(-0.45,0.85,0);al.castShadow=true;g.add(al);
-    var ar=am.clone();ar.position.set(0.45,0.85,0);ar.castShadow=true;g.add(ar);
-    var lm=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),new T.MeshStandardMaterial({color:0x222244,roughness:0.7}));
-    var ll=lm.clone();ll.position.set(-0.2,0.35,0);ll.castShadow=true;g.add(ll);
-    var lr=lm.clone();lr.position.set(0.2,0.35,0);lr.castShadow=true;g.add(lr);
-    // Dedicated light at remote player so StandardMaterial gets enough illumination
-    var rl=new T.PointLight(col,1,8);rl.position.y=2;g.add(rl);
+    // ULTIMATE TEST: MeshBasicMaterial (no lighting needed, always visible)
+    var bm=function(c){return new T.MeshBasicMaterial({color:c||col})};
+    var body=new T.Mesh(new T.BoxGeometry(1.2,1.0,1.2),bm());body.position.y=0.8;g.add(body);
+    var head=new T.Mesh(new T.BoxGeometry(0.6,0.5,0.6),bm());head.position.y=1.5;g.add(head);
+    return g;
+  }
     var cv=document.createElement('canvas');cv.width=128;cv.height=32;
     var ctx=cv.getContext('2d');
     ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();
