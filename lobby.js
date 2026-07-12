@@ -277,6 +277,9 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var g=new T.Group();
+    // DEBUG: giant sphere so it's unmistakable even when overlapping
+    var dbg=new T.Mesh(new T.SphereGeometry(3,16,16),new T.MeshBasicMaterial({color:0xff0000,transparent:true,opacity:0.5}));
+    dbg.position.y=2.5;g.add(dbg);
     var bm=function(c){return new T.MeshStandardMaterial({color:c||col,roughness:0.5,metalness:0.3})};
     var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.y=0.8;body.castShadow=true;g.add(body);
     var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.y=1.25;head.castShadow=true;g.add(head);
@@ -485,6 +488,11 @@ window.LobbySystem = (function() {
     mesh.rotation.y=data.rot||0;
     _scn.add(mesh);
     _remotePlayers[data.clientId]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
+    // PERMANENT debug marker at (10,1,-5) — should ALWAYS be visible
+    if(!window._lobbyDebugMarker){
+      var dm=new T.Mesh(new T.BoxGeometry(1,1,1),new T.MeshBasicMaterial({color:0xffaa00}));
+      dm.position.set(10,1,-5);_scn.add(dm);window._lobbyDebugMarker=dm;
+    }
   }
 
   function removeRemotePlayer(cid){
@@ -518,9 +526,9 @@ window.LobbySystem = (function() {
       var msg;try{msg=JSON.parse(e.data);}catch(ex){return;}
       console.log('[Lobby] recv:',msg.type,msg);
       switch(msg.type){
-        case 'lobby_state':msg.players.forEach(function(p){if(p.clientId!==_localClientId){try{addRemotePlayer(p);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}});break;
-        case 'lobby_player_join':if(msg.clientId!==_localClientId){try{addRemotePlayer(msg);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}break;
-        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
+        case 'lobby_state':console.log('[Lobby] players count:',msg.players.length,JSON.stringify(msg.players.map(function(p){return p.clientId;})));msg.players.forEach(function(p){if(p.clientId!==_localClientId){try{addRemotePlayer(p);console.log('[Lobby] addRemotePlayer OK for',p.clientId);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}});break;
+        case 'lobby_player_join':if(msg.clientId!==_localClientId){try{addRemotePlayer(msg);console.log('[Lobby] addRemotePlayer (join) OK for',msg.clientId);}catch(ex){console.error('[Lobby] addRemotePlayer ERROR:',ex);}}break;
+        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}else{console.log('[Lobby] pos for unknown clientId:',msg.clientId);}break;
         case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
       }
     };
@@ -593,7 +601,16 @@ window.LobbySystem = (function() {
       _disconnectLobby();
     },
     update:function(dt){upd(dt);},
-    render:function(){if(_active&&_ren&&_scn&&_cam)try{_ren.render(_scn,_cam);}catch(ex){console.error('[Lobby] render ERROR:',ex);}},
+    render:function(){
+      if(_active&&_ren&&_scn&&_cam){
+        // Debug: log scene state
+        if(Object.keys(_remotePlayers).length>0){
+          var cid=Object.keys(_remotePlayers)[0];
+          console.log('[Lobby] render check: _scn.children='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length+' marker='+!!window._lobbyDebugMarker+' cid='+cid+' pos=('+_remotePlayers[cid].mesh.position.x.toFixed(2)+','+_remotePlayers[cid].mesh.position.z.toFixed(2)+')');
+        }
+        try{_ren.render(_scn,_cam);}catch(ex){console.error('[Lobby] render ERROR:',ex);}
+      }
+    },
     isActive:function(){return _active;},
     key:function(c,d){_k[c]=d;},
     mdown:function(e){_md=true;_lmx=e.clientX;_lmy=e.clientY;},
