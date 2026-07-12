@@ -488,6 +488,11 @@ window.LobbySystem = (function() {
     mesh.rotation.y=data.rot||0;
     _scn.add(mesh);
     _remotePlayers[data.clientId]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
+    // PERMANENT debug marker at (10,1,-5) — should ALWAYS be visible
+    if(!window._lobbyDebugMarker){
+      var dm=new T.Mesh(new T.BoxGeometry(1,1,1),new T.MeshBasicMaterial({color:0xffaa00}));
+      dm.position.set(10,1,-5);_scn.add(dm);window._lobbyDebugMarker=dm;
+    }
   }
 
   function removeRemotePlayer(cid){
@@ -596,7 +601,16 @@ window.LobbySystem = (function() {
       _disconnectLobby();
     },
     update:function(dt){upd(dt);},
-    render:function(){if(_active&&_ren&&_scn&&_cam)_ren.render(_scn,_cam);},
+    render:function(){
+      if(_active&&_ren&&_scn&&_cam){
+        // Debug: log scene state
+        if(Object.keys(_remotePlayers).length>0){
+          var cid=Object.keys(_remotePlayers)[0];
+          console.log('[Lobby] render check: _scn.children='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length+' marker='+!!window._lobbyDebugMarker+' cid='+cid+' pos=('+_remotePlayers[cid].mesh.position.x.toFixed(2)+','+_remotePlayers[cid].mesh.position.z.toFixed(2)+')');
+        }
+        try{_ren.render(_scn,_cam);}catch(ex){console.error('[Lobby] render ERROR:',ex);}
+      }
+    },
     isActive:function(){return _active;},
     key:function(c,d){_k[c]=d;},
     mdown:function(e){_md=true;_lmx=e.clientX;_lmy=e.clientY;},
