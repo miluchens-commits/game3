@@ -641,10 +641,10 @@ function handleLobbyJoin(ws, msg) {
 }
 function handleLobbyLeave(ws) {
   if (!ws.lobbyData || !lobbyPlayers.has(ws)) return;
-  const name = ws.lobbyData.name;
+  const cid = ws.lobbyData.clientId;
   lobbyPlayers.delete(ws);
   ws.lobbyData = null;
-  broadcastLobby(null, { type: 'lobby_player_leave', name });
+  broadcastLobby(null, { type: 'lobby_player_leave', clientId: cid });
 }
 wss.on('connection', (ws) => {
   ws.playerData = null; ws.roomId = null; ws.isAlive = true;
@@ -657,7 +657,7 @@ wss.on('connection', (ws) => {
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '', gameMode: msg.gameMode || 'multi' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
       case 'online_ping': if (msg.name) { onlineUsers.add(msg.name); ws.playerName = msg.name; if (!ws.playerData) ws.playerData = {}; ws.playerData.username = msg.name; } break;
       case 'lobby_join': handleLobbyJoin(ws, msg); break;
-      case 'lobby_pos': if (ws.lobbyData) { ws.lobbyData.x = msg.x; ws.lobbyData.z = msg.z; ws.lobbyData.rot = msg.rot; broadcastLobby(ws, { type: 'lobby_player_pos', name: ws.lobbyData.name, x: msg.x, z: msg.z, rot: msg.rot }); } break;
+      case 'lobby_pos': if (ws.lobbyData) { ws.lobbyData.x = msg.x; ws.lobbyData.z = msg.z; ws.lobbyData.rot = msg.rot; broadcastLobby(ws, { type: 'lobby_player_pos', clientId: ws.lobbyData.clientId, name: ws.lobbyData.name, x: msg.x, z: msg.z, rot: msg.rot }); } break;
       case 'lobby_leave': handleLobbyLeave(ws); break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
       case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;

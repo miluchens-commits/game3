@@ -452,8 +452,8 @@ window.LobbySystem = (function() {
       }
     }
     // Interpolate remote player meshes
-    Object.keys(_remotePlayers).forEach(function(nm){
-      var rp=_remotePlayers[nm];
+    Object.keys(_remotePlayers).forEach(function(cid){
+      var rp=_remotePlayers[cid];
       if(rp.mesh){
         rp.mesh.position.x+=(rp.pos.x-rp.mesh.position.x)*0.15;
         rp.mesh.position.z+=(rp.pos.z-rp.mesh.position.z)*0.15;
@@ -478,18 +478,18 @@ window.LobbySystem = (function() {
   // ============ LOBBY MULTIPLAYER ============
 
   function addRemotePlayer(data){
-    if(_remotePlayers[data.name]) return;
+    if(!data.clientId||_remotePlayers[data.clientId]) return;
     var col=data.color||0x4488ff;
     var mesh=makeRemotePlayer(col,data.name);
     mesh.position.set(data.x||0,0,data.z||0);
     mesh.rotation.y=data.rot||0;
     _scn.add(mesh);
-    _remotePlayers[data.name]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
+    _remotePlayers[data.clientId]={mesh:mesh,pos:{x:data.x||0,z:data.z||0,rot:data.rot||0}};
   }
 
-  function removeRemotePlayer(name){
-    var rp=_remotePlayers[name];
-    if(rp){if(rp.mesh&&_scn)_scn.remove(rp.mesh);delete _remotePlayers[name];}
+  function removeRemotePlayer(cid){
+    var rp=_remotePlayers[cid];
+    if(rp){if(rp.mesh&&_scn)_scn.remove(rp.mesh);delete _remotePlayers[cid];}
   }
 
   function _connectLobby(){
@@ -520,13 +520,13 @@ window.LobbySystem = (function() {
       switch(msg.type){
         case 'lobby_state':msg.players.forEach(function(p){if(p.clientId!==_localClientId)addRemotePlayer(p);});break;
         case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
-        case 'lobby_player_pos':if(_remotePlayers[msg.name]){_remotePlayers[msg.name].pos.x=msg.x;_remotePlayers[msg.name].pos.z=msg.z;_remotePlayers[msg.name].rot=msg.rot;}break;
-        case 'lobby_player_leave':removeRemotePlayer(msg.name);break;
+        case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}break;
+        case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
       }
     };
     _ws.onclose=function(e){
       console.log('[Lobby] WS close code='+(e?e.code:'?')+' reason='+(e?e.reason:'?'));
-      Object.keys(_remotePlayers).forEach(function(nm){removeRemotePlayer(nm);});
+      Object.keys(_remotePlayers).forEach(function(cid){removeRemotePlayer(cid);});
       _ws=null;
     };
     _ws.onerror=function(e){console.log('[Lobby] WS error',e);};
@@ -538,7 +538,7 @@ window.LobbySystem = (function() {
       try{_ws.close();}catch(e){}
       _ws=null;
     }
-    Object.keys(_remotePlayers).forEach(function(nm){removeRemotePlayer(nm);});
+    Object.keys(_remotePlayers).forEach(function(cid){removeRemotePlayer(cid);});
     _lastSentPos={x:0,z:0,rot:0};_posSendThrottle=0;
   }
 
