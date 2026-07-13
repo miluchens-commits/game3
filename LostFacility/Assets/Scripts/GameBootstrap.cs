@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [DefaultExecutionOrder(-100)]
 public class GameBootstrap : MonoBehaviour
@@ -29,7 +30,7 @@ public class GameBootstrap : MonoBehaviour
         var buildingGO = new GameObject("BuildingGenerator");
         buildingGO.transform.SetParent(mapGO.transform);
         var buildingGen = buildingGO.AddComponent<BuildingGenerator>();
-        string shaderName = "Standard";
+        string shaderName = Shader.Find("Universal Render Pipeline/Lit") != null ? "Universal Render Pipeline/Lit" : "Standard";
         buildingGen.concreteMaterial = new Material(Shader.Find(shaderName)) { color = new Color(0.25f, 0.25f, 0.25f) };
         buildingGen.roofMaterial = new Material(Shader.Find(shaderName)) { color = new Color(0.15f, 0.15f, 0.15f) };
         mapGen.buildingGen = buildingGen;
