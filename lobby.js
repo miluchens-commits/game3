@@ -461,12 +461,25 @@ window.LobbySystem = (function() {
         var dx=(rp.pos.x-ref.position.x)*0.15;
         var dz=(rp.pos.z-ref.position.z)*0.15;
         var drot=(rp.rot-ref.rotation.y)*0.15;
+        if(isNaN(dx)||isNaN(dz)){console.log('[Lobby] NaN interpolation for',cid,'rp.pos',rp.pos.x,rp.pos.z,'ref',ref.position.x,ref.position.z);dx=0;dz=0;}
         rp.parts.forEach(function(p){
           p.position.x+=dx; p.position.z+=dz;
           p.rotation.y+=drot;
         });
       }
     });
+    // Periodic diagnostic: log remote player body position every 2s
+    _diagT=(_diagT||0)+dt;
+    if(_diagT>2){
+      _diagT=0;
+      Object.keys(_remotePlayers).forEach(function(cid){
+        var rp=_remotePlayers[cid];
+        if(rp.parts&&rp.parts[0]){
+          var p=rp.parts[0];
+          console.log('[Lobby] diag',cid,'body at',p.position.x.toFixed(2),p.position.y.toFixed(2),p.position.z.toFixed(2),'visible=',p.visible,'scnChildren=',_scn?_scn.children.length:'null','rp.pos',rp.pos.x,rp.pos.z);
+        }
+      });
+    }
   }
 
   function trigZone(zone){
@@ -608,7 +621,7 @@ window.LobbySystem = (function() {
       console.log('[Lobby] init called');
       T=window.THREE; _ren=ren; _cbs=cbs||{};
       _clock=new T.Clock(); _pos=new T.Vector3(0,0,0);
-      _scn=new T.Scene(); _scn.background=new T.Color(0x0a0a18); _scn.fog=new T.Fog(0x0a0a18,35,55);
+      _scn=new T.Scene(); _scn.background=new T.Color(0x0a0a18); _scn.fog=null;
       _cam=new T.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
       _cam.position.set(0,12,18);
       _scn.add(new T.AmbientLight(0x8899bb,1.0));
@@ -649,7 +662,7 @@ window.LobbySystem = (function() {
       _disconnectLobby();
     },
     update:function(dt){upd(dt);},
-    render:function(){if(_active&&_ren&&_scn&&_cam)_ren.render(_scn,_cam);},
+    render:function(){if(_active&&_ren&&_scn&&_cam){try{_ren.render(_scn,_cam);}catch(e){console.log('[Lobby] render error:',e);}}},
     isActive:function(){return _active;},
     key:function(c,d){_k[c]=d;},
     mdown:function(e){_md=true;_lmx=e.clientX;_lmy=e.clientY;},
