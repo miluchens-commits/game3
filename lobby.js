@@ -33,7 +33,7 @@ window.LobbySystem = (function() {
   var _platT = 0;
   var _animT = 0;
   var _occupyTimer = 0;
-  var _notifT = 0;
+  var _notifT = 0, _diagT = 0;
 
   // Floor bounds
   var _B = {minX:-22,maxX:22,minZ:-22,maxZ:22};
@@ -469,7 +469,7 @@ window.LobbySystem = (function() {
       }
     });
     // Periodic diagnostic: log remote player body position every 2s
-    _diagT=(_diagT||0)+dt;
+    _diagT+=dt;
     if(_diagT>2){
       _diagT=0;
       Object.keys(_remotePlayers).forEach(function(cid){
