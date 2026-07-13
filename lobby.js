@@ -275,13 +275,7 @@ window.LobbySystem = (function() {
 
   // ============ REMOTE PLAYER ============
 
-  function makeRemotePlayer(col, name){
-    var parts=[];
-    // TEST: return a single cube offset by -0.5 in x from yellow test cube
-    var c=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0xff44aa}));
-    c.position.set(-0.5,1.2,0);c.frustumCulled=false;parts.push(c);
-    return parts;
-  }
+  function makeRemotePlayer(col, name){return [];}
 
   // ============ UPDATE ============
 
@@ -481,28 +475,26 @@ window.LobbySystem = (function() {
     console.log('[Lobby] addRP',data.clientId,'serverPos',data.x,data.z);
     try {
       var col=data.color||0x4488ff;
-      var parts=makeRemotePlayer(col,data.name);
-      if(!parts||!parts.length){console.log('[Lobby] addRP parts empty!');return;}
-      // Offset +3 on X so remote player NEVER overlaps local player
       var sx=(data.x||_pos.x)+3;
       var sz=data.z||_pos.z;
-      // DIAGNOSTIC: bright pink cube at body position with same BoxGeometry + MeshBasicMaterial
-      var diag=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),new T.MeshBasicMaterial({color:0xff00ff}));
-      diag.position.set(sx,0.8,sz);diag.frustumCulled=false;_scn.add(diag);
-      // TEST: add a big yellow cube at exactly same position as body from makeRemotePlayer
-      var testBody=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0xffff00}));
-      testBody.position.set(sx,1.2,sz);testBody.frustumCulled=false;_scn.add(testBody);
-      // Add each mesh directly to scene (NO Group) with world positions
-      parts.forEach(function(p){
-        p.position.x+=sx;
-        p.position.z+=sz;
-        p.frustumCulled=false;
-        _scn.add(p);
-      });
+      // Build parts DIRECTLY here (not via makeRemotePlayer) to work around browser-specific THREE.js render bug
+      var parts=[];
+      var pink=new T.MeshBasicMaterial({color:0xff44aa});
+      var cyan=new T.MeshBasicMaterial({color:0x44ffcc});
+      var body=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),pink);body.position.set(sx,1.2,sz);body.frustumCulled=false;parts.push(body);
+      var head=new T.Mesh(new T.BoxGeometry(1.2,1,1),cyan);head.position.set(sx,2.8,sz);head.frustumCulled=false;parts.push(head);
+      var v=new T.Mesh(new T.BoxGeometry(0.8,0.2,0.2),new T.MeshBasicMaterial({color:0xffff00}));v.position.set(sx,2.9,sz+0.6);v.frustumCulled=false;parts.push(v);
+      var am=new T.Mesh(new T.BoxGeometry(0.4,1.2,0.4),new T.MeshBasicMaterial({color:0x44ff44}));
+      var al=am.clone();al.position.set(sx-1.5,1.8,sz);al.frustumCulled=false;parts.push(al);
+      var ar=am.clone();ar.position.set(sx+1.5,1.8,sz);ar.frustumCulled=false;parts.push(ar);
+      var ll=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));ll.position.set(sx-0.5,0.2,sz);ll.frustumCulled=false;parts.push(ll);
+      var lr=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));lr.position.set(sx+0.5,0.2,sz);lr.frustumCulled=false;parts.push(lr);
+      // Add parts to scene
+      parts.forEach(function(p){_scn.add(p);});
       // Keep arrow for now to confirm position
       var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
       _scn.add(arrow);
-      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,diag:diag,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
       console.log('[Lobby] addRP parts:',parts.length,'firstPart pos:',parts[0].position.x.toFixed(2),parts[0].position.y.toFixed(2),parts[0].position.z.toFixed(2));
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
@@ -514,7 +506,6 @@ window.LobbySystem = (function() {
     var rp=_remotePlayers[cid];
     if(rp){
       if(rp.parts)rp.parts.forEach(function(p){if(_scn)_scn.remove(p);});
-      if(rp.diag&&_scn)_scn.remove(rp.diag);
       if(rp.arrow&&_scn)_scn.remove(rp.arrow);
       delete _remotePlayers[cid];
     }
