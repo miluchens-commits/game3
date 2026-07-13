@@ -275,7 +275,6 @@ window.LobbySystem = (function() {
 
   // ============ REMOTE PLAYER ============
 
-  function makeRemotePlayer(col, name){return [];}
 
   // ============ UPDATE ============
 
@@ -491,10 +490,7 @@ window.LobbySystem = (function() {
       var lr=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));lr.position.set(sx+0.5,0.2,sz);lr.frustumCulled=false;parts.push(lr);
       // Add parts to scene
       parts.forEach(function(p){_scn.add(p);});
-      // Keep arrow for now to confirm position
-      var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
-      _scn.add(arrow);
-      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={parts:parts,pos:{x:sx,z:sz,rot:data.rot||0}};
       console.log('[Lobby] addRP parts:',parts.length,'firstPart pos:',parts[0].position.x.toFixed(2),parts[0].position.y.toFixed(2),parts[0].position.z.toFixed(2));
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
@@ -506,7 +502,6 @@ window.LobbySystem = (function() {
     var rp=_remotePlayers[cid];
     if(rp){
       if(rp.parts)rp.parts.forEach(function(p){if(_scn)_scn.remove(p);});
-      if(rp.arrow&&_scn)_scn.remove(rp.arrow);
       delete _remotePlayers[cid];
     }
   }
