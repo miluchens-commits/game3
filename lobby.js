@@ -277,9 +277,9 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var parts=[];
-    // TEST: return a single cube identical to the yellow test cube
+    // TEST: return a single cube offset by -0.5 in x from yellow test cube
     var c=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0xff44aa}));
-    c.position.set(0,1.2,0);c.frustumCulled=false;parts.push(c);
+    c.position.set(-0.5,1.2,0);c.frustumCulled=false;parts.push(c);
     return parts;
   }
 
