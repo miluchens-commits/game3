@@ -476,16 +476,10 @@ window.LobbySystem = (function() {
       var col=data.color||0x4488ff;
       var sx=(data.x||_pos.x)+3;
       var sz=data.z||_pos.z;
-      // Build parts DIRECTLY here - no functions, no clone()
+      // Build parts - single box (same as yellow test cube which was visible)
       var parts=[];
-      var gm=function(w,h,d,c){return new T.MeshBasicMaterial({color:c})};
-      var body=new T.Mesh(new T.BoxGeometry(0.8,0.6,0.4),gm(0,0,0,0xff44aa));body.position.set(sx,0.8,sz);body.frustumCulled=false;parts.push(body);
-      var head=new T.Mesh(new T.BoxGeometry(0.4,0.4,0.4),gm(0,0,0,0x44ffcc));head.position.set(sx,1.3,sz);head.frustumCulled=false;parts.push(head);
-      var v=new T.Mesh(new T.BoxGeometry(0.3,0.1,0.1),gm(0,0,0,0xffff00));v.position.set(sx,1.32,sz+0.25);v.frustumCulled=false;parts.push(v);
-      var al=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),gm(0,0,0,0x44ff44));al.position.set(sx-0.55,0.85,sz);al.frustumCulled=false;parts.push(al);
-      var ar=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),gm(0,0,0,0x44ff44));ar.position.set(sx+0.55,0.85,sz);ar.frustumCulled=false;parts.push(ar);
-      var ll=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),gm(0,0,0,0xff6600));ll.position.set(sx-0.2,0.3,sz);ll.frustumCulled=false;parts.push(ll);
-      var lr=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),gm(0,0,0,0xff6600));lr.position.set(sx+0.2,0.3,sz);lr.frustumCulled=false;parts.push(lr);
+      var box=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0x00ff88}));
+      box.position.set(sx,1.2,sz);box.frustumCulled=false;parts.push(box);
       // Add parts to scene
       parts.forEach(function(p){_scn.add(p);});
       _remotePlayers[data.clientId]={parts:parts,pos:{x:sx,z:sz,rot:data.rot||0}};
