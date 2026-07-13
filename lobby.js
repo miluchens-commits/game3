@@ -556,8 +556,8 @@ window.LobbySystem = (function() {
       console.log('[Lobby] recv:',msg.type,msg);
       try{
         switch(msg.type){
-          case 'lobby_state':_stateReceived=true;if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});if(msg.players.length===0)console.log('[Lobby] state empty!');break;
-          case 'lobby_player_join':if(msg.clientId!==_localClientId)addRemotePlayer(msg);break;
+          case 'lobby_state':_stateReceived=true;if(_stateTimer){clearTimeout(_stateTimer);_stateTimer=null;}console.log('[Lobby] state players:',JSON.stringify(msg.players.map(function(p){return p.clientId;})),'_localClientId=',_localClientId);msg.players.forEach(function(p){console.log('[Lobby] check p.clientId=',p.clientId,' !== ',_localClientId,'=',p.clientId!==_localClientId);if(p.clientId!==_localClientId)addRemotePlayer(p);});if(msg.players.length>0){var notifEl=document.getElementById('lobby-notif');if(notifEl){notifEl.textContent='🟢 已有 '+(msg.players.length-1)+' 人在大廳';notifEl.classList.add('show');_notifT=0;}}if(msg.players.length===0)console.log('[Lobby] state empty!');break;
+          case 'lobby_player_join':if(msg.clientId!==_localClientId){addRemotePlayer(msg);var notifEl=document.getElementById('lobby-notif');if(notifEl){notifEl.textContent='🟢 '+(msg.name||msg.clientId.substr(0,6))+' 進入大廳';notifEl.classList.add('show');_notifT=0;}}break;
           case 'lobby_player_pos':if(_remotePlayers[msg.clientId]){_remotePlayers[msg.clientId].pos.x=msg.x;_remotePlayers[msg.clientId].pos.z=msg.z;_remotePlayers[msg.clientId].rot=msg.rot;}else{console.log('[Lobby] pos for unknown cid='+msg.clientId);}break;
           case 'lobby_player_leave':removeRemotePlayer(msg.clientId);break;
         }
