@@ -277,16 +277,9 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var parts=[];
-    var pink=new T.MeshBasicMaterial({color:0xff44aa});
-    var cyan=new T.MeshBasicMaterial({color:0x44ffcc});
-    var body=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),pink);body.position.set(0,1.2,0);parts.push(body);
-    var head=new T.Mesh(new T.BoxGeometry(1.2,1,1),cyan);head.position.set(0,2.8,0);parts.push(head);
-    var v=new T.Mesh(new T.BoxGeometry(0.8,0.2,0.2),new T.MeshBasicMaterial({color:0xffff00}));v.position.set(0,2.9,0.6);parts.push(v);
-    var am=new T.Mesh(new T.BoxGeometry(0.4,1.2,0.4),new T.MeshBasicMaterial({color:0x44ff44}));
-    var al=am.clone();al.position.set(-1.5,1.8,0);parts.push(al);
-    var ar=am.clone();ar.position.set(1.5,1.8,0);parts.push(ar);
-    var ll=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));ll.position.set(-0.5,0.2,0);parts.push(ll);
-    var lr=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));lr.position.set(0.5,0.2,0);parts.push(lr);
+    // TEST: return a single cube identical to the yellow test cube
+    var c=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0xff44aa}));
+    c.position.set(0,1.2,0);c.frustumCulled=false;parts.push(c);
     return parts;
   }
 
