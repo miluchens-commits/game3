@@ -277,20 +277,30 @@ window.LobbySystem = (function() {
 
   function makeRemotePlayer(col, name){
     var parts=[];
-    var bm=function(c){return new T.MeshBasicMaterial({color:c||col})};
-    var body=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),bm());body.position.set(0,0.8,0);parts.push(body);
-    var head=new T.Mesh(new T.BoxGeometry(0.35,0.35,0.35),bm());head.position.set(0,1.25,0);parts.push(head);
-    var v=new T.Mesh(new T.BoxGeometry(0.25,0.08,0.06),new T.MeshBasicMaterial({color:0x66ccff}));v.position.set(0,1.27,0.2);parts.push(v);
-    var am=new T.Mesh(new T.BoxGeometry(0.15,0.5,0.15),bm());
-    var al=am.clone();al.position.set(-0.45,0.85,0);parts.push(al);
-    var ar=am.clone();ar.position.set(0.45,0.85,0);parts.push(ar);
-    var lMat=new T.MeshBasicMaterial({color:0x222244});
-    var ll=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),lMat);ll.position.set(-0.2,0.35,0);parts.push(ll);
-    var lr=new T.Mesh(new T.BoxGeometry(0.2,0.5,0.2),lMat);lr.position.set(0.2,0.35,0);parts.push(lr);
-    var gMat=new T.MeshBasicMaterial({color:0x666666});
-    var gb=new T.Mesh(new T.BoxGeometry(0.05,0.05,0.3),gMat);gb.position.set(0.15,0.75,0.38);parts.push(gb);
-    var gh=new T.Mesh(new T.BoxGeometry(0.04,0.08,0.04),new T.MeshBasicMaterial({color:0x555555}));gh.position.set(0.15,0.69,0.25);parts.push(gh);
-    var pGlow=new T.Mesh(new T.SphereGeometry(0.6,12,12),new T.MeshBasicMaterial({color:col||0x4488ff,transparent:true,opacity:0.06}));pGlow.position.set(0,0.8,0);parts.push(pGlow);
+    var pink=new T.MeshBasicMaterial({color:0xff44aa});
+    var cyan=new T.MeshBasicMaterial({color:0x44ffcc});
+    var body=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),pink);body.position.set(0,1.2,0);parts.push(body);
+    var head=new T.Mesh(new T.BoxGeometry(1.2,1,1),cyan);head.position.set(0,2.8,0);parts.push(head);
+    var v=new T.Mesh(new T.BoxGeometry(0.8,0.2,0.2),new T.MeshBasicMaterial({color:0xffff00}));v.position.set(0,2.9,0.6);parts.push(v);
+    var am=new T.Mesh(new T.BoxGeometry(0.4,1.2,0.4),new T.MeshBasicMaterial({color:0x44ff44}));
+    var al=am.clone();al.position.set(-1.5,1.8,0);parts.push(al);
+    var ar=am.clone();ar.position.set(1.5,1.8,0);parts.push(ar);
+    var ll=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));ll.position.set(-0.5,0.2,0);parts.push(ll);
+    var lr=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));lr.position.set(0.5,0.2,0);parts.push(lr);
+    var gb=new T.Mesh(new T.BoxGeometry(0.15,0.15,0.8),new T.MeshBasicMaterial({color:0xff0000}));gb.position.set(0.5,1.8,0.9);parts.push(gb);
+    var gh=new T.Mesh(new T.BoxGeometry(0.1,0.2,0.1),new T.MeshBasicMaterial({color:0xffff00}));gh.position.set(0.5,1.5,0.5);parts.push(gh);
+    var pGlow=new T.Mesh(new T.SphereGeometry(2,12,12),new T.MeshBasicMaterial({color:0x00ff00,transparent:true,opacity:0.15}));pGlow.position.set(0,1.2,0);parts.push(pGlow);
+    // Name label sprite
+    if(name){
+      var cv=document.createElement('canvas');cv.width=256;cv.height=64;
+      var cx=cv.getContext('2d');
+      cx.fillStyle='rgba(0,0,0,0.5)';cx.beginPath();cx.roundRect(4,4,248,56,10);cx.fill();
+      cx.fillStyle='#ffffff';cx.font='bold 28px Arial';cx.textAlign='center';cx.textBaseline='middle';
+      cx.fillText(name,128,34);
+      var tx=new T.CanvasTexture(cv);
+      var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+      sp.scale.set(3,0.7,1);sp.position.set(0,4,0);sp.frustumCulled=false;parts.push(sp);
+    }
     return parts;
   }
 
@@ -497,7 +507,7 @@ window.LobbySystem = (function() {
       // Keep arrow for now to confirm position
       var arrow=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(sx,1,sz),2,0xff0000);
       _scn.add(arrow);
-      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,pos:{x:sx,z:sz,rot:data.rot||0}};
+      _remotePlayers[data.clientId]={parts:parts,arrow:arrow,diag:diag,pos:{x:sx,z:sz,rot:data.rot||0}};
       console.log('[Lobby] addRP parts:',parts.length,'firstPart pos:',parts[0].position.x.toFixed(2),parts[0].position.y.toFixed(2),parts[0].position.z.toFixed(2));
       console.log('[Lobby] addRP done scn='+_scn.children.length+' rPlayers='+Object.keys(_remotePlayers).length);
     } catch(e) {
