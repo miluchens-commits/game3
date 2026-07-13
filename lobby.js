@@ -525,7 +525,7 @@ window.LobbySystem = (function() {
       }
       _ws=new WebSocket(url+'/lobby');
     }catch(e){console.log('[Lobby] WS create error:',e);_ws=null;if(_active)_scheduleReconnect();return;}
-    console.log('[Lobby] Connecting to',url);
+      console.log('[Lobby] Connecting to',url+'/lobby');
     _ws.onopen=function(){
       console.log('[Lobby] WS open, sending lobby_join name='+_lobbyName);
       if(_reconnectTimer){clearTimeout(_reconnectTimer);_reconnectTimer=null;}
