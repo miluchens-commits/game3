@@ -287,20 +287,6 @@ window.LobbySystem = (function() {
     var ar=am.clone();ar.position.set(1.5,1.8,0);parts.push(ar);
     var ll=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));ll.position.set(-0.5,0.2,0);parts.push(ll);
     var lr=new T.Mesh(new T.BoxGeometry(0.5,1.2,0.5),new T.MeshBasicMaterial({color:0xff6600}));lr.position.set(0.5,0.2,0);parts.push(lr);
-    var gb=new T.Mesh(new T.BoxGeometry(0.15,0.15,0.8),new T.MeshBasicMaterial({color:0xff0000}));gb.position.set(0.5,1.8,0.9);parts.push(gb);
-    var gh=new T.Mesh(new T.BoxGeometry(0.1,0.2,0.1),new T.MeshBasicMaterial({color:0xffff00}));gh.position.set(0.5,1.5,0.5);parts.push(gh);
-    var pGlow=new T.Mesh(new T.SphereGeometry(2,12,12),new T.MeshBasicMaterial({color:0x00ff00,transparent:true,opacity:0.15}));pGlow.position.set(0,1.2,0);parts.push(pGlow);
-    // Name label sprite
-    if(name){
-      var cv=document.createElement('canvas');cv.width=256;cv.height=64;
-      var cx=cv.getContext('2d');
-      cx.fillStyle='rgba(0,0,0,0.5)';cx.beginPath();cx.roundRect(4,4,248,56,10);cx.fill();
-      cx.fillStyle='#ffffff';cx.font='bold 28px Arial';cx.textAlign='center';cx.textBaseline='middle';
-      cx.fillText(name,128,34);
-      var tx=new T.CanvasTexture(cv);
-      var sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
-      sp.scale.set(3,0.7,1);sp.position.set(0,4,0);sp.frustumCulled=false;parts.push(sp);
-    }
     return parts;
   }
 
@@ -510,6 +496,9 @@ window.LobbySystem = (function() {
       // DIAGNOSTIC: bright pink cube at body position with same BoxGeometry + MeshBasicMaterial
       var diag=new T.Mesh(new T.BoxGeometry(0.7,0.6,0.4),new T.MeshBasicMaterial({color:0xff00ff}));
       diag.position.set(sx,0.8,sz);diag.frustumCulled=false;_scn.add(diag);
+      // TEST: add a big yellow cube at exactly same position as body from makeRemotePlayer
+      var testBody=new T.Mesh(new T.BoxGeometry(2,1.8,1.2),new T.MeshBasicMaterial({color:0xffff00}));
+      testBody.position.set(sx,1.2,sz);testBody.frustumCulled=false;_scn.add(testBody);
       // Add each mesh directly to scene (NO Group) with world positions
       parts.forEach(function(p){
         p.position.x+=sx;
