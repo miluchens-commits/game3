@@ -6,3 +6,43 @@ node_modules/
 # data.json tracked as seed for Render deploy
 *.import
 
+# Unity
+LostFacility/Library/
+LostFacility/Logs/
+LostFacility/UserSettings/
+LostFacility/Assets/_Recovery*
+LostFacility/Assets/DefaultVolumeProfile.asset
+LostFacility/Assets/DefaultVolumeProfile.asset.meta
+LostFacility/Assets/UniversalRenderPipelineGlobalSettings.asset
+LostFacility/Assets/UniversalRenderPipelineGlobalSettings.asset.meta
+LostFacility/Packages/packages-lock.json
+LostFacility/ProjectSettings/AudioManager.asset
+LostFacility/ProjectSettings/ClusterInputManager.asset
+LostFacility/ProjectSettings/DynamicsManager.asset
+LostFacility/ProjectSettings/EditorSettings.asset
+LostFacility/ProjectSettings/GraphicsSettings.asset
+LostFacility/ProjectSettings/InputManager.asset
+LostFacility/ProjectSettings/MemorySettings.asset
+LostFacility/ProjectSettings/MultiplayerManager.asset
+LostFacility/ProjectSettings/NavMeshAreas.asset
+LostFacility/ProjectSettings/PackageManagerSettings.asset
+LostFacility/ProjectSettings/Packages/
+LostFacility/ProjectSettings/Physics2DSettings.asset
+LostFacility/ProjectSettings/PresetManager.asset
+LostFacility/ProjectSettings/QualitySettings.asset
+LostFacility/ProjectSettings/ShaderGraphSettings.asset
+LostFacility/ProjectSettings/TagManager.asset
+LostFacility/ProjectSettings/TimeManager.asset
+LostFacility/ProjectSettings/UnityConnectSettings.asset
+LostFacility/ProjectSettings/VFXManager.asset
+LostFacility/ProjectSettings/VersionControlSettings.asset
+
+# Temporary scripts
+*.py
+find_mode_dropdown.py
+fix_all.py
+merge_extraction.py
+phase1.py
+lostfacility.html
+lostfacility_mode.html
+

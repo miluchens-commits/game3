@@ -626,6 +626,139 @@ const onlineUsers = new Set();
 const teams = {}; // teamId -> {leader, members:[]}
 let nextRoomId = 1;
 
+// ── Extraction Mode (5-player) ──
+const extractionQueue = [];
+const extractionRooms = {}; // roomId -> {players:[], spawns:[], gameStarted:false, safes:{}}
+function addToExtractionQueue(ws, name) {
+  ws.extractionData = { name: name || '玩家' };
+  extractionQueue.push(ws);
+  try { ws.send(JSON.stringify({ type: 'extraction_queue_status', position: extractionQueue.length })); } catch(e) {}
+  console.log('[Extraction] queue join, size='+extractionQueue.length+' name='+name);
+  if (extractionQueue.length >= 5) {
+    const players = extractionQueue.splice(0, 5);
+    startExtractionMatch(players);
+  }
+}
+function removeFromExtractionQueue(ws) {
+  const i = extractionQueue.indexOf(ws);
+  if (i !== -1) { extractionQueue.splice(i, 1); return true; }
+  return false;
+}
+function startExtractionMatch(players) {
+  const roomId = 'ext_' + Date.now();
+  const spawns = [
+    { x:45, z:270 }, { x:85, z:50 }, { x:270, z:80 },
+    { x:40, z:70 }, { x:270, z:260 }
+  ];
+  for (let i = spawns.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [spawns[i], spawns[j]] = [spawns[j], spawns[i]];
+  }
+  const playerList = players.map((p, i) => ({
+    id: i, name: (p.extractionData && p.extractionData.name) || ('玩家'+(i+1))
+  }));
+  extractionRooms[roomId] = { players, spawns, gameStarted: true };
+  console.log('[Extraction] match started roomId='+roomId+' players='+players.length);
+  players.forEach((ws, idx) => {
+    ws.extractionRoomId = roomId;
+    ws.extractionPlayerId = idx;
+    try { ws.send(JSON.stringify({
+      type: 'extraction_match_found', roomId, playerId: idx, playerCount: 5,
+      spawn: spawns[idx], players: playerList
+    })); } catch(e) { console.log('[Extraction] send match_found failed for player', idx); }
+  });
+}
+function broadcastExtraction(roomId, msg, excludeWs) {
+  const room = extractionRooms[roomId];
+  if (!room) return;
+  room.players.forEach(ws => {
+    if (ws !== excludeWs && ws.readyState === WebSocket.OPEN) {
+      try { ws.send(JSON.stringify(msg)); } catch(e) {}
+    }
+  });
+}
+function handleExtractionMessage(ws, msg) {
+  const roomId = ws.extractionRoomId;
+  const playerId = ws.extractionPlayerId;
+  if (roomId === undefined || !extractionRooms[roomId]) {
+    // Queue management
+    switch (msg.type) {
+      case 'join_extraction_queue':
+        addToExtractionQueue(ws, msg.name);
+        break;
+      case 'leave_extraction_queue':
+        if (removeFromExtractionQueue(ws)) {
+          try { ws.send(JSON.stringify({ type: 'extraction_queue_left' })); } catch(e) {}
+        }
+        break;
+    }
+    return;
+  }
+  switch (msg.type) {
+    case 'extraction_state':
+      broadcastExtraction(roomId, {
+        type: 'remote_state', playerId,
+        pos: msg.pos, yaw: msg.yaw, pitch: msg.pitch,
+        health: msg.health, state: msg.state
+      }, ws);
+      break;
+    case 'extraction_safe_open':
+      broadcastExtraction(roomId, { type: 'remote_safe_open', playerId, safeIdx: msg.safeIdx }, ws);
+      break;
+    case 'extraction_loot_take':
+      broadcastExtraction(roomId, { type: 'remote_loot_take', playerId, safeIdx: msg.safeIdx, itemIdx: msg.itemIdx, itemKey: msg.itemKey }, ws);
+      // Also store taken state on server so reconnecting players can sync
+      if (!extractionRooms[roomId].safes) extractionRooms[roomId].safes = {};
+      const sk = 'safe_'+msg.safeIdx;
+      if (!extractionRooms[roomId].safes[sk]) extractionRooms[roomId].safes[sk] = [];
+      extractionRooms[roomId].safes[sk].push(msg.itemIdx);
+      break;
+    case 'extraction_door_toggle':
+      broadcastExtraction(roomId, { type: 'remote_door_toggle', playerId, doorIdx: msg.doorIdx, open: msg.open }, ws);
+      break;
+    case 'extraction_shoot':
+      broadcastExtraction(roomId, { type: 'remote_shoot', playerId, origin: msg.origin, dir: msg.dir }, ws);
+      break;
+    case 'extraction_hit_player': {
+      const targetWs = extractionRooms[roomId].players[msg.targetPlayerId];
+      if (targetWs && targetWs.readyState === WebSocket.OPEN) {
+        try { targetWs.send(JSON.stringify({ type: 'you_were_hit', byPlayerId: playerId, damage: msg.damage })); } catch(e) {}
+      }
+      break;
+    }
+    case 'extraction_player_death': {
+      broadcastExtraction(roomId, { type: 'remote_player_death', playerId }, ws);
+      break;
+    }
+    case 'extraction_start_extract':
+      broadcastExtraction(roomId, { type: 'remote_extraction_start', playerId }, ws);
+      break;
+    case 'extraction_extracted':
+      broadcastExtraction(roomId, { type: 'remote_extracted', playerId, items: msg.items, value: msg.value }, ws);
+      break;
+  }
+}
+function cleanupExtraction(ws) {
+  const rid = ws.extractionRoomId;
+  const pid = ws.extractionPlayerId;
+  if (rid !== undefined && extractionRooms[rid]) {
+    broadcastExtraction(rid, { type: 'remote_player_disconnected', playerId: pid, playerName: (ws.extractionData && ws.extractionData.name) || '玩家' }, ws);
+    // Check if all players left
+    const room = extractionRooms[rid];
+    room.players = room.players.filter(p => p !== ws && p.readyState === WebSocket.OPEN);
+    if (room.players.length === 0) {
+      delete extractionRooms[rid];
+      console.log('[Extraction] room closed', rid);
+    } else {
+      // Notify remaining players of current player count
+      room.players.forEach(p => {
+        try { p.send(JSON.stringify({ type: 'extraction_room_players', count: room.players.length })); } catch(e) {}
+      });
+    }
+  }
+  removeFromExtractionQueue(ws);
+}
+
 // ── Lobby State ──
 const lobbyPlayers = new Map();
 const lobbyColors = [0x4488ff,0xff4444,0x44ff44,0xff8800,0xaa44ff,0xff44aa,0x44ffaa,0xffaa44,0x44ccff,0xff6644];
@@ -674,6 +807,20 @@ wss.on('connection', (ws) => {
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
       case 'map_vote': handleMapVote(ws, msg.map); break;
+      // Extraction mode messages
+      case 'join_extraction_queue':
+      case 'leave_extraction_queue':
+      case 'extraction_state':
+      case 'extraction_safe_open':
+      case 'extraction_loot_take':
+      case 'extraction_door_toggle':
+      case 'extraction_shoot':
+      case 'extraction_hit_player':
+      case 'extraction_player_death':
+      case 'extraction_start_extract':
+      case 'extraction_extracted':
+        handleExtractionMessage(ws, msg);
+        break;
       default: break;
     }
   });
@@ -773,6 +920,7 @@ function handleDisconnect(ws) {
   removeFromQueue(ws);
   if (ws.playerName) onlineUsers.delete(ws.playerName);
   if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; } const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp && opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
+  cleanupExtraction(ws);
 }
 
 process.on('uncaughtException', e => console.error('Uncaught:', e));

@@ -3,28 +3,23 @@ using UnityEngine;
 public class TerrainGenerator : MonoBehaviour
 {
     [Header("Terrain Size")]
-    public int terrainWidth = 200;
-    public int terrainLength = 200;
+    public int terrainWidth = 300;
+    public int terrainLength = 300;
     public int heightmapResolution = 513;
     public float maxHeight = 30f;
 
     [Header("Hill Parameters")]
-    public int hillCount = 12;
-    public float hillMinRadius = 8f;
-    public float hillMaxRadius = 25f;
-    public float hillMinHeight = 2f;
-    public float hillMaxHeight = 12f;
+    public int hillCount = 18;
+    public float hillMinRadius = 10f;
+    public float hillMaxRadius = 35f;
+    public float hillMinHeight = 3f;
+    public float hillMaxHeight = 15f;
 
     [Header("Base Areas (flat)")]
     public Vector2[] flatZones;
 
     private Terrain terrain;
     private TerrainData terrainData;
-
-    void Start()
-    {
-        Generate();
-    }
 
     public void Generate()
     {
@@ -90,7 +85,7 @@ public class TerrainGenerator : MonoBehaviour
                 // Flatten base areas
                 foreach (Vector2 flat in flats)
                 {
-                    float flatRadius = 18f;
+                    float flatRadius = 25f;
                     float dist = Vector2.Distance(new Vector2(worldX, worldZ), flat);
                     if (dist < flatRadius)
                     {
@@ -131,8 +126,8 @@ public class TerrainGenerator : MonoBehaviour
     // Deterministic hill data using position-based seeds
     Vector2 GetHillCenter(int i)
     {
-        float angle = i * 137.5f * Mathf.Deg2Rad; // Golden angle for distribution
-        float radius = 30f + (i * 19f % 70f);
+        float angle = i * 137.5f * Mathf.Deg2Rad;
+        float radius = 40f + (i * 27f % 110f);
         float cx = terrainWidth * 0.5f + Mathf.Cos(angle) * radius;
         float cz = terrainLength * 0.5f + Mathf.Sin(angle) * radius;
         return new Vector2(Mathf.Clamp(cx, 10, terrainWidth - 10), Mathf.Clamp(cz, 10, terrainLength - 10));
