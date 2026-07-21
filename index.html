@@ -10480,7 +10480,7 @@ function startPartyGame(gameType, playerCount) {
   }
   document.getElementById('pl-players').innerHTML = slotsHtml;
 
-  _partyPlayers = [];
+  _partyPlayers = [{ id: 0, name: '你', ai: false, score: 0 }];
   var slotEl = document.getElementById('pl-slot-0');
   if (slotEl) { slotEl.textContent = '👤'; slotEl.className = 'pl-slot self'; }
   document.getElementById('pl-status').innerHTML = '正在尋找玩家...';
@@ -10490,8 +10490,8 @@ function startPartyGame(gameType, playerCount) {
   var fillInterval = setInterval(function() {
     if (!_partyActive) { clearInterval(fillInterval); return; }
     fillCount++;
-    for (var fi = fillCount - 2; fi < fillCount - 1 && fi < _partyPlayerCount; fi++) {
-      if (fi === 0) continue;
+    var fi = fillCount - 1;
+    if (fi > 0 && fi < _partyPlayerCount) {
       var slotEl2 = document.getElementById('pl-slot-' + fi);
       if (slotEl2) {
         var aiName = PARTY_AI_NAMES[fi - 1] || ('Bot' + fi);
@@ -10566,7 +10566,7 @@ function showPartyScoreboard() {
   var sb = document.getElementById('party-scoreboard');
   sb.innerHTML = '';
   sb.className = 'show';
-  var sorted = [{id:0,name:'你',score:0}];
+  var sorted = [];
   for (var i = 0; i < _partyPlayers.length; i++) sorted.push(_partyPlayers[i]);
   sorted.sort(function(a, b) { return b.score - a.score; });
   for (var i = 0; i < sorted.length; i++) {
