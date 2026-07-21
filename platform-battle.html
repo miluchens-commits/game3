@@ -85,7 +85,7 @@ sun.shadow.camera.left = -sd; sun.shadow.camera.right = sd;
 sun.shadow.camera.top = sd; sun.shadow.camera.bottom = -sd;
 sun.shadow.camera.near = 1; sun.shadow.camera.far = 60;
 scene.add(sun);
-scene.add(new THREE.DirectionalLight(0x8888ff, 0.3).position.set(-10, 10, -10));
+var fillLight=new THREE.DirectionalLight(0x8888ff,0.3);fillLight.position.set(-10,10,-10);scene.add(fillLight);
 
 // ========== MATERIAL HELPER ==========
 function M(c, o) {
@@ -172,7 +172,7 @@ for (var i = 0; i < 8; i++) {
 }
 
 // Ceiling light
-scene.add(new THREE.PointLight(0x88aaff, 0.5, 20).position.set(0, 8.5, 0));
+var ceilLight=new THREE.PointLight(0x88aaff,0.5,20);ceilLight.position.set(0,8.5,0);scene.add(ceilLight);
 
 // Particles
 var particleCount = 200;

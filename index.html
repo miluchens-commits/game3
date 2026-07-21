@@ -10737,7 +10737,7 @@ function launchPartyPlatformBattle() {
   sun.shadow.camera.top = sd; sun.shadow.camera.bottom = -sd;
   sun.shadow.camera.near = 1; sun.shadow.camera.far = 60;
   scene.add(sun);
-  scene.add(new THREE.DirectionalLight(0x8888ff, 0.3).position.set(-10, 10, -10));
+  var fillLight=new THREE.DirectionalLight(0x8888ff,0.3);fillLight.position.set(-10,10,-10);scene.add(fillLight);
 
   function M(c, o) { return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.6,metalness:0.1}, o||{})); }
 
@@ -10795,7 +10795,7 @@ function launchPartyPlatformBattle() {
     var tl = new THREE.Mesh(new THREE.SphereGeometry(0.2,8,8), M(0x6688ff,{emissive:0x4466ff,emissiveIntensity:0.5}));
     tl.position.set(Math.cos(angle)*11.5,8,Math.sin(angle)*11.5); scene.add(tl);
   }
-  scene.add(new THREE.PointLight(0x88aaff,0.5,20).position.set(0,8.5,0));
+  var ceilLight=new THREE.PointLight(0x88aaff,0.5,20);ceilLight.position.set(0,8.5,0);scene.add(ceilLight);
 
   // Particles
   var pc=200; var pG=new THREE.BufferGeometry(); var pP=new Float32Array(pc*3);
