@@ -10810,6 +10810,7 @@ function launchPartyPlatformBattle() {
   pb.yaw=0; pb.pitch=0; pb.running=true; pb.ended=false;
   pb.input={w:false,s:false,a:false,d:false,space:false};
   pb.euler=new THREE.Euler(0,0,0,'YXZ'); pb.moveVec=new THREE.Vector3();
+  pb.velocityY=0; pb.gravity=-18; pb.jumpSpeed=9; pb.onGround=false; pb.playerHeight=1.7;
   pb.bots=[]; pb.botCount=3;
 
   // Player
@@ -10832,8 +10833,9 @@ function launchPartyPlatformBattle() {
   gr.position.set(0,-0.06,0.04); pb.gun.add(gr);
   pb.gun.position.set(0.25,-0.2,-0.4); camera.add(pb.gun);
 
-  // Score reset
-  for (var i=0;i<_partyPlayers.length;i++) _partyPlayers[i].score=0;
+  // Score reset — sync scoreboard with actual game bots
+  _partyPlayers.length=0;
+  _partyPlayers.push({id:0,name:'你',ai:false,score:0});
 
   // Bot colors/names
   var botColors=[0xff4444,0x44ff44,0xff44ff];
@@ -10861,7 +10863,10 @@ function launchPartyPlatformBattle() {
       moveSpeed:1.5+Math.random()*0.5,state:'idle',stateTimer:0,shootTimer:0,accuracy:0.4+Math.random()*0.3,
       alive:true,respawnTimer:0};
   }
-  for (var i=0;i<pb.botCount;i++) pb.bots.push(createBot(i));
+  for (var i=0;i<pb.botCount;i++){
+    pb.bots.push(createBot(i));
+    _partyPlayers.push({id:100+i,name:botNames[i],ai:true,score:0});
+  }
 
   function addKillfeed(killer,victim){
     var kf=document.getElementById('party-scoreboard');
@@ -10874,7 +10879,8 @@ function launchPartyPlatformBattle() {
   }
 
   function botShoot(bot){
-    var dir=new THREE.Vector3().copy(camera.position).sub(bot.mesh.position);
+    var aimPos=new THREE.Vector3(pb.playerBody.position.x,pb.playerBody.position.y+0.7,pb.playerBody.position.z);
+    var dir=new THREE.Vector3().copy(aimPos).sub(bot.mesh.position);
     var dist=dir.length(); dir.normalize();
     var inaccuracy=(1-bot.accuracy)*0.15;
     dir.x+=(Math.random()-0.5)*inaccuracy; dir.y+=(Math.random()-0.5)*inaccuracy*0.5; dir.z+=(Math.random()-0.5)*inaccuracy;
@@ -10990,7 +10996,25 @@ function launchPartyPlatformBattle() {
     if(pb.mouseDown&&pb.running&&!pb.ended&&pb.shootCooldown<=0){shoot();pb.shootCooldown=0.15;}
     if(pb.running&&!pb.ended) updateBots(dt);
     if(document.pointerLockElement===renderer.domElement&&pb.running&&!pb.ended){
-      var sp=(pb.input.space?6:3.5)*dt;
+      // Jump
+      if(pb.input.space&&pb.onGround){pb.velocityY=pb.jumpSpeed;pb.onGround=false;}
+      pb.velocityY+=pb.gravity*dt; camera.position.y+=pb.velocityY*dt;
+      // Platform collision (feet check)
+      var feetY=camera.position.y-pb.playerHeight;
+      var groundY=-999;
+      for(var i=0;i<platObjects.length;i++){
+        var p=platObjects[i];
+        var hw=p.shape==='cylinder'?p.w:p.w/2, hd=p.shape==='cylinder'?p.w:p.d/2;
+        if(Math.abs(camera.position.x-p.x)<hw&&Math.abs(camera.position.z-p.z)<hd){
+          var sy=p.y+0.125+pb.playerHeight;
+          if(feetY<=sy&&camera.position.y>=sy-0.3&&pb.velocityY<=0){groundY=sy;break;}
+        }
+      }
+      if(groundY>-999){camera.position.y=groundY;pb.velocityY=0;pb.onGround=true;}
+      // Fall off map
+      if(camera.position.y<-5){camera.position.y=5;pb.velocityY=0;}
+      // Horizontal movement
+      var sp=3.5*dt;
       var fw=new THREE.Vector3(-Math.sin(pb.yaw),0,-Math.cos(pb.yaw));
       var rt=new THREE.Vector3(Math.cos(pb.yaw),0,-Math.sin(pb.yaw));
       pb.moveVec.set(0,0,0);
@@ -11000,8 +11024,11 @@ function launchPartyPlatformBattle() {
         camera.position.x+=pb.moveVec.x;camera.position.z+=pb.moveVec.z;
         camera.position.x=Math.max(-12,Math.min(12,camera.position.x));
         camera.position.z=Math.max(-12,Math.min(12,camera.position.z));}
+      // Wall collision (push player away from walls)
+      if(camera.position.x>11.5)camera.position.x-=0.5; if(camera.position.x<-11.5)camera.position.x+=0.5;
+      if(camera.position.z>11.5)camera.position.z-=0.5; if(camera.position.z<-11.5)camera.position.z+=0.5;
       pb.playerBody.position.x=camera.position.x;pb.playerBody.position.z=camera.position.z;
-      pb.playerBody.position.y=camera.position.y-1.5;
+      pb.playerBody.position.y=camera.position.y-pb.playerHeight;
       pb.euler.set(pb.pitch,pb.yaw,0); camera.quaternion.setFromEuler(pb.euler);
     }
     // Particles

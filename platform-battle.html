@@ -204,6 +204,7 @@ var game = {
   input: {w:false,s:false,a:false,d:false,space:false},
   euler: new THREE.Euler(0,0,0,'YXZ'),
   moveVec: new THREE.Vector3(),
+  velocityY: 0, gravity: -18, jumpSpeed: 9, onGround: false, playerHeight: 1.7,
   botCount: 3,
   bots: [],
   bullets: [],
@@ -446,7 +447,8 @@ function updateBots(dt) {
 }
 
 function botShoot(bot) {
-  var dir = new THREE.Vector3().copy(camera.position).sub(bot.mesh.position);
+  var aimPos = new THREE.Vector3(playerBody.position.x, playerBody.position.y + 0.7, playerBody.position.z);
+  var dir = new THREE.Vector3().copy(aimPos).sub(bot.mesh.position);
   var dist = dir.length();
   dir.normalize();
   // Add inaccuracy
@@ -582,7 +584,27 @@ function animate(t) {
 
   // Player movement
   if (document.pointerLockElement === renderer.domElement && game.running && !game.ended) {
-    var sp = (game.input.space ? 6 : 3.5) * dt;
+    // Jump
+    if (game.input.space && game.onGround) { game.velocityY = game.jumpSpeed; game.onGround = false; }
+    game.velocityY += game.gravity * dt;
+    camera.position.y += game.velocityY * dt;
+    // Platform collision (feet check)
+    var feetY = camera.position.y - game.playerHeight;
+    var groundY = -999;
+    for (var i = 0; i < platObjects.length; i++) {
+      var p = platObjects[i];
+      var hw = p.shape === 'cylinder' ? p.w : p.w / 2;
+      var hd = p.shape === 'cylinder' ? p.w : p.d / 2;
+      if (Math.abs(camera.position.x - p.x) < hw && Math.abs(camera.position.z - p.z) < hd) {
+        var sy = p.y + 0.125 + game.playerHeight;
+        if (feetY <= sy && camera.position.y >= sy - 0.3 && game.velocityY <= 0) { groundY = sy; break; }
+      }
+    }
+    if (groundY > -999) { camera.position.y = groundY; game.velocityY = 0; game.onGround = true; }
+    // Fall off map
+    if (camera.position.y < -5) { camera.position.y = 5; game.velocityY = 0; }
+    // Horizontal movement
+    var sp = 3.5 * dt;
     var fw = new THREE.Vector3(-Math.sin(game.yaw), 0, -Math.cos(game.yaw));
     var rt = new THREE.Vector3(Math.cos(game.yaw), 0, -Math.sin(game.yaw));
     game.moveVec.set(0, 0, 0);
@@ -594,18 +616,18 @@ function animate(t) {
       game.moveVec.normalize().multiplyScalar(sp);
       camera.position.x += game.moveVec.x;
       camera.position.z += game.moveVec.z;
-      // Clamp to arena
       camera.position.x = Math.max(-12, Math.min(12, camera.position.x));
       camera.position.z = Math.max(-12, Math.min(12, camera.position.z));
-      // Clamp to above floor
-      camera.position.y = Math.max(0.5, camera.position.y);
     }
-
+    // Wall collision
+    if (camera.position.x > 11.5) camera.position.x -= 0.5;
+    if (camera.position.x < -11.5) camera.position.x += 0.5;
+    if (camera.position.z > 11.5) camera.position.z -= 0.5;
+    if (camera.position.z < -11.5) camera.position.z += 0.5;
     // Set player body position to match camera
     playerBody.position.x = camera.position.x;
     playerBody.position.z = camera.position.z;
-    playerBody.position.y = camera.position.y - 1.5;
-
+    playerBody.position.y = camera.position.y - game.playerHeight;
     game.euler.set(game.pitch, game.yaw, 0);
     camera.quaternion.setFromEuler(game.euler);
   }
