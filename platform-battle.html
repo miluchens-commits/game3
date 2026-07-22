@@ -149,7 +149,7 @@ platforms.forEach(function(p) {
   mesh.position.set(x, y, z);
   mesh.receiveShadow = true; mesh.castShadow = true;
   scene.add(mesh);
-  platObjects.push({ mesh: mesh, x: x, y: y, z: z, w: w, d: d, shape: shape, col: col });
+  platObjects.push({ mesh: mesh, x: x, y: y, z: z, w: w, d: d, shape: shape, col: col, h: 0.25 });
   // Edge glow
   var glow = new THREE.Mesh(
     shape === 'cylinder' ? new THREE.RingGeometry(w*0.85, w*0.95, 24) : new THREE.RingGeometry(w*0.42, w*0.47, 4),
@@ -158,6 +158,8 @@ platforms.forEach(function(p) {
   glow.rotation.x = -Math.PI/2; glow.position.set(x, y + 0.14, z);
   scene.add(glow);
 });
+// Add center platform to collision
+platObjects.push({ mesh: center, x: 0, y: 0.2, z: 0, w: 5, d: 5, shape: 'cylinder', col: 0x445577, h: 0.4 });
 
 // Pillars
 var pillarMat = M(0x333355, {roughness:0.3,metalness:0.5});
@@ -220,17 +222,47 @@ headMesh.position.y = 1.05; playerBody.add(headMesh);
 playerBody.position.set(0, 0.5, 6);
 scene.add(playerBody);
 
-// Gun model
-var gun = new THREE.Group();
-var gMat = new THREE.MeshStandardMaterial({color:0x555577,metalness:0.5,roughness:0.3});
-var gMat2 = new THREE.MeshStandardMaterial({color:0x333344,metalness:0.3,roughness:0.5});
-var barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.03,0.35,8),gMat);
-barrel.rotation.x=Math.PI/2; barrel.position.set(0,0,-0.2); gun.add(barrel);
-var body = new THREE.Mesh(new THREE.BoxGeometry(0.06,0.07,0.15),gMat2);
-body.position.set(0,0,0.05); gun.add(body);
-var grip = new THREE.Mesh(new THREE.BoxGeometry(0.04,0.08,0.04),gMat2);
-grip.position.set(0,-0.06,0.04); gun.add(grip);
-gun.position.set(0.25,-0.2,-0.4); camera.add(gun);
+// Gun model - Full AK-47
+var gunGroup = new THREE.Group();
+var sMat = function(c, o) { return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.6,metalness:0.1}, o||{})); };
+var dk = sMat(0x222222, {metalness:0.3,roughness:0.7});
+var mt = sMat(0x666666, {metalness:0.6,roughness:0.4});
+var wd = sMat(0x8B5E3C, {roughness:0.9});
+var sc = sMat(0x111111, {metalness:0.5,roughness:0.3});
+var ln = new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x4488ff,emissiveIntensity:0.15});
+var b1=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.014,0.28,6),mt);b1.rotation.x=Math.PI/2;b1.position.set(0,0,-0.19);gunGroup.add(b1);
+var gt=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,0.18,6),dk);gt.rotation.x=Math.PI/2;gt.position.set(0,0.025,-0.15);gunGroup.add(gt);
+var fs=new THREE.Mesh(new THREE.BoxGeometry(0.01,0.03,0.01),dk);fs.position.set(0,0.02,-0.31);gunGroup.add(fs);
+var rcv=new THREE.Mesh(new THREE.BoxGeometry(0.036,0.045,0.14),dk);rcv.position.set(0,0,-0.01);gunGroup.add(rcv);
+var rail=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.004,0.06),mt);rail.position.set(0,0.026,-0.04);gunGroup.add(rail);
+var scp=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,0.04,8),sc);scp.rotation.x=Math.PI/2;scp.position.set(0,0.04,-0.06);gunGroup.add(scp);
+var sl=new THREE.Mesh(new THREE.CircleGeometry(0.01,8),ln);sl.position.set(0,0.04,-0.08);gunGroup.add(sl);
+var pg=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.04,0.02),wd);pg.position.set(0,-0.03,0.06);pg.rotation.x=0.2;gunGroup.add(pg);
+var stk=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.035,0.08),wd);stk.position.set(0,0.01,0.1);gunGroup.add(stk);
+var hg=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.022,0.1),wd);hg.position.set(0,-0.015,-0.15);gunGroup.add(hg);
+var fh=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.012,0.025,6),dk);fh.rotation.x=Math.PI/2;fh.position.set(0,0,-0.33);gunGroup.add(fh);
+gunGroup.scale.set(1.5,1.5,1.5);
+gunGroup.position.set(0.2,-0.15,-0.35);
+camera.add(gunGroup);
+var magazineMesh = null, isReloading = false, reloadTimer = 0, reloadDuration = 2.0, reloadAmmoAdded = false;
+function createMagazine(){
+  if(magazineMesh){gunGroup.remove(magazineMesh);magazineMesh=null;}
+  var mg=new THREE.Group();
+  var bs=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.055,0.014),new THREE.MeshStandardMaterial({color:0x444444,metalness:0.5,roughness:0.4}));
+  bs.position.set(0,-0.04,0); mg.add(bs);
+  for(var bi=0;bi<5;bi++){
+    var b=new THREE.Mesh(new THREE.SphereGeometry(0.004,4,4),new THREE.MeshStandardMaterial({color:0xccaa44,metalness:0.6}));
+    b.position.set(0.015,-0.058+bi*0.009,0.006); mg.add(b);
+  }
+  mg.position.set(0,-0.005,0.02); mg.rotation.x=-0.08;
+  gunGroup.add(mg); magazineMesh=mg;
+}
+function startReload(){
+  if(isReloading||game.ammo>=game.maxAmmo||game.ended) return;
+  isReloading=true; reloadTimer=reloadDuration;
+  createMagazine();
+  if(magazineMesh)magazineMesh.position.y=0;
+}
 
 // ========== AI BOTS ==========
 var botColors = [0xff4444, 0x44ff44, 0xff44ff];
@@ -282,7 +314,8 @@ function createBot(index) {
 
 // ========== HUD ==========
 function updateHUD() {
-  document.getElementById('ammo-display').innerHTML = game.ammo + ' / ' + game.maxAmmo;
+  document.getElementById('ammo-display').innerHTML = isReloading ? '⟳ 換彈中...' : (game.ammo + ' / ' + game.maxAmmo);
+  if(isReloading) document.getElementById('ammo-display').style.opacity='0.6'; else document.getElementById('ammo-display').style.opacity='1';
   document.getElementById('hp-fill').style.width = (game.hp / game.maxHp * 100) + '%';
   document.getElementById('hp-text').textContent = Math.ceil(game.hp);
   document.getElementById('kills-display').textContent = '☠ 擊殺: ' + game.kills;
@@ -311,7 +344,7 @@ function addKillfeed(killer, victim) {
 // ========== SHOOTING ==========
 function shoot() {
   if (!game.running || game.ended) return;
-  if (game.ammo <= 0) return;
+  if (isReloading || game.ammo <= 0) return;
   game.ammo--;
   game.totalShots++;
 
@@ -532,6 +565,7 @@ document.addEventListener('keydown', function(e) {
     case 'KeyA': game.input.a = true; break;
     case 'KeyD': game.input.d = true; break;
     case 'Space': game.input.space = true; break;
+    case 'KeyR': startReload(); break;
     case 'Escape': if (game.running) { game.running = false; document.exitPointerLock(); } break;
   }
 });
@@ -577,7 +611,51 @@ function animate(t) {
   game.time += dt;
 
   if (game.shootCooldown > 0) game.shootCooldown -= dt;
-  if (game.mouseDown && game.running && !game.ended && game.shootCooldown <= 0) {
+
+  // Reload animation
+  if (isReloading) {
+    reloadTimer -= dt;
+    var pct = 1 - reloadTimer / reloadDuration;
+    // Phase 1: drop magazine (first 35%)
+    if (pct < 0.35) {
+      var t = pct / 0.35;
+      gunGroup.position.y = -0.15 + t * 0.03;
+      gunGroup.rotation.x = t * 0.25;
+      if (magazineMesh) magazineMesh.position.y = -t * 0.06;
+    }
+    // Phase 2: insert new magazine (35-60%)
+    else if (pct < 0.60) {
+      var t = (pct - 0.35) / 0.25;
+      gunGroup.position.y = -0.12 + t * 0.02;
+      gunGroup.rotation.x = 0.25 * (1 - t);
+      if (magazineMesh) magazineMesh.position.y = -(1 - t) * 0.06;
+    }
+    // Phase 3: pull bolt (60-85%)
+    else if (pct < 0.85) {
+      var t = (pct - 0.60) / 0.25;
+      gunGroup.position.x = 0.2 + t * 0.03;
+      gunGroup.rotation.z = t * 0.15;
+    }
+    // Phase 4: settle (85-100%)
+    else {
+      var t = (pct - 0.85) / 0.15;
+      gunGroup.position.x = 0.23 - t * 0.03;
+      gunGroup.rotation.z = (1 - t) * 0.15;
+      if (t > 0.5 && !reloadAmmoAdded) {
+        reloadAmmoAdded = true;
+        if (magazineMesh) { gunGroup.remove(magazineMesh); magazineMesh = null; }
+      }
+    }
+    if (reloadTimer <= 0) {
+      isReloading = false; game.ammo = game.maxAmmo;
+      reloadAmmoAdded = false;
+      gunGroup.position.set(0.2, -0.15, -0.35);
+      gunGroup.rotation.set(0,0,0);
+    }
+    updateHUD();
+  }
+
+  if (game.mouseDown && game.running && !game.ended && game.shootCooldown <= 0 && !isReloading) {
     shoot();
     game.shootCooldown = 0.15;
   }
@@ -596,7 +674,8 @@ function animate(t) {
       var hw = p.shape === 'cylinder' ? p.w : p.w / 2;
       var hd = p.shape === 'cylinder' ? p.w : p.d / 2;
       if (Math.abs(camera.position.x - p.x) < hw && Math.abs(camera.position.z - p.z) < hd) {
-        var sy = p.y + 0.125 + game.playerHeight;
+        var hh = (p.h || 0.25) / 2;
+        var sy = p.y + hh + game.playerHeight;
         if (feetY <= sy && camera.position.y >= sy - 0.3 && game.velocityY <= 0) { groundY = sy; break; }
       }
     }
