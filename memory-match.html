@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶翻牌 — 派對小遊戲</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#1a1a2e;font-family:'Segoe UI','Microsoft YaHei',sans-serif;user-select:none;display:flex;align-items:center;justify-content:center;height:100vh}
+canvas{display:block}
+
+#start-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:20;cursor:pointer}
+#start-screen h1{font-size:3em;color:#fd0;letter-spacing:8px;margin-bottom:4px;text-shadow:0 0 40px rgba(255,200,0,.3)}
+#start-screen .sub{color:rgba(255,255,255,.4);font-size:1em;letter-spacing:3px;margin-bottom:24px}
+#start-screen .hint{color:rgba(255,255,255,.2);font-size:.85em;letter-spacing:2px}
+#start-screen .controls{margin-top:20px;display:flex;gap:30px;color:rgba(255,255,255,.3);font-size:.8em;letter-spacing:1px}
+
+#result{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:30}
+#result-box{background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,200,68,.2);border-radius:14px;padding:30px 50px;text-align:center;max-width:380px;width:90%}
+#result-box h2{font-size:32px;color:#fd0;letter-spacing:4px;margin-bottom:6px;text-shadow:0 0 20px rgba(255,200,0,.2)}
+#result-box .final-score{font-size:64px;font-weight:bold;color:#fff;margin:10px 0;text-shadow:0 0 30px rgba(255,200,0,.15)}
+#result-box .final-score span{color:#fd0}
+#result-box .stats{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:1px;margin-top:8px}
+#result-box .btn-restart{pointer-events:auto;display:inline-block;margin-top:20px;padding:10px 28px;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.3);border-radius:8px;color:#fd0;font-size:16px;cursor:pointer;letter-spacing:2px;transition:all .2s}
+#result-box .btn-restart:hover{background:rgba(255,200,0,.25);border-color:rgba(255,200,0,.5)}
+</style>
+</head>
+<body>
+
+<div id="start-screen">
+  <h1>🧠 記憶翻牌</h1>
+  <div class="sub">找出指定的數字配對</div>
+  <div class="controls">
+    <span>🖱 點擊翻牌</span>
+    <span>🎯 找出目標數字</span>
+  </div>
+  <div class="hint">點擊開始</div>
+</div>
+
+<div id="result">
+  <div id="result-box">
+    <h2>🎉 完成！</h2>
+    <div class="final-score">✅ <span id="final-matched">0</span>/4</div>
+    <div class="stats">錯誤次數：<span id="final-mistakes">0</span></div>
+    <div class="btn-restart" onclick="location.reload()">🔄 再玩一次</div>
+  </div>
+</div>
+
+<script>
+var W = 800, H = 600;
+var canvas = document.createElement('canvas');
+canvas.width = W; canvas.height = H;
+document.body.prepend(canvas);
+var ctx = canvas.getContext('2d');
+canvas.style.maxWidth = '100vw';
+canvas.style.maxHeight = '100vh';
+
+// ========== GAME STATE ==========
+var cards = [];
+var flipped = [];
+var matched = 0;
+var mistakes = 0;
+var targetNum = 0;
+var hintText = '';
+var running = false;
+var ended = false;
+var flipTimer = 0;
+var flipPair = [];
+var canClick = true;
+
+// Card data: pairs of 1-4
+var values = [1,1,2,2,3,3,4,4];
+// Shuffle
+function shuffle(a){
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+shuffle(values);
+
+// Card positions (4x2 grid)
+var cardW = 80, cardH = 100;
+var gapX = 20, gapY = 20;
+var gridCols = 4, gridRows = 2;
+var startX = (W - (gridCols * (cardW + gapX) - gapX)) / 2;
+var startY = (H - (gridRows * (cardH + gapY) - gapY)) / 2 + 30;
+
+for(var i=0;i<values.length;i++){
+  var col=i%gridCols, row=Math.floor(i/gridCols);
+  cards.push({
+    value:values[i],
+    x:startX+col*(cardW+gapX),
+    y:startY+row*(cardH+gapY),
+    w:cardW, h:cardH,
+    faceUp:false,
+    matched:false
+  });
+}
+
+// Pick initial target (first unmatched)
+function pickTarget(){
+  var unmatched = [];
+  for(var i=0;i<cards.length;i++) if(!cards[i].matched) unmatched.push(cards[i].value);
+  if(unmatched.length===0) return;
+  // Pick a random value from unmatched
+  var uniq = []; var seen={};
+  for(var i=0;i<unmatched.length;i++){if(!seen[unmatched[i]]){seen[unmatched[i]]=true;uniq.push(unmatched[i]);}}
+  targetNum = uniq[Math.floor(Math.random()*uniq.length)];
+  hintText = '找出  '+targetNum;
+}
+
+// ========== DRAW ==========
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  // House background
+  // Sky
+  var skyGrad=ctx.createLinearGradient(0,0,0,H);
+  skyGrad.addColorStop(0,'#1a1a3e');skyGrad.addColorStop(1,'#2a2a4e');
+  ctx.fillStyle=skyGrad;ctx.fillRect(0,0,W,H);
+
+  // House body
+  ctx.fillStyle='#4a4a6a';ctx.strokeStyle='#333355';ctx.lineWidth=2;
+  ctx.fillRect(100,200,600,350);ctx.strokeRect(100,200,600,350);
+
+  // Roof
+  ctx.beginPath();ctx.moveTo(50,200);ctx.lineTo(400,100);ctx.lineTo(750,200);ctx.closePath();
+  ctx.fillStyle='#663333';ctx.strokeStyle='#442222';ctx.lineWidth=2;
+  ctx.fill();ctx.stroke();
+
+  // Roof tiles
+  ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;
+  for(var i=0;i<8;i++){var t=50+i*88;ctx.beginPath();ctx.moveTo(t,200);ctx.lineTo(400,100+i*12);ctx.stroke();}
+
+  // Windows
+  ctx.fillStyle='#6688aa';ctx.strokeStyle='#555577';ctx.lineWidth=2;
+  ctx.fillRect(160,250,100,80);ctx.strokeRect(160,250,100,80);
+  ctx.fillRect(540,250,100,80);ctx.strokeRect(540,250,100,80);
+  // Window crosses
+  ctx.beginPath();ctx.moveTo(210,250);ctx.lineTo(210,330);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(160,290);ctx.lineTo(260,290);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(590,250);ctx.lineTo(590,330);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(540,290);ctx.lineTo(640,290);ctx.stroke();
+  // Window glow
+  ctx.fillStyle='rgba(100,160,220,.08)';
+  ctx.fillRect(160,250,100,80);ctx.fillRect(540,250,100,80);
+
+  // Door
+  ctx.fillStyle='#554433';ctx.strokeStyle='#443322';ctx.lineWidth=2;
+  ctx.fillRect(365,400,70,150);ctx.strokeRect(365,400,70,150);
+  ctx.beginPath();ctx.arc(370,475,4,0,Math.PI*2);ctx.fillStyle='#ffcc44';ctx.fill();
+
+  // Chimney
+  ctx.fillStyle='#555577';ctx.strokeStyle='#444466';
+  ctx.fillRect(550,110,50,90);ctx.strokeRect(550,110,50,90);
+
+  // Ground
+  ctx.fillStyle='#2a3a2a';ctx.fillRect(0,540,W,60);
+
+  // Hint text
+  ctx.fillStyle='#fd0';ctx.font='bold 36px "Segoe UI","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.shadowColor='rgba(255,200,0,.3)';ctx.shadowBlur=20;
+  ctx.fillText(hintText,W/2,30);
+  ctx.shadowBlur=0;
+
+  // Score
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='18px "Segoe UI","Microsoft YaHei",sans-serif';
+  ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText('✅ '+matched+' / 4',30,550);
+  ctx.textAlign='right';
+  ctx.fillText('❌ '+mistakes,W-30,550);
+
+  // Cards
+  for(var i=0;i<cards.length;i++){
+    var c=cards[i];
+    if(c.matched) continue;
+    var x=c.x, y=c.y, w=c.w, h=c.h;
+
+    // Card shadow
+    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();
+    ctx.roundRect(x-2,y-2,w+4,h+4,8);ctx.fill();
+
+    if(c.faceUp){
+      // Face up - show number
+      ctx.fillStyle='#f5f0e0';ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.fill();
+      ctx.strokeStyle='#ccaa44';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.stroke();
+      ctx.fillStyle='#333';ctx.font='bold 36px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(c.value,x+w/2,y+h/2);
+    } else {
+      // Face down - card back
+      var grad=ctx.createLinearGradient(x,y,x+w,y);
+      grad.addColorStop(0,'#4444aa');grad.addColorStop(0.5,'#5555cc');grad.addColorStop(1,'#4444aa');
+      ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.fill();
+      ctx.strokeStyle='#6666dd';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.stroke();
+      // Pattern
+      ctx.fillStyle='rgba(255,255,255,.08)';
+      for(var pi=0;pi<5;pi++)for(var pj=0;pj<4;pj++){ctx.beginPath();ctx.arc(x+12+pi*16,y+14+pj*20,4,0,Math.PI*2);ctx.fill();}
+      // Center star
+      ctx.fillStyle='rgba(255,255,255,.15)';ctx.font='28px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('?',x+w/2,y+h/2);
+    }
+  }
+
+  // Matched cards are hidden (not drawn)
+
+  // Flip animation overlay
+  if(flipTimer>0){
+    var progress=1-flipTimer/0.4;
+    for(var i=0;i<flipPair.length;i++){
+      var idx=flipPair[i];
+      var c=cards[idx];
+      if(c.matched) continue;
+      var x=c.x+c.w/2, y=c.y, w=c.w*(Math.abs(Math.cos(progress*Math.PI)));
+      if(w>2){
+        ctx.fillStyle='rgba(255,255,200,.1)';
+        ctx.beginPath();ctx.roundRect(x-w/2,y,w,c.h,6);ctx.fill();
+      }
+    }
+  }
+}
+
+// roundRect polyfill for canvas
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(r===undefined)r=0;
+    this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);
+    this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);
+    this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();
+    return this;
+  };
+}
+
+// ========== FLIP LOGIC ==========
+function flipCard(idx){
+  if(!canClick||!running||ended) return;
+  var c=cards[idx];
+  if(c.matched||c.faceUp) return;
+  c.faceUp=true;
+  canClick=false;
+
+  if(c.value===targetNum){
+    // Correct!
+    setTimeout(function(){
+      c.matched=true; matched++;
+      // Check win
+      if(matched>=4){
+        ended=true;running=false;
+        setTimeout(showResult,500);
+        return;
+      }
+      pickTarget();
+      canClick=true;
+      draw();
+    },300);
+  } else {
+    // Wrong
+    mistakes++;
+    setTimeout(function(){
+      c.faceUp=false;
+      canClick=true;
+      draw();
+    },600);
+  }
+  draw();
+}
+
+function showResult(){
+  document.getElementById('final-matched').textContent=matched;
+  document.getElementById('final-mistakes').textContent=mistakes;
+  document.getElementById('result').style.display='flex';
+}
+
+// ========== EVENTS ==========
+canvas.addEventListener('click',function(e){
+  var rect=canvas.getBoundingClientRect();
+  var scaleX=W/rect.width, scaleY=H/rect.height;
+  var mx=(e.clientX-rect.left)*scaleX;
+  var my=(e.clientY-rect.top)*scaleY;
+  for(var i=0;i<cards.length;i++){
+    var c=cards[i];
+    if(mx>=c.x&&mx<=c.x+c.w&&my>=c.y&&my<=c.y+c.h){
+      flipCard(i);
+      break;
+    }
+  }
+});
+
+// Start
+document.getElementById('start-screen').addEventListener('click',function(){
+  this.style.display='none';
+  running=true;
+  pickTarget();
+  draw();
+});
+
+canvas.addEventListener('contextmenu',function(e){e.preventDefault();});
+
+draw();
+</script>
+</body>
+</html>
