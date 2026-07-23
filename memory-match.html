@@ -11,15 +11,16 @@ canvas{display:block}
 
 #start-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:20;cursor:pointer}
 #start-screen h1{font-size:3em;color:#fd0;letter-spacing:8px;margin-bottom:4px;text-shadow:0 0 40px rgba(255,200,0,.3)}
-#start-screen .sub{color:rgba(255,255,255,.4);font-size:1em;letter-spacing:3px;margin-bottom:24px}
+#start-screen .sub{color:rgba(255,255,255,.4);font-size:1em;letter-spacing:3px;margin-bottom:10px}
+#start-screen .limit{color:rgba(255,200,100,.3);font-size:.9em;letter-spacing:2px;margin-bottom:14px}
+#start-screen .controls{margin-top:16px;display:flex;gap:30px;color:rgba(255,255,255,.3);font-size:.8em;letter-spacing:1px}
 #start-screen .hint{color:rgba(255,255,255,.2);font-size:.85em;letter-spacing:2px}
-#start-screen .controls{margin-top:20px;display:flex;gap:30px;color:rgba(255,255,255,.3);font-size:.8em;letter-spacing:1px}
 
 #result{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:30}
 #result-box{background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,200,68,.2);border-radius:14px;padding:30px 50px;text-align:center;max-width:380px;width:90%}
 #result-box h2{font-size:32px;color:#fd0;letter-spacing:4px;margin-bottom:6px;text-shadow:0 0 20px rgba(255,200,0,.2)}
-#result-box .final-score{font-size:64px;font-weight:bold;color:#fff;margin:10px 0}
-#result-box .final-score span{color:#fd0}
+#result-box .final-pairs{font-size:64px;font-weight:bold;color:#fff;margin:10px 0}
+#result-box .final-pairs span{color:#fd0}
 #result-box .stats{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:1px;margin-top:8px}
 #result-box .btn-restart{pointer-events:auto;display:inline-block;margin-top:20px;padding:10px 28px;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.3);border-radius:8px;color:#fd0;font-size:16px;cursor:pointer;letter-spacing:2px;transition:all .2s}
 #result-box .btn-restart:hover{background:rgba(255,200,0,.25);border-color:rgba(255,200,0,.5)}
@@ -29,18 +30,20 @@ canvas{display:block}
 
 <div id="start-screen">
   <h1>🧠 記憶翻牌</h1>
-  <div class="sub">記住牌的位置，找出配對的數字</div>
+  <div class="sub">記住數字位置，找出配對的兩張牌</div>
+  <div class="limit">⚠ 只能翻 15 次</div>
   <div class="controls">
     <span>🖱 點擊翻牌</span>
-    <span>🎯 找出兩張相同數字</span>
+    <span>📌 5 秒記憶</span>
   </div>
   <div class="hint">點擊開始</div>
 </div>
 
 <div id="result">
   <div id="result-box">
-    <h2>🎉 完成！</h2>
-    <div class="final-score">✅ <span id="final-matched">0</span> / 4</div>
+    <h2 id="result-title">🎉 完成！</h2>
+    <div class="final-pairs">✅ <span id="final-matched">0</span> / 4</div>
+    <div class="stats">翻牌次數：<span id="final-flips">0</span> / 15</div>
     <div class="stats">錯誤次數：<span id="final-mistakes">0</span></div>
     <div class="btn-restart" onclick="location.reload()">🔄 再玩一次</div>
   </div>
@@ -55,7 +58,6 @@ var ctx = canvas.getContext('2d');
 canvas.style.maxWidth = '100vw';
 canvas.style.maxHeight = '100vh';
 
-// roundRect polyfill
 if(!CanvasRenderingContext2D.prototype.roundRect){
   CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
     if(r===undefined)r=0;
@@ -75,15 +77,21 @@ shuffle(values);
 var cW=80,cH=100,gap=20,cols=4,rows=2;
 var sX=(W-cols*(cW+gap)-gap)/2,sY=(H-rows*(cH+gap)-gap)/2+30;
 
-var cards=[];
+// Pre-compute positions
+var positions=[];
 for(var i=0;i<8;i++){
   var col=i%cols,row=Math.floor(i/cols);
-  cards.push({value:values[i],x:sX+col*(cW+gap),y:sY+row*(cH+gap),w:cW,h:cH,faceUp:true,matched:false});
+  positions.push({x:sX+col*(cW+gap),y:sY+row*(cH+gap)});
+}
+
+var cards=[];
+for(var i=0;i<8;i++){
+  cards.push({value:values[i],x:positions[i].x,y:positions[i].y,w:cW,h:cH,faceUp:true,matched:false});
 }
 
 var matched=0, mistakes=0, targetNum=0, running=false, ended=false, canClick=false;
 var memorizeTimer=5, memorizePhase=true;
-var foundThisRound=0; // 0,1,2 — how many of the target pair found
+var foundThisRound=0, totalFlips=0, maxFlips=15;
 
 function pickTarget(){
   var seen={},uniq=[];
@@ -122,12 +130,12 @@ function draw(){
   // Ground
   ctx.fillStyle='#2a3a2a';ctx.fillRect(0,540,W,60);
 
-  // Hint or memorize countdown
+  // Top text
   ctx.textAlign='center';ctx.textBaseline='top';
   if(memorizePhase){
     ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='bold 24px "Segoe UI","Microsoft YaHei",sans-serif';
     ctx.shadowColor='rgba(255,255,255,.3)';ctx.shadowBlur=15;
-    ctx.fillText('⏳ 記住牌的位置！',W/2,20);
+    ctx.fillText('\u23F3 \u8A18\u4F4F\u724C\u7684\u4F4D\u7F6E\uFF01',W/2,20);
     ctx.font='bold 48px "Segoe UI","Microsoft YaHei",sans-serif';
     ctx.fillStyle='#fd0';ctx.shadowColor='rgba(255,200,0,.4)';ctx.shadowBlur=25;
     ctx.fillText(Math.ceil(memorizeTimer),W/2,55);
@@ -137,17 +145,15 @@ function draw(){
     ctx.shadowColor='rgba(255,200,0,.3)';ctx.shadowBlur=20;
     ctx.fillText('\u627E\u51FA  '+targetNum,W/2,20);
     ctx.shadowBlur=0;
-    // Score
     ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='18px "Segoe UI","Microsoft YaHei",sans-serif';
     ctx.textAlign='left';ctx.fillText('\u2705 '+matched+' / 4',30,555);
-    ctx.textAlign='right';ctx.fillText('\u274C '+mistakes,W-30,555);
+    ctx.textAlign='right';ctx.fillText('\u274C '+mistakes+'  \u2191 '+totalFlips+'/'+maxFlips,W-30,555);
   }
 
   // Cards
   for(var i=0;i<cards.length;i++){
     var c=cards[i];
     if(c.matched)continue;
-    // Shadow
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.roundRect(c.x-2,c.y-2,c.w+4,c.h+4,8);ctx.fill();
     if(c.faceUp){
       ctx.fillStyle='#f5f0e0';ctx.beginPath();ctx.roundRect(c.x,c.y,c.w,c.h,8);ctx.fill();
@@ -170,38 +176,44 @@ function flipCard(idx){
   if(!canClick||!running||ended||memorizePhase)return;
   var c=cards[idx];
   if(c.matched||c.faceUp)return;
+  totalFlips++;
+
+  // Check flip limit
+  if(totalFlips>maxFlips){
+    canClick=false;
+    setTimeout(function(){endGame(false);},200);
+    return;
+  }
+
   c.faceUp=true;
   canClick=false;
 
   if(c.value===targetNum){
     foundThisRound++;
     if(foundThisRound>=2){
-      // Both found!
       setTimeout(function(){
-        // Mark both cards as matched
-        for(var i=0;i<cards.length;i++){
-          if(!cards[i].matched&&cards[i].value===targetNum)cards[i].matched=true;
-        }
+        for(var i=0;i<cards.length;i++){if(!cards[i].matched&&cards[i].value===targetNum)cards[i].matched=true;}
         matched++;
-        if(matched>=4){
-          ended=true;running=false;
-          document.getElementById('final-matched').textContent=matched;
-          document.getElementById('final-mistakes').textContent=mistakes;
-          setTimeout(function(){document.getElementById('result').style.display='flex';},400);
-          return;
-        }
+        if(matched>=4){endGame(true);return;}
         pickTarget();canClick=true;draw();
       },400);
     } else {
-      // Found one, wait for second
       setTimeout(function(){canClick=true;draw();},200);
     }
   } else {
-    // Wrong
     mistakes++;
     setTimeout(function(){c.faceUp=false;canClick=true;draw();},600);
   }
   draw();
+}
+
+function endGame(won){
+  ended=true;running=false;
+  document.getElementById('final-matched').textContent=matched;
+  document.getElementById('final-flips').textContent=totalFlips<=maxFlips?totalFlips:maxFlips;
+  document.getElementById('final-mistakes').textContent=mistakes;
+  document.getElementById('result-title').textContent=won?'🎉 完成！':'💀 次數用盡...';
+  document.getElementById('result').style.display='flex';
 }
 
 // ========== EVENTS ==========
@@ -222,8 +234,8 @@ document.getElementById('start-screen').addEventListener('click',function(){
   running=true;
   memorizePhase=true;
   memorizeTimer=5;
-  // All cards face up initially
-  for(var i=0;i<cards.length;i++)cards[i].faceUp=true;
+  totalFlips=0;
+  for(var i=0;i<cards.length;i++){cards[i].faceUp=true;cards[i].matched=false;}
   draw();
 });
 
@@ -239,7 +251,6 @@ function gameLoop(t){
     memorizeTimer-=dt;
     if(memorizeTimer<=0){
       memorizePhase=false;
-      // Flip all cards face down
       for(var i=0;i<cards.length;i++)cards[i].faceUp=false;
       pickTarget();
       canClick=true;
