@@ -11423,34 +11423,12 @@ var _pmem = {};
 
 function launchPartyMemoryMatch(){
   var pm = _pmem;
-  // Create 2D canvas overlay
   var cv = document.createElement('canvas');
   cv.id = 'pmem-canvas';
   cv.width = 800; cv.height = 600;
   cv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;max-width:100vw;max-height:100vh;cursor:pointer;';
   document.body.appendChild(cv);
   var ctx = cv.getContext('2d');
-
-  // Card data
-  var vals = [1,1,2,2,3,3,4,4];
-  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
-  shuffle(vals);
-  var cW=80,cH=100,gap=20,cols=4,rows=2;
-  var sX=(800-cols*(cW+gap)-gap)/2,sY=(600-rows*(cH+gap)-gap)/2+30;
-  pm.cards = [];
-  for(var i=0;i<8;i++){
-    var col=i%cols,row=Math.floor(i/cols);
-    pm.cards.push({value:vals[i],x:sX+col*(cW+gap),y:sY+row*(cH+gap),w:cW,h:cH,faceUp:false,matched:false});
-  }
-  pm.matched=0; pm.mistakes=0; pm.targetNum=0; pm.running=true; pm.ended=false;
-  pm.canClick=true;
-
-  function pickTarget(){
-    var seen={},uniq=[];
-    for(var i=0;i<pm.cards.length;i++)if(!pm.cards[i].matched&&!seen[pm.cards[i].value]){seen[pm.cards[i].value]=true;uniq.push(pm.cards[i].value);}
-    pm.targetNum=uniq[Math.floor(Math.random()*uniq.length)];
-  }
-  pickTarget();
 
   // roundRect polyfill
   if(!CanvasRenderingContext2D.prototype.roundRect){
@@ -11464,12 +11442,33 @@ function launchPartyMemoryMatch(){
     };
   }
 
+  var vals=[1,1,2,2,3,3,4,4];
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  shuffle(vals);
+  var cW=80,cH=100,gap=20,cols=4,rows=2;
+  var sX=(800-cols*(cW+gap)-gap)/2,sY=(600-rows*(cH+gap)-gap)/2+30;
+  pm.cards=[];
+  for(var i=0;i<8;i++){
+    var col=i%cols,row=Math.floor(i/cols);
+    pm.cards.push({value:vals[i],x:sX+col*(cW+gap),y:sY+row*(cH+gap),w:cW,h:cH,faceUp:true,matched:false});
+  }
+  pm.matched=0; pm.mistakes=0; pm.targetNum=0; pm.running=true; pm.ended=false; pm.canClick=false;
+  pm.memorizeTimer=5; pm.memorizePhase=true; pm.foundThisRound=0;
+
+  function pickTarget(){
+    var seen={},uniq=[];
+    for(var i=0;i<pm.cards.length;i++)if(!pm.cards[i].matched&&!seen[pm.cards[i].value]){seen[pm.cards[i].value]=true;uniq.push(pm.cards[i].value);}
+    if(uniq.length===0)return;
+    pm.targetNum=uniq[Math.floor(Math.random()*uniq.length)];
+    pm.foundThisRound=0;
+  }
+
   function draw(){
     ctx.clearRect(0,0,800,600);
     // Sky
     var g=ctx.createLinearGradient(0,0,0,600);g.addColorStop(0,'#1a1a3e');g.addColorStop(1,'#2a2a4e');
     ctx.fillStyle=g;ctx.fillRect(0,0,800,600);
-    // House
+    // House body
     ctx.fillStyle='#4a4a6a';ctx.strokeStyle='#333355';ctx.lineWidth=2;
     ctx.fillRect(100,200,600,350);ctx.strokeRect(100,200,600,350);
     // Roof
@@ -11492,16 +11491,25 @@ function launchPartyMemoryMatch(){
     // Ground
     ctx.fillStyle='#2a3a2a';ctx.fillRect(0,540,800,60);
 
-    // Hint
-    ctx.fillStyle='#fd0';ctx.font='bold 36px "Segoe UI","Microsoft YaHei",sans-serif';
+    // Hint or memorize countdown
     ctx.textAlign='center';ctx.textBaseline='top';
-    ctx.shadowColor='rgba(255,200,0,.3)';ctx.shadowBlur=20;
-    ctx.fillText('\u627E\u51FA '+pm.targetNum,400,30);ctx.shadowBlur=0;
-
-    // Score
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='18px "Segoe UI","Microsoft YaHei",sans-serif';
-    ctx.textAlign='left';ctx.fillText('\u2705 '+pm.matched+' / 4',30,550);
-    ctx.textAlign='right';ctx.fillText('\u274C '+pm.mistakes,770,550);
+    if(pm.memorizePhase){
+      ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='bold 24px "Segoe UI","Microsoft YaHei",sans-serif';
+      ctx.shadowColor='rgba(255,255,255,.3)';ctx.shadowBlur=15;
+      ctx.fillText('\u23F3 \u8A18\u4F4F\u724C\u7684\u4F4D\u7F6E\uFF01',400,20);
+      ctx.font='bold 48px "Segoe UI","Microsoft YaHei",sans-serif';
+      ctx.fillStyle='#fd0';ctx.shadowColor='rgba(255,200,0,.4)';ctx.shadowBlur=25;
+      ctx.fillText(Math.ceil(pm.memorizeTimer),400,55);
+      ctx.shadowBlur=0;
+    } else {
+      ctx.fillStyle='#fd0';ctx.font='bold 36px "Segoe UI","Microsoft YaHei",sans-serif';
+      ctx.shadowColor='rgba(255,200,0,.3)';ctx.shadowBlur=20;
+      ctx.fillText('\u627E\u51FA  '+pm.targetNum,400,20);
+      ctx.shadowBlur=0;
+      ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='18px "Segoe UI","Microsoft YaHei",sans-serif';
+      ctx.textAlign='left';ctx.fillText('\u2705 '+pm.matched+' / 4',30,555);
+      ctx.textAlign='right';ctx.fillText('\u274C '+pm.mistakes,770,555);
+    }
 
     // Cards
     for(var i=0;i<pm.cards.length;i++){
@@ -11525,22 +11533,29 @@ function launchPartyMemoryMatch(){
   }
 
   function flipCard(idx){
-    if(!pm.canClick||!pm.running||pm.ended)return;
+    if(!pm.canClick||!pm.running||pm.ended||pm.memorizePhase)return;
     var c=pm.cards[idx];
     if(c.matched||c.faceUp)return;
     c.faceUp=true; pm.canClick=false;
+
     if(c.value===pm.targetNum){
-      setTimeout(function(){
-        c.matched=true; pm.matched++;
-        for(var j=0;j<_partyPlayers.length;j++){if(_partyPlayers[j].id===0){_partyPlayers[j].score=pm.matched;break;}}
-        updatePartyScoreboard();
-        if(pm.matched>=4){
-          pm.ended=true;pm.running=false;
-          setTimeout(function(){addXP(10+pm.matched);alert('\u2764\uFE0F \u5168\u90E8\u5339\u914D\uFF01 \u932F\u8AA4: '+pm.mistakes+'\u6B21');stopPartyGame();},500);
-          return;
-        }
-        pickTarget();pm.canClick=true;draw();
-      },300);
+      pm.foundThisRound++;
+      if(pm.foundThisRound>=2){
+        setTimeout(function(){
+          for(var i=0;i<pm.cards.length;i++){if(!pm.cards[i].matched&&pm.cards[i].value===pm.targetNum)pm.cards[i].matched=true;}
+          pm.matched++;
+          for(var j=0;j<_partyPlayers.length;j++){if(_partyPlayers[j].id===0){_partyPlayers[j].score=pm.matched;break;}}
+          updatePartyScoreboard();
+          if(pm.matched>=4){
+            pm.ended=true;pm.running=false;
+            setTimeout(function(){addXP(10+pm.matched);alert('\u2764\uFE0F \u5168\u90E8\u5339\u914D\uFF01 \u932F\u8AA4: '+pm.mistakes+'\u6B21');stopPartyGame();},400);
+            return;
+          }
+          pickTarget();pm.canClick=true;draw();
+        },400);
+      } else {
+        setTimeout(function(){pm.canClick=true;draw();},200);
+      }
     } else {
       pm.mistakes++;
       setTimeout(function(){c.faceUp=false;pm.canClick=true;draw();},600);
@@ -11560,6 +11575,24 @@ function launchPartyMemoryMatch(){
   cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 
   draw();
+
+  // Game loop for memorize timer
+  var lastTime=performance.now();
+  function anim(t){
+    requestAnimationFrame(anim);
+    var dt=Math.min((t-lastTime)/1000,0.05);lastTime=t;
+    if(pm.memorizePhase&&pm.running){
+      pm.memorizeTimer-=dt;
+      if(pm.memorizeTimer<=0){
+        pm.memorizePhase=false;
+        for(var i=0;i<pm.cards.length;i++)pm.cards[i].faceUp=false;
+        pickTarget();
+        pm.canClick=true;
+      }
+      draw();
+    }
+  }
+  anim(performance.now());
 
   pm.cleanup = function(){
     var el=document.getElementById('pmem-canvas');
