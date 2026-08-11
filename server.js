@@ -870,7 +870,7 @@ function startMatch(p1, p2, gameMode) {
   try{p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: pc }));}catch(e){console.log('send to p1 failed');}
   try{p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: pc }));}catch(e){console.log('send to p2 failed');}
   // Auto-pick map after 15s if not both voted
-  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2'];
+  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'basemap3'];
   rooms[rid].voteTimer = setTimeout(() => {
     const room = rooms[rid];
     if (!room) return;

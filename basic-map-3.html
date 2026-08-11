@@ -1,0 +1,558 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>基本地圖三 — 方塊探索</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#000;font-family:'Segoe UI','Microsoft YaHei',sans-serif;user-select:none}
+canvas{display:block}
+#blocker{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20}
+#blocker-box{text-align:center;background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,220,120,.25);border-radius:14px;padding:34px 54px;color:#fff;box-shadow:0 0 60px rgba(0,0,0,.6)}
+#blocker-box h1{font-size:34px;letter-spacing:6px;color:#ffd860;margin-bottom:8px;text-shadow:0 0 30px rgba(255,200,0,.25)}
+#blocker-box .sub{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:3px;margin-bottom:22px}
+#blocker-box .ctrl{text-align:left;font-size:14px;color:rgba(255,255,255,.75);line-height:2.1;letter-spacing:1px;margin-bottom:20px}
+#blocker-box .ctrl b{color:#ffd860;font-family:monospace}
+#blocker-box .go{color:rgba(255,255,255,.3);font-size:13px;letter-spacing:2px}
+#hint{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.55);font-size:14px;letter-spacing:2px;pointer-events:none;text-shadow:0 0 10px rgba(0,0,0,.8);background:rgba(0,0,0,.35);padding:8px 22px;border-radius:20px;border:1px solid rgba(255,255,255,.08);white-space:nowrap}
+#loc{position:fixed;top:20px;left:20px;z-index:5;color:#ffd860;font-size:16px;letter-spacing:2px;font-weight:bold;pointer-events:none;text-shadow:0 0 12px rgba(0,0,0,.8)}
+#loc small{display:block;font-size:11px;color:rgba(255,255,255,.35);font-weight:normal}
+#tip{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:6;color:#ffd860;font-size:19px;font-weight:bold;letter-spacing:2px;pointer-events:none;background:rgba(0,0,0,.6);padding:12px 26px;border-radius:10px;border:1px solid rgba(255,216,96,.3);display:none;text-shadow:0 0 12px rgba(0,0,0,.8)}
+#climbHud{position:fixed;top:20px;right:20px;z-index:6;color:#ffd860;font-family:monospace;font-size:14px;letter-spacing:1px;display:none;text-align:right;text-shadow:0 0 8px rgba(0,0,0,.8)}
+</style>
+</head>
+<body>
+
+<div id="blocker">
+  <div id="blocker-box">
+    <h1>基本地圖 3</h1>
+    <div class="sub">方塊世界的立體探索</div>
+    <div class="ctrl">
+      <div><b>MOUSE</b>　視角</div>
+      <div><b>W A S D</b>　移動</div>
+      <div><b>SPACE</b>　跳躍　|　<b>SHIFT</b>　衝刺</div>
+      <div><b>R</b>　自動攀爬梯子（靠近柱子時）</div>
+      <div><b>W↑ / S↓</b>　攀爬中控制上下</div>
+      <div><b>SPACE / R</b>　攀爬中跳離梯子</div>
+    </div>
+    <div class="go">點擊開始探索</div>
+  </div>
+</div>
+
+<div id="loc">地面<small>地面區域</small></div>
+<div id="climbHud">攀爬中<br>(W 上 / S 下 / Space 跳離)</div>
+<div id="tip">🪜 按 <b>R</b> 自動攀爬</div>
+<div id="hint">[R] 自動攀爬　·　W/S 控制方向　·　Space 跳躍/離開　·　Shift 衝刺</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ================= SCENE =================
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9fd4ff);
+scene.fog=new THREE.Fog(0x9fd4ff,80,200);
+
+var camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,300);
+var renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.prepend(renderer.domElement);
+
+window.addEventListener('resize',function(){
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+// ================= LIGHTS =================
+var sun=new THREE.DirectionalLight(0xfff0d8,1.1);
+sun.position.set(60,90,40);
+sun.castShadow=true;
+sun.shadow.mapSize.width=1024;sun.shadow.mapSize.height=1024;
+var sd=52;
+sun.shadow.camera.left=-sd;sun.shadow.camera.right=sd;
+sun.shadow.camera.top=sd;sun.shadow.camera.bottom=-sd;
+sun.shadow.camera.near=1;sun.shadow.camera.far=180;
+sun.shadow.bias=-0.0005;
+scene.add(sun);
+scene.add(new THREE.AmbientLight(0x6688aa,0.6));
+scene.add(new THREE.HemisphereLight(0xbcd8ff,0x7a5a3a,0.55));
+
+// ================= BLOCK BUILDER =================
+var colliders=[];
+
+function M(c,o){return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.85,metalness:0.05,flatShading:true},o||{}));}
+
+function addBlock(cx,cy,cz,sx,sy,sz,mat){
+  var g=new THREE.BoxGeometry(sx*2,sy*2,sz*2);
+  var m=new THREE.Mesh(g,mat);
+  m.position.set(cx,cy,cz);
+  m.receiveShadow=true;
+  m.castShadow=(sx>=0.4&&sy>=0.4&&sz>=0.4);
+  scene.add(m);
+  if(m.castShadow){
+    var edg=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.1}));
+    edg.position.copy(m.position);
+    scene.add(edg);
+  }
+  colliders.push({x:cx,y:cy,z:cz,sx:sx,sy:sy,sz:sz});
+  return m;
+}
+
+function addViz(cx,cy,cz,sx,sy,sz,col){
+  var m=new THREE.Mesh(new THREE.BoxGeometry(sx*2,sy*2,sz*2),M(col));
+  m.position.set(cx,cy,cz);
+  m.castShadow=true;m.receiveShadow=true;
+  scene.add(m);
+  return m;
+}
+
+// ================= MATERIALS =================
+var matGrass=M(0x6aae5a),matDirt=M(0x8a6a4a),matStone=M(0x9a9894),matSand=M(0xcaa45a),matBrick=M(0xa85a4a);
+var matTeal=M(0x4a9acc),matPurple=M(0x7a5ac5),matStone2=M(0xb8c8d8),matLadder=M(0xcba45a,{roughness:0.6,metalness:0.4});
+var matGold=M(0xd8b45a,{roughness:0.4,metalness:0.3});
+var pillarMat=M(0x5a5a8a,{roughness:0.6,metalness:0.25});
+var pillarCapMat=M(0x7a7a9a,{roughness:0.5,metalness:0.3});
+var padMat=M(0x88c0e0);
+var matTrunk=M(0x6a4a2a),matLeaf=M(0x3a7a3a),matLeafB=M(0x4a8a4a),matFlower=M(0xd05a80),matWater=M(0x4a8fc8),matWheat=M(0xd8c05a);
+
+// ================= MAP TERRAIN =================
+addBlock(0,-1.2,0,58,1.2,58,matGrass);
+addBlock(0,-2.4,0,61,1.2,61,matDirt);
+// hills (SW)
+addBlock(-22,0,-32,3,0.6,3,matDirt);
+addBlock(-22,0.6,-30,3,0.6,3,matDirt);
+addBlock(-20,1.2,-28,3,0.6,3,matStone);
+addBlock(-16,1.1,-26,2.5,0.5,2.5,matGrass);
+// scattered blocks
+addBlock(-8,0,-24,2,1.0,2,matStone);
+addBlock(-8,1.0,-22,2,0.7,2,matStone);
+addBlock(6,0,-26,2.2,1.5,2.2,matStone);
+addBlock(14,0,-22,3,0.5,3,matSand);
+addBlock(14,1.0,-20,1.8,0.7,1.8,matGrass);
+// staircase
+addBlock(0,0,-18,3,0.5,3,matStone);
+addBlock(0,0.5,-16.2,3,0.5,3,matStone);
+addBlock(0,1.0,-14.4,3,0.5,3,matStone);
+addBlock(0,1.5,-12.6,3,0.5,3,matTeal);
+// west terraces
+addBlock(-10,0.8,-8,6,0.8,6,matStone);
+addBlock(-14,1.6,-8,4,0.8,4,matStone);
+addBlock(-18,2.4,-8,3,0.8,3,matBrick);
+// west descending way
+addBlock(-26,0.4,8,5,0.4,5,matStone);
+addBlock(-23,0.8,8,4,0.8,4,matStone);
+addBlock(-20.6,1.4,8,2.5,1.0,3,matTeal);
+addBlock(-19,2.2,8,2.5,0.8,3,matTeal);
+// east walls (varying height)
+addBlock(18,0,-8,8,1.2,0.5,matStone);
+addBlock(20,1.2,-6,7,0.6,0.4,matTeal);
+addBlock(21.5,1.8,-3.6,5.5,0.6,0.4,matTeal);
+addBlock(20,0,4,8,0.6,0.4,matStone);
+// island
+addBlock(20,0,16,5,0.7,5,matDirt);
+addBlock(20,0.7,16,3.4,0.9,3.4,matGrass);
+addBlock(20,1.6,16,2.2,0.8,2.2,matStone);
+// gate
+addBlock(0,0,10,0.6,2.6,0.6,matStone);
+addBlock(2,0,10,0.6,2.6,0.6,matStone);
+addBlock(1,2.6,10,1.0,0.4,0.6,matStone);
+
+// ================= SCENERY =================
+function tree(x,z,s,variation){
+  s=s||1;variation=variation||0;
+  addBlock(x,0.9*s,z,0.18*s,0.9*s,0.18*s,matTrunk);
+  addBlock(x,1.9*s+variation*0.5,z,0.7*s,0.7*s,0.7*s,matLeaf);
+  addBlock(x,2.5*s+variation*0.5,z,0.55*s,0.5*s,0.55*s,matLeafB);
+}
+function makeBush(x,z,s){
+  addBlock(x,0.35*s,z,0.6*s,0.35*s,0.6*s,matLeafB);
+}
+function makeRock(x,z,s){
+  addBlock(x,0.25*s,z,0.5*s,0.5*s,0.45*s,matStone);
+  addBlock(x+0.2*s,0.72*s,z+0.15*s,0.22*s,0.22*s,0.2*s,matStone2);
+}
+function makeTorch(x,z){
+  addBlock(x,1.0,z,0.08,1.0,0.08,matTrunk);
+  var flame=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.2,0.14),new THREE.MeshBasicMaterial({color:0xffb020}));
+  flame.position.set(x,1.75,z);
+  flame.castShadow=false;
+  scene.add(flame);
+  var pt=new THREE.PointLight(0xff9944,0.9,12);
+  pt.position.set(x,1.9,z);
+  scene.add(pt);
+}
+
+makeTorch(-3.2,9.6);
+makeTorch(3.2,9.6);
+
+tree(-30,-34,1.2,0);tree(-34,-14,1.4,1);tree(-34,-18,1.0,0);
+tree(-6,-38,1.6,1);tree(2,-40,1.2,0);tree(10,-38,1.5,1);
+tree(26,-26,1.4,0);tree(32,-16,1.2,1);tree(34,-8,1.0,0);
+tree(-32,16,1.7,1);tree(-34,22,1.2,0);tree(-30,32,1.5,1);
+tree(6,32,1.4,0);tree(2,28,1.0,1);tree(-14,38,1.8,0);tree(24,32,1.2,1);
+tree(34,20,1.4,0);tree(34,28,1.0,1);
+tree(26,6,1.6,1);tree(32,2,1.2,0);
+tree(-22,-30,1.3,0);tree(-14,-38,1.5,1);
+tree(-20,20,1.3,1);tree(-10,-24,0.9,0);
+tree(20,-12,1.6,1);
+tree(22,-34,1.1,0);
+
+makeBush(-14,14,1);makeBush(-11,17,0.8);makeBush(-8,16,1.1);
+makeBush(14,8,1);makeBush(18,6,0.9);makeBush(22,10,1.2);
+makeBush(-6,-32,0.9);makeBush(-16,-30,1.1);
+
+makeRock(16,-6,1);makeRock(16,-8,0.7);makeRock(-24,12,1.2);makeRock(-26,12,0.8);
+makeRock(30,-10,0.9);makeRock(28,20,1.3);makeRock(-16,2,1.1);makeRock(-8,4,0.7);
+
+addBlock(24,0.12,24,2.4,0.24,2.4,matWater);
+addBlock(24,0.12,28.4,1.4,0.24,1.4,matWater);
+makeRock(21,22,0.7);makeRock(27,27,0.8);
+addBlock(-34,0.12,36,2.2,0.24,2.2,matWater);
+makeRock(-30,34,0.8);
+
+var flowerMats=[matWheat,matFlower];
+for(var fl=0;fl<22;fl++){
+  var fxp=18+Math.random()*20, fzp=-30+Math.random()*16;
+  var fm=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.4,5),flowerMats[fl%2]);
+  fm.position.set(fxp,0.45,fzp);
+  fm.castShadow=false;
+  scene.add(fm);
+}
+for(var f2=0;f2<14;f2++){
+  var sxp=-24+Math.random()*20, szp=10+Math.random()*14;
+  var sm=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.5,5),matFlower);
+  sm.position.set(sxp,0.42,szp);
+  sm.castShadow=false;
+  scene.add(sm);
+}
+
+// ================= PILLARS + SKY PLATFORM =================
+var SKY_TOP=36;
+var PILLAR_HALF=2.4;
+var CAP_HALF=3.2;
+var ladders=[];
+var pillarPos=[{x:-14,z:-14},{x:14,z:-14},{x:-14,z:14},{x:14,z:14}];
+
+function buildPillar(p){
+  addBlock(p.x,17.75,p.z,PILLAR_HALF,17.75,PILLAR_HALF,pillarMat);
+  addBlock(p.x,0.35,p.z,PILLAR_HALF+0.8,0.35,PILLAR_HALF+0.8,matSand);
+}
+function buildCap(p){
+  addBlock(p.x,SKY_TOP-0.25+0.15,p.z,CAP_HALF-0.15,0.25,CAP_HALF-0.15,pillarCapMat);
+}
+
+addBlock(0,SKY_TOP-1.5,0,17,1.5,17,matTeal);
+addBlock(0,SKY_TOP-4,0,15,0.8,15,matPurple);
+addViz(0,SKY_TOP-6,0,14,1.6,14,matStone);
+
+pillarPos.forEach(buildPillar);
+
+// ================= LADDER MODELS =================
+function mergeBoxes(boxes){
+  var posArr=[],norArr=[],uvArr=[],idxArr=[];
+  var geo=new THREE.BoxGeometry(1,1,1);
+  var pos=geo.attributes.position.array,nor=geo.attributes.normal.array,uv=geo.attributes.uv.array;
+  var idx=geo.index.array;
+  for(var b=0;b<boxes.length;b++){
+    var bx=boxes[b][0],by=boxes[b][1],bz=boxes[b][2],sx=boxes[b][3],sy=boxes[b][4],sz=boxes[b][5];
+    var base=posArr.length/3;
+    for(var i=0;i<pos.length;i+=3){
+      posArr.push(pos[i]*sx+bx,pos[i+1]*sy+by,pos[i+2]*sz+bz);
+    }
+    for(var j=0;j<nor.length;j++)norArr.push(nor[j]);
+    for(var k=0;k<uv.length;k++)uvArr.push(uv[k]);
+    for(var m=0;m<idx.length;m++)idxArr.push(idx[m]+base);
+  }
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(posArr,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(norArr,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uvArr,2));
+  g.setIndex(idxArr);
+  return g;
+}
+function makeLadder(p,fX,fZ){
+  var lx=p.x+fX*(PILLAR_HALF+0.55);
+  var lz=p.z+fZ*(PILLAR_HALF+0.55);
+  var baseY=0.2,topY=SKY_TOP-0.15;
+  var len=topY-baseY;
+  var latX=-fZ, latZ=fX;
+  var boxes=[];
+  boxes.push([lx+latX*0.55,(baseY+topY)/2,lz+latZ*0.55,0.1,len/2,0.1]);
+  boxes.push([lx-latX*0.55,(baseY+topY)/2,lz-latZ*0.55,0.1,len/2,0.1]);
+  var steps=Math.max(4,Math.floor(len/1.1));
+  // rungs: full-width bars lying along the lateral (axis-axis) direction
+  for(var i=0;i<=steps;i++){
+    var yy=baseY+0.2+i*(len-0.4)/steps;
+    if(latX!==0)boxes.push([lx,yy,lz,1.15,0.08,0.08]);
+    else boxes.push([lx,yy,lz,0.08,0.08,1.15]);
+  }
+  var merged=mergeBoxes(boxes);
+  var mesh=new THREE.Mesh(merged,matLadder);
+  mesh.castShadow=false;mesh.receiveShadow=true;
+  scene.add(mesh);
+  var knob=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.2,0.3),matGold);
+  knob.position.set(lx,topY+0.05,lz);
+  knob.castShadow=false;
+  scene.add(knob);
+  ladders.push({x:lx,z:lz,fX:fX,fZ:fZ,baseY:baseY,topY:topY});
+}
+
+pillarPos.forEach(function(p){
+  if(Math.abs(p.x)>=Math.abs(p.z)){
+    makeLadder(p,p.x>0?-1:1,0);
+  }else{
+    makeLadder(p,0,p.z>0?-1:1);
+  }
+});
+
+// ================= FLOATING PADS (spiral cloud) =================
+var pads=[];
+(function(){
+  var a=0,r=16.5,y=37.0;
+  for(var i=0;i<22;i++){
+    var x=Math.cos(a)*r,z=Math.sin(a)*r;
+    pads.push([Math.round(x),Math.round(y*10)/10,Math.round(z)]);
+    a+=0.22; r+=0.7; y+=0.85;
+  }
+})();
+
+pads.forEach(function(pd){
+  addBlock(pd[0],pd[1]-0.25,pd[2],1.25,0.25,1.25,padMat);
+});
+
+// ================= CLOUDS =================
+for(var c=0;c<14;c++){
+  var cl=new THREE.Mesh(new THREE.BoxGeometry(4,0.7,2.5),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.75}));
+  cl.position.set((Math.random()-0.5)*150,38+Math.random()*14,(Math.random()-0.5)*150);
+  scene.add(cl);
+}
+
+// ================= PLAYER =================
+var PW=0.31,HEIGHT=1.8,EYE=1.55,SPEED=5.4,RUN=1.6,JUMP=8.8,GRAV=-24;
+var pos={x:0,y:0,z:14};
+var vel={x:0,y:0,z:0};
+var yaw=0,pitch=-0.1,onGround=true;
+
+// third-person character (during climbing)
+var charG=new THREE.Group();scene.add(charG);
+var cM=M(0x5aa5d8,{roughness:0.6});
+var cBody=new THREE.Mesh(new THREE.BoxGeometry(0.42,0.6,0.26),cM);
+var cHead=new THREE.Mesh(new THREE.BoxGeometry(0.24,0.2,0.22),cM);
+// limbs pivot at shoulder/hip via pivot groups
+var pivL=new THREE.Group(),pivR=new THREE.Group(),pivLL=new THREE.Group(),pivRL=new THREE.Group();
+var cArmL=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.4,0.1),cM);
+var cArmR=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.4,0.1),cM);
+var cLegL=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.46,0.13),cM);
+var cLegR=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.46,0.13),cM);
+cBody.position.y=1.0;cHead.position.y=1.4;
+pivL.position.set(-0.24,1.18,0);pivR.position.set(0.24,1.18,0);
+pivLL.position.set(-0.11,0.66,0);pivRL.position.set(0.11,0.66,0);
+cArmL.position.y=-0.2;cArmR.position.y=-0.2;
+cLegL.position.y=-0.23;cLegR.position.y=-0.23;
+pivL.add(cArmL);pivR.add(cArmR);pivLL.add(cLegL);pivRL.add(cLegR);
+charG.add(cBody,cHead,pivL,pivR,pivLL,pivRL);
+charG.visible=false;
+
+// ================= CONTROLS =================
+var keys={};
+var climbT=null;
+var climbPhase=0;
+var climbAuto=true;
+var climbYawS=0,climbPitchS=0;
+
+document.addEventListener('keydown',function(e){
+  if(e.repeat)return;
+  keys[e.code]=true;
+  if(e.code==='KeyR'){if(climbT)detachClimb(true);else tryClimb();}
+  if(e.code==='Space'&&climbT)detachClimb(true);
+});
+document.addEventListener('keyup',function(e){keys[e.code]=false;});
+
+document.addEventListener('mousemove',function(e){
+  if(document.pointerLockElement!==renderer.domElement)return;
+  yaw-=e.movementX*0.0011;
+  pitch-=e.movementY*0.0011;
+  pitch=Math.max(-1.5,Math.min(1.5,pitch));
+});
+document.addEventListener('contextmenu',function(e){e.preventDefault();});
+document.getElementById('blocker').addEventListener('click',function(){
+  this.style.display='none';
+  renderer.domElement.requestPointerLock();
+});
+
+// ================= COLLISION =================
+function resolveH(axis){
+  var w=PW;
+  var px=pos.x,py=pos.y+0.9,pz=pos.z;
+  for(var i=0;i<colliders.length;i++){
+    var b=colliders[i];
+    if(pos.y>b.y+b.sy-0.001)continue;
+    if(Math.abs(py-b.y)>=0.9+b.sy)continue;
+    if(axis==='x'){
+      if(Math.abs(pz-b.z)>=w+b.sz)continue;
+      var ox=w+b.sx-Math.abs(px-b.x);
+      if(ox>0)pos.x+=px>b.x?ox:-ox;
+    }else{
+      if(Math.abs(px-b.x)>=w+b.sx)continue;
+      var oz=w+b.sz-Math.abs(pz-b.z);
+      if(oz>0)pos.z+=pz>b.z?oz:-oz;
+    }
+  }
+}
+function collideY(){
+  var w=PW;
+  for(var i=0;i<colliders.length;i++){
+    var b=colliders[i];
+    if(Math.abs(pos.x-b.x)>=w+b.sx)continue;
+    if(Math.abs(pos.z-b.z)>=w+b.sz)continue;
+    var c=pos.y+0.9;
+    var gap=0.9+b.sy-Math.abs(c-b.y);
+    if(gap<=0)continue;
+    if(c>b.y){
+      pos.y=b.y+b.sy;
+      if(vel.y<0)vel.y=0;
+      onGround=true;
+    }else{
+      pos.y=b.y-b.sy-HEIGHT;
+      if(vel.y>0)vel.y=0;
+    }
+  }
+}
+
+// ================= CLIMB =================
+function closestLadder(){
+  var best=null,db=2.6;
+  for(var i=0;i<ladders.length;i++){
+    var L=ladders[i];
+    var d=Math.hypot(pos.x-L.x,pos.z-L.z);
+    if(d<db){db=d;best=L;}
+  }
+  return best;
+}
+function tryClimb(){
+  if(climbT)return;
+  var L=closestLadder();
+  if(!L)return;
+  climbT=L;
+  pos.x=L.x;pos.z=L.z;
+  vel.x=0;vel.z=0;vel.y=0;
+  pos.y=Math.max(pos.y+0.35,L.baseY+0.4);
+  climbPhase=0;
+  climbAuto=true;
+  climbYawS=yaw;climbPitchS=pitch;
+}
+function groundUpAt(x,z){
+  var w=PW,besta=-1e9;
+  for(var i=0;i<colliders.length;i++){
+    var b=colliders[i];
+    if(Math.abs(x-b.x)<w+b.sx&&Math.abs(z-b.z)<w+b.sz){
+      var t=b.y+b.sy;
+      if(t>besta)besta=t;
+    }
+  }
+  return besta;
+}
+function detachClimb(jump){
+  var L=climbT;
+  climbT=null;
+  charG.visible=false;
+  if(jump&&L){vel.y=JUMP*0.5;pos.y=Math.max(pos.y,L.baseY);}
+  else if(L&&pos.y>=L.topY-0.4){
+    var s=groundUpAt(L.x,L.z);
+    if(s>-1000)pos.y=s;
+  }
+  yaw=climbYawS; pitch=climbPitchS;
+  setTimeout(function(){charG.visible=false;},50);
+}
+
+// ================= UPDATE =================
+function updateClimb(dt){
+  var L=climbT;
+  var up=(keys['KeyW']?1:0)-(keys['KeyS']?1:0);
+  if(up===0)up=climbAuto?1:0;
+  var cs=2.6;
+  if(up!==0)climbPhase+=dt*(up>0?4:-4);
+  pos.y+=up*cs*dt;
+  if(pos.y>=L.topY-0.05){
+    pos.y=L.topY;
+    detachClimb(false);
+    return;
+  }
+  if(pos.y<=L.baseY+0.1&&up<0){
+    pos.y=L.baseY;
+    climbT=null;
+    charG.visible=false;
+    yaw=climbYawS; pitch=climbPitchS;
+    return;
+  }
+  if(pos.y<L.baseY+0.05)pos.y=L.baseY+0.05;
+  charG.visible=true;
+  charG.position.set(pos.x+L.fX*0.55,pos.y+0.25,pos.z+L.fZ*0.55);
+  var f=Math.sin(climbPhase);
+  pivL.rotation.x=0.6+f*0.9;pivR.rotation.x=0.6-f*0.9;
+  pivLL.rotation.x=0.5-f*0.8;pivRL.rotation.x=0.5+f*0.8;
+  pivL.rotation.z=0.12;pivR.rotation.z=-0.12;
+  camera.position.set(pos.x+L.fX*4.0,pos.y+2.8,pos.z+L.fZ*4.0);
+  camera.lookAt(pos.x,pos.y+1.1,pos.z);
+  charG.rotation.y=Math.atan2(L.fX,L.fZ);
+}
+
+function updateNormal(dt){
+  var fx=Math.sin(yaw),fz=Math.cos(yaw);
+  var rx=Math.cos(yaw),rz=-Math.sin(yaw);
+  var mx=0,mz=0;
+  if(keys['KeyW']){mx-=fx;mz-=fz;}
+  if(keys['KeyS']){mx+=fx;mz+=fz;}
+  if(keys['KeyA']){mx-=rx;mz-=rz;}
+  if(keys['KeyD']){mx+=rx;mz+=rz;}
+  var ml=Math.hypot(mx,mz);
+  if(ml>0){mx/=ml;mz/=ml;}
+  var sp=SPEED*((keys['ShiftLeft']||keys['ShiftRight'])?RUN:1);
+  pos.x+=mx*sp*dt;pos.z+=mz*sp*dt;
+  resolveH('x');resolveH('z');
+
+  if(keys['Space']&&onGround){vel.y=JUMP;onGround=false;}
+  vel.y+=GRAV*dt;
+  pos.y+=vel.y*dt;
+  collideY();
+  if(pos.y<=0.01&&vel.y<=0&&pos.y>=-0.5){pos.y=0.01;vel.y=0;onGround=true;}
+
+  if(pos.y<-25){pos.x=0;pos.z=14;pos.y=0;vel.x=0;vel.y=0;vel.z=0;yaw=0;pitch=-0.1;}
+
+  camera.position.set(pos.x,pos.y+EYE,pos.z);
+  camera.rotation.set(pitch,yaw,0);
+}
+
+// ================= UI =================
+var locEl=document.getElementById('loc');
+var tipEl=document.getElementById('tip');
+var climbEl=document.getElementById('climbHud');
+
+// ================= LOOP =================
+var last=performance.now();
+function animate(now){
+  requestAnimationFrame(animate);
+  var dt=Math.min((now-last)/1000,0.05);
+  last=now;
+
+  if(climbT)updateClimb(dt);else updateNormal(dt);
+
+  var L=closestLadder();
+  if(!climbT&&L&&pos.y<SKY_TOP*0.5)tipEl.style.display='block';
+  else tipEl.style.display='none';
+  if(climbT)climbEl.style.display='block';else climbEl.style.display='none';
+
+  var zone;
+  if(pos.y>SKY_TOP)zone='天空平台 ✨';else if(climbT)zone='攀爬中 🪜';
+  else if(pos.y>8)zone='高地 ⛰';else zone='地面 🏞';
+  locEl.innerHTML=zone+'<br><small>Y='+pos.y.toFixed(1)+'　柱位: '+(L?L.x+','+L.z:'-')+'</small>';
+
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

@@ -771,7 +771,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
   <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
-  <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div></div></div>
+  <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div><div class="map-option" data-map="basemap3" style="border-color:rgba(120,180,220,.3);background:rgba(120,180,220,.06)"><div class="map-name">🗼 基本地圖(3)</div><div class="map-desc">天梯探險 — 爬梯登上天空平台</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">⚠ 名稱設定後將無法更改！</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:12px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:17px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 手機版</button></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
@@ -834,6 +834,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="slide-prompt"></div>
 <div id="zipline-prompt" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);color:#8f8;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(68,255,68,.5);letter-spacing:2px"></div>
 <div id="boat-prompt" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);color:#c6f;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(204,102,255,.5);letter-spacing:2px"></div>
+<div id="ladder-prompt" style="position:fixed;bottom:150px;left:50%;transform:translateX(-50%);color:#ffe08a;font-size:16px;font-weight:bold;z-index:6;pointer-events:none;font-family:Arial;opacity:0;transition:opacity .3s;text-shadow:0 0 10px rgba(255,224,138,.5);letter-spacing:2px"></div>
+<div id="climb-hud" style="position:fixed;top:12px;right:12px;z-index:6;color:#ffe08a;font-family:monospace;font-size:14px;letter-spacing:1px;display:none;text-align:right;text-shadow:0 0 8px rgba(0,0,0,.8)">攀爬中 🔼<br><small style="font-size:10px">W 上 / S 下 / Space 跳離</small></div>
 <div id="round-clear">通關</div>
 <div id="round-num"></div>
 <div id="round-earnings"></div>
@@ -879,6 +881,7 @@ body.mobile-mode #scope-overlay{display:none!important}
     <div class="map-option" data-map="dragonboat" id="vote-dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定</div></div>
     <div class="map-option" data-map="nuclear" id="vote-nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
     <div class="map-option" data-map="flooded" id="vote-flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div>
+    <div class="map-option" data-map="basemap3" id="vote-basemap3" style="border-color:rgba(120,180,220,.3);background:rgba(120,180,220,.06)"><div class="map-name">🗼 基本地圖(3)</div><div class="map-desc">天梯探險 — 爬梯登上天空平台</div></div>
   </div>
 </div>
 <div id="gun-overlay"><div id="gun-bg"></div><div id="gun-box"><div id="gun-close">✕</div><div id="gun-left"><div id="gun-left-title">已擁有 <span id="gun-own-count">0</span></div><div id="gun-left-list"></div></div><div id="gun-right"><div id="gun-preview"><canvas id="gun-canvas"></canvas></div><div id="gun-attach-slots"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🔫 槍口</div><div id="gun-slot-muzzle" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🎯 瞄具</div><div id="gun-slot-sight" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">📦 彈匣</div><div id="gun-slot-mag" class="gun-a-slot"></div></div></div><button id="gun-buy-all" style="display:none">一 鍵 購 買</button></div></div></div>
@@ -3028,10 +3031,12 @@ function startNextRound(){
     if(ei<targetCount){
       e.hp=e.maxHp*(1+roundNum*0.15);e.armor=e.maxArmor*(1+roundNum*0.1);
       e.knifeHits=0;e.burnTimer=0;randomizeEnemyType(e);
-      if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var sp=st.pos.clone();}else{var sp=getRandomSpawnPos(true,pos,8);}
-      e.pos.copy(sp);e.mesh.position.copy(sp);e.mesh.visible=true;
-      if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
-      if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
+      if(e.type==='sniper'&&sniperTowers.length>0&&currentMap!=='basemap3'){var st=sniperTowers[ei%sniperTowers.length];var sp=st.pos.clone();}else{var sp=getRandomSpawnPos(true,pos,8);}
+      e.pos.copy(sp);e.mesh.position.copy(sp);
+if(currentMap==='basemap3'){if(e.type==='sniper'||ei%3===0){e.pos.set(3+Math.random()*8,36,3+Math.random()*8);e.mesh.position.copy(e.pos);e.roofTop=true;e.climbL=null;}else{e.pos.y=0;e.mesh.position.y=e.pos.y;e.roofTop=false;e.climbL=null;}if(e.hBar)e.hBar.position.copy(e.pos);if(e.aBar)e.aBar.position.copy(e.pos);if(e.hBar)e.hBar.position.y+=0.95;if(e.aBar)e.aBar.position.y+=0.88;}
+e.mesh.visible=true;
+      if(e.hBar&&currentMap!=='basemap3'){e.hBar.visible=true;e.hBar.position.copy(sp);e.hBar.position.y+=0.95;}
+      if(e.aBar&&currentMap!=='basemap3'){e.aBar.visible=true;e.aBar.position.copy(sp);e.aBar.position.y+=0.88;}
     }else{e.hp=0;e.mesh.visible=false;if(e.hBar)e.hBar.visible=false;if(e.aBar)e.aBar.visible=false;}
   }
 }
@@ -3527,11 +3532,13 @@ function applyMapSettings(){
   // Toggle dragon boat elements
   if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
   if(lanternLights)lanternLights.forEach(function(l){l.visible=currentMap==='dragonboat';});
-  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2'&&currentMap!=='flooded';});
+  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2'&&currentMap!=='flooded'&&currentMap!=='basemap3';});
   // Toggle nuclear elements
   if(nuclearMapElements)nuclearMapElements.forEach(function(b){b.mesh.visible=currentMap==='nuclear';});
   // Toggle arena2 elements
   if(arena2Elements)arena2Elements.forEach(function(b){b.mesh.visible=currentMap==='arena2';});
+  // Default-hide BasicMap3 extras; shown again in basemap3 branch below
+  if(basic3MapElements.length)basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
   // Hide non-arena2 mapBoxes when arena2 is active
   if(currentMap==='arena2'){
     for(var mxi2=0;mxi2<mapBoxes.length;mxi2++){
@@ -3547,10 +3554,20 @@ function applyMapSettings(){
     }
   }
   // Base map: show all non-special mapBoxes
-  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'&&currentMap!=='flooded'){
+  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'&&currentMap!=='flooded'&&currentMap!=='basemap3'){
     for(var mxi3=0;mxi3<mapBoxes.length;mxi3++){
       var bx3=mapBoxes[mxi3];
-      if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat)bx3.mesh.visible=true;
+      if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat&&!bx3.isBasic3)bx3.mesh.visible=true;
+      else bx3.mesh.visible=false;
+    }
+    basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
+  }
+  // BasicMap3: show only isBasic3 boxes, hide everything else
+  if(currentMap==='basemap3'){
+    if(!basic3MapElements.length)createBasic3MapElements();
+    for(var mxi7=0;mxi7<mapBoxes.length;mxi7++){
+      var bx7=mapBoxes[mxi7];
+      bx7.mesh.visible=!!bx7.isBasic3;
     }
   }
   // Hide non-dragonBoat mapBoxes when dragonboat is active (walls/floor kept via isPermanent)
@@ -3606,6 +3623,16 @@ function applyMapSettings(){
     isUnderwater=true;startUnderwaterAmbient();
     document.getElementById('o2-wrap').style.display='flex';
     document.getElementById('underwater-overlay').style.display='block';
+  }else if(currentMap==='basemap3'){
+    isUnderwater=false;stopUnderwaterAmbient();
+    document.getElementById('o2-wrap').style.display='none';
+    document.getElementById('underwater-overlay').style.display='none';
+    scene.background=new THREE.Color(0x9fd4ff);
+    scene.fog=new THREE.Fog(0x9fd4ff,80,200);
+    amb.color.setHex(0x8aa7cc);amb.intensity=0.85;
+    dir.color.setHex(0xfff0d8);dir.intensity=1.6;
+    if(!basic3MapElements.length)createBasic3MapElements();
+    basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
   }else{
     isUnderwater=false;stopUnderwaterAmbient();
     document.getElementById('o2-wrap').style.display='none';
@@ -3777,6 +3804,7 @@ mapOptions.forEach(function(opt){
     applyClassPassives();
     if(currentMap==='arena2')pos.set(-17,1.9,0);
     if(currentMap==='flooded')pos.set(0,2,0);
+    if(currentMap==='basemap3')pos.set(0,0.8,14);
     applyMapSettings();
     if(bossRushMode){
       bossRushWave=1;bossRushMaxWave=0;bossActive=false;bossSpawned=false;boss=null;bossType='nuclear';
@@ -3972,6 +4000,7 @@ document.getElementById('vote-dragonboat').onclick=function(){sendMapVote('drago
 document.getElementById('vote-nuclear').onclick=function(){sendMapVote('nuclear');};
 document.getElementById('vote-arena2').onclick=function(){sendMapVote('arena2');};
 document.getElementById('vote-flooded').onclick=function(){sendMapVote('flooded');};
+document.getElementById('vote-basemap3').onclick=function(){sendMapVote('basemap3');};
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -4303,7 +4332,7 @@ function processServerMessage(data){
       if(window.voteTimer)clearInterval(window.voteTimer);
       var voteSecs=15;
       document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
-      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','flooded'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
+      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','flooded','basemap3'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
       break;
     case 'opponent_vote':
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
@@ -4319,8 +4348,8 @@ function processServerMessage(data){
       document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','flooded':'淹水房子'};
-      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2'),'flooded':document.getElementById('vote-flooded')};
+      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','flooded':'淹水房子','basemap3':'基本地圖(3)'};
+      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2'),'flooded':document.getElementById('vote-flooded'),'basemap3':document.getElementById('vote-basemap3')};
       if(uniqueVotes.length<=1){
         // All votes same — skip animation, start game directly
         Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
@@ -4557,7 +4586,7 @@ function connectMultiplayerDirect(ip, mode){
   if(ip.indexOf('://')!==-1){
     url=ip;
   }else if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
-    url=(location.protocol==='https:'?'wss:':'ws:')+'//'+location.hostname+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:'');
+    url=(location.protocol==='https:'?'wss:':'ws:')+'//'+(location.hostname||'localhost')+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:':3000');
   }else{
     url='ws://'+ip+':3000';
   }
@@ -4643,7 +4672,12 @@ document.addEventListener('keydown',function(e){
   keys[e.code]=true;
   if(e.code==='Space'){
     e.preventDefault();
+    if(climbT){detachClimb(true);return;}
     if(onGround&&!sliding&&gameStarted&&locked){vel.y=JUMP_V;onGround=false;}
+  }
+  if(e.code==='KeyV'){
+    if(climbT){detachClimb(true);}
+    else if(currentMap==='basemap3'&&gameStarted&&locked){tryClimb();}
   }
   if(bombMode&&e.code.indexOf('Digit')===0)return;
   if(e.code==='Digit1'||e.code==='Numpad1')switchToSlot(0);
@@ -4830,8 +4864,65 @@ function checkWallContact(){
   }
   return{onWall:false,n:new THREE.Vector3()};
 }
+function closestLadder(){
+  var best=null,db=2.6;
+  if(!b3Ladders.length)return null;
+  for(var i=0;i<b3Ladders.length;i++){
+    var L=b3Ladders[i];
+    var dx=pos.x-L.x,dz=pos.z-L.z;
+    var d=Math.sqrt(dx*dx+dz*dz);
+    if(d<db){db=d;best=L;}
+  }
+  return best;
+}
+function tryClimb(){
+  if(climbT||currentMap!=='basemap3')return;
+  var L=closestLadder();
+  if(!L)return;
+  climbT=L;
+  pos.x=L.x;pos.z=L.z;
+  vel.x=0;vel.z=0;vel.y=0;
+  if(pos.y<L.baseY+0.2)pos.y=L.baseY;
+  climbPhase=0;
+  climbAuto=true;
+  document.getElementById('ladder-prompt').style.opacity='0';
+}
+function detachClimb(jump){
+  var L=climbT;
+  climbT=null;
+  if(jump&&L){vel.y=JUMP_V*0.5;if(pos.y<L.baseY)pos.y=L.baseY;}
+  else if(L&&pos.y>=L.topY){
+    pos.y=L.topY;
+  }
+  if(pos.y<0.6)pos.y=0.6;
+}
+function updateClimbPhysics(dt){
+  var L=climbT;
+  if(!L){climbT=null;return;}
+  var up=(keys['KeyW']?1:0)-(keys['KeyS']?1:0);
+  if(up===0)up=climbAuto?1:0;
+  var cs=2.6;
+  if(up!==0)climbPhase+=dt*(up>0?4:-4);
+  pos.y+=up*cs*dt;
+  pos.x=L.x;pos.z=L.z;
+  if(pos.y>=L.topY-0.05){
+    pos.y=L.topY;
+    var landed=true;
+    climbT=null;
+    pos.y=36;
+    vel.y=0;
+    if(keys['Space']){vel.y=JUMP_V*0.4;}
+  }
+  if(pos.y<=L.baseY&&up<0){
+    pos.y=L.baseY;
+    climbT=null;
+    climbAuto=true;
+  }
+  if(pos.y<0.6)pos.y=0.6;
+}
 function updatePhysics(dt){
   if(boatRideActive)return;
+  if(climbT){updateClimbPhysics(dt);return;}
   var fwd=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
   var rgt=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
   var mDir=new THREE.Vector3();
@@ -4902,16 +4993,14 @@ function updatePhysics(dt){
   var gndFl=false;for(var i=0;i<3;i++){var r=resolveCollisions();if(r.gnd)gndFl=true;onGround=r.gnd;if(r.wall&&!onGround&&!wallClinging&&wallJumpCD<=0&&!keys['Space']){wallClinging=true;wallTimer=0;wallNormal.copy(r.wN);}}onGround=gndFl;
   if(pos.y>0&&pos.y<=0.605){pos.y=0.6;vel.y=0;onGround=true;}
   if(!sliding&&onGround&&gameStarted&&(Math.abs(vel.x)>0.1||Math.abs(vel.z)>0.1)){footstepTimer-=dt;if(footstepTimer<=0){playFootstep();footstepTimer=0.4;if(isMultiplayer)relaySend({type:'footstep'});}}else{footstepTimer=0;}
-  if(pos.y<-5||pos.x<-24||pos.x>24||pos.z<-18||pos.z>18){
+  var fb=getMapBounds();
+  if(pos.y<-5||pos.x<fb.minX-2||pos.x>fb.maxX+2||pos.z<fb.minZ-2||pos.z>fb.maxZ+2){
     var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
     var fDmg=5;
     if(playerArmor>0){var ad=Math.min(playerArmor,fDmg);playerArmor-=ad;fDmg-=ad;}
     playerHP-=fDmg;
     if(playerHP<=0){onPlayerDeath();}
     showDmgNum(new THREE.Vector3(-10,1.5,-10),5,'#ff4444');
-  }
-  if(rangeMode&&(pos.x<-7||pos.x>7||pos.z>2||pos.z<-26)){
-    pos.set(0,0.8,1.5);vel.set(0,0,0);
   }
 }
 var impacts=[];
@@ -5642,6 +5731,52 @@ function updateEnemies(dt){
     var isRusher=e.type==='rusher',isGrenadier=e.type==='grenadier',isSuicider=e.type==='suicider',isHealer=e.type==='healer',isSniper=e.type==='sniper',isShield=e.type==='shield';
     var spd=(e.state==='chase'?(isRusher?7:(isSuicider?9:(isSniper?0:(isShield?2.5:4.5)))):1.5);
     var moveTarget=null,aimAtPlayer=false;
+    if(currentMap==='basemap3'&&e.hp>0){
+      if(e.roofTop){
+        e.pos.y=36;
+        e.pos.x=Math.max(-11,Math.min(11,e.pos.x));e.pos.z=Math.max(-11,Math.min(11,e.pos.z));
+        if(e.state==='chase'&&pos.y>32){
+          var rv=new THREE.Vector3(pos.x-e.pos.x,0,pos.z-e.pos.z);
+          var rl=rv.length();
+          if(rl>1.2){rv.normalize();e.pos.x+=rv.x*spd*dt;e.pos.z+=rv.z*spd*dt;e.mesh.rotation.y=Math.atan2(rv.x,rv.z);}
+        }else{
+          e.waypoint.set(e.pos.x+8-16*Math.random(),36,e.pos.z+8-16*Math.random());
+          e.pos.x=Math.max(-11,Math.min(11,e.pos.x+(e.waypoint.x-e.pos.x)*dt*0.8));e.pos.z=Math.max(-11,Math.min(11,e.pos.z+(e.waypoint.z-e.pos.z)*dt*0.8));
+        }
+        e.mesh.position.set(e.pos.x,36,e.pos.z);
+        if(e.hBar){e.hBar.visible=true;e.hBar.position.set(e.pos.x,36.95,e.pos.z);e.hBar.scale.x=Math.max(0,e.hp/e.maxHp);}
+        if(e.aBar){e.aBar.visible=true;e.aBar.position.set(e.pos.x,36.88,e.pos.z);e.aBar.scale.x=Math.max(0,e.armor/e.maxArmor);}
+        continue;
+      }
+      if(pos.y>32&&e.pos.y<1){
+        var bestL=null,bdst2=1e9;
+        for(var li2=0;li2<b3Ladders.length;li2++){
+          var lad2=b3Ladders[li2];
+          var d2=(e.pos.x-lad2.x)*(e.pos.x-lad2.x)+(e.pos.z-lad2.z)*(e.pos.z-lad2.z);
+          if(d2<bdst2){bdst2=d2;bestL=lad2;}
+        }
+        if(bestL){
+          var baseD2=Math.sqrt(bdst2);
+          if(baseD2>1.5){
+            var ldir2=new THREE.Vector3(bestL.x-e.pos.x,0,bestL.z-e.pos.z).normalize();
+            e.pos.x+=ldir2.x*3.4*dt;e.pos.z+=ldir2.z*3.4*dt;
+            e.mesh.rotation.y=Math.atan2(ldir2.x,ldir2.z);
+            e.mesh.position.set(e.pos.x,0,e.pos.z);
+            if(e.hBar){e.hBar.position.set(e.pos.x,0.95,e.pos.z);}
+            if(e.aBar){e.aBar.position.set(e.pos.x,0.88,e.pos.z);}
+            continue;
+          }else{
+            e.pos.x=bestL.x;e.pos.z=bestL.z;
+            e.pos.y+=dt*3;
+            e.mesh.position.set(e.pos.x,e.pos.y,e.pos.z);
+            if(e.hBar){e.hBar.position.set(e.pos.x,e.pos.y+0.95,e.pos.z);}
+            if(e.aBar){e.aBar.position.set(e.pos.x,e.pos.y+0.88,e.pos.z);}
+            if(e.pos.y>=35.5){e.pos.y=36;e.roofTop=true;e.pos.x=Math.max(-11,Math.min(11,e.pos.x));e.pos.z=Math.max(-11,Math.min(11,e.pos.z));e.mesh.position.set(e.pos.x,36,e.pos.z);}
+            continue;
+          }
+        }
+      }
+    }
       if(e.state==='chase'){
         aimAtPlayer=true;
         var toPlayer=new THREE.Vector3().copy(pos);toPlayer.y=0;toPlayer.sub(e.pos);
@@ -6506,6 +6641,7 @@ function getMapBounds(){
   if(currentMap==='nuclear')return{minX:-20,maxX:20,minZ:-20,maxZ:20};
   if(currentMap==='arena2')return{minX:-22,maxX:22,minZ:-16,maxZ:16};
   if(currentMap==='flooded')return{minX:-16,maxX:16,minZ:-16,maxZ:16};
+  if(currentMap==='basemap3')return{minX:-30,maxX:30,minZ:-30,maxZ:30};
   return{minX:-15,maxX:15,minZ:-15,maxZ:15};
 }
 function drawMinimap(){
@@ -6578,7 +6714,7 @@ function animate(time){try{
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
 if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
-  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh(); if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
+  if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh(); if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0&&currentMap!=='basemap3'){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}if(currentMap==='basemap3'){if(e.type==='sniper'||ei%3===0){e.pos.set(3+Math.random()*8,36,3+Math.random()*8);e.mesh.position.copy(e.pos);e.roofTop=true;e.climbL=null;}else{e.pos.y=0;e.mesh.position.y=e.pos.y;e.roofTop=false;e.climbL=null;}if(e.hBar)e.hBar.position.copy(e.pos);if(e.aBar)e.aBar.position.copy(e.pos);if(e.hBar)e.hBar.position.y+=0.95;if(e.aBar)e.aBar.position.y+=0.88;}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted&&currentMap==='dragonboat'&&dragonBoatElements)dragonBoatElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
   if(locked&&gameStarted)updatePhysics(dt);
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
@@ -6673,6 +6809,21 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
       scene.remove(rz.mesh);if(rz.light)scene.remove(rz.light);
       radiationZones.splice(rzi,1);
     }
+  }
+  // Ladder prompt (BasicMap3) + climb HUD
+  if(currentMap==='basemap3'){
+    var lpEl=document.getElementById('ladder-prompt');
+    var chEl=document.getElementById('climb-hud');
+    if(climbT){chEl.style.display='block';if(lpEl)lpEl.style.opacity='0';}
+    else{
+      chEl.style.display='none';
+      var Ln=closestLadder();
+      if(lpEl){lpEl.style.opacity=(Ln&&pos.y<30)?'1':'0';lpEl.textContent=Ln?'按 V 爬梯':'';
+      }
+    }
+  }else{
+    var chEl2=document.getElementById('climb-hud');if(chEl2)chEl2.style.display='none';
+    var lpEl2=document.getElementById('ladder-prompt');if(lpEl2)lpEl2.style.opacity='0';
   }
   // Boat ride proximity prompt (higher priority than zipline)
   if(locked&&gameStarted&&!boatRideActive&&currentMap==='dragonboat'){
@@ -7420,6 +7571,168 @@ function createFloodedMapElements(){
     coral.position.set(cx,0.08,cz);scene.add(coral);floodedMapElements.push({mesh:coral});
   }
 }
+// ---- BasicMap3 (基本地圖3) ----
+var b3Ladders=[];
+var basic3MapElements=[];
+var climbT=null,climbPhase=0,climbAuto=true;
+function b3Add(p,s,c){
+  addBox(p,s,c);
+  var e=mapBoxes[mapBoxes.length-1];
+  e.isBasic3=true;
+  basic3MapElements.push(e);
+  return e;
+}
+function b3Viz(mesh){
+  basic3MapElements.push({mesh:mesh});
+  return mesh;
+}
+function b3MergedLadder(lx,lz,latX,latZ,baseY,topY){
+  var len=topY-baseY,mat=b3Mat(0xcba45a,0.6,0.4);
+  var boxes=[];
+  boxes.push([lx+latX*0.55,(baseY+topY)/2,lz+latZ*0.55,0.1,len/2,0.1]);
+  boxes.push([lx-latX*0.55,(baseY+topY)/2,lz-latZ*0.55,0.1,len/2,0.1]);
+  var steps=Math.max(4,Math.floor(len/1.1));
+  for(var i=0;i<=steps;i++){
+    var yy=baseY+0.2+i*(len-0.4)/steps;
+    if(latX!==0)boxes.push([lx,yy,lz,1.15,0.08,0.08]);
+    else boxes.push([lx,yy,lz,0.08,0.08,1.15]);
+  }
+  if(!window.__b3PosArr){window.__b3PosArr=[];window.__b3NorArr=[];window.__b3UvArr=[];window.__b3IdxArr=[];}
+  var posArr=window.__b3PosArr,norArr=window.__b3NorArr,uvArr=window.__b3UvArr,idxArr=window.__b3IdxArr;
+  var geo=new THREE.BoxGeometry(1,1,1);
+  var pos=geo.attributes.position.array,nor=geo.attributes.normal.array,uv=geo.attributes.uv.array;
+  var idx=geo.index.array;
+  for(var b=0;b<boxes.length;b++){
+    var bx=boxes[b][0],by=boxes[b][1],bz=boxes[b][2],sx=boxes[b][3],sy=boxes[b][4],sz=boxes[b][5];
+    var base=posArr.length/3;
+    for(var i2=0;i2<pos.length;i2+=3){posArr.push(pos[i2]*sx+bx,pos[i2+1]*sy+by,pos[i2+2]*sz+bz);}
+    for(var j=0;j<nor.length;j++)norArr.push(nor[j]);
+    for(var k=0;k<uv.length;k++)uvArr.push(uv[k]);
+    for(var m=0;m<idx.length;m++)idxArr.push(idx[m]+base);
+  }
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(posArr,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(norArr,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uvArr,2));
+  g.setIndex(idxArr);
+  var mesh=new THREE.Mesh(g,mat);
+  mesh.castShadow=false;mesh.receiveShadow=true;
+  return mesh;
+}
+function b3Mat(c,r,m){return new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});}
+function createBasic3MapElements(){
+  if(basic3MapElements.length)return;
+  var G=0x6aae5a,D=0x8a6a4a,St=0x9a9894,Sa=0xcaa45a,Br=0xa85a4a,Te=0x4a9acc,Pu=0x7a5ac5,S2=0xb8c8d8,Pi=0x5a5a8a,Pc=0x7a7a9a,Pa=0x88c0e0,Tr=0x6a4a2a,Le=0x3a7a3a,Lb=0x4a8a4a,Fl=0xd05a80,Wa=0x4a8fc8,Wh=0xd8c05a,Go=0xd8b45a;
+  b3Add(new THREE.Vector3(0,-1.2,0),new THREE.Vector3(116,2.4,116),G);
+  b3Add(new THREE.Vector3(0,-2.4,0),new THREE.Vector3(122,2.4,122),D);
+  b3Add(new THREE.Vector3(-22,0,-32),new THREE.Vector3(6,1.2,6),D);
+  b3Add(new THREE.Vector3(-22,0.6,-30),new THREE.Vector3(6,1.2,6),D);
+  b3Add(new THREE.Vector3(-20,1.2,-28),new THREE.Vector3(6,1.2,6),St);
+  b3Add(new THREE.Vector3(-16,1.1,-26),new THREE.Vector3(5,1,5),G);
+  b3Add(new THREE.Vector3(-8,0,-24),new THREE.Vector3(4,2,4),St);
+  b3Add(new THREE.Vector3(-8,1,-22),new THREE.Vector3(4,1.4,4),St);
+  b3Add(new THREE.Vector3(6,0,-26),new THREE.Vector3(4.4,3,4.4),St);
+  b3Add(new THREE.Vector3(14,0,-22),new THREE.Vector3(6,1,6),Sa);
+  b3Add(new THREE.Vector3(14,1,-20),new THREE.Vector3(3.6,1.4,3.6),G);
+  b3Add(new THREE.Vector3(0,0,-18),new THREE.Vector3(6,1,6),St);
+  b3Add(new THREE.Vector3(0,0.5,-16.2),new THREE.Vector3(6,1,6),St);
+  b3Add(new THREE.Vector3(0,1.0,-14.4),new THREE.Vector3(6,1,6),St);
+  b3Add(new THREE.Vector3(0,1.5,-12.6),new THREE.Vector3(6,1,6),Te);
+  b3Add(new THREE.Vector3(-10,0.8,-8),new THREE.Vector3(12,1.6,12),St);
+  b3Add(new THREE.Vector3(-14,1.6,-8),new THREE.Vector3(8,1.6,8),St);
+  b3Add(new THREE.Vector3(-18,2.4,-8),new THREE.Vector3(6,1.6,6),Br);
+  b3Add(new THREE.Vector3(-26,0.4,8),new THREE.Vector3(10,0.8,10),St);
+  b3Add(new THREE.Vector3(-23,0.8,8),new THREE.Vector3(8,1.6,8),St);
+  b3Add(new THREE.Vector3(-20.6,1.4,8),new THREE.Vector3(5,2,6),Te);
+  b3Add(new THREE.Vector3(-19,2.2,8),new THREE.Vector3(5,1.6,6),Te);
+  b3Add(new THREE.Vector3(18,0,-8),new THREE.Vector3(16,2.4,1),St);
+  b3Add(new THREE.Vector3(20,1.2,-6),new THREE.Vector3(14,1.2,0.8),Te);
+  b3Add(new THREE.Vector3(21.5,1.8,-3.6),new THREE.Vector3(11,1.2,0.8),Te);
+  b3Add(new THREE.Vector3(20,0,4),new THREE.Vector3(16,1.2,0.8),St);
+  b3Add(new THREE.Vector3(20,0,16),new THREE.Vector3(10,1.4,10),D);
+  b3Add(new THREE.Vector3(20,0.7,16),new THREE.Vector3(6.8,1.8,6.8),G);
+  b3Add(new THREE.Vector3(20,1.6,16),new THREE.Vector3(4.4,1.6,4.4),St);
+  b3Add(new THREE.Vector3(0,0,10),new THREE.Vector3(1.2,5.2,1.2),St);
+  b3Add(new THREE.Vector3(2,0,10),new THREE.Vector3(1.2,5.2,1.2),St);
+  b3Add(new THREE.Vector3(1,2.6,10),new THREE.Vector3(2,0.8,1.2),St);
+  function b3Tree(x,z,s,variation){
+    s=s||1;variation=variation||0;
+    b3Add(new THREE.Vector3(x,0.9*s,z),new THREE.Vector3(0.36*s,1.8*s,0.36*s),Tr);
+    b3Add(new THREE.Vector3(x,1.9*s+variation*0.5,z),new THREE.Vector3(1.4*s,1.4*s,1.4*s),Le);
+    b3Add(new THREE.Vector3(x,2.5*s+variation*0.5,z),new THREE.Vector3(1.1*s,1.0*s,1.1*s),Lb);
+  }
+  function b3Bush(x,z,s){b3Add(new THREE.Vector3(x,0.35*s,z),new THREE.Vector3(1.2*s,0.7*s,1.2*s),Lb);}
+  function b3Rock(x,z,s){
+    b3Add(new THREE.Vector3(x,0.25*s,z),new THREE.Vector3(s,s,0.9*s),St);
+    b3Add(new THREE.Vector3(x+0.2*s,0.72*s,z+0.15*s),new THREE.Vector3(0.44*s,0.44*s,0.4*s),S2);
+  }
+  function b3Torch(x,z){
+    b3Add(new THREE.Vector3(x,1.0,z),new THREE.Vector3(0.16,2.0,0.16),Tr);
+    var flame=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.2,0.14),new THREE.MeshBasicMaterial({color:0xffb020}));
+    flame.position.set(x,1.75,z);flame.castShadow=false;scene.add(flame);
+    b3Viz(flame);
+  }
+  b3Torch(-3.2,9.6);b3Torch(3.2,9.6);
+  var tr=[[-30,-34,1.2,0],[-34,-14,1.4,1],[-34,-18,1.0,0],[-6,-38,1.6,1],[2,-40,1.2,0],[10,-38,1.5,1],[26,-26,1.4,0],[32,-16,1.2,1],[34,-8,1.0,0],[-32,16,1.7,1],[-34,22,1.2,0],[-30,32,1.5,1],[6,32,1.4,0],[2,28,1.0,1],[-14,38,1.8,0],[24,32,1.2,1],[34,20,1.4,0],[34,28,1.0,1],[26,6,1.6,1],[32,2,1.2,0],[-22,-30,1.3,0],[-14,-38,1.5,1],[-20,20,1.3,1],[-10,-24,0.9,0],[20,-12,1.6,1],[22,-34,1.1,0]];
+  tr.forEach(function(t){b3Tree(t[0],t[1],t[2],t[3]);});
+  [[-14,14,1],[-11,17,0.8],[-8,16,1.1],[14,8,1],[18,6,0.9],[22,10,1.2],[-6,-32,0.9],[-16,-30,1.1]].forEach(function(b){b3Bush(b[0],b[1],b[2]);});
+  [[16,-6,1],[16,-8,0.7],[-24,12,1.2],[-26,12,0.8],[30,-10,0.9],[28,20,1.3],[-16,2,1.1],[-8,4,0.7],[21,22,0.7],[27,27,0.8],[-30,34,0.8]].forEach(function(r){b3Rock(r[0],r[1],r[2]);});
+  b3Add(new THREE.Vector3(24,0.12,24),new THREE.Vector3(4.8,0.24,4.8),Wa);
+  b3Add(new THREE.Vector3(24,0.12,28.4),new THREE.Vector3(2.8,0.24,2.8),Wa);
+  b3Add(new THREE.Vector3(-34,0.12,36),new THREE.Vector3(4.4,0.24,4.4),Wa);
+  var flowerMats=[b3Mat(Wh,0.8,0),b3Mat(Fl,0.8,0)];
+  for(var fl=0;fl<22;fl++){
+    var fxp=18+Math.random()*20,fzp=-30+Math.random()*16;
+    var fm=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.4,5),flowerMats[fl%2]);
+    fm.position.set(fxp,0.45,fzp);fm.castShadow=false;scene.add(fm);b3Viz(fm);
+  }
+  for(var f2=0;f2<14;f2++){
+    var sxp=-24+Math.random()*20,szp=10+Math.random()*14;
+    var sm=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.5,5),b3Mat(Fl,0.8,0));
+    sm.position.set(sxp,0.42,szp);sm.castShadow=false;scene.add(sm);b3Viz(sm);
+  }
+  // Pillars + sky platform
+  var SKY_TOP=36,PILLAR_HALF=2.4,CAP_HALF=3.2;
+  var pillarPos=[{x:-14,z:-14},{x:14,z:-14},{x:-14,z:14},{x:14,z:14}];
+  function b3Pillar(p){
+    b3Add(new THREE.Vector3(p.x,17.75,p.z),new THREE.Vector3(PILLAR_HALF*2,35.5,PILLAR_HALF*2),Pi);
+    b3Add(new THREE.Vector3(p.x,0.35,p.z),new THREE.Vector3((PILLAR_HALF+0.8)*2,0.7,(PILLAR_HALF+0.8)*2),Sa);
+    b3Add(new THREE.Vector3(p.x,SKY_TOP-0.1,p.z),new THREE.Vector3((CAP_HALF-0.15)*2,0.5,(CAP_HALF-0.15)*2),Pc);
+  }
+  b3Add(new THREE.Vector3(0,SKY_TOP-1.5,0),new THREE.Vector3(34,3,34),Te);
+  b3Add(new THREE.Vector3(0,SKY_TOP-4,0),new THREE.Vector3(30,1.6,30),Pu);
+  b3Viz((function(){var m=new THREE.Mesh(new THREE.BoxGeometry(28,3.2,28),b3Mat(St,0.9,0));m.position.set(0,SKY_TOP-6,0);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;}()));
+  pillarPos.forEach(b3Pillar);
+  function b3MakeLadder(p,fX,fZ){
+    var lx=p.x+fX*(PILLAR_HALF+0.55);
+    var lz=p.z+fZ*(PILLAR_HALF+0.55);
+    var baseY=0.2,topY=SKY_TOP-0.15;
+    var latX=-fZ,latZ=fX;
+    var mesh=b3MergedLadder(lx,lz,latX,latZ,baseY,topY);
+    scene.add(mesh);b3Viz(mesh);
+    var knob=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.2,0.3),b3Mat(Go,0.4,0.3));
+    knob.position.set(lx,topY+0.05,lz);knob.castShadow=false;scene.add(knob);b3Viz(knob);
+    b3Ladders.push({x:lx,z:lz,fX:fX,fZ:fZ,baseY:baseY,topY:topY});
+  }
+  pillarPos.forEach(function(p){
+    if(Math.abs(p.x)>=Math.abs(p.z)){b3MakeLadder(p,p.x>0?-1:1,0);}
+    else{b3MakeLadder(p,0,p.z>0?-1:1);}
+  });
+  // Floating pads (spiral cloud)
+  var a=0,r=16.5,y=37.0;
+  for(var i=0;i<22;i++){
+    var px=Math.cos(a)*r,pz=Math.sin(a)*r;
+    b3Add(new THREE.Vector3(Math.round(px),Math.round(y*10)/10-0.25,Math.round(pz)),new THREE.Vector3(2.5,0.5,2.5),Pa);
+    a+=0.22;r+=0.7;y+=0.85;
+  }
+  // Clouds
+  for(var c=0;c<14;c++){
+    var cl=new THREE.Mesh(new THREE.BoxGeometry(4,0.7,2.5),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.75}));
+    cl.position.set((Math.random()-0.5)*150,38+Math.random()*14,(Math.random()-0.5)*150);
+    scene.add(cl);b3Viz(cl);
+  }
+  basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
+}
 function createDiverEnemy(px,pz){
   var g=new THREE.Group();
   var bodyClr=0x1a2a3a;
@@ -8091,7 +8404,7 @@ function startExtractionMatchmaking() {
   var ind = document.getElementById('ext-mm-indicator');
   if (ind) ind.style.display = 'flex';
   updateExtMMDisplay();
-  var wsUrl = (window.location.protocol==='https:'?'wss://':'ws://') + window.location.hostname + ':3000';
+  var wsUrl = (window.location.protocol==='https:'?'wss://':'ws://') + (window.location.hostname||'localhost') + ':3000';
   try {
     _extMMWs = new WebSocket(wsUrl);
     _extMMWs.onopen = function() {
@@ -8336,7 +8649,8 @@ function moveToward(ai, target, speed, dt) {
 }
 
 // ============ WEB SOCKET / MATCHMAKING ============
-const WS_URL = (window.location.protocol==='https:'?'wss://':'ws://') + window.location.hostname + ':3000';
+const WS_HOST = window.location.hostname || 'localhost';
+const WS_URL = (window.location.protocol==='https:'?'wss://':'ws://') + WS_HOST + ':3000';
 let ws = null;
 let mmState = 'idle'; // idle, connecting, in_queue, matched, in_game
 let mmName = '玩家' + Math.floor(Math.random()*9000+1000);
