@@ -3539,6 +3539,7 @@ function applyMapSettings(){
   if(arena2Elements)arena2Elements.forEach(function(b){b.mesh.visible=currentMap==='arena2';});
   // Default-hide BasicMap3 extras; shown again in basemap3 branch below
   if(basic3MapElements.length)basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
+  if(b3Airdrop&&b3Airdrop.light)b3Airdrop.light.visible=false;
   // Hide non-arena2 mapBoxes when arena2 is active
   if(currentMap==='arena2'){
     for(var mxi2=0;mxi2<mapBoxes.length;mxi2++){
@@ -3633,6 +3634,7 @@ function applyMapSettings(){
     dir.color.setHex(0xfff0d8);dir.intensity=1.6;
     if(!basic3MapElements.length)createBasic3MapElements();
     basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
+    if(b3Airdrop&&b3Airdrop.light)b3Airdrop.light.visible=true;
   }else{
     isUnderwater=false;stopUnderwaterAmbient();
     document.getElementById('o2-wrap').style.display='none';
@@ -5669,6 +5671,53 @@ function dropPickup(p){
   g.position.set(p.x,0.3,p.z);scene.add(g);
   pickups.push({mesh:g,pos:p.clone(),type:types[ti],life:15,time:0});
 }
+function updateAirdrop(dt){
+  if(!b3Airdrop||currentMap!=='basemap3')return;
+  var ad=b3Airdrop;
+  if(ad.state==='waiting'){
+    ad.time+=dt;
+    ad.mesh.position.y=ad.baseY+Math.sin(ad.time*2)*0.15;
+    ad.mesh.rotation.y+=dt*1.2;
+    ad.glow.material.opacity=0.45+Math.sin(ad.time*3)*0.2;
+    if(ad.light)ad.light.position.y=ad.mesh.position.y+0.8;
+    if(gameStarted&&pos.distanceTo(ad.pos)<1.6){
+      grantAirdrop(ad);
+    }
+  }else{
+    ad.cd-=dt;
+    ad.glow.material.opacity=Math.max(0,Math.min(0.45,ad.cd/45*0.45));
+    if(ad.cd<=0){
+      ad.state='waiting';ad.time=0;ad.mesh.visible=true;ad.mesh.position.y=ad.baseY;ad.mesh.rotation.y=0;
+    }
+  }
+}
+function grantAirdrop(ad){
+  ad.state='cooldown';ad.cd=45;ad.mesh.visible=false;
+  var pick=Math.random();
+  var msg='';
+  if(pick<0.28){playerHP=Math.min(100,playerHP+40);msg='+40 血量';showDmgNum(pos.clone(),40,'#44ff88');}
+  else if(pick<0.52){playerArmor=Math.min(150,playerArmor+40);msg='+40 護甲';showDmgNum(pos.clone(),40,'#4488ff');}
+  else if(pick<0.68){buffTimer=5;buffType='atkspeed';msg='⚡ 攻速x2';showDmgNum(pos.clone(),1,'#ff6622');}
+  else if(pick<0.82){buffTimer=5;buffType='infammo';msg='🔷 無限子彈';showDmgNum(pos.clone(),1,'#44aaff');}
+  else{earnCoins(3000);msg='+3000 特種幣';showDmgNum(pos.clone(),3000,'#fa4');}
+  showAirdropMsg(ad.pos,msg);
+  for(var i=0;i<10;i++){
+    var pn=new THREE.Mesh(new THREE.SphereGeometry(0.06,5,5),new THREE.MeshBasicMaterial({color:0xffcc44,transparent:true,opacity:0.9}));
+    pn.position.copy(ad.pos);pn.position.y+=0.4;
+    pn.userData={vy:2+Math.random()*3};pn.lifetime=1;
+    scene.add(pn);smokeParticles.push(pn);
+  }
+}
+function showAirdropMsg(p,msg){
+  var v=p.clone();v.y+=1.2;v.project(cam);
+  var x=(v.x*0.5+0.5)*window.innerWidth,y=(-v.y*0.5+0.5)*window.innerHeight;
+  var el=document.createElement('div');
+  el.textContent=msg;
+  el.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;pointer-events:none;z-index:7;font-size:24px;font-weight:bold;color:#ffcc44;font-family:Arial;text-shadow:-1px -1px 2px #000,1px -1px 2px #000,-1px 1px 2px #000,1px 1px 2px #000,0 0 8px #000;opacity:1;transition:all 1s ease-out';
+  document.body.appendChild(el);
+  requestAnimationFrame(function(){el.style.transform='translateY(-45px)';el.style.opacity='0';});
+  setTimeout(function(){el.remove();},1000);
+}
 function updatePickups(dt){
   for(var i=pickups.length-1;i>=0;i--){
     var pk=pickups[i];
@@ -7020,6 +7069,7 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
     if(!isMultiplayer&&!rangeMode)updateSniperLasers();
     // Pickups
     updatePickups(dt);
+    updateAirdrop(dt);
     // Buff timer
     if(buffTimer>0){buffTimer-=dt;if(buffTimer<=0){buffTimer=0;buffType='';}}
     // Buff indicator
@@ -7575,6 +7625,7 @@ function createFloodedMapElements(){
 var b3Ladders=[];
 var basic3MapElements=[];
 var climbT=null,climbPhase=0,climbAuto=true;
+var b3Airdrop=null,b3AirdropRespawn=0;
 function b3Add(p,s,c){
   addBox(p,s,c);
   var e=mapBoxes[mapBoxes.length-1];
@@ -7725,6 +7776,34 @@ function createBasic3MapElements(){
     b3Add(new THREE.Vector3(Math.round(px),Math.round(y*10)/10-0.25,Math.round(pz)),new THREE.Vector3(2.5,0.5,2.5),Pa);
     a+=0.22;r+=0.7;y+=0.85;
   }
+  // Airdrop crate on the highest puzzle pad (last step i=21)
+  var adI=21,adA=adI*0.22,adR=16.5+adI*0.7,adY=37.0+adI*0.85;
+  var adTopY=Math.round(adY*10)/10;
+  var adCenter=new THREE.Vector3(Math.round(Math.cos(adA)*adR),adTopY+0.3,Math.round(Math.sin(adA)*adR));
+  var adG=new THREE.Group();
+  var crateC=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.6,0.9),b3Mat(0x8a7a5a,0.6,0.1));
+  crateC.position.y=0;adG.add(crateC);
+  var lidC=new THREE.Mesh(new THREE.BoxGeometry(0.96,0.08,0.96),b3Mat(0x6a5a3a,0.5,0.2));
+  lidC.position.y=0.36;adG.add(lidC);
+  for(var adS=-1;adS<=1;adS+=2){
+    var bandA=new THREE.Mesh(new THREE.BoxGeometry(0.93,0.62,0.07),b3Mat(0x4a3a2a,0.5,0.3));
+    bandA.position.set(adS*0.3,0.02,0);adG.add(bandA);
+    var bandB=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.62,0.93),b3Mat(0x4a3a2a,0.5,0.3));
+    bandB.position.set(0,0.02,adS*0.3);adG.add(bandB);
+  }
+  var chute=new THREE.Mesh(new THREE.ConeGeometry(0.75,0.55,8,1,true),new THREE.MeshBasicMaterial({color:0xffd860,side:THREE.DoubleSide,transparent:true,opacity:0.9}));
+  chute.rotation.x=Math.PI;chute.position.y=0.95;adG.add(chute);
+  for(var adI=0;adI<4;adI++){
+    var ang=adI*Math.PI/2;
+    var str=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.4,0.02),b3Mat(0x3a2a1a,0.8,0));
+    str.position.set(Math.cos(ang)*0.55,0.7,Math.sin(ang)*0.55);adG.add(str);
+  }
+  var adGlow=new THREE.Mesh(new THREE.SphereGeometry(0.24,8,8),new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:0.6}));
+  adGlow.position.y=0.1;adG.add(adGlow);
+  adG.position.copy(adCenter);scene.add(adG);b3Viz(adG);
+  var adLight=new THREE.PointLight(0xffaa00,6,10);
+  adLight.position.copy(adCenter);adLight.position.y+=0.8;scene.add(adLight);
+  b3Airdrop={mesh:adG,glow:adGlow,light:adLight,pos:adCenter,baseY:adCenter.y,state:'waiting',time:0,cd:0};
   // Clouds
   for(var c=0;c<14;c++){
     var cl=new THREE.Mesh(new THREE.BoxGeometry(4,0.7,2.5),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.75}));
