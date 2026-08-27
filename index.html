@@ -7104,10 +7104,16 @@ function processServerMessage(data){
       break;
     case 'opponent_died':
       if(data.playerId!==undefined){
-        var oidx=opponentPlayerIds.indexOf(data.playerId);
-        if(oidx>=0&&oidx<opponentStates.length){opponentStates[oidx].alive=false;opponentStates[oidx].downed=false;}
+        var deadIdx=opponentPlayerIds.indexOf(data.playerId);
+        if(deadIdx>=0&&deadIdx<opponentStates.length){opponentStates[deadIdx].alive=false;opponentStates[deadIdx].downed=false;}
+        if(tdmMode){
+          // 單一事實來源：真正死亡（非倒地）。死者本人維持死亡按鈕，其餘玩家（含擊殺者）重生重整回合。
+          if(data.playerId!==myPlayerId){
+            tdmRoundRespawnLocal();
+          }
+          break;
+        }
       }
-      if(tdmMode)break;
       var aliveCount=opponentStates.filter(function(s){return s.alive}).length;
       if(aliveCount===0||playerCount===2){
         document.getElementById('multi-waiting').style.display='flex';
@@ -8338,7 +8344,8 @@ function tdmResetState(){
   teamMates.forEach(function(tm){tm.downed=false;tm.reviveProgress=0;tm.reviving=false;});
   tdmResetHud();
 }
-// Called when a LOCAL client downs an enemy -> score for myTeam + notify peers (downed) + 雙方重生
+// Called when a LOCAL client downs an enemy -> notify peers (downed) + score by server on death broadcast.
+// Respawn is driven by the opponent_died broadcast (single source of truth), not local raycast.
 function tdmEnemyDown(oidx,weaponName){
   if(!tdmMode||oidx<0||oidx>=opponentStates.length)return;
   var os=opponentStates[oidx];
@@ -8348,14 +8355,11 @@ function tdmEnemyDown(oidx,weaponName){
     os.downed=true;
     relaySend({type:'tdm_down',playerId:opponentPlayerIds[oidx]});
   }
-  relaySend({type:'tdm_score',delta:1});
   if(!tdmWinSubmitted){
     rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;
     addKillFeed(authUser||'你',name,weaponName||'??');
   }
-  // 擊殺後雙方重生（round-based）
-  relaySend({type:'tdm_round_respawn',playerId:myPlayerId});
-  tdmRoundRespawnLocal();
+  // 重生與計分由伺服器的死亡廣播（opponent_died/player_death）統一驅動，確保擊殺者與被殺者皆正確重整
 }
 // Local player reached 0 HP in TDM -> downed (4p) or death (2p)
 function tdmLocalDown(){
@@ -10640,12 +10644,10 @@ function preloadSFX(){
 function playShort(src,dur,vol){
   try{
     var volSet=vol||0.3;
-    var cache=window._sfxCache=window._sfxCache||{};
-    var s=cache[src];
-    if(!s){
-      s=new Audio(src);s.volume=volSet;s.volume=volSet;
-      cache[src]=s;
-    }
+    var pool=window._sfxPool=window._sfxPool||{};
+    var arr=pool[src];
+    if(!arr){arr=pool[src]=[];for(var pi=0;pi<3;pi++){var e=new Audio(src);e.volume=volSet;arr.push(e);}arr._i=0;}
+    var s=arr[arr._i];arr._i=(arr._i+1)%arr.length;
     s.volume=volSet;
     try{s.currentTime=0;}catch(e){}
     s.play().catch(function(){});

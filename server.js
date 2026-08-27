@@ -811,8 +811,7 @@ wss.on('connection', (ws) => {
         if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_hit', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor });
         else relayToOpponent(ws, { type: 'opponent_hit', playerId: ws.playerId, hp: msg.hp, armor: msg.armor });
         break;
-      case 'player_death':
-        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_died', playerId: ws.playerId });
+      case 'player_death':        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) { relayTeamMsg(ws, { type: 'opponent_died', playerId: ws.playerId }); handleTdmDeathScore(ws); }
         else relayToOpponent(ws, { type: 'opponent_died' });
         break;
       case 'footstep':
@@ -987,6 +986,20 @@ function settleTeamVote(room, rid) {
   }
   room.chosenMap = chosen; room.gameStarted = true;
   broadcastTeam(room, { type: 'map_result', map: chosen, votes: [] }, null);
+}
+// Server-authoritative score on death: when a player dies, the opposing team scores.
+// This guarantees scoring regardless of which client detected the kill (fixes "killer didn't score/respawn").
+function handleTdmDeathScore(ws) {
+  const room = rooms[ws.roomId];
+  if (!room || !room.teamMatch || room.result) return;
+  const deadTeam = ws.team || 'A';
+  const scoringTeam = deadTeam === 'A' ? 'B' : 'A';
+  room.score[scoringTeam] = Math.min(3, (room.score[scoringTeam] || 0) + 1);
+  broadcastTeam(room, { type: 'tdm_score', team: scoringTeam, score: room.score[scoringTeam].toString(), scores: { A: room.score.A, B: room.score.B } }, null);
+  if (room.score[scoringTeam] >= 3) {
+    room.result = { winner: scoringTeam };
+    broadcastTeam(room, { type: 'tdm_win', winner: scoringTeam, scores: { A: room.score.A, B: room.score.B } }, null);
+  }
 }
 function handleTdmScore(ws, msg) {
   const room = rooms[ws.roomId];
