@@ -6656,7 +6656,7 @@ function addKillFeed(killer,victim,gun){
 })();
 // ── Multiplayer ──
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
-var tdmMode=false,useDowned=false,myTeam='A',myPlayerId=0,tdmSpawn={x:0,z:0},teamScore={A:0,B:0},tdmWinSubmitted=false;
+var tdmMode=false,useDowned=false,myTeam='A',myPlayerId=0,tdmSpawn={x:0,z:0},teamScore={A:0,B:0},tdmWinSubmitted=false,tdmDead=false;
 var teamMates=[{id:0,downed:false,reviveProgress:0,reviving:false}];
 var teammateMeshes=[],teammateStates=[];
 var reviveTargetIdx=-1,reviveTimer=0,reviving=false,beingRevived=false;
@@ -6664,7 +6664,7 @@ var relayIframe=null,httpClientId=null;
 function connectMultiplayer(mode){
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   requestedPlayerCount=mode||2;isMultiplayer=false;playerCount=requestedPlayerCount;opponentMeshes=[];opponentStates=[];relayReady=false;
-  tdmMode=false;useDowned=false;myTeam='A';myPlayerId=0;tdmSpawn={x:0,z:0};teamScore={A:0,B:0};tdmWinSubmitted=false;
+  tdmMode=false;useDowned=false;myTeam='A';myPlayerId=0;tdmSpawn={x:0,z:0};teamScore={A:0,B:0};tdmWinSubmitted=false;tdmDead=false;
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   var ip=document.getElementById('server-ip').value.trim()||'localhost';
   if(location.protocol==='file:'){
@@ -6946,7 +6946,7 @@ function processServerMessage(data){
       myTeam=data.team||(myId<Math.ceil(playerCount/2)?'A':'B');
       useDowned=(playerCount>=3);
       if(data.spawn){tdmSpawn={x:data.spawn.x,z:data.spawn.z};}
-      teamScore={A:0,B:0};tdmWinSubmitted=false;
+      teamScore={A:0,B:0};tdmWinSubmitted=false;tdmDead=false;
       teamMates=[];
       if(data.teamMate){teamMates.push({id:data.teamMate.id,name:data.teamMate.name||'',downed:false,reviveProgress:0,reviving:false});}
       if(data.players){data.players.forEach(function(pl){if(pl.id!==myId&&pl.team===myTeam&&pl.id!==(data.teamMate?data.teamMate.id:-1)){teamMates.push({id:pl.id,name:pl.name||'',downed:false,reviveProgress:0,reviving:false});}});}
@@ -8364,6 +8364,7 @@ function tdmEnemyDown(oidx,weaponName){
 // Local player reached 0 HP in TDM -> downed (4p) or death (2p)
 function tdmLocalDown(){
   if(!tdmMode){onPlayerDeath();return;}
+  if(tdmDead)return; // 已死亡，避免重複觸發死亡廣播造成伺服器重複計分
   if(useDowned&&!isDowned){
     goDowned();
     relaySend({type:'tdm_down',playerId:myPlayerId});
@@ -8374,6 +8375,8 @@ function tdmLocalDown(){
 }
 function tdmFinalDeath(){
   if(tdmWinSubmitted)return;
+  if(tdmDead)return;
+  tdmDead=true;
   rankMatchDeaths++;
   addProficiency();
   relaySend({type:'player_death',playerId:myPlayerId});
@@ -8386,7 +8389,7 @@ function tdmFinalDeath(){
 }
 function tdmRespawnLocal(){
   document.getElementById('multi-death-prompt').style.display='none';
-  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;
+  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;tdmDead=false;
   if(tdmSpawn&&tdmSpawn.x!==undefined){pos.set(tdmSpawn.x,0.8,tdmSpawn.z);}else{var rp=getRandomSpawnPos(false);pos.copy(rp);}
   vel.set(0,0,0);
   relaySend({type:'tdm_respawn',playerId:myPlayerId});
@@ -8399,7 +8402,7 @@ function tdmRoundRespawnLocal(){
   document.getElementById('down-overlay').style.display='none';
   document.getElementById('revive-prompt').style.display='none';
   document.getElementById('revive-progress').style.display='none';
-  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;reviveTargetIdx=-1;reviveTimer=0;
+  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;reviveTargetIdx=-1;reviveTimer=0;tdmDead=false;
   if(tdmSpawn&&tdmSpawn.x!==undefined){pos.set(tdmSpawn.x,0.8,tdmSpawn.z);}else{var rp=getRandomSpawnPos(false);pos.copy(rp);}
   vel.set(0,0,0);
   teamMates.forEach(function(tm){tm.reviveProgress=0;});

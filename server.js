@@ -843,10 +843,12 @@ wss.on('connection', (ws) => {
         handleTdmScore(ws, msg);
         break;
       case 'tdm_respawn':
+        if (rooms[ws.roomId] && rooms[ws.roomId].deadFlags) delete rooms[ws.roomId].deadFlags[ws.playerId];
         relayTeamMsg(ws, { type: 'tdm_respawn', playerId: ws.playerId });
         break;
       case 'tdm_round_respawn':
         // 擊殺後雙方重生：將重生通知廣播給所有其他玩家（含被擊殺方）
+        if (rooms[ws.roomId] && rooms[ws.roomId].deadFlags) delete rooms[ws.roomId].deadFlags[ws.playerId];
         relayTeamMsg(ws, { type: 'tdm_round_respawn', playerId: ws.playerId });
         break;
       // Extraction mode messages
@@ -921,7 +923,7 @@ function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.
 function startTeamMatch(players, gm) {
   const rid = nextRoomId++;
   const n = players.length;
-  rooms[rid] = { teamMatch: true, players, votes: {}, score: { A: 0, B: 0 }, gameMode: gm || 'multi', chosenMap: null, gameStarted: false, result: null, voteTimer: null };
+  rooms[rid] = { teamMatch: true, players, votes: {}, score: { A: 0, B: 0 }, gameMode: gm || 'multi', chosenMap: null, gameStarted: false, result: null, voteTimer: null, deadFlags: {} };
   players.forEach((p, idx) => {
     p.roomId = rid;
     p.playerId = idx;
@@ -992,6 +994,10 @@ function settleTeamVote(room, rid) {
 function handleTdmDeathScore(ws) {
   const room = rooms[ws.roomId];
   if (!room || !room.teamMatch || room.result) return;
+  // 防止同一玩家在一次死亡中被重複計分（客戶端可能重複送達 player_death）
+  if (room.deadFlags && room.deadFlags[ws.playerId]) return;
+  if (!room.deadFlags) room.deadFlags = {};
+  room.deadFlags[ws.playerId] = true;
   const deadTeam = ws.team || 'A';
   const scoringTeam = deadTeam === 'A' ? 'B' : 'A';
   room.score[scoringTeam] = Math.min(3, (room.score[scoringTeam] || 0) + 1);
