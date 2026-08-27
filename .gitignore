@@ -46,3 +46,16 @@ phase1.py
 lostfacility.html
 lostfacility_mode.html
 
+# Large binaries
+*.exe
+*.dll
+*.asar
+*.pak
+*.dat
+*.bin
+*.icd.json
+*.blockmap
+*.pfx
+ocgame-desktop/msix*/
+ocgame-desktop/release*/
+
