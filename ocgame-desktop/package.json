@@ -1,0 +1,58 @@
+{
+  "name": "ocgame-desktop",
+  "version": "1.0.0",
+  "description": "OCGAME 桌面版",
+  "author": "OCGAME",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.ocgame.desktop",
+    "productName": "OCGAME",
+    "directories": {
+      "output": "release",
+      "buildResources": "."
+    },
+    "files": [
+      "main.js",
+      "game/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        {
+          "target": "appx",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icon.ico",
+      "signAndEditExecutable": false
+    },
+    "appx": {
+      "applicationId": "OCGAME",
+      "identityName": "miluchens.OCGAME",
+      "publisherDisplayName": "miluchens",
+      "publisher": "CN=miluchens",
+      "displayName": "OCGAME",
+      "languages": ["zh-TW"],
+      "artifactName": "OCGAME-Msix-${version}.msix"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "OCGAME",
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "artifactName": "OCGAME-Setup-${version}.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  }
+}
