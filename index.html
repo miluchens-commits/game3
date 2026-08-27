@@ -7300,11 +7300,18 @@ function connectMultiplayerDirect(ip, mode){
   if(ip.indexOf('://')!==-1){
     url=ip;
   }else if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
-    url=(location.protocol==='https:'?'wss:':'ws:')+'//'+(location.hostname||'localhost')+(location.port&&location.port!=='80'&&location.port!=='443'?':'+location.port:':3000');
+    // 同源：若為 HTTPS（線上 Render 等反向代理），WebSocket 走同源 443（不帶 :3000），
+    // 否則本機 http 開發用 :3000
+    if(location.protocol==='https:'){
+      url='wss://'+(location.hostname||'localhost')+'/game';
+      if(location.port&&location.port!=='443')url='wss://'+(location.hostname||'localhost')+':'+location.port+'/game';
+    }else{
+      url='ws://'+(location.hostname||'localhost')+(location.port&&location.port!=='80'?':'+location.port:':3000')+'/game';
+    }
   }else{
-    url='ws://'+ip+':3000';
+    url='ws://'+ip+':3000/game';
   }
-  window.multiWS=new WebSocket(url+'/game');
+  window.multiWS=new WebSocket(url);
   var ws=window.multiWS;
   ws.onopen=function(){
     relayReady=true;
