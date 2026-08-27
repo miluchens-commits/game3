@@ -799,14 +799,57 @@ wss.on('connection', (ws) => {
       case 'lobby_leave': handleLobbyLeave(ws); break;
       case 'lobby_state_req': if (ws.lobbyData) { try { ws.send(JSON.stringify({ type: 'lobby_state', players: lobbyList() })); } catch(e) { console.log('[Lobby] state_req send error:', e.message); } } break;
       case 'leave_queue': removeFromQueue(ws); ws.send(JSON.stringify({ type: 'queue_left' })); break;
-      case 'state': relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data }); break;
-      case 'shoot': relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun }); break;
-      case 'hit': relayToOpponent(ws, { type: 'opponent_hit', hp: msg.hp, armor: msg.armor }); break;
-      case 'player_death': relayToOpponent(ws, { type: 'opponent_died' }); break;
+      case 'state':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data });
+        else relayToOpponent(ws, { type: 'opponent_state', playerId: ws.playerId, data: msg.data });
+        break;
+      case 'shoot':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'enemy_shoot', playerId: ws.playerId, origin: msg.origin, dir: msg.dir, gun: msg.gun });
+        else relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun });
+        break;
+      case 'hit':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_hit', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor });
+        else relayToOpponent(ws, { type: 'opponent_hit', playerId: ws.playerId, hp: msg.hp, armor: msg.armor });
+        break;
+      case 'player_death':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_died', playerId: ws.playerId });
+        else relayToOpponent(ws, { type: 'opponent_died' });
+        break;
+      case 'footstep':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'footstep' }); else relayToOpponent(ws, { type: 'footstep' });
+        break;
+      case 'ufo_hit':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'ufo_hit', playerId: ws.playerId, dmg: msg.dmg }); else relayToOpponent(ws, { type: 'ufo_hit', dmg: msg.dmg });
+        break;
+      case 'flashbang':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'flashbang', pos: msg.pos }); else relayToOpponent(ws, { type: 'flashbang', pos: msg.pos });
+        break;
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
-      case 'map_vote': handleMapVote(ws, msg.map); break;
+      case 'map_vote': if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) handleTeamMapVote(ws, msg.map); else handleMapVote(ws, msg.map); break;
+      // ── Team Deathmatch (2v2 / 1v1) relay messages ──
+      case 'tdm_down':
+      case 'tdm_bleedout':
+        relayTeamMsg(ws, { type: msg.type, playerId: ws.playerId });
+        break;
+      case 'tdm_revive_start':
+      case 'tdm_revive_cancel':
+        relayTeamMsg(ws, { type: msg.type, playerId: ws.playerId, targetPlayerId: msg.targetPlayerId });
+        break;
+      case 'tdm_revive_done':
+        relayTeamMsg(ws, { type: msg.type, playerId: ws.playerId, targetPlayerId: msg.targetPlayerId });
+        break;
+      case 'tdm_score':
+        handleTdmScore(ws, msg);
+        break;
+      case 'tdm_respawn':
+        relayTeamMsg(ws, { type: 'tdm_respawn', playerId: ws.playerId });
+        break;
+      case 'tdm_round_respawn':
+        // 擊殺後雙方重生：將重生通知廣播給所有其他玩家（含被擊殺方）
+        relayTeamMsg(ws, { type: 'tdm_round_respawn', playerId: ws.playerId });
+        break;
       // Extraction mode messages
       case 'join_extraction_queue':
       case 'leave_extraction_queue':
@@ -836,32 +879,128 @@ const heartbeatInterval = setInterval(() => {
 }, 10000);
 wss.on('close', () => clearInterval(heartbeatInterval));
 
+function playerModeCount(gm) {
+  // gameMode like 'multi2'/'multi4'/'ufo2'/'bomb4'. Team TDM rooms support 2 or 4.
+  const m = /(\d+)$/.exec(gm || '');
+  if (!m) return 2;
+  const n = parseInt(m[1], 10);
+  return (n === 4) ? 4 : 2;
+}
 function addToQueue(ws) {
   const gm = ws.playerData.gameMode || 'multi';
-  // Check if any queued player is from the same team (same game mode)
-  if (ws.playerData.teamId) {
+  const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1)
+    ? playerModeCount(gm) : 2;
+  // Same-team premade pairing (2p): pair two same-teamId players into a 2p room
+  if (needed === 2 && ws.playerData.teamId) {
     for (let i = 0; i < queue.length; i++) {
       const q = queue[i];
       if (q.playerData.gameMode === gm && q.playerData.teamId === ws.playerData.teamId && q.readyState === WebSocket.OPEN) {
         queue.splice(i, 1);
-        startMatch(ws, q, gm);
+        startTeamMatch([ws, q], gm);
         return;
       }
     }
   }
-  // Find a queued player with the same game mode
+  // Collect all queued players with same mode into an array (pending pool)
+  const pending = [];
   for (let i = 0; i < queue.length; i++) {
     const q = queue[i];
-    if (q.playerData.gameMode === gm && q.readyState === WebSocket.OPEN) {
-      queue.splice(i, 1);
-      startMatch(ws, q, gm);
-      return;
-    }
+    if (q.playerData && q.playerData.gameMode === gm && q.readyState === WebSocket.OPEN) pending.push({ ws: q, idx: i });
+  }
+  if (pending.length >= needed - 1) {
+    const chosen = pending.slice(0, needed - 1).map(p => p.ws);
+    // remove in reverse index order
+    pending.slice(0, needed - 1).sort((a, b) => b.idx - a.idx).forEach(p => queue.splice(p.idx, 1));
+    const all = chosen.concat([ws]);
+    startTeamMatch(all, gm);
+    return;
   }
   queue.push(ws);
   ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
 }
 function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.splice(i, 1); }
+function startTeamMatch(players, gm) {
+  const rid = nextRoomId++;
+  const n = players.length;
+  rooms[rid] = { teamMatch: true, players, votes: {}, score: { A: 0, B: 0 }, gameMode: gm || 'multi', chosenMap: null, gameStarted: false, result: null, voteTimer: null };
+  players.forEach((p, idx) => {
+    p.roomId = rid;
+    p.playerId = idx;
+    p.spawnIdx = idx;
+  });
+  // Reassign teams: players 0..ceil(n/2)-1 -> A ; rest -> B
+  players.forEach((p, idx) => { p.team = (idx < Math.ceil(n / 2)) ? 'A' : 'B'; });
+  const spawns = teamSpawns(n);
+  const lobby = players.map((p, i) => ({ id: i, name: (p.playerData && p.playerData.name) || ('玩家' + (i + 1)), team: p.team }));
+  players.forEach((p, i) => {
+    p.spawn = spawns[i];
+    const teamMate = players.find(q => q !== p && q.team === p.team);
+    const opponents = players.filter(q => q !== p && q.team !== p.team).map(q => ({ id: q.playerId, name: (q.playerData && q.playerData.name) || ('玩家' + (q.playerId + 1)), team: q.team }));
+    try { p.send(JSON.stringify({
+      type: 'match_found', roomId: rid, playerCount: n, playerId: i, team: p.team,
+      teamMate: teamMate ? { id: teamMate.playerId, name: (teamMate.playerData && teamMate.playerData.name) || '' } : null,
+      opponents, spawn: spawns[i], players: lobby
+    })); } catch (e) { console.log('startTeamMatch send failed', i); }
+  });
+  rooms[rid].voteTimer = setTimeout(() => { settleTeamVote(rooms[rid], rid); }, 15000);
+}
+function teamSpawns(n) {
+  // Two balanced spawn clusters: A left (-20,0), B right (20,0); 4p adds offsets
+  const base = [
+    { x: -20, z: 0 }, { x: 20, z: 0 },
+    { x: -14, z: 8 }, { x: 14, z: 8 },
+    { x: -14, z: -8 }, { x: 14, z: -8 }
+  ];
+  const arr = [];
+  for (let i = 0; i < n; i++) arr.push(base[i]);
+  return arr;
+}
+function broadcastTeam(room, msg, exceptWs) {
+  room.players.forEach(ws => { if (ws !== exceptWs && ws.readyState === WebSocket.OPEN) { try { ws.send(JSON.stringify(msg)); } catch (e) {} } });
+}
+function relayTeamMsg(ws, msg) {
+  const room = rooms[ws.roomId];
+  if (!room || !room.teamMatch) return;
+  broadcastTeam(room, msg, ws);
+}
+function handleTeamMapVote(ws, map) {
+  const room = rooms[ws.roomId];
+  if (!room || !room.teamMatch) return;
+  room.votes[ws.playerId] = map;
+  broadcastTeam(room, { type: 'opponent_vote' }, ws);
+  // decide when all voted
+  const allVoted = room.players.every(p => room.votes[p.playerId]);
+  if (allVoted) {
+    if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; }
+    settleTeamVote(room, ws.roomId);
+  }
+}
+function settleTeamVote(room, rid) {
+  if (!room || room.gameStarted || rooms[rid] !== room) return;
+  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'flooded', 'basemap3', 'fault'];
+  const votes = room.players.map(p => room.votes[p.playerId]).filter(Boolean);
+  let chosen;
+  if (votes.length === 0) chosen = maps[Math.floor(Math.random() * maps.length)];
+  else {
+    const uniq = [...new Set(votes)];
+    chosen = uniq[Math.floor(Math.random() * uniq.length)];
+  }
+  room.chosenMap = chosen; room.gameStarted = true;
+  broadcastTeam(room, { type: 'map_result', map: chosen, votes: [] }, null);
+}
+function handleTdmScore(ws, msg) {
+  const room = rooms[ws.roomId];
+  if (!room || !room.teamMatch || room.result) return;
+  const team = msg.team && (msg.team === 'A' || msg.team === 'B') ? msg.team : (ws.team || 'A');
+  // The scoring team must be ws.team (client-authoritative: a player scores for THEIR team when they down an enemy)
+  const scoringTeam = ws.team;
+  room.score[scoringTeam] = Math.min(3, (room.score[scoringTeam] || 0) + (msg.delta || 1));
+  broadcastTeam(room, { type: 'tdm_score', team: scoringTeam, score: room.score[scoringTeam].toString(), scores: { A: room.score.A, B: room.score.B } }, null);
+  if (room.score[scoringTeam] >= 3) {
+    room.result = { winner: scoringTeam };
+    broadcastTeam(room, { type: 'tdm_win', winner: scoringTeam, scores: { A: room.score.A, B: room.score.B } }, null);
+  }
+}
 function startMatch(p1, p2, gameMode) {
   const rid = nextRoomId++; rooms[rid] = { p1, p2, votes: {}, gameMode: gameMode || 'multi' }; p1.roomId = rid; p2.roomId = rid;
   p1.playerId = 0; p2.playerId = 1;
@@ -919,7 +1058,19 @@ function relayToOpponent(ws, msg) {
 function handleDisconnect(ws) {
   removeFromQueue(ws);
   if (ws.playerName) onlineUsers.delete(ws.playerName);
-  if (ws.roomId && rooms[ws.roomId]) { const room = rooms[ws.roomId]; if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; } const opp = room.p1 === ws ? room.p2 : room.p1; delete rooms[ws.roomId]; if (opp && opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' })); }
+  if (ws.roomId && rooms[ws.roomId]) {
+    const room = rooms[ws.roomId];
+    if (room.voteTimer) { clearTimeout(room.voteTimer); room.voteTimer = null; }
+    if (room.teamMatch) {
+      broadcastTeam(room, { type: 'opponent_disconnected', playerId: ws.playerId, playerName: (ws.playerData && ws.playerData.name) || '玩家' }, ws);
+      room.players = room.players.filter(p => p !== ws && p.readyState === WebSocket.OPEN);
+      if (room.players.length === 0) delete rooms[ws.roomId];
+      return;
+    }
+    const opp = room.p1 === ws ? room.p2 : room.p1;
+    delete rooms[ws.roomId];
+    if (opp && opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' }));
+  }
   cleanupExtraction(ws);
 }
 

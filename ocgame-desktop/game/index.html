@@ -864,6 +864,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="awp-scope"><div class="ring"></div><div class="dot"></div></div>
 <div id="death-overlay"><div>行 動 失 敗</div></div>
 <div id="down-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:8;pointer-events:none;font-family:Arial;color:#f44;text-align:center;text-shadow:0 0 20px rgba(255,0,0,.5);display:none"><div style="font-size:48px;font-weight:bold;letter-spacing:4px">💀 倒 地</div><div style="font-size:20px;color:#ff8;margin-top:8px;letter-spacing:2px">左鍵開最後一槍</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-top:6px">存活 <span id="down-timer">5</span> 秒</div></div>
+<div id="revive-prompt" style="position:fixed;top:56%;left:50%;transform:translateX(-50%);z-index:8;pointer-events:none;font-family:Arial;color:#6f6;text-align:center;text-shadow:0 0 16px rgba(68,255,68,.4);display:none;font-size:18px;letter-spacing:2px"></div>
+<div id="revive-progress" style="position:fixed;top:61%;left:50%;transform:translateX(-50%);width:160px;height:8px;background:rgba(0,0,0,.5);border:1px solid rgba(68,255,68,.4);border-radius:4px;z-index:8;display:none"><div id="revive-progress-fill" style="height:100%;width:0%;background:#4f4;border-radius:4px"></div></div>
 <div id="shop"><div id="shop-bg"></div><div id="shop-box"><div id="shop-close">✕</div><div id="shop-title">軍 火 交 易 所</div><div id="shop-coins"></div><div id="shop-list"></div></div></div>
 <div id="event-overlay"><div id="event-bg"></div><div id="event-box"><div id="event-close">✕</div><div id="event-banner"><div class="eb-corner eb-enemy"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="34" rx="15" ry="19" fill="#333"/><ellipse cx="17" cy="30" rx="6" ry="9" fill="#444"/><ellipse cx="30" cy="21" rx="13" ry="8" fill="#66ccff" opacity=".9"/><ellipse cx="35" cy="19" rx="3" ry="2.5" fill="#fff" opacity=".8"/><rect x="23" y="49" width="4" height="7" rx="2" fill="#333"/><rect x="33" y="49" width="4" height="7" rx="2" fill="#333"/></svg></div><div class="eb-corner eb-zongzi"><svg viewBox="0 0 60 60"><polygon points="30,6 52,46 8,46" fill="#5a3" stroke="#3a1" stroke-width="1"/><polygon points="30,6 52,46 36,30" fill="#6b4" opacity=".6"/><polygon points="30,6 8,46 24,30" fill="#4a2" opacity=".6"/><line x1="14" y1="44" x2="46" y2="44" stroke="#3a1" stroke-width="2"/><line x1="18" y1="40" x2="42" y2="40" stroke="#3a1" stroke-width="1.5"/><line x1="22" y1="36" x2="38" y2="36" stroke="#3a1" stroke-width="1"/><line x1="30" y1="6" x2="30" y2="20" stroke="#3a1" stroke-width="1.5"/><path d="M28,6 Q24,0 18,4" stroke="#da3" stroke-width="1.5" fill="none"/><path d="M32,6 Q36,0 42,4" stroke="#da3" stroke-width="1.5" fill="none"/><rect x="27" y="2" width="6" height="5" rx="2" fill="#da3"/></svg></div><div class="eb-title-row"><div class="eb-badge">期 間 限 定</div><div class="eb-title">端 午 節 活 動</div><div class="eb-sub">D R A G O N  B O A T  F E S T I V A L</div></div></div><div id="event-body"><div id="event-countdown"></div><div id="event-quests"><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務一：粽葉飄香</div><div class="event-quest-desc">擊殺 20 名敵人（每日刷新）</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest1-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$5,000</div><button class="event-claim-btn" data-quest="kill" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div><div class="event-quest"><div class="event-quest-icon pending">🎋</div><div class="event-quest-info"><div class="event-quest-title">任務二：乘龍破浪</div><div class="event-quest-desc">累積完成 3 波（每日刷新）</div><div class="event-quest-progress"><div class="event-quest-progress-fill pending" id="quest2-fill" style="width:0%"></div></div></div><div class="event-quest-reward">+$10,000</div><button class="event-claim-btn" data-quest="round" style="padding:5px 12px;font-size:11px;font-weight:bold;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.3);border-radius:3px;cursor:pointer;font-family:Arial;letter-spacing:2px;display:none;flex-shrink:0">領取</button></div></div></div></div></div>
 <div id="rank-overlay"><div id="rank-bg"></div><div id="rank-box"><div id="rank-close">✕</div><div id="rank-title">排 位 賽</div><div id="rank-badge">青銅一階</div><div id="rank-sub">目前段位</div><div id="rank-progress"><div id="rank-progress-fill" style="width:0%"></div></div><div id="rank-info">單人模式無法升級<br>打贏多人比賽 +1 階 &bull; 中離 -1 階</div><div id="rank-stats">🏆 總場次 <span id="rank-games">0</span>　🎯 最高連勝 <span id="rank-streak">0</span></div></div></div>
@@ -904,9 +906,16 @@ body.mobile-mode #scope-overlay{display:none!important}
 <button id="range-exit" style="display:none;position:fixed;top:12px;left:12px;z-index:10;padding:8px 20px;font-size:15px;font-weight:bold;color:rgba(255,255,255,.6);background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;cursor:pointer;letter-spacing:2px;font-family:Arial">✕ 離開靶場</button>
 <div id="ach-panel"><div id="ach-bg"></div><div id="ach-box"><div id="ach-header"><span>🏅 成 就</span><button id="ach-close">✕</button></div><div id="ach-list"></div></div></div>
 <div id="ach-popup"></div>
+<div id="tdm-score-hud" style="position:fixed;top:10px;left:50%;transform:translateX(-50%);display:none;flex-direction:row;align-items:center;gap:16px;z-index:30;font-family:Arial;font-weight:900;letter-spacing:2px;background:rgba(0,0,0,.45);padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.15)">
+  <div style="display:flex;align-items:center;gap:6px"><span style="color:#4af">A 隊</span><span id="tdm-score-a" style="color:#fff;font-size:22px">0</span></div>
+  <div style="display:flex;gap:4px" id="tdm-slots-a"></div>
+  <div style="color:rgba(255,255,255,.25)">VS</div>
+  <div style="display:flex;gap:4px" id="tdm-slots-b"></div>
+  <div style="display:flex;align-items:center;gap:6px"><span id="tdm-score-b" style="color:#fff;font-size:22px">0</span><span style="color:#f44">B 隊</span></div>
+</div>
 <div id="multi-death-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial">
-  <div style="font-size:32px;color:#f44;font-weight:900;letter-spacing:6px;margin-bottom:10px">戰 敗</div>
-  <div style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:30px">是否繼續比賽？</div>
+  <div id="multi-death-title" style="font-size:32px;color:#f44;font-weight:900;letter-spacing:6px;margin-bottom:10px">戰 敗</div>
+  <div id="multi-death-desc" style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:30px">是否繼續比賽？</div>
   <div style="display:flex;gap:20px">
     <button id="multi-continue-btn" style="padding:12px 40px;font-size:16px;color:#4f4;background:transparent;border:1px solid rgba(68,255,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">繼 續</button>
     <button id="multi-quit-btn" style="padding:12px 40px;font-size:16px;color:#f44;background:transparent;border:1px solid rgba(255,68,68,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">結 束</button>
@@ -6582,6 +6591,7 @@ document.getElementById('multi-quit-btn').onclick=function(){
 };
 document.getElementById('multi-continue-btn').onclick=function(){
   document.getElementById('multi-death-prompt').style.display='none';
+  if(tdmMode){tdmRespawnLocal();return;}
   playerHP=100;playerArmor=100;
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   document.body.requestPointerLock().catch(function(){});
@@ -6614,6 +6624,9 @@ function sendMapVote(map){
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
   console.log('sendMapVote:',map,'ws:',window.multiWS?'open='+(window.multiWS.readyState===1):'null');
   relaySend({type:'map_vote',map:map});
+  // WebSocket 模式：地圖由伺服器 settleTeamVote/handleMapVote 廣播 map_result 決定，
+  // 無需 HTTP 投票/輪詢（避免 token 過期造成 401 刷屏）
+  if(window.multiWS&&window.multiWS.readyState===1)return;
   authFetch('/api/map_vote',{method:'POST',body:{map:map}}).catch(function(){});
   window._voteResolved=false;
   if(window.votePoll)clearInterval(window.votePoll);
@@ -6643,10 +6656,15 @@ function addKillFeed(killer,victim,gun){
 })();
 // ── Multiplayer ──
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
+var tdmMode=false,useDowned=false,myTeam='A',myPlayerId=0,tdmSpawn={x:0,z:0},teamScore={A:0,B:0},tdmWinSubmitted=false;
+var teamMates=[{id:0,downed:false,reviveProgress:0,reviving:false}];
+var teammateMeshes=[],teammateStates=[];
+var reviveTargetIdx=-1,reviveTimer=0,reviving=false,beingRevived=false;
 var relayIframe=null,httpClientId=null;
 function connectMultiplayer(mode){
   if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
   requestedPlayerCount=mode||2;isMultiplayer=false;playerCount=requestedPlayerCount;opponentMeshes=[];opponentStates=[];relayReady=false;
+  tdmMode=false;useDowned=false;myTeam='A';myPlayerId=0;tdmSpawn={x:0,z:0};teamScore={A:0,B:0};tdmWinSubmitted=false;
   isMultiplayer=false;playerCount=mode||2;opponentMeshes=[];opponentStates=[];relayReady=false;
   var ip=document.getElementById('server-ip').value.trim()||'localhost';
   if(location.protocol==='file:'){
@@ -6920,12 +6938,31 @@ function processServerMessage(data){
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
       if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
       opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
+      teammateMeshes.forEach(function(m){if(m)scene.remove(m);});
+      teammateMeshes=[];teammateStates=[];
       var myId=data.playerId;
+      tdmMode=true;
+      myPlayerId=myId;
+      myTeam=data.team||(myId<Math.ceil(playerCount/2)?'A':'B');
+      useDowned=(playerCount>=3);
+      if(data.spawn){tdmSpawn={x:data.spawn.x,z:data.spawn.z};}
+      teamScore={A:0,B:0};tdmWinSubmitted=false;
+      teamMates=[];
+      if(data.teamMate){teamMates.push({id:data.teamMate.id,name:data.teamMate.name||'',downed:false,reviveProgress:0,reviving:false});}
+      if(data.players){data.players.forEach(function(pl){if(pl.id!==myId&&pl.team===myTeam&&pl.id!==(data.teamMate?data.teamMate.id:-1)){teamMates.push({id:pl.id,name:pl.name||'',downed:false,reviveProgress:0,reviving:false});}});}
+      teammateStates=[];teammateMeshes=[];
+      teamMates.forEach(function(){
+        teammateStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null,downed:false,reviveProgress:0,reviving:false});
+        teammateMeshes.push(null);
+      });
       var otherCount=playerCount-1;
       for(var oi=0;oi<otherCount;oi++){
+        var opId=(oi<myId?oi:oi+1);
+        var opTeam=null;
+        if(data.players){for(var di=0;di<data.players.length;di++){if(data.players[di].id===opId)opTeam=data.players[di].team;}}
         opponentMeshes.push(null);
-        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null});
-        opponentPlayerIds.push(oi<myId?oi:oi+1);
+        opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null,team:opTeam||(opId<Math.ceil(playerCount/2)?'A':'B'),downed:false,reviveProgress:0,reviving:false});
+        opponentPlayerIds.push(opId);
       }
       if(ufoMode||bombMode){
         document.getElementById('multi-map-vote').style.display='none';
@@ -6990,20 +7027,39 @@ function processServerMessage(data){
       }
       break;
     case 'opponent_state':
-      if(data.data&&data.playerId!==undefined){
-        var oidx=opponentPlayerIds.indexOf(data.playerId);
-        if(oidx>=0&&oidx<opponentStates.length){
-          opponentStates[oidx].pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
-          opponentStates[oidx].yaw=data.data.yaw||0;
-          opponentStates[oidx].pitch=data.data.pitch||0;
-          opponentStates[oidx].gun=data.data.gun||'ak47';
-          opponentStates[oidx].shooting=data.data.shooting||false;
-          if(data.data.hp!==undefined)opponentStates[oidx].hp=data.data.hp;
-          if(data.data.armor!==undefined)opponentStates[oidx].armor=data.data.armor;
-          opponentStates[oidx].alive=opponentStates[oidx].hp>0;
-          if(data.data.cls&&data.data.cls!==opponentStates[oidx].cls){
-            opponentStates[oidx].cls=data.data.cls;
-            if(opponentMeshes[oidx]){applyOpponentClass(opponentMeshes[oidx],data.data.cls);applyCharSkin(opponentMeshes[oidx]);}
+      if(data.data&&data.playerId!==undefined&&data.playerId!==myPlayerId){
+        var tmIdx=-1;
+        for(var tmi=0;tmi<teamMates.length;tmi++){if(teamMates[tmi].id===data.playerId){tmIdx=tmi;break;}}
+        if(tmIdx>=0&&tmIdx<teammateStates.length){
+          var ts=teammateStates[tmIdx];
+          ts.pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
+          ts.yaw=data.data.yaw||0;
+          ts.pitch=data.data.pitch||0;
+          ts.gun=data.data.gun||'ak47';
+          ts.shooting=data.data.shooting||false;
+          if(data.data.hp!==undefined)ts.hp=data.data.hp;
+          if(data.data.armor!==undefined)ts.armor=data.data.armor;
+          ts.alive=ts.hp>0;
+          if(data.data.cls&&data.data.cls!==ts.cls){
+            ts.cls=data.data.cls;
+            if(teammateMeshes[tmIdx]){applyOpponentClass(teammateMeshes[tmIdx],data.data.cls);}
+          }
+        }else{
+          var oidx=opponentPlayerIds.indexOf(data.playerId);
+          if(oidx>=0&&oidx<opponentStates.length){
+            opponentStates[oidx].pos.set(data.data.px||0,data.data.py||0,data.data.pz||0);
+            opponentStates[oidx].yaw=data.data.yaw||0;
+            opponentStates[oidx].pitch=data.data.pitch||0;
+            opponentStates[oidx].gun=data.data.gun||'ak47';
+            opponentStates[oidx].shooting=data.data.shooting||false;
+            if(data.data.hp!==undefined)opponentStates[oidx].hp=data.data.hp;
+            if(data.data.armor!==undefined)opponentStates[oidx].armor=data.data.armor;
+            opponentStates[oidx].alive=opponentStates[oidx].hp>0;
+            if(opponentStates[oidx].hp>0&&opponentStates[oidx].downed)opponentStates[oidx].downed=false;
+            if(data.data.cls&&data.data.cls!==opponentStates[oidx].cls){
+              opponentStates[oidx].cls=data.data.cls;
+              if(opponentMeshes[oidx]){applyOpponentClass(opponentMeshes[oidx],data.data.cls);applyCharSkin(opponentMeshes[oidx]);}
+            }
           }
         }
       }
@@ -7024,7 +7080,7 @@ function processServerMessage(data){
         var dmg=data.gun==='knife'?50:(data.gun==='awp'?999:(gunData[data.gun]?gunData[data.gun].dmg:25));
         if(data.gun==='knife'){
           var dist=pos.distanceTo(op);
-          if(dist<2.5){var od2=dmg;if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}if(playerHP<=0)onPlayerDeath();}
+          if(dist<2.5){var od2=dmg;if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}if(playerHP<=0)tdmLocalDown();}
         }else if(data.dir){
           var rd=new THREE.Raycaster(fl2.position,new THREE.Vector3(data.dir[0],data.dir[1],data.dir[2]));
           var playerMeshes=[];cam.traverse(function(c){if(c.isMesh)playerMeshes.push(c)});
@@ -7033,24 +7089,25 @@ function processServerMessage(data){
             var od2=dmg;
             if(playerArmor>0){playerArmor-=od2;if(playerArmor<0){od2=-playerArmor;playerArmor=0}else od2=0}
             if(od2>0){playerHP-=od2;if(playerHP<0)playerHP=0}
-            if(playerHP<=0)onPlayerDeath();
+            if(playerHP<=0)tdmLocalDown();
           }
         }
       }
       break;
     case 'opponent_hit':
-      if(data.hp){
+      if(data.hp&&(data.targetPlayerId===undefined||data.targetPlayerId===myPlayerId)){
         var od=data.hp;
         if(playerArmor>0){playerArmor-=od;if(playerArmor<0){od=-playerArmor;playerArmor=0}else od=0}
         if(od>0){playerHP-=od;if(playerHP<0)playerHP=0}
-        if(playerHP<=0)onPlayerDeath();
+        if(playerHP<=0)tdmLocalDown();
       }
       break;
     case 'opponent_died':
       if(data.playerId!==undefined){
         var oidx=opponentPlayerIds.indexOf(data.playerId);
-        if(oidx>=0&&oidx<opponentStates.length)opponentStates[oidx].alive=false;
+        if(oidx>=0&&oidx<opponentStates.length){opponentStates[oidx].alive=false;opponentStates[oidx].downed=false;}
       }
+      if(tdmMode)break;
       var aliveCount=opponentStates.filter(function(s){return s.alive}).length;
       if(aliveCount===0||playerCount===2){
         document.getElementById('multi-waiting').style.display='flex';
@@ -7088,6 +7145,47 @@ function processServerMessage(data){
         if(document.pointerLockElement)document.exitPointerLock();
         if(window.opponentBars){window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});window.opponentBars=[];}
         break;
+    case 'tdm_down':
+      if(data.playerId!==undefined)tdmRemoteDown(data.playerId);
+      break;
+    case 'tdm_bleedout':
+      if(data.playerId!==undefined)tdmRemoteBleedout(data.playerId);
+      break;
+    case 'tdm_revive_start':
+      if(data.playerId!==undefined&&data.targetPlayerId!==undefined)tdmRemoteReviveStart(data.targetPlayerId);
+      break;
+    case 'tdm_revive_cancel':
+      if(data.playerId!==undefined&&data.targetPlayerId!==undefined)tdmRemoteReviveCancel(data.targetPlayerId);
+      break;
+    case 'tdm_revive_done':
+      if(data.playerId!==undefined&&data.targetPlayerId!==undefined)tdmRemoteReviveDone(data.targetPlayerId);
+      break;
+    case 'tdm_respawn':
+      if(data.playerId!==undefined)tdmRemoteSpawn(data.playerId);
+      break;
+    case 'tdm_round_respawn':
+      // 擊殺後雙方重生：關閉敵人的倒地狀態，並讓本機重生
+      if(data.playerId!==undefined&&data.playerId!==myPlayerId){tdmRemoteBleedout(data.playerId);}
+      tdmRoundRespawnLocal();
+      break;
+    case 'tdm_score':
+      if(data.scores){teamScore={A:data.scores.A||0,B:data.scores.B||0};tdmScoreHud();}
+      break;
+    case 'tdm_win':
+      if(data.winner){
+        tdmWinSubmitted=true;
+        document.getElementById('multi-death-prompt').style.display='none';
+        document.getElementById('multi-waiting').style.display='none';
+        document.getElementById('down-overlay').style.display='none';
+        isDowned=false;downTimer=0;reviving=false;beingRevived=false;
+        var wonMatch=data.winner===myTeam;
+        rankEvaluateMatch(wonMatch?1:0);
+        isMultiplayer=false;
+        if(data.scores)teamScore={A:data.scores.A||0,B:data.scores.B||0};
+        showMultiSettlement(wonMatch?'🎉 勝利！我方 ('+myTeam+' 隊) 率先取得三分':'💀 敗北 ('+data.winner+' 隊率先取得三分)');
+        if(document.pointerLockElement)document.exitPointerLock();
+      }
+      break;
     case 'ufo_hit':
       if(data.dmg&&ufoActive&&ufo){ufo.hp-=data.dmg;ufo.hitTimer=0.3;}
       break;
@@ -7130,6 +7228,14 @@ function startMultiGame(mapName){
     scene.add(oaBar);
     window.opponentBars.push({h:ohBar,a:oaBar});
   }
+  teammateMeshes.forEach(function(m){if(m)scene.remove(m);});
+  teammateMeshes=[];
+  teamMates.forEach(function(){
+    var tmm=createOpponentMesh();scene.add(tmm);
+    applyCharSkin(tmm);
+    teammateMeshes.push(tmm);
+  });
+  tdmResetState();
   if(bombMode){
     playerLoadout[0]='grenade';
     grenadeStacks[0]=99;
@@ -7659,7 +7765,7 @@ function shoot(){
       if(isMultiplayer&&opponentMeshes.length>0){
         opponentMeshes.forEach(function(om,oidx){
           if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
-          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentName,'🔪');}showDmgNum(hits[0].point,50,'#ff4444');}});
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){tdmEnemyDown(oidx,'🔪');}showDmgNum(hits[0].point,50,'#ff4444');}});
         });
       }
       for(var ei=0;ei<enemies.length;ei++){
@@ -7959,7 +8065,7 @@ function shoot(){
           rankMatchHits++;
           relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
-          if(opponentStates[oidx].hp<=0){opponentStates[oidx].hp=0;opponentStates[oidx].alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentNames[oidx]||opponentName,gunData[currentGun]?gunData[currentGun].name:'??');}
+          if(opponentStates[oidx].hp<=0){tdmEnemyDown(oidx,gunData[currentGun]?gunData[currentGun].name:'??');}
           showDmgNum(hits[0].point,Math.round(dmg),'#ff4444');
         }
       });
@@ -8210,6 +8316,120 @@ function reload(){
 function goDowned(){
   isDowned=true;downTimer=5;
 }
+// ─── Team Deathmatch (2v2 / 1v1) helpers ───
+function tdmScoreHud(){
+  var el=document.getElementById('tdm-score-hud');if(!el)return;
+  var a=document.getElementById('tdm-score-a');if(a)a.textContent=teamScore.A;
+  var b=document.getElementById('tdm-score-b');if(b)b.textContent=teamScore.B;
+  var sa=document.getElementById('tdm-slots-a'),sb=document.getElementById('tdm-slots-b');
+  if(sa){sa.innerHTML='';for(var i=0;i<3;i++){var d=document.createElement('span');d.style.cssText='width:14px;height:14px;border-radius:3px;background:'+(i<teamScore.A?'#4af':'rgba(255,255,255,.12)')+';border:1px solid rgba(68,170,255,.4);display:inline-block';sa.appendChild(d);}}
+  if(sb){sb.innerHTML='';for(var j=0;j<3;j++){var d2=document.createElement('span');d2.style.cssText='width:14px;height:14px;border-radius:3px;background:'+(j<teamScore.B?'#f44':'rgba(255,255,255,.12)')+';border:1px solid rgba(255,68,68,.4);display:inline-block';sb.appendChild(d2);}}
+}
+function tdmResetHud(){teamScore={A:0,B:0};tdmScoreHud();var el=document.getElementById('tdm-score-hud');if(el)el.style.display=tdmMode?'flex':'none';}
+function tdmResetState(){
+  isDowned=false;downTimer=0;reviving=false;beingRevived=false;reviveTargetIdx=-1;reviveTimer=0;
+  teamMates.forEach(function(tm){tm.downed=false;tm.reviveProgress=0;tm.reviving=false;});
+  tdmResetHud();
+}
+// Called when a LOCAL client downs an enemy -> score for myTeam + notify peers (downed) + 雙方重生
+function tdmEnemyDown(oidx,weaponName){
+  if(!tdmMode||oidx<0||oidx>=opponentStates.length)return;
+  var os=opponentStates[oidx];
+  os.hp=0;os.alive=false;
+  var name=opponentNames[oidx]||opponentName;
+  if(useDowned){
+    os.downed=true;
+    relaySend({type:'tdm_down',playerId:opponentPlayerIds[oidx]});
+  }
+  relaySend({type:'tdm_score',delta:1});
+  if(!tdmWinSubmitted){
+    rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;
+    addKillFeed(authUser||'你',name,weaponName||'??');
+  }
+  // 擊殺後雙方重生（round-based）
+  relaySend({type:'tdm_round_respawn',playerId:myPlayerId});
+  tdmRoundRespawnLocal();
+}
+// Local player reached 0 HP in TDM -> downed (4p) or death (2p)
+function tdmLocalDown(){
+  if(!tdmMode){onPlayerDeath();return;}
+  if(useDowned&&!isDowned){
+    goDowned();
+    relaySend({type:'tdm_down',playerId:myPlayerId});
+    document.getElementById('down-overlay').style.display='flex';
+    return;
+  }
+  tdmFinalDeath();
+}
+function tdmFinalDeath(){
+  if(tdmWinSubmitted)return;
+  rankMatchDeaths++;
+  addProficiency();
+  relaySend({type:'player_death',playerId:myPlayerId});
+  addKillFeed(opponentNames.length?opponentNames[0]||opponentName:'??','你','??');
+  document.getElementById('multi-death-prompt').style.display='flex';
+  var t=document.getElementById('multi-death-title');if(t)t.textContent='💀 陣 亡';
+  var d=document.getElementById('multi-death-desc');if(d)d.textContent='我已倒下，等待下一場交戰…';
+  var cBtn=document.getElementById('multi-continue-btn');if(cBtn)cBtn.textContent='🔁 重生';
+  if(document.pointerLockElement)document.exitPointerLock();
+}
+function tdmRespawnLocal(){
+  document.getElementById('multi-death-prompt').style.display='none';
+  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;
+  if(tdmSpawn&&tdmSpawn.x!==undefined){pos.set(tdmSpawn.x,0.8,tdmSpawn.z);}else{var rp=getRandomSpawnPos(false);pos.copy(rp);}
+  vel.set(0,0,0);
+  relaySend({type:'tdm_respawn',playerId:myPlayerId});
+  document.body.requestPointerLock().catch(function(){});
+}
+// 擊殺後雙邊重生：本機重生到出生點（不廣播，廣播由 tdmEnemyDown 統一發出）
+function tdmRoundRespawnLocal(){
+  document.getElementById('multi-death-prompt').style.display='none';
+  document.getElementById('multi-waiting').style.display='none';
+  document.getElementById('down-overlay').style.display='none';
+  document.getElementById('revive-prompt').style.display='none';
+  document.getElementById('revive-progress').style.display='none';
+  playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;reviveTargetIdx=-1;reviveTimer=0;
+  if(tdmSpawn&&tdmSpawn.x!==undefined){pos.set(tdmSpawn.x,0.8,tdmSpawn.z);}else{var rp=getRandomSpawnPos(false);pos.copy(rp);}
+  vel.set(0,0,0);
+  teamMates.forEach(function(tm){tm.reviveProgress=0;});
+  if(document.pointerLockElement)document.exitPointerLock();
+  document.body.requestPointerLock().catch(function(){});
+}
+// Remote messaging used by processServerMessage
+function tdmRemoteDown(playerId){
+  var oi=opponentPlayerIds.indexOf(playerId);
+  if(oi>=0&&oi<opponentStates.length){opponentStates[oi].hp=0;opponentStates[oi].alive=false;if(useDowned)opponentStates[oi].downed=true;}
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.downed=true;mt.reviveProgress=0;mt.reviving=false;}
+}
+function tdmRemoteBleedout(playerId){
+  var oi=opponentPlayerIds.indexOf(playerId);
+  if(oi>=0&&oi<opponentStates.length)opponentStates[oi].downed=false;
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.downed=false;}
+}
+function tdmRemoteReviveStart(playerId){
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.reviving=true;}
+  if(playerId===myPlayerId){beingRevived=true;downTimer=Math.max(downTimer,999);document.getElementById('down-overlay').style.display='flex';var dt=document.getElementById('down-timer');if(dt)dt.textContent='救援中';}
+}
+function tdmRemoteReviveCancel(playerId){
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.reviving=false;}
+  if(playerId===myPlayerId){beingRevived=false;downTimer=Math.min(downTimer,5);}
+}
+function tdmRemoteReviveDone(playerId){
+  var oi=opponentPlayerIds.indexOf(playerId);
+  if(oi>=0&&oi<opponentStates.length){if(useDowned){opponentStates[oi].downed=false;}opponentStates[oi].hp=100;opponentStates[oi].armor=0;}
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.downed=false;mt.reviveProgress=0;mt.reviving=false;}
+  if(playerId===myPlayerId){isDowned=false;downTimer=0;beingRevived=false;playerHP=100;playerArmor=0;}
+}
+function tdmRemoteSpawn(playerId){
+  var mt=teamMates.find(function(t){return t.id===playerId;});
+  if(mt){mt.downed=false;mt.reviveProgress=0;mt.reviving=false;}
+}
+
 function createMagazine(){
   if(magazineMesh){if(gunGroup)gunGroup.remove(magazineMesh);magazineMesh=null;}
   var g=currentGun;
@@ -9567,10 +9787,10 @@ var lastTime=0;
 function animate(time){try{
   var dt=Math.min((time-lastTime)/1000,0.05);lastTime=time;
   moveX=0;moveZ=0;
-  if(keys['KeyA']||keys['ArrowLeft'])moveX-=1;
+  if(!reviving){if(keys['KeyA']||keys['ArrowLeft'])moveX-=1;
   if(keys['KeyD']||keys['ArrowRight'])moveX+=1;
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
-if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;
+if(keys['KeyS']||keys['ArrowDown'])moveZ-=1;}
 if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobileMoveZ;}
   if(locked&&!gameStarted){countdown-=dt;sl.position.set(pos.x,5,pos.z);sl.target.position.copy(pos);if(countdown<=0){gameStarted=true;didPlayGame=true;countdown=0;onGround=true;scene.remove(sl);scene.remove(sl.target);roundEarnings=0;sessionSP=0;recalcProdBonuses();if(!rangeMode){document.getElementById('session-sp').style.display='block';document.getElementById('session-sp-val').textContent='0';}attachFlashlightMesh(); if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}if(!isMultiplayer&&!rangeMode){if(bossRushMode){spawnBossRush();}else if(currentMap==='nuclear'){for(var nxi=0;nxi<enemies.length;nxi++){var nx=enemies[nxi];nx.hp=0;nx.mesh.visible=false;if(nx.hBar)nx.hBar.visible=false;if(nx.aBar)nx.aBar.visible=false;}radWattage=0;radImmuneTimer=0;nuclearClears=0;nuclearWave=1;bossActive=false;bossSpawned=false;radDamageAccum=0;spawnRadWater();spawnCleanerWave();document.getElementById('nuclear-ui').style.display='flex';document.getElementById('nuclear-wave').style.display='block';document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('boss-hp-fill').style.width='100%';}else if(currentMap==='flooded'){playerO2=100;floodedWave=1;floodedClears=0;bossFloodedActive=false;bossFloodedSpawned=false;abyssalMaw=null;floodedBossPhase=1;airBubbles=[];harpoonProjectiles=[];oxyVents=[];bubbleTimer=2;spawnOxyVents();for(var fxi=0;fxi<enemies.length;fxi++){var fx=enemies[fxi];fx.hp=0;fx.mesh.visible=false;if(fx.hBar)fx.hBar.visible=false;if(fx.aBar)fx.aBar.visible=false;}document.getElementById('boss-hp-wrap').style.display='none';document.getElementById('o2-wrap').style.display='flex';spawnDiverWave();}else{var tgt=Math.min(2+Math.floor(roundNum*0.8),maxEnemies);for(var ei=0;ei<maxEnemies;ei++){var e=enemies[ei];if(ei<tgt){e.hp=e.maxHp;e.armor=e.maxArmor;randomizeEnemyType(e);if(e.type==='sniper'&&sniperTowers.length>0&&currentMap!=='basemap3'){var st=sniperTowers[ei%sniperTowers.length];var rp_=st.pos.clone();e.pos.copy(rp_);e.mesh.position.copy(rp_);}else{var rp_=getRandomSpawnPos(true,pos,8);e.pos.copy(rp_);e.mesh.position.copy(rp_);}if(currentMap==='basemap3'){if(e.type==='sniper'||ei%3===0){e.pos.set(3+Math.random()*8,36,3+Math.random()*8);e.mesh.position.copy(e.pos);e.roofTop=true;e.climbL=null;}else{e.pos.y=0;e.mesh.position.y=e.pos.y;e.roofTop=false;e.climbL=null;}if(e.hBar)e.hBar.position.copy(e.pos);if(e.aBar)e.aBar.position.copy(e.pos);if(e.hBar)e.hBar.position.y+=0.95;if(e.aBar)e.aBar.position.y+=0.88;}e.mesh.visible=true;if(e.hBar){e.hBar.visible=true;e.hBar.position.copy(e.pos);e.hBar.position.y+=0.95;}if(e.aBar){e.aBar.visible=true;e.aBar.position.copy(e.pos);e.aBar.position.y+=0.88;}e.knifeHits=0;e.burnTimer=0;}else{e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;}if(e.aBar){e.aBar.visible=false;}}}}}}}
   if(locked&&gameStarted&&currentMap==='dragonboat'&&dragonBoatElements)dragonBoatElements.forEach(function(b){if(b.mesh)b.mesh.visible=true;});
@@ -9711,11 +9931,56 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(slowTimer>0)slowTimer-=dt;
     // Down state
     if(isDowned){
-      downTimer-=dt;
-      if(downTimer<=0){isDowned=false;onPlayerDeath();}
+      if(beingRevived){downTimer=Math.max(downTimer,999);}
+      else{
+        downTimer-=dt;
+        if(downTimer<=0){isDowned=false;beingRevived=false;if(tdmMode){relaySend({type:'tdm_bleedout',playerId:myPlayerId});tdmFinalDeath();}else{onPlayerDeath();}}
+      }
     }
     document.getElementById('down-overlay').style.display=isDowned?'flex':'none';
-    if(isDowned)document.getElementById('down-timer').textContent=Math.ceil(downTimer);
+    if(isDowned){if(!beingRevived)document.getElementById('down-timer').textContent=Math.ceil(downTimer);}
+    // TDM: revive downed teammate (hold E)
+    if(tdmMode&&useDowned&&gameStarted&&!isDowned&&!tdmWinSubmitted){
+      var reviveNearIdx=-1,reviveNearDist=9999;
+      for(var ri=0;ri<teamMates.length;ri++){
+        var rtm=teamMates[ri];if(!rtm.downed)continue;
+        var rts=teammateStates[ri];if(!rts)continue;
+        var rdist=pos.distanceTo(rts.pos);
+        if(rdist<2.4&&rdist<reviveNearDist){reviveNearDist=rdist;reviveNearIdx=ri;}
+      }
+      if(reviveNearIdx>=0){
+        if(keys['KeyE']){
+          if(reviveTargetIdx!==reviveNearIdx){reviveTargetIdx=reviveNearIdx;reviveTimer=0;reviving=true;relaySend({type:'tdm_revive_start',targetPlayerId:teamMates[reviveNearIdx].id});}
+          reviveTimer+=dt;
+          var rpFill=Math.min(1,reviveTimer/5);
+          if(teamMates[reviveNearIdx])teamMates[reviveNearIdx].reviveProgress=rpFill;
+          document.getElementById('revive-prompt').style.display='block';
+          document.getElementById('revive-prompt').textContent='按住 E 救援中 '+Math.round(rpFill*100)+'%';
+          document.getElementById('revive-progress').style.display='block';
+          document.getElementById('revive-progress-fill').style.width=(rpFill*100)+'%';
+          if(reviveTimer>=5){
+            relaySend({type:'tdm_revive_done',targetPlayerId:teamMates[reviveNearIdx].id});
+            if(teamMates[reviveNearIdx]){teamMates[reviveNearIdx].downed=false;teamMates[reviveNearIdx].reviveProgress=0;}
+            reviveTargetIdx=-1;reviveTimer=0;reviving=false;
+            document.getElementById('revive-prompt').style.display='none';
+            document.getElementById('revive-progress').style.display='none';
+          }
+        }else{
+          if(reviveTargetIdx>=0){relaySend({type:'tdm_revive_cancel',targetPlayerId:teamMates[reviveTargetIdx].id});}
+          reviveTargetIdx=-1;reviveTimer=0;reviving=false;
+          document.getElementById('revive-progress').style.display='none';
+          document.getElementById('revive-prompt').style.display='block';
+          document.getElementById('revive-prompt').textContent='按住 E 救援隊友';
+        }
+      }else{
+        if(reviveTargetIdx>=0){relaySend({type:'tdm_revive_cancel',targetPlayerId:teamMates[reviveTargetIdx].id});}
+        reviveTargetIdx=-1;reviveTimer=0;reviving=false;
+        document.getElementById('revive-prompt').style.display='none';
+        document.getElementById('revive-progress').style.display='none';
+      }
+    }else{
+      reviveTargetIdx=-1;reviveTimer=0;reviving=false;
+    }
     // Inspect timer
     if(inspectTimer>0){inspectTimer-=dt;if(inspectTimer<0)inspectTimer=0;}
     // Reload timer + bolt offset reset on completion
@@ -9974,14 +10239,26 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
     // Update opponent mesh
     // Update opponent meshes
     for(var oi=0;oi<opponentMeshes.length;oi++){
-      var om=opponentMeshes[oi];
-      var os=opponentStates[oi];
-      if(om&&os){
-        om.position.copy(os.pos);
-        om.rotation.order='YXZ';
-        om.rotation.y=os.yaw;
-        om.rotation.x=-os.pitch*0.3;
-        om.visible=os.alive;
+      var omE=opponentMeshes[oi];
+      var osE=opponentStates[oi];
+      if(omE&&osE){
+        omE.position.copy(osE.pos);
+        omE.rotation.order='YXZ';
+        omE.rotation.y=osE.yaw;
+        omE.rotation.x=-osE.pitch*0.3;
+        omE.visible=osE.alive|osE.downed;
+      }
+    }
+    // Update teammate meshes (TDM)
+    for(var tmiR=0;tmiR<teammateMeshes.length;tmiR++){
+      var tmM=teammateMeshes[tmiR];
+      var tmS=teammateStates[tmiR];
+      if(tmM&&tmS){
+        tmM.position.copy(tmS.pos);
+        tmM.rotation.order='YXZ';
+        tmM.rotation.y=tmS.yaw;
+        tmM.rotation.x=-tmS.pitch*0.3;
+        tmM.visible=tmS.alive||(teamMates[tmiR]&&teamMates[tmiR].downed);
       }
     }
     // Update opponent health bars
@@ -10114,7 +10391,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
             var distToP=pj.pos.distanceTo(pos);
             if(distToP<expR){var aoeDmg=Math.round(expDmg*(1-distToP/expR));playerDamage(aoeDmg);slowTimer=0.5;playerArmor=0;showDmgNum(pos.clone(),aoeDmg,'#ff8844');}
             for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;var distToE=pj.pos.distanceTo(ee.pos);if(distToE<expR){var edmg=Math.round(expDmg*0.8*(1-distToE/expR));ee.hp-=edmg;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;hitMarkerTimer=0.15;showDmgNum(ee.pos,edmg,'#ff8844');}}
-            for(var oi=0;oi<opponentStates.length;oi++){var os=opponentStates[oi];if(!os.alive)continue;var distO=pj.pos.distanceTo(os.pos);if(distO<expR){var odmg=Math.round(expDmg*0.8*(1-distO/expR));var ld=odmg;if(os.armor>0){os.armor-=ld;if(os.armor<0){ld=-os.armor;os.armor=0}else ld=0}if(ld>0){os.hp-=ld;if(os.hp<0)os.hp=0}if(os.hp<=0){os.hp=0;os.alive=false;rankMatchKills++;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;addKillFeed(authUser||'你',opponentName,'💣');}hitMarkerTimer=0.15;showDmgNum(os.pos,odmg,'#ff8844');relaySend({type:'hit',hp:odmg,targetPlayerId:opponentPlayerIds[oi]});}}
+            for(var oi=0;oi<opponentStates.length;oi++){var os=opponentStates[oi];if(!os.alive)continue;var distO=pj.pos.distanceTo(os.pos);if(distO<expR){var odmg=Math.round(expDmg*0.8*(1-distO/expR));var ld=odmg;if(os.armor>0){os.armor-=ld;if(os.armor<0){ld=-os.armor;os.armor=0}else ld=0}if(ld>0){os.hp-=ld;if(os.hp<0)os.hp=0}if(os.hp<=0){tdmEnemyDown(oi,'💣');}hitMarkerTimer=0.15;showDmgNum(os.pos,odmg,'#ff8844');relaySend({type:'hit',hp:odmg,targetPlayerId:opponentPlayerIds[oi]});}}
             if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh){var distB=pj.pos.distanceTo(abyssalMaw.pos);if(distB<expR){abyssalMaw.hp-=Math.round(expDmg*0.5*(1-distB/expR));abyssalMaw.hitTimer=0.3;hitMarkerTimer=0.15;showDmgNum(abyssalMaw.pos,Math.round(expDmg*0.5*(1-distB/expR)),'#44ddff');}}
           }else if(st==='flashbang'){
             var fbMesh=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.6}));
@@ -10355,11 +10632,16 @@ function preloadSFX(){
 }
 function playShort(src,dur,vol){
   try{
-    var s=new Audio(src);s.volume=vol||0.3;
-    document.body.appendChild(s);
+    var volSet=vol||0.3;
+    var cache=window._sfxCache=window._sfxCache||{};
+    var s=cache[src];
+    if(!s){
+      s=new Audio(src);s.volume=volSet;s.volume=volSet;
+      cache[src]=s;
+    }
+    s.volume=volSet;
+    try{s.currentTime=0;}catch(e){}
     s.play().catch(function(){});
-    if(dur) setTimeout(function(){try{s.pause();document.body.removeChild(s);s=null}catch(e){}},dur*1000);
-    else setTimeout(function(){try{document.body.removeChild(s)}catch(e){}},5000);
   }catch(e){}
 }
 function playAK47(){playShort('microsammy-ak-47-firing-8760.mp3',0.12);}
