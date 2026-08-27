@@ -744,6 +744,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 #isl-player-info{display:flex;align-items:center;gap:12px;margin-left:16px;font-size:11px;color:rgba(255,255,255,.65)}
 #isl-bot-bar{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:30;padding:8px 12px;background:rgba(15,15,40,.45);border-radius:14px;backdrop-filter:blur(8px)}
 .isl-fbtn{all:unset;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 13px;font-size:10px;color:rgba(255,255,255,.55);border-radius:10px;cursor:pointer;transition:all .25s;font-family:Arial}
+@media(pointer:coarse){.isl-fbtn{padding:14px 18px;font-size:13px}.isl-fbtn .ico{font-size:22px}#isl-bot-bar{gap:12px;padding:12px 18px}}
 .isl-fbtn .ico{font-size:17px;transition:transform .25s}
 .isl-fbtn:hover{color:#fff;background:rgba(255,255,255,.08);transform:translateY(-3px)}
 .isl-fbtn:hover .ico{transform:scale(1.2)}
@@ -5222,16 +5223,16 @@ function boot(){
 
   // ── Island tablet/mobile controls ──
   (function(){
-   var isMobile=navigator.maxTouchPoints>0||localStorage.getItem('oc_ui_mode')==='mobile';
-   var islRoot=document.getElementById('island-root');
    var jZone=document.getElementById('isl-mob-joystick');
    var jKnob=jZone?jZone.querySelector('.jknob'):null;
    var lookArea=document.getElementById('isl-mob-look');
    var eBtn=document.getElementById('isl-mob-e');
-   var jpBtn=document.getElementById('isl-mob-jp');
+    var jpBtn=document.getElementById('isl-mob-jp');
+    if(jpBtn)jpBtn.style.display=MOON?'flex':'none';
    var menuBtn=document.getElementById('isl-mob-menu');
-   var jTouchId=null,jX=0,jY=0;
+   var jTouchId=null;
    var lTouchId=null,lX=0,lY=0;
+   var islMobile=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
    function updateJoystick(t){
     if(!jZone)return;
     var r=jZone.getBoundingClientRect();
@@ -5240,8 +5241,8 @@ function boot(){
     var dist=Math.sqrt(dx*dx+dy*dy);
     var maxR=r.width/2;
     if(dist>maxR){dx=dx/dist*maxR;dy=dy/dist*maxR;dist=maxR;}
-    if(jKnob){jKnob.style.left=(50+nx*40)+'%';jKnob.style.top=(50+ny*40)+'%';}
     var nx=dx/maxR,ny=dy/maxR;
+    if(jKnob){jKnob.style.left=(50+nx*40)+'%';jKnob.style.top=(50+ny*40)+'%';}
     keys['KeyW']=ny<-0.2;keys['KeyS']=ny>0.2;keys['KeyA']=nx<-0.2;keys['KeyD']=nx>0.2;
    }
    function resetJoystick(){
@@ -5250,30 +5251,48 @@ function boot(){
     keys['KeyW']=false;keys['KeyS']=false;keys['KeyA']=false;keys['KeyD']=false;
    }
    if(jZone){
-    jZone.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();jTouchId=e.changedTouches[0].identifier;updateJoystick(e.changedTouches[0]);},{passive:false});
+    jZone.addEventListener('touchstart',function(e){e.preventDefault();jTouchId=e.changedTouches[0].identifier;updateJoystick(e.changedTouches[0]);},{passive:false});
     jZone.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===jTouchId){updateJoystick(e.changedTouches[i]);break;}}},{passive:false});
     jZone.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===jTouchId){resetJoystick();break;}}e.preventDefault();},{passive:false});
     jZone.addEventListener('touchcancel',resetJoystick);
    }
    if(lookArea){
-    lookArea.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();lTouchId=e.changedTouches[0].identifier;lX=e.changedTouches[0].clientX;lY=e.changedTouches[0].clientY;},{passive:false});
-    lookArea.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===lTouchId){var t=e.changedTouches[i];var dx=t.clientX-lX,dy=t.clientY-lY;camTheta-=dx*0.005;camPhi=Math.max(-0.25,Math.min(1.15,camPhi-dy*0.005));lX=t.clientX;lY=t.clientY;break;}}},{passive:false});
+    lookArea.addEventListener('touchstart',function(e){e.preventDefault();lTouchId=e.changedTouches[0].identifier;lX=e.changedTouches[0].clientX;lY=e.changedTouches[0].clientY;},{passive:false});
+    lookArea.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===lTouchId){var t=e.changedTouches[i];var dx=t.clientX-lX,dy=t.clientY-lY;camTheta-=dx*0.006;camPhi=Math.max(-0.25,Math.min(1.15,camPhi-dy*0.006));lX=t.clientX;lY=t.clientY;break;}}},{passive:false});
     lookArea.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===lTouchId){lTouchId=null;break;}}e.preventDefault();},{passive:false});
     lookArea.addEventListener('touchcancel',function(){lTouchId=null;});
    }
    if(eBtn){
-    eBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();keys['KeyE']=true;},{passive:false});
+    eBtn.addEventListener('touchstart',function(e){e.preventDefault();keys['KeyE']=true;},{passive:false});
     eBtn.addEventListener('touchend',function(e){keys['KeyE']=false;e.preventDefault();},{passive:false});
     eBtn.addEventListener('touchcancel',function(){keys['KeyE']=false;});
    }
    if(jpBtn){
-    jpBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();keys['Space']=true;},{passive:false});
+    jpBtn.addEventListener('touchstart',function(e){e.preventDefault();keys['Space']=true;},{passive:false});
     jpBtn.addEventListener('touchend',function(e){keys['Space']=false;e.preventDefault();},{passive:false});
     jpBtn.addEventListener('touchcancel',function(){keys['Space']=false;});
    }
    if(menuBtn){
-    menuBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();var dd=document.getElementById('isl-mode-overlay');if(dd){if(dd.classList.contains('open'))closeIslMode();else openIslMode();}},{passive:false});
+    menuBtn.addEventListener('touchstart',function(e){e.preventDefault();var dd=document.getElementById('isl-mode-overlay');if(dd){if(dd.classList.contains('open'))closeIslMode();else openIslMode();}},{passive:false});
    }
+   // Free-look: any touch outside buttons on right half rotates camera
+   var freeLookTouch=null,freeLookX=0,freeLookY=0;
+   document.addEventListener('touchstart',function(e){
+    if(!act())return;
+    if(e.target.closest('#isl-mob-joystick,#isl-mob-e,#isl-mob-jp,#isl-mob-menu,#isl-bot-bar,#isl-top-bar,#isl-panel,#isl-mode-overlay'))return;
+    var t=e.changedTouches[0];
+    if(t.clientX>window.innerWidth*0.4){freeLookTouch=t.identifier;freeLookX=t.clientX;freeLookY=t.clientY;}
+   },{passive:true});
+   document.addEventListener('touchmove',function(e){
+    if(!act()||freeLookTouch===null)return;
+    for(var i=0;i<e.changedTouches.length;i++){
+     if(e.changedTouches[i].identifier===freeLookTouch){
+      var t=e.changedTouches[i];camTheta-=(t.clientX-freeLookX)*0.006;camPhi=Math.max(-0.25,Math.min(1.15,camPhi-(t.clientY-freeLookY)*0.006));freeLookX=t.clientX;freeLookY=t.clientY;break;
+     }
+    }
+   },{passive:true});
+   document.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===freeLookTouch){freeLookTouch=null;break;}}},{passive:true});
+   document.addEventListener('touchcancel',function(){freeLookTouch=null;},{passive:true});
   })();
 
  grid.innerHTML='';
@@ -5704,23 +5723,28 @@ function boot(){
    var nx=playerPos.x+md.x*spd*dt,nz=playerPos.z+md.z*spd*dt;
     playerPos.x=nx;playerPos.z=nz;
    var gh=terrainH(playerPos.x,playerPos.z);
-    var jpActive=keys['Space']&&jpFuel>0&&!islOnGround;
-    var jpGroundThrust=keys['Space']&&jpFuel>0&&islOnGround;
-    if(islOnGround&&jpGroundThrust){islVelY=8;islOnGround=false;jpFuel=Math.max(0,jpFuel-jpFuelDrain*dt*2);}
-    if(islOnGround&&!keys['Space']){jpFuel=Math.min(jpMaxFuel,jpFuel+jpRechargeRate*dt);}
-    if(!islOnGround){
-     var grav=MOON?3.3:9;
-     if(jpActive){islVelY=Math.min(islVelY+jpThrust*dt,jpDrift);jpFuel=Math.max(0,jpFuel-jpFuelDrain*dt);}
-     else if(islOnGround&&keys['Space']){islVelY=6.8;}
-     else islVelY-=grav*dt;
-     playerPos.y+=islVelY*dt;
-     if(playerPos.y<=gh){playerPos.y=gh;islVelY=0;islOnGround=true;}
-    }else playerPos.y=gh+0.02;
+    if(MOON){
+     var jpActive=keys['Space']&&jpFuel>0&&!islOnGround;
+     var jpGroundThrust=keys['Space']&&jpFuel>0&&islOnGround;
+     if(islOnGround&&jpGroundThrust){islVelY=8;islOnGround=false;jpFuel=Math.max(0,jpFuel-jpFuelDrain*dt*2);}
+     if(islOnGround&&!keys['Space']){jpFuel=Math.min(jpMaxFuel,jpFuel+jpRechargeRate*dt);}
+     if(!islOnGround){
+      if(jpActive){islVelY=Math.min(islVelY+jpThrust*dt,jpDrift);jpFuel=Math.max(0,jpFuel-jpFuelDrain*dt);}
+      else if(islOnGround&&keys['Space']){islVelY=6.8;}
+      else islVelY-=3.3*dt;
+      playerPos.y+=islVelY*dt;
+      if(playerPos.y<=gh){playerPos.y=gh;islVelY=0;islOnGround=true;}
+     }else playerPos.y=gh+0.02;
+    }else{
+     if(islOnGround&&keys['Space']){islVelY=7;islOnGround=false;}
+     if(!islOnGround){islVelY-=9*dt;playerPos.y+=islVelY*dt;if(playerPos.y<=gh){playerPos.y=gh;islVelY=0;islOnGround=true;}}
+     else playerPos.y=gh+0.02;
+    }
     var jp=playerGroup._jetpack;
     if(jp){
      var nozzle=jp.children[3];
      var flame=jp.children[4];
-     if(jpActive||jpGroundThrust){
+     if(MOON&&(jpActive||jpGroundThrust)){
       flame.material.opacity=0.7+Math.sin(t*40)*0.3;
       flame.scale.setScalar(0.6+jpFuel*0.008);
       flame.material.color.setHex(jpFuel<20?0xff3322:0xff8833);
@@ -5731,7 +5755,7 @@ function boot(){
      }
      var fBar=document.getElementById('jp-fuel-bar');
      if(fBar){
-      fBar.style.display='block';
+      fBar.style.display=MOON?'block':'none';
       var pct=Math.round(jpFuel/jpMaxFuel*100);
       var fill=document.getElementById('jp-fuel-fill');
       var pctEl=document.getElementById('jp-fuel-pct');
@@ -5881,7 +5905,7 @@ function boot(){
     rv.mesh.rotation.y+=((rv.yaw-Math.PI/2)-rv.mesh.rotation.y)*0.1;
     playerPos.set(rv.mesh.position.x,rv.mesh.position.y+1.4,rv.mesh.position.z);
     playerGroup.position.copy(playerPos);
-   if(playerGroup._jetpack)playerGroup._jetpack.visible=true;
+   if(playerGroup._jetpack)playerGroup._jetpack.visible=MOON;
     playerGroup.rotation.y=rv.mesh.rotation.y+Math.PI;
     if(isMoving){
      var wt=t*8;
@@ -6022,8 +6046,9 @@ window._ocIslReboot=function(){
  scene=null;camera=null;
  npcs=[];butterflies=[];petals=[];birds=[];droplets=[];clouds=[];
  waterGeo=null;waterVerts=null;fallSheet=null;mistPuffs=[];
-  remotePlayers={};moonFlag=null;moonEarth=null;moonTick=null;
- inited=false;
+   remotePlayers={};moonFlag=null;moonEarth=null;moonTick=null;
+   islOnGround=true;islVelY=0;jpFuel=jpMaxFuel;
+  inited=false;
  boot();
  inited=true;
 };
