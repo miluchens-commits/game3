@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>斷層競技場 — 1V1 地圖設計</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a12;color:#e0e0e0;font-family:'Segoe UI','PingFang TC','Microsoft JhengHei',Arial,sans-serif;line-height:1.8;overflow-x:hidden}
+.hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(ellipse at center,#1a0a2e 0%,#0a0a12 70%);overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E");opacity:.4}
+.hero h1{font-size:clamp(40px,8vw,80px);font-weight:900;letter-spacing:12px;background:linear-gradient(135deg,#ff6b6b,#ffa500,#ffdd57,#57ffdd,#6baeff,#a56bff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s ease-in-out infinite;text-shadow:0 0 60px rgba(255,107,107,.3);z-index:1}
+.hero .subtitle{font-size:clamp(14px,3vw,22px);color:rgba(255,255,255,.4);letter-spacing:8px;margin-top:16px;z-index:1}
+.hero .type-badge{margin-top:24px;padding:8px 28px;border:1px solid rgba(255,107,107,.3);border-radius:20px;font-size:14px;color:#ff6b6b;letter-spacing:4px;z-index:1;background:rgba(255,107,107,.05)}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.3);font-size:13px;letter-spacing:3px;animation:bounce 2s infinite;z-index:1}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
+.container{max-width:960px;margin:0 auto;padding:60px 24px}
+.section{margin-bottom:80px;animation:fadeUp .6s ease-out both}
+.section:nth-child(odd){animation-delay:.1s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:4px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid;position:relative;display:inline-block}
+.section-title::after{content:'';position:absolute;bottom:-2px;left:0;width:60px;height:2px}
+.t-red{color:#ff6b6b}.t-red::after{background:#ff6b6b}
+.t-orange{color:#ffa500}.t-orange::after{background:#ffa500}
+.t-yellow{color:#ffdd57}.t-yellow::after{background:#ffdd57}
+.t-green{color:#57ffdd}.t-green::after{background:#57ffdd}
+.t-blue{color:#6baeff}.t-blue::after{background:#6baeff}
+.t-purple{color:#a56bff}.t-purple::after{background:#a56bff}
+.t-pink{color:#ff6bb5}.t-pink::after{background:#ff6bb5}
+.t-white{color:#fff}.t-white::after{background:#fff}
+p{margin-bottom:16px;color:rgba(255,255,255,.75);font-size:15px}
+strong{color:#fff}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:20px 0}
+.zone-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;text-align:center;transition:all .3s}
+.zone-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+.zone-card .num{font-size:28px;font-weight:900;margin-bottom:6px}
+.zone-card .name{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:2px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0}
+.flow-step{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 18px;font-size:13px;color:rgba(255,255,255,.7);white-space:nowrap}
+.flow-arrow{color:rgba(255,255,255,.2);font-size:18px}
+.highlight-box{background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(165,107,255,.08));border:1px solid rgba(255,107,107,.2);border-radius:14px;padding:24px;margin:20px 0}
+.highlight-box .hl-title{font-size:16px;font-weight:bold;color:#ff6b6b;margin-bottom:10px;letter-spacing:2px}
+.list{list-style:none;margin:16px 0}
+.list li{position:relative;padding:6px 0 6px 24px;color:rgba(255,255,255,.7);font-size:14px}
+.list li::before{content:'▸';position:absolute;left:0;color:rgba(255,255,255,.3)}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:bold;letter-spacing:1px;margin:2px}
+.tag-red{background:rgba(255,107,107,.15);color:#ff6b6b;border:1px solid rgba(255,107,107,.2)}
+.tag-orange{background:rgba(255,165,0,.15);color:#ffa500;border:1px solid rgba(255,165,0,.2)}
+.tag-yellow{background:rgba(255,221,87,.15);color:#ffdd57;border:1px solid rgba(255,221,87,.2)}
+.tag-green{background:rgba(87,255,221,.15);color:#57ffdd;border:1px solid rgba(87,255,221,.2)}
+.tag-blue{background:rgba(107,174,255,.15);color:#6baeff;border:1px solid rgba(107,174,255,.2)}
+.tag-purple{background:rgba(165,107,255,.15);color:#a56bff;border:1px solid rgba(165,107,255,.2)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:40px 0}
+.quote{font-size:clamp(16px,3vw,22px);font-style:italic;color:rgba(255,255,255,.5);text-align:center;padding:40px 20px;letter-spacing:3px;line-height:2}
+.quote span{color:#ff6b6b;font-style:normal}
+.footer{text-align:center;padding:60px 20px;color:rgba(255,255,255,.2);font-size:12px;letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+ <h1>斷層競技場</h1>
+ <div class="subtitle">FAULT LINE ARENA</div>
+ <div class="type-badge">⚔ 1V1 高強度競技槍戰</div>
+ <div class="scroll-hint">▼ 向下捲動</div>
+</div>
+
+<div class="container">
+
+ <div class="section">
+  <div class="section-title t-red">核心設計理念</div>
+  <p>不是單純讓地圖變複雜，而是讓<strong>「地形、走位、預判、心理戰、槍法」</strong>全部影響勝負。</p>
+  <div class="highlight-box">
+   <div class="hl-title">🎯 核心體驗</div>
+   <p>「敵人一直就在附近，但你永遠不知道他下一秒會從哪裡出現。」</p>
+  </div>
+  <p>設計一張讓兩名玩家幾乎一直處於<strong>「敵人就在附近，但不知道下一秒從哪裡出現」</strong>狀態的立體競技地圖。</p>
+  <ul class="list">
+   <li>不要設計成大型空曠 FPS 地圖</li>
+   <li>不要讓玩家長時間找不到敵人</li>
+   <li>中小型地圖，玩家平均幾秒內就有機會接觸敵人</li>
+   <li>不要讓兩人一出生就直接互相看到</li>
+  </ul>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-orange">地圖結構總覽</div>
+  <p>整張地圖由 <strong>12 個區域</strong>組成，不要完全左右對稱，左右兩側應有不同地形特色。</p>
+  <div class="card-grid">
+   <div class="zone-card"><div class="num" style="color:#ff6b6b">1</div><div class="name">左側出生區</div></div>
+   <div class="zone-card"><div class="num" style="color:#ffa500">2</div><div class="name">右側出生區</div></div>
+   <div class="zone-card"><div class="num" style="color:#ffdd57">3</div><div class="name">中央主戰區</div></div>
+   <div class="zone-card"><div class="num" style="color:#57ffdd">4</div><div class="name">左側翼路線</div></div>
+   <div class="zone-card"><div class="num" style="color:#6baeff">5</div><div class="name">右側翼路線</div></div>
+   <div class="zone-card"><div class="num" style="color:#a56bff">6</div><div class="name">上層高台</div></div>
+   <div class="zone-card"><div class="num" style="color:#ff6bb5">7</div><div class="name">地下通道</div></div>
+   <div class="zone-card"><div class="num" style="color:#ff6b6b">8</div><div class="name">廢墟區</div></div>
+   <div class="zone-card"><div class="num" style="color:#ffa500">9</div><div class="name">狹窄室內區</div></div>
+   <div class="zone-card"><div class="num" style="color:#ffdd57">10</div><div class="name">隱藏捷徑</div></div>
+   <div class="zone-card"><div class="num" style="color:#57ffdd">11</div><div class="name">交叉路口</div></div>
+   <div class="zone-card"><div class="num" style="color:#6baeff">12</div><div class="name">掩體區</div></div>
+  </div>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-yellow">⚔ 中央主戰區</div>
+  <p>整張地圖<strong>最重要的戰鬥區</strong>。不要做成單純的大廣場。</p>
+  <p>由以下元素組成：</p>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0">
+   <span class="tag tag-red">大型掩體</span>
+   <span class="tag tag-orange">半高牆</span>
+   <span class="tag tag-yellow">破損牆壁</span>
+   <span class="tag tag-green">柱子</span>
+   <span class="tag tag-blue">箱子</span>
+   <span class="tag tag-purple">斜坡</span>
+   <span class="tag tag-red">小型高台</span>
+   <span class="tag tag-orange">半地下區域</span>
+  </div>
+  <p>玩家可以：正面攻擊、躲掩體、繞側面、跳到高處、從地下接近、快速撤退。</p>
+
+  <div class="highlight-box">
+   <div class="hl-title">⚡ 中央能量核心</div>
+   <p>取得後暫時獲得特殊能力：</p>
+   <ul class="list">
+    <li>攻擊力提升</li>
+    <li>移動速度提升</li>
+    <li>護盾</li>
+    <li>特殊武器</li>
+    <li>敵人位置短暫顯示</li>
+   </ul>
+   <p style="margin-top:12px;color:#ffdd57">⚠ 取得時玩家位置會短暫暴露給敵人 — 高風險、高報酬！</p>
+  </div>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-green">🏗 上層區域（第二層）</div>
+  <p>透過<strong>樓梯、斜坡、跳台、破損平台</strong>進入。</p>
+  <ul class="list">
+   <li>可以看到中央部分區域</li>
+   <li>只有少量掩體，不夠安全</li>
+   <li>長時間停留架槍 → 容易被地下或側翼繞後</li>
+   <li>「高處」= <strong>高視野、高風險</strong></li>
+  </ul>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-blue">🕳 地下區域</div>
+  <p>不要只有一條直線。設計成多路徑、多房間的地下網路。</p>
+  <p>包含：入口A、入口B、分叉路、小房間、狹窄通道、隱藏出口、中央地下區域。</p>
+  <p>可連接中央、左側翼和右側翼。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0">
+   <span class="tag tag-blue">繞後</span>
+   <span class="tag tag-green">逃跑</span>
+   <span class="tag tag-purple">偷襲</span>
+   <span class="tag tag-orange">快速轉移</span>
+  </div>
+  <p>部分地下出口必須位於玩家<strong>意想不到的位置</strong>。</p>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-purple">🔄 左側翼 vs 右側翼</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0">
+   <div style="background:rgba(87,255,221,.05);border:1px solid rgba(87,255,221,.15);border-radius:14px;padding:20px">
+    <div style="font-weight:bold;color:#57ffdd;margin-bottom:10px;letter-spacing:2px">◀ 左側翼 — 廢墟區</div>
+    <ul class="list">
+     <li>較寬的道路</li>
+     <li>大型破損牆壁</li>
+     <li>多個掩體</li>
+     <li>中距離射擊</li>
+     <li>少量高低差</li>
+     <li>至少兩條不同路線</li>
+    </ul>
+    <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.4)">適合：快速移動、中距離槍戰、追擊</div>
+   </div>
+   <div style="background:rgba(165,107,255,.05);border:1px solid rgba(165,107,255,.15);border-radius:14px;padding:20px">
+    <div style="font-weight:bold;color:#a56bff;margin-bottom:10px;letter-spacing:2px">右側翼 — 室內區 ▶</div>
+    <ul class="list">
+     <li>房間、走廊、轉角</li>
+     <li>小型掩體</li>
+     <li>窄門</li>
+     <li>短距離射擊</li>
+     <li>「看起來安全但有第二入口」的房間</li>
+    </ul>
+    <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.4)">適合：近戰、伏擊、偷襲、心理戰</div>
+   </div>
+  </div>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-pink">🔍 隱藏捷徑</div>
+  <p>熟悉地圖後才能掌握的進階路線。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0">
+   <span class="tag tag-red">可破壞牆壁</span>
+   <span class="tag tag-orange">隱藏通道</span>
+   <span class="tag tag-yellow">可跳上平台</span>
+   <span class="tag tag-green">地下入口</span>
+   <span class="tag tag-blue">窗戶</span>
+   <span class="tag tag-purple">通風管道</span>
+   <span class="tag tag-red">特殊跳躍路線</span>
+  </div>
+  <p>數量不能太多。讓高手可以利用地形做出：<strong>繞後、反繞後、快速逃脫、突然攻擊</strong>。</p>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-red">👁 視線設計</div>
+  <p>非常重要。不要讓整張地圖擁有長距離直線視野。</p>
+  <p>大量使用：</p>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:16px 0">
+   <span class="tag tag-red">牆壁</span>
+   <span class="tag tag-orange">柱子</span>
+   <span class="tag tag-yellow">掩體</span>
+   <span class="tag tag-green">高低差</span>
+   <span class="tag tag-blue">轉角</span>
+   <span class="tag tag-purple">半透明障礙</span>
+   <span class="tag tag-red">破損結構</span>
+  </div>
+  <div class="highlight-box">
+   <div class="hl-title">🧠 資訊不對稱</div>
+   <p>玩家應該經常知道<strong>「敵人在附近」</strong>，但不知道<strong>「敵人現在到底在哪裡」</strong>。</p>
+   <p>讓玩家必須透過<strong>腳步聲、槍聲、影子、短暫視線、地圖記憶</strong>判斷敵人位置。</p>
+  </div>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-orange">🔥 戰鬥節奏</div>
+  <p>希望玩家經常產生以下循環：</p>
+  <div class="flow">
+   <div class="flow-step">發現敵人</div><div class="flow-arrow">→</div>
+   <div class="flow-step">短暫交火</div><div class="flow-arrow">→</div>
+   <div class="flow-step">其中一人撤退</div><div class="flow-arrow">→</div>
+   <div class="flow-step">另一人追擊</div><div class="flow-arrow">→</div>
+   <div class="flow-step">敵人突然消失</div><div class="flow-arrow">→</div>
+   <div class="flow-step">開始猜測位置</div><div class="flow-arrow">→</div>
+   <div class="flow-step">敵人從側面出現</div><div class="flow-arrow">→</div>
+   <div class="flow-step">再次交火</div><div class="flow-arrow">→</div>
+   <div class="flow-step">其中一人繞後</div><div class="flow-arrow">→</div>
+   <div class="flow-step">近距離決戰</div>
+  </div>
+  <p>不要讓戰鬥一直固定在同一個位置。玩家應該會<strong>不斷移動</strong>。</p>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-yellow">🛡 防龜機制</div>
+  <p>避免玩家一直躲在同一個地方。</p>
+  <ul class="list">
+   <li>側翼路線</li>
+   <li>地下入口</li>
+   <li>高台射擊角度</li>
+   <li>可破壞掩體</li>
+   <li>中央特殊道具</li>
+   <li>縮小戰鬥區域</li>
+   <li>時間限制</li>
+  </ul>
+  <p>如果玩家長時間不交戰，讓中央區域逐漸變成<strong>更重要的位置</strong>。</p>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-green">🏁 最終決戰</div>
+  <p>回合時間快結束時：</p>
+  <ul class="list">
+   <li>中央區域成為主要戰鬥區</li>
+   <li>部分外圍路線逐漸失去優勢</li>
+   <li>迫使兩名玩家逐漸接近中央</li>
+  </ul>
+  <div class="highlight-box">
+   <div class="hl-title">⚔ 最終狀態</div>
+   <p style="font-size:18px;text-align:center;letter-spacing:3px;color:#fff;margin:12px 0">1V1 · 近距離 · 高壓力 · 沒有太多躲藏空間</p>
+  </div>
+ </div>
+
+ <div class="divider"></div>
+
+ <div class="section">
+  <div class="section-title t-purple">🎮 玩家體驗歷程</div>
+  <div style="display:flex;flex-direction:column;gap:16px;margin:20px 0">
+   <div style="background:rgba(255,107,107,.05);border-left:3px solid #ff6b6b;padding:16px 20px;border-radius:0 10px 10px 0">
+    <div style="font-size:12px;color:#ff6b6b;letter-spacing:2px;margin-bottom:6px">第一次玩</div>
+    <p style="margin:0;color:rgba(255,255,255,.7)">「這張地圖好多路。」</p>
+   </div>
+   <div style="background:rgba(255,165,0,.05);border-left:3px solid #ffa500;padding:16px 20px;border-radius:0 10px 10px 0">
+    <div style="font-size:12px;color:#ffa500;letter-spacing:2px;margin-bottom:6px">玩幾場後</div>
+    <p style="margin:0;color:rgba(255,255,255,.7)">「原來這裡可以繞後。」</p>
+   </div>
+   <div style="background:rgba(87,255,221,.05);border-left:3px solid #57ffdd;padding:16px 20px;border-radius:0 10px 10px 0">
+    <div style="font-size:12px;color:#57ffdd;letter-spacing:2px;margin-bottom:6px">玩熟之後</div>
+    <p style="margin:0;color:rgba(255,255,255,.7)">「他如果走右邊，一定會從地下出來。」</p>
+   </div>
+   <div style="background:rgba(165,107,255,.05);border-left:3px solid #a56bff;padding:16px 20px;border-radius:0 10px 10px 0">
+    <div style="font-size:12px;color:#a56bff;letter-spacing:2px;margin-bottom:6px">高手對戰</div>
+    <p style="margin:0;color:rgba(255,255,255,.7)">「他知道我要繞後，所以他可能已經在反繞後。」</p>
+   </div>
+  </div>
+ </div>
+
+ <div class="quote">
+  <span>「地形、走位、預判、心理戰、槍法」</span><br>
+  讓地圖本身成為競技的一部分。
+ </div>
+
+</div>
+
+<div class="footer">
+ 斷層競技場 — FAULT LINE ARENA — 1V1 地圖設計文件
+</div>
+
+</body>
+</html>
