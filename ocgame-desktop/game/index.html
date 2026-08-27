@@ -834,7 +834,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 </div>
 <div id="map-select"><div id="map-select-bg"></div><div id="map-select-box"><div id="map-select-title">選 擇 地 圖</div><div class="map-option" data-map="base"><div class="map-name">🏙 基本地圖</div><div class="map-desc">標準競技場 — 原始地圖</div></div><div class="map-option" data-map="arena2"><div class="map-name">🏙 基本地圖(2)</div><div class="map-desc">明亮競技場 — 對稱天橋</div></div><div class="map-option" data-map="rain"><div class="map-name">🌧 雨天</div><div class="map-desc">黑色天空 x 藍色雨滴</div></div><div class="map-option" data-map="fog"><div class="map-name">🌫 迷霧</div><div class="map-desc">視野受限，需使用手電筒</div></div>  <div class="map-option" data-map="dragonboat" style="border-color:rgba(255,100,34,.3);background:rgba(255,100,34,.06)"><div class="map-name">🎏 端午節</div><div class="map-desc">龍舟競渡 — 端午限定地圖</div></div>
   <div class="map-option" data-map="nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
-  <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div><div class="map-option" data-map="basemap3" style="border-color:rgba(120,180,220,.3);background:rgba(120,180,220,.06)"><div class="map-name">🗼 基本地圖(3)</div><div class="map-desc">天梯探險 — 爬梯登上天空平台</div></div></div></div>
+  <div class="map-option" data-map="flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div><div class="map-option" data-map="basemap3" style="border-color:rgba(120,180,220,.3);background:rgba(120,180,220,.06)"><div class="map-name">🗼 基本地圖(3)</div><div class="map-desc">天梯探險 — 爬梯登上天空平台</div></div><div class="map-option" data-map="fault" style="border-color:rgba(184,92,255,.3);background:rgba(184,92,255,.06)"><div class="map-name">⚡ 斷層競技場</div><div class="map-desc">中央核心塔 x 地下斷層 x 多層地形</div></div></div></div>
 <div id="diff-select"><div id="diff-bg"></div><div id="diff-box"><div id="diff-title">☢ 核電站 — 難度選擇</div><div id="diff-sub">選擇任務難度，影響敵人強度與分數加權</div><div class="diff-option" data-diff="normal"><div class="diff-name">普 通</div><div class="diff-desc">敵人強度 ×1.0 &bull; 分數 ×1.0</div></div><div class="diff-option" data-diff="conf"><div class="diff-name">機 密</div><div class="diff-desc">敵人強度 ×1.5 &bull; 分數 ×1.5 &bull; 輻射加速</div></div><div class="diff-option" data-diff="extreme"><div class="diff-name">超 難</div><div class="diff-desc">敵人強度 ×2.0 &bull; 分數 ×2.5 &bull; 輻射加速</div></div><button id="diff-back">返 回</button></div></div>
 <div id="class-select"><div id="class-select-bg"></div><div id="class-select-box"><div id="class-select-title">選 擇 職 業</div><div id="class-grid"></div><button id="class-back">返 回</button></div></div>
 <div id="name-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:65;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:20px;color:#ff6644;letter-spacing:2px;margin-bottom:6px">⚠ 設定遊戲名稱</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-bottom:18px">輸入名稱後即可開始遊戲（之後可隨時更改）</div><input id="name-input" placeholder="輸入你的名稱（1-12字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="name-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><button id="name-confirm-btn" style="width:100%;padding:12px;border:none;border-radius:6px;background:#f64;color:#fff;font-size:17px;font-weight:bold;cursor:pointer;letter-spacing:4px;font-family:Arial">確 認</button></div></div><div id="mode-select"><div id="mode-box"><div id="mode-title">選擇操作模式</div><div id="mode-sub">請選擇您要使用的操作方式</div><div id="mode-buttons"><button id="mode-pc-btn">🖥 電腦版</button><button id="mode-mobile-btn">📱 平板模式</button></div><div id="mode-mobile-warn" style="font-size:12px;color:rgba(255,136,170,.6);margin-top:14px;letter-spacing:1px;line-height:1.6;display:none">⚠ 注意事項：<br>平板模式僅支援平板／大螢幕裝置<br><span style="color:#f66">手機（小螢幕）不支援，將無法正常遊玩</span></div><button id="mode-skip-btn">稍後再說</button></div></div><div id="login-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial"><div id="login-box" style="background:linear-gradient(135deg,#1a1a2a,#0a0a1a);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:30px 40px;text-align:center;max-width:320px;width:90%"><div style="font-size:26px;color:#4af;letter-spacing:4px;margin-bottom:20px">O C G A M E</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px;letter-spacing:1px">登入以雲端儲存進度</div><div id="g_id_onload" style="display:none" data-client_id="65140598878-hscjau3bf3svo4h2bf2d0c4vvg7u9g48.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredential" data-auto_prompt="false"></div><div class="g_id_signin" style="display:none" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div><div style="margin:14px 0;color:rgba(255,255,255,.15);font-size:12px;letter-spacing:1px">— 或使用帳號密碼 —</div><input id="auth-user" placeholder="帳號（至少2字）" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><input id="auth-pass" type="password" placeholder="密碼（至少4字）" style="width:100%;padding:10px;margin-bottom:16px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:Arial;text-align:center"><div id="auth-err" style="color:#f44;font-size:12px;margin-bottom:10px;min-height:18px"></div><div style="display:flex;gap:10px"><button id="auth-login-btn" style="flex:1;padding:10px;border:none;border-radius:6px;background:#4af;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;font-family:Arial">登 入</button><button id="auth-reg-btn" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;letter-spacing:2px;font-family:Arial">註 冊</button></div><div style="margin-top:16px"><button id="auth-skip-btn" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;text-decoration:underline;font-family:Arial">跳過，使用離線模式</button></div></div></div>
@@ -937,6 +937,7 @@ body.mobile-mode #scope-overlay{display:none!important}
     <div class="map-option" data-map="nuclear" id="vote-nuclear" style="border-color:rgba(0,255,100,.3);background:rgba(0,255,100,.06)"><div class="map-name">☢ 核電站</div><div class="map-desc">輻射淨化 — 核子危機</div></div>
     <div class="map-option" data-map="flooded" id="vote-flooded" style="border-color:rgba(68,170,255,.3);background:rgba(68,170,255,.06)"><div class="map-name">🌊 淹水房子</div><div class="map-desc">深海潛伏 · 氧氣管理 x 潛水獵殺</div></div>
     <div class="map-option" data-map="basemap3" id="vote-basemap3" style="border-color:rgba(120,180,220,.3);background:rgba(120,180,220,.06)"><div class="map-name">🗼 基本地圖(3)</div><div class="map-desc">天梯探險 — 爬梯登上天空平台</div></div>
+    <div class="map-option" data-map="fault" id="vote-fault" style="border-color:rgba(184,92,255,.3);background:rgba(184,92,255,.06)"><div class="map-name">⚡ 斷層競技場</div><div class="map-desc">中央核心塔 x 地下斷層 x 多層地形</div></div>
   </div>
 </div>
 <div id="gun-overlay"><div id="gun-bg"></div><div id="gun-box"><div id="gun-close">✕</div><div id="gun-left"><div id="gun-left-title">已擁有 <span id="gun-own-count">0</span></div><div id="gun-left-list"></div></div><div id="gun-right"><div id="gun-preview"><canvas id="gun-canvas"></canvas></div><div id="gun-attach-slots"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🔫 槍口</div><div id="gun-slot-muzzle" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">🎯 瞄具</div><div id="gun-slot-sight" class="gun-a-slot"></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div class="gun-a-slot-title">📦 彈匣</div><div id="gun-slot-mag" class="gun-a-slot"></div></div></div><button id="gun-buy-all" style="display:none">一 鍵 購 買</button></div></div></div>
@@ -1622,6 +1623,319 @@ function addA2Ramp(p,s,ang,axis,c){
   if(axis==='z')mesh.rotation.z=ang*Math.PI/180;
   else if(axis==='x')mesh.rotation.x=ang*Math.PI/180;
   mesh.visible=false;
+}
+// ═══════════════ 斷層競技場 (Fault Arena) ═══════════════
+var faultElements=[];
+var faultLights=[];
+function buildFaultMap(){
+  if(faultElements.length)return;
+  var FCLR={
+    ground:0x2a2d3a, wall:0x6a7086, wallH:0x5f6b82, ruin:0x8a736b,
+    indoor:0x54646f, white:0xaab0c0, dark:0x3a3e4c,
+    core:0xffc93f, green:0x35e08a, blue:0x3da5ff,
+    red:0xff5a44, purple:0xb85cff, orange:0xff8a3d, teal:0x2fd8c8,
+    plat:0x6b6f80, concrete:0x8a8d98, groundAccent:0x4a5470
+  };
+  var FM={
+    ground:new THREE.MeshStandardMaterial({color:FCLR.ground,roughness:0.9,metalness:0.2}),
+    groundAccent:new THREE.MeshStandardMaterial({color:FCLR.groundAccent,roughness:0.75,metalness:0.3}),
+    wall:new THREE.MeshStandardMaterial({color:FCLR.wall,roughness:0.85,metalness:0.15}),
+    wallH:new THREE.MeshStandardMaterial({color:FCLR.wallH,roughness:0.85,metalness:0.1}),
+    ruin:new THREE.MeshStandardMaterial({color:FCLR.ruin,roughness:0.9}),
+    indoor:new THREE.MeshStandardMaterial({color:FCLR.indoor,roughness:0.85,metalness:0.2}),
+    white:new THREE.MeshStandardMaterial({color:FCLR.white,roughness:0.7,metalness:0.35}),
+    dark:new THREE.MeshStandardMaterial({color:FCLR.dark,roughness:0.85,metalness:0.25}),
+    plat:new THREE.MeshStandardMaterial({color:FCLR.plat,roughness:0.8,metalness:0.25}),
+    conc:new THREE.MeshStandardMaterial({color:FCLR.concrete,roughness:0.85,metalness:0.2}),
+    purple:new THREE.MeshStandardMaterial({color:FCLR.purple,emissive:FCLR.purple,emissiveIntensity:0.35,roughness:0.6}),
+    orange:new THREE.MeshStandardMaterial({color:FCLR.orange,emissive:0xff5500,emissiveIntensity:0.35,roughness:0.6}),
+    teal:new THREE.MeshStandardMaterial({color:FCLR.teal,emissive:FCLR.teal,emissiveIntensity:0.35,roughness:0.6}),
+    neonC:new THREE.MeshBasicMaterial({color:FCLR.teal,transparent:true,opacity:0.85}),
+    neonG:new THREE.MeshBasicMaterial({color:FCLR.green,transparent:true,opacity:0.85}),
+    neonP:new THREE.MeshBasicMaterial({color:FCLR.purple,transparent:true,opacity:0.85}),
+    neonO:new THREE.MeshBasicMaterial({color:FCLR.orange,transparent:true,opacity:0.85}),
+    coreM:new THREE.MeshStandardMaterial({color:FCLR.core,emissive:FCLR.core,emissiveIntensity:1.2,roughness:0.3,metalness:0.6}),
+    coreRing:new THREE.MeshBasicMaterial({color:FCLR.core,transparent:true,opacity:0.4,side:THREE.DoubleSide}),
+    greenM:new THREE.MeshStandardMaterial({color:FCLR.green,emissive:FCLR.green,emissiveIntensity:0.7,roughness:0.5}),
+    blueM:new THREE.MeshStandardMaterial({color:FCLR.blue,emissive:FCLR.blue,emissiveIntensity:0.6,roughness:0.5}),
+    redM:new THREE.MeshStandardMaterial({color:FCLR.red,emissive:0xaa2211,emissiveIntensity:0.7,roughness:0.5}),
+    crack:new THREE.MeshBasicMaterial({color:FCLR.teal,transparent:true,opacity:0.6}),
+    crackDim:new THREE.MeshBasicMaterial({color:0x33ccee,transparent:true,opacity:0.3}),
+    uDark:new THREE.MeshStandardMaterial({color:0x33373f,roughness:0.9}),
+    uWall:new THREE.MeshStandardMaterial({color:0x5a6170,roughness:0.92}),
+    pipe:new THREE.MeshStandardMaterial({color:0x2c2f38,roughness:0.6,metalness:0.5})
+  };
+  function fbx(x,y,z,sx,sy,sz,m){
+    var g=new THREE.BoxGeometry(sx,sy,sz);
+    var mesh=new THREE.Mesh(g,m);
+    mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;
+    scene.add(mesh);
+    var entry={pos:new THREE.Vector3(x,y,z),size:new THREE.Vector3(sx,sy,sz),mesh:mesh,isFault:true};
+    faultElements.push(entry);mapBoxes.push(entry);
+    mesh.visible=false;
+  }
+  function fcy(x,y,z,r,hh,m){
+    var g=new THREE.CylinderGeometry(r,r,hh,14);
+    var mesh=new THREE.Mesh(g,m);
+    mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;
+    scene.add(mesh);
+    var entry={pos:new THREE.Vector3(x,y,z),size:new THREE.Vector3(r*2,hh,r*2),mesh:mesh,isFault:true};
+    faultElements.push(entry);mapBoxes.push(entry);
+    mesh.visible=false;
+  }
+  function fneon(x,y,z,sx,sy,sz,m){ // non-collision neon decoration
+    var mesh=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);
+    mesh.position.set(x,y,z);scene.add(mesh);
+    var entry={pos:new THREE.Vector3(x,y,z),size:new THREE.Vector3(sx,sy,sz),mesh:mesh,isFault:true,noCollide:true};
+    faultElements.push(entry);mesh.visible=false;
+  }
+  function fright(x,y,z,c,intensity,distance){
+    var l=new THREE.PointLight(c,intensity||1,distance||26);
+    l.position.set(x,y,z);scene.add(l);
+    faultLights.push(l);l.visible=false;
+  }
+  // ── A. 地表本體 ──
+  fbx(0,-0.5,0,70,1.0,66,FM.ground);
+  fneon(0,0.02,0,70,0.04,66,FM.groundAccent);
+  // 外框霓虹
+  fneon(0,0.06,-33,70,0.06,0.2,FM.neonC);
+  fneon(0,0.06,33,70,0.06,0.2,FM.neonC);
+  fneon(-35,0.06,0,0.2,0.06,66,FM.neonC);
+  fneon(35,0.06,0,0.2,0.06,66,FM.neonC);
+  // ── B. 斷層溝槽（南半部，中心 z=16，與核心塔分離）──
+  var trZ=16,tW=6.5;
+  fneon(0,0.05,trZ-tW,40,0.12,0.2,FM.crack);
+  fneon(0,0.05,trZ+tW,40,0.12,0.2,FM.crack);
+  fbx(-10,-2.2,trZ-tW,40,4.5,0.6,FM.uWall);
+  fbx(-10,-2.2,trZ+tW,40,4.5,0.6,FM.uWall);
+  fbx(-10,-4.4,trZ,40,0.4,13,FM.uDark);
+  fneon(-10,-4.0,trZ,30,0.08,10,FM.crackDim);
+  // ── C. 階梯下溝 ──
+  function fs(cx,dir){
+    for(var i=0;i<5;i++){
+      var y=-0.5-i*0.75;
+      var z=dir<0?(trZ-tW+i*1.2):(trZ+tW-i*1.2);
+      fbx(cx,y,z,4.5,0.75,1.2,FM.conc);
+    }
+  }
+  fs(0,-1);fs(0,1);fs(-18,-1);fs(-18,1);fs(18,-1);fs(18,1);
+  // ── D. B1 地下網路 ──
+  fbx(-10,-2.9,trZ,40,0.4,13,FM.uDark);
+  fbx(-10,-3.6,trZ-2,40,1.0,0.5,FM.uWall);
+  fbx(-10,-3.6,trZ+2,40,1.0,0.5,FM.uWall);
+  fbx(-10,-3.6,trZ-2,8,1.0,0.5,FM.uWall);fbx(18,-3.6,trZ-2,8,1.0,0.5,FM.uWall);
+  fbx(-10,-3.6,trZ+2,8,1.0,0.5,FM.uWall);fbx(18,-3.6,trZ+2,8,1.0,0.5,FM.uWall);
+  fbx(-18,-4.0,trZ,3,0.3,8,FM.uDark);
+  fbx(18,-4.0,trZ,3,0.3,8,FM.uDark);
+  fbx(-24,-4.0,trZ-4,3.5,0.3,5,FM.uDark);
+  fbx(-25.5,-3.0,trZ-4,0.5,2.5,5,FM.uWall);
+  fbx(24,-4.0,trZ+4,3.5,0.3,5,FM.uDark);
+  fbx(25.5,-3.0,trZ+4,0.5,2.5,5,FM.uWall);
+  for(var px=-16;px<=16;px+=8){fcy(px,-3.3,trZ-2,0.35,1.5,FM.uDark);fcy(px,-3.3,trZ+2,0.35,1.5,FM.uDark);}
+  fneon(-10,-2.6,trZ-2,30,0.05,0.06,FM.crackDim);
+  fneon(-10,-2.6,trZ+2,30,0.05,0.06,FM.crackDim);
+  fbx(-10,-3.5,trZ,2.4,0.8,2.4,FM.uDark);
+  fbx(-10,-2.8,trZ,1.4,0.6,1.4,FM.greenM);
+  fbx(0,-3.3,trZ-4,3,2.2,0.4,FM.greenM);fbx(0,-3.3,trZ+4,3,2.2,0.4,FM.greenM);
+  fright(-10,-2.5,trZ,0x33ff99,1.3,14);
+  fright(-10,2,trZ-8,(function(){return 0x33ff99})(),0.6,20);
+  // ── E. 通風豎井 ──
+  var vents=[[-20,trZ],[-20,trZ+4],[20,trZ],[20,trZ+4],[8,trZ-3],[-8,trZ-3]];
+  vents.forEach(function(v){
+    var vx=v[0],vz=v[1];
+    fbx(vx,-0.8,vz,1.9,3.4,0.15,FM.pipe);
+    fbx(vx,-0.8,vz+0.8,1.9,3.4,0.15,FM.pipe);
+    fbx(vx,-0.8,vz,1.9,3.4,-0.15,FM.pipe);
+    fbx(vx,-0.8,vz-0.8,0.15,3.4,1.4,FM.pipe);
+    fbx(vx,-3.3,vz,0.15,0.4,1.4,FM.pipe);
+    fbx(vx,0.15,vz,0.15,0.4,1.4,FM.pipe);
+    for(var r=0;r<4;r++){fbx(vx,-1.2-r*0.6,vz,1.4,0.05,0.05,FM.pipe);}
+  });
+  // ── F. 中央能量核心塔 ──
+  fbx(0,0.6,0,6,1.2,6,FM.plat);
+  fbx(0,1.3,0,4.5,0.4,4.5,FM.white);
+  for(var a=0;a<4;a++){
+    var ang=a*Math.PI/2+Math.PI/4;
+    fcy(Math.cos(ang)*2.4,2.6,Math.sin(ang)*2.4,0.4,3.0,FM.dark);
+  }
+  fbx(0,3.6,0,2,1.2,2,FM.coreM);
+  fbx(0,4.4,0,1.2,0.6,1.2,FM.coreM);
+  fneon(-3.2,0.6,-2,0.5,1.2,1.2,FM.wall);fneon(3.2,0.6,2,0.5,1.2,1.2,FM.wall);
+  fneon(-2,0.6,3.2,1.2,1.2,0.5,FM.wall);fneon(2,0.6,-3.2,1.2,1.2,0.5,FM.wall);
+  fright(0,5,0,0xffcc33,1.8,26);
+  // ── G. 左翼廢墟 ──
+  fbx(-30,0.4,0,4,0.8,5,FM.redM);
+  fbx(-28,0.9,-2.3,0.5,1.8,2.4,FM.redM);fbx(-28,0.9,2.3,0.5,1.8,2.4,FM.redM);
+  fbx(-27,1.2,-5,5.5,2.4,0.5,FM.ruin);fbx(-27,1.2,5,4.5,2.4,0.5,FM.ruin);
+  fbx(-25,1.6,9,3.2,3.2,0.5,FM.ruin);fbx(-23,0.5,-8,1.4,1,1.4,FM.dark);
+  fbx(-24,0.5,-1,1.4,1,1.4,FM.dark);fbx(-20,0.5,8,1.4,1,1.4,FM.dark);
+  fbx(-21,1.2,-12,3.6,2.4,0.5,FM.ruin);
+  fbx(-17,0.5,-4,1.2,1,1.2,FM.dark);fbx(-15,0.5,11,1.2,1,1.2,FM.dark);
+  fcy(-21,1.5,-10,0.55,3,FM.ruin);fcy(-25,1.5,6,0.55,3,FM.ruin);
+  fbx(-15,1.2,-16,3,0.5,3,FM.ruin);
+  fright(-30,2,0,FCLR.red,0.9,24);
+  // ── H. 右翼室內 ──
+  fbx(30,0.4,0,4,0.8,5,FM.blueM);
+  fbx(28,0.9,-2.3,0.5,1.8,2.4,FM.blueM);fbx(28,0.9,2.3,0.5,1.8,2.4,FM.blueM);
+  fbx(26,1.3,-4,2.8,2.6,0.4,FM.indoor);fbx(26,1.3,4,2.8,2.6,0.4,FM.indoor);
+  fbx(27.4,1.3,-12,3.2,2.6,0.5,FM.indoor);fbx(27.4,1.3,12,3.2,2.6,0.5,FM.indoor);
+  fbx(24,1.2,-9,0.5,2.4,3,FM.indoor);fbx(24,1.2,9,0.5,2.4,3,FM.indoor);
+  fbx(25.5,1.2,-7,3.6,2.4,0.5,FM.indoor);fbx(25.5,1.2,7,3.6,2.4,0.5,FM.indoor);
+  fbx(22,0.4,-1.5,1.2,0.8,1.2,FM.dark);fbx(22,0.4,1.5,1.2,0.8,1.2,FM.dark);
+  fbx(20,0.4,6,1.2,0.8,1.2,FM.dark);
+  fbx(18,1.2,11,3,2.4,0.4,FM.indoor);fbx(17,0.4,8,1.2,0.8,1.2,FM.dark);
+  fbx(20,0.6,14,2,1.2,2,FM.conc);fbx(20,1.2,14,2,0.6,2,FM.conc);
+  fright(30,2,0,FCLR.blue,0.9,24);
+  // ── I. 中央要塞 ──
+  fbx(-4,1.6,-10,7,3.2,0.5,FM.wallH);fbx(7,1.6,-10,7,3.2,0.5,FM.wallH);
+  fbx(-6,1.6,10,5,3.2,0.5,FM.wallH);fbx(6,1.6,10,7,3.2,0.5,FM.wallH);
+  fbx(-13,1.6,-2,0.5,3.2,8,FM.wallH);fbx(-13,1.6,6,0.5,3.2,8,FM.wallH);
+  fbx(13,1.6,-2,0.5,3.2,8,FM.wallH);fbx(13,1.6,6,0.5,3.2,8,FM.wallH);
+  fcy(-12,0.7,-9,1.2,1.4,FM.wall);fcy(12,0.7,-9,1.2,1.4,FM.wall);
+  fcy(-12,0.7,9,1.2,1.4,FM.wall);fcy(12,0.7,9,1.2,1.4,FM.wall);
+  fbx(0,1.5,-5,0.5,3.0,8,FM.wall);
+  fbx(0,1.5,5,0.5,3.0,8,FM.wall);
+  fbx(-6,1.5,0,8,3.0,0.5,FM.wall);
+  fbx(6,1.5,0,8,3.0,0.5,FM.wall);
+  fbx(-7,0.5,-6,1.5,1.0,1.5,FM.dark);fbx(7,0.5,-6,1.5,1.0,1.5,FM.dark);
+  fbx(-7,0.5,6,1.5,1.0,1.5,FM.dark);fbx(7,0.5,6,1.5,1.0,1.5,FM.dark);
+  fbx(-9,1.0,-3,0.8,2.0,0.8,FM.dark);fbx(9,1.0,3,0.8,2.0,0.8,FM.dark);
+  fbx(-9,0.8,-7,2.5,1.6,0.4,FM.wall);fbx(9,0.8,7,2.5,1.6,0.4,FM.wall);
+  fbx(-3,0.45,7,1.3,0.9,1.3,FM.dark);fbx(-3,1.15,7,1.3,0.5,1.3,FM.dark);
+  fbx(3,0.45,-7,1.3,0.9,1.3,FM.dark);fbx(3,1.15,-7,1.3,0.5,1.3,FM.dark);
+  fbx(-5,0.45,-8,1.3,0.9,1.3,FM.dark);
+  fbx(5,0.45,8,1.3,0.9,1.3,FM.dark);
+  fbx(-15,0.5,0,2.4,1.0,2.4,FM.dark);fcy(-17,0.5,0,0.8,1.0,FM.orange);
+  fbx(15,0.5,0,2.4,1.0,2.4,FM.dark);fcy(17,0.5,0,0.8,1.0,FM.orange);
+  fbx(-3,0.5,-3.5,2,1.0,0.5,FM.wall);fbx(-6,0.5,-3,1,1.0,0.6,FM.wall);
+  fbx(3,0.5,3.5,2,1.0,0.5,FM.wall);fbx(6,0.5,3,1,1.0,0.6,FM.wall);
+  fbx(-1,3.2,-5,8,0.3,1.6,FM.plat);
+  fbx(-1,3.2,-13,6,0.3,1.6,FM.plat);
+  fbx(-1,3.4,-6,8,0.25,0.15,FM.dark);fbx(-1,3.4,-4,8,0.25,0.15,FM.dark);
+  fcy(-4,1.6,-5,0.3,3.2,FM.dark);fcy(3,1.6,-5,0.3,3.2,FM.dark);
+  fbx(-9,3.2,3,1.6,0.3,5,FM.plat);
+  fcy(-9,1.6,3,0.3,3.2,FM.dark);
+  fbx(-4,0.7,-5,2,0.4,1.4,FM.conc);fbx(-4,1.3,-5,2,0.5,1.4,FM.conc);
+  fbx(-4,1.95,-5,2,0.5,1.4,FM.conc);
+  fbx(-16,0.6,-6,3,1.2,0.6,FM.teal);fbx(-17,0.6,8,3,1.2,0.6,FM.teal);
+  fbx(16,0.6,-6,3,1.2,0.6,FM.teal);fbx(17,0.6,8,3,1.2,0.6,FM.teal);
+  fright(-12,3,18,FCLR.purple,0.8,26);
+  fright(12,3,-16,FCLR.orange,0.8,26);
+  fright(0,2,-8,FCLR.teal,0.7,20);
+  // ── I2. 密度填充：北/南走廊 ──
+  fbx(-22,0.6,-24,5,1.2,0.6,FM.indoor);fbx(-16,0.9,-22,4,1.8,0.5,FM.indoor);
+  fbx(-11,0.6,-24,4,1.2,0.6,FM.indoor);fbx(-5,0.9,-21,4,1.8,0.5,FM.indoor);
+  fbx(4,0.6,-24,6,1.2,0.6,FM.indoor);fbx(11,0.9,-22,5,1.8,0.5,FM.indoor);
+  fbx(17,0.6,-24,4,1.2,0.6,FM.indoor);fbx(23,0.9,-21,4,1.8,0.5,FM.indoor);
+  fbx(-19,0.4,-26,1.3,0.8,1.3,FM.dark);fbx(-9,0.4,-26,1.3,0.8,1.3,FM.dark);
+  fbx(8,0.4,-25,1.3,0.8,1.3,FM.dark);fbx(20,0.4,-26,1.3,0.8,1.3,FM.dark);
+  fbx(-20,0.6,26,6,1.2,0.6,FM.indoor);fbx(-13,0.9,24,4,1.8,0.5,FM.indoor);
+  fbx(-6,0.6,26,5,1.2,0.6,FM.indoor);fbx(2,0.9,24,5,1.8,0.5,FM.indoor);
+  fbx(10,0.6,26,5,1.2,0.6,FM.indoor);fbx(18,0.9,24,5,1.8,0.5,FM.indoor);
+  fbx(-16,0.4,28,1.3,0.8,1.3,FM.dark);fbx(4,0.4,28,1.3,0.8,1.3,FM.dark);
+  fbx(14,0.4,27,1.3,0.8,1.3,FM.dark);
+  fbx(-20,0.7,-14,4,1.4,0.6,FM.ruin);fbx(-16,1.0,-10,3,2.0,0.6,FM.ruin);
+  fbx(-19,0.7,12,4,1.4,0.6,FM.ruin);fbx(-15,1.0,8,3,2.0,0.6,FM.ruin);
+  fbx(-22,0.5,-18,2,1.0,2,FM.dark);fbx(-18,0.5,16,2,1.0,2,FM.dark);
+  fbx(-29,0.5,-10,2.4,1.0,2.4,FM.ruin);fbx(-29,0.9,-10,2.4,0.4,2.4,FM.white);
+  fbx(-29,0.5,10,2.4,1.0,2.4,FM.ruin);fbx(-29,0.9,10,2.4,0.4,2.4,FM.white);
+  fbx(18,0.7,-14,4,1.4,0.6,FM.indoor);fbx(15,1.0,-10,3,2.0,0.6,FM.indoor);
+  fbx(19,0.7,12,4,1.4,0.6,FM.indoor);fbx(16,1.0,8,3,2.0,0.6,FM.indoor);
+  fbx(22,0.5,-18,2,1.0,2,FM.dark);fbx(18,0.5,16,2,1.0,2,FM.dark);
+  fbx(29,0.5,-10,2.4,1.0,2.4,FM.indoor);fbx(29,0.9,-10,2.4,0.4,2.4,FM.white);
+  fbx(29,0.5,10,2.4,1.0,2.4,FM.indoor);fbx(29,0.9,10,2.4,0.4,2.4,FM.white);
+  fbx(-14,0.55,-4,1.5,1.1,1.5,FM.dark);fbx(-14,0.5,9,1.5,1.0,1.5,FM.dark);
+  fbx(-17,0.6,3,2,1.2,0.5,FM.wall);fbx(-11,0.7,-9,2,1.4,0.5,FM.wall);
+  fbx(14,0.55,-4,1.5,1.1,1.5,FM.dark);fbx(14,0.5,9,1.5,1.0,1.5,FM.dark);
+  fbx(17,0.6,3,2,1.2,0.5,FM.wall);fbx(11,0.7,-9,2,1.4,0.5,FM.wall);
+  fbx(-5,0.5,20,1.6,1.0,1.6,FM.dark);fbx(6,0.5,20,1.6,1.0,1.6,FM.dark);
+  fbx(0,0.8,17,3,1.6,0.5,FM.wall);
+  [[-21,-17],[-18,14],[-14,-16],[14,-16],[18,14],[21,-17],
+   [-21,19],[-16,22],[16,22],[21,19],[-6,-18],[6,-18],
+   [-24,22],[24,22],[-24,-22],[24,-22]].forEach(function(p){
+     fbx(p[0],0.5,p[1],1,1.0,1,FM.dark);
+     fbx(p[0],0.5,p[1]+4,1,0.7,1,FM.dark);
+   });
+  // ── J. 上層高台 ──
+  fbx(-1,3.0,-20,13,0.4,4.5,FM.plat);
+  fbx(-11,5.1,-16,4.5,0.35,4,FM.plat);
+  fbx(11,5.1,-16,4.5,0.35,4,FM.plat);
+  fbx(15,3.0,3,4.5,0.35,4.5,FM.plat);
+  fbx(-1,3.0,15,11,0.35,4,FM.plat);
+  fcy(-3,2.8,-20,0.4,5.6,FM.dark);fcy(3,2.8,-20,0.4,5.6,FM.dark);
+  fcy(15,1.5,3,0.4,3.0,FM.dark);
+  fcy(-5,1.5,15,0.4,3.0,FM.dark);fcy(5,1.5,15,0.4,3.0,FM.dark);
+  fbx(-12,1.6,-20,4,0.5,2.4,FM.plat);
+  fbx(12,4.6,-18,4,0.5,2.4,FM.plat);
+  fbx(18,1.1,3,3,0.5,2.5,FM.conc);
+  fbx(-7,1.1,15,3,0.5,2.5,FM.conc);
+  fbx(-1,3.2,-22.3,13,0.3,0.2,FM.dark);fbx(-1,3.2,-17.7,13,0.3,0.2,FM.dark);
+  fbx(-13.3,5.3,-16,0.2,0.3,4,FM.dark);fbx(-8.7,5.3,-16,0.2,0.3,4,FM.dark);
+  fbx(13.3,5.3,-16,0.2,0.3,4,FM.dark);fbx(8.7,5.3,-16,0.2,0.3,4,FM.dark);
+  fneon(-1,3.2,-20,13,0.06,0.1,FM.crack);
+  // ── J2. 錯層地形 ──
+  fbx(-7,0.55,15,6,1.1,4,FM.plat);
+  fbx(-7,1.35,13,5,0.6,3,FM.plat);
+  fbx(-8,2.05,-11,3.4,0.8,2.4,FM.plat);
+  fbx(-4,2.35,-10,2,0.6,2,FM.white);
+  fbx(-5.5,0.2,18,2.5,0.4,2,FM.dark);
+  fbx(-18,0.35,6,5,0.7,5,FM.purple);
+  fbx(-16,0.55,4,3,1.1,0.4,FM.wall);
+  fbx(-16,0.3,8,0.5,0.6,2,FM.dark);
+  fbx(-16,0.2,2,2,0.4,1.4,FM.conc);fbx(-15,0.6,1,2,0.4,1.4,FM.conc);
+  fbx(13,0.5,-15,5,1.0,5,FM.plat);
+  fbx(13,1.25,-15,4,0.5,4,FM.purple);
+  fbx(14,1.9,-15,2.5,0.8,2.5,FM.white);
+  fbx(9,0.25,-18,2,0.5,2,FM.conc);fbx(9,0.75,-17,2,0.5,2,FM.conc);
+  fbx(9,1.3,-15,2,0.6,2,FM.conc);
+  for(var sl=0;sl<4;sl++){fbx(17+sl*1.3,0.25+sl*0.6,3,1.3,0.6,3,FM.orange);}
+  for(var sl2=0;sl2<4;sl2++){fbx(-17-sl2*1.3,-0.15+sl2*0.6,-16,1.3,0.6,3,FM.orange);}
+  fbx(-2,0.35,-13,1.3,0.7,1.3,FM.ruin);
+  fbx(2,0.55,-14,1,1.1,1,FM.ruin);
+  fbx(-1,0.8,-12,1.4,0.5,1.4,FM.dark);
+  fbx(3,0.3,-12,1.2,0.6,1.2,FM.ruin);
+  fbx(2,0.9,8,6,1.8,0.4,FM.teal);
+  fbx(-2,0.55,-3,5,1.1,0.4,FM.teal);
+  fcy(-2,0.6,5,1.1,1.2,FM.orange);
+  fcy(-2,1.4,5,1.1,1.2,FM.orange);
+  fcy(-2,2.2,5,0.9,0.7,FM.orange);
+  fbx(-2,2.55,5,1.6,0.3,1.6,FM.white);
+  fbx(-24,0.4,-18,2.6,0.8,2.6,FM.purple);
+  fbx(-26,0.9,-16,1.6,0.5,1.6,FM.dark);
+  fbx(24,0.4,18,2.6,0.8,2.6,FM.orange);
+  fbx(26,0.9,16,1.6,0.5,1.6,FM.dark);
+  fneon(-2,0.05,18,10,0.06,0.25,FM.neonG);
+  fneon(-18,0.05,6,5,0.06,0.25,FM.neonP);
+  fneon(13,0.05,-15,5,0.06,0.25,FM.neonO);
+  // ── K. 外圍圍牆 ──
+  fbx(-20,2.5,-32,16,5,1.2,FM.wallH);fbx(0,2.5,-32,7,5,1.2,FM.wallH);fbx(18,2.5,-32,12,5,1.2,FM.wallH);
+  fbx(-13,1.2,-32,4,2.4,1.2,FM.dark);fbx(13,1.2,-32,4,2.4,1.2,FM.dark);
+  fbx(-22,2.5,32,14,5,1.2,FM.wallH);fbx(-2,2.5,32,9,5,1.2,FM.wallH);fbx(16,2.5,32,14,5,1.2,FM.wallH);
+  fbx(7,1.2,32,4,2.4,1.2,FM.dark);
+  [-16,0,18].forEach(function(z){fbx(-35,2.5,z,1.2,5,8,FM.wallH);});
+  [-16,0,18].forEach(function(z){fbx(35,2.5,z,1.2,5,8,FM.wallH);});
+  [[-35,-32],[35,-32],[-35,32],[35,32]].forEach(function(p){fbx(p[0],2.5,p[1],2,5,2,FM.dark);});
+  // 隱藏捷徑 / 玻璃跳台
+  fneon(-34.2,1.8,11,0.2,1.4,3,FM.crack);
+  fneon(34,1.3,14,0.2,2.6,3,FM.crack);
+  fbx(-2,4.8,10,2,0.25,2,FM.white);
+  fbx(-6,1.2,31,3.4,2.4,0.8,FM.ruin);
+  faultFog();
+}
+function faultFog(){
+  if(window._faultFogApplied)return;
+  window._faultFogApplied=true;
+  var fogL={
+    base:function(){scene.fog=new THREE.Fog(0x12142a,90,220);},
+    dense:function(){scene.fog=new THREE.Fog(0x12142a,30,80);}
+  };
+  var bg=document.createElement('canvas');bg.width=2;bg.height=512;
+  var bc=bg.getContext('2d');
+  var grd=bc.createLinearGradient(0,0,0,512);
+  grd.addColorStop(0,'#0a0a14');grd.addColorStop(0.3,'#1a1a34');
+  grd.addColorStop(0.6,'#2a2a52');grd.addColorStop(0.85,'#4a4a7a');grd.addColorStop(1,'#60608f');
+  bc.fillStyle=grd;bc.fillRect(0,0,2,512);
+  window._faultBg=new THREE.CanvasTexture(bg);
 }
 // Arena2 arena: 44x32, bright whitebox style
 var A2=0xeeeeee,A2L=0xdddddd,A2M=0xcccccc,A2A=0xbbbbbb,A2D=0xaaaaaa;
@@ -3633,11 +3947,20 @@ function applyMapSettings(){
   // Toggle dragon boat elements
   if(dragonBoatElements)dragonBoatElements.forEach(function(b){b.mesh.visible=currentMap==='dragonboat';});
   if(lanternLights)lanternLights.forEach(function(l){l.visible=currentMap==='dragonboat';});
-  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2'&&currentMap!=='flooded'&&currentMap!=='basemap3';});
+  if(centerStruct)centerStruct.forEach(function(c){c.mesh.visible=currentMap!=='dragonboat'&&currentMap!=='nuclear'&&currentMap!=='arena2'&&currentMap!=='flooded'&&currentMap!=='basemap3'&&currentMap!=='fault';});
   // Toggle nuclear elements
   if(nuclearMapElements)nuclearMapElements.forEach(function(b){b.mesh.visible=currentMap==='nuclear';});
   // Toggle arena2 elements
   if(arena2Elements)arena2Elements.forEach(function(b){b.mesh.visible=currentMap==='arena2';});
+  // Toggle fault arena elements
+  if(currentMap==='fault'){
+    if(!faultElements.length)buildFaultMap();
+    faultElements.forEach(function(b){b.mesh.visible=true;b.mesh.castShadow = true;});
+    faultLights.forEach(function(l){l.visible=true;});
+  }else{
+    if(faultLights)faultLights.forEach(function(l){l.visible=false;});
+    if(faultElements)faultElements.forEach(function(b){b.mesh.visible=false;});
+  }
   // Default-hide BasicMap3 extras; shown again in basemap3 branch below
   if(basic3MapElements.length)basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
   if(b3Airdrop&&b3Airdrop.light)b3Airdrop.light.visible=false;
@@ -3655,11 +3978,18 @@ function applyMapSettings(){
       if(!bx.isNuclear)bx.mesh.visible=false;
     }
   }
+  // Hide all non-fault mapBoxes when fault is active
+  if(currentMap==='fault'){
+    for(var mxiF=0;mxiF<mapBoxes.length;mxiF++){
+      var bxF=mapBoxes[mxiF];
+      if(!bxF.isFault)bxF.mesh.visible=false;
+    }
+  }
   // Base map: show all non-special mapBoxes
-  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'&&currentMap!=='flooded'&&currentMap!=='basemap3'){
+  if(currentMap!=='arena2'&&currentMap!=='nuclear'&&currentMap!=='dragonboat'&&currentMap!=='flooded'&&currentMap!=='basemap3'&&currentMap!=='fault'){
     for(var mxi3=0;mxi3<mapBoxes.length;mxi3++){
       var bx3=mapBoxes[mxi3];
-      if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat&&!bx3.isBasic3)bx3.mesh.visible=true;
+      if(!bx3.isArena2&&!bx3.isNuclear&&!bx3.isDragonBoat&&!bx3.isBasic3&&!bx3.isFault)bx3.mesh.visible=true;
       else bx3.mesh.visible=false;
     }
     basic3MapElements.forEach(function(b){if(b.mesh)b.mesh.visible=false;});
@@ -3711,6 +4041,15 @@ function applyMapSettings(){
     scene.fog=new THREE.Fog(0x2a2a3e,40,60);
     amb.color.setHex(0xccccff);amb.intensity=0.7;
     dir.color.setHex(0xffffff);dir.intensity=2.0;
+  }else if(currentMap==='fault'){
+    isUnderwater=false;stopUnderwaterAmbient();
+    document.getElementById('o2-wrap').style.display='none';
+    document.getElementById('underwater-overlay').style.display='none';
+    scene.background=new THREE.Color(0x12142a);
+    scene.fog=new THREE.Fog(0x12142a,90,220);
+    amb.color.setHex(0x9fb0ff);amb.intensity=0.55;
+    dir.color.setHex(0xffffff);dir.intensity=1.0;
+    if(!faultElements.length)buildFaultMap();
   }else if(currentMap==='flooded'){
     scene.background=new THREE.Color(0x0a1a2a);
     scene.fog=new THREE.Fog(0x0a1a2a,6,18);
@@ -3956,6 +4295,7 @@ mapOptions.forEach(function(opt){
     if(currentMap==='arena2')pos.set(-17,1.9,0);
     if(currentMap==='flooded')pos.set(0,2,0);
     if(currentMap==='basemap3')pos.set(0,0.8,14);
+    if(currentMap==='fault')pos.set(-26,0.6,0);
     applyMapSettings();
     if(bossRushMode){
       bossRushWave=1;bossRushMaxWave=0;bossActive=false;bossSpawned=false;boss=null;bossType='nuclear';
@@ -6268,6 +6608,7 @@ document.getElementById('vote-nuclear').onclick=function(){sendMapVote('nuclear'
 document.getElementById('vote-arena2').onclick=function(){sendMapVote('arena2');};
 document.getElementById('vote-flooded').onclick=function(){sendMapVote('flooded');};
 document.getElementById('vote-basemap3').onclick=function(){sendMapVote('basemap3');};
+document.getElementById('vote-fault').onclick=function(){sendMapVote('fault');};
 function sendMapVote(map){
   document.getElementById('multi-vote-status').textContent='已選擇，等待對手...';
   document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
@@ -6599,7 +6940,7 @@ function processServerMessage(data){
       if(window.voteTimer)clearInterval(window.voteTimer);
       var voteSecs=15;
       document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';
-      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','flooded','basemap3'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
+      window.voteTimer=setInterval(function(){voteSecs--;if(voteSecs>0)document.getElementById('multi-vote-timer').textContent='⏱ '+voteSecs+'s';else{clearInterval(window.voteTimer);document.getElementById('multi-vote-timer').textContent='⏱ 決定中...';setTimeout(function(){if(document.getElementById('multi-map-vote').style.display==='flex'){var maps=['base','rain','fog','dragonboat','nuclear','arena2','flooded','basemap3','fault'];var pick=maps[Math.floor(Math.random()*maps.length)];processServerMessage({type:'map_result',map:pick,votes:[]});}},2000);}},1000);
       break;
     case 'opponent_vote':
       document.getElementById('multi-vote-status').textContent='對手已選擇，等待中...';
@@ -6615,8 +6956,8 @@ function processServerMessage(data){
       document.getElementById('multi-vote-timer').textContent='';
       document.getElementById('multi-vote-status').textContent='';
       document.querySelectorAll('#multi-map-vote .map-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.5';});
-      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','flooded':'淹水房子','basemap3':'基本地圖(3)'};
-      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2'),'flooded':document.getElementById('vote-flooded'),'basemap3':document.getElementById('vote-basemap3')};
+      var mapLabels={'base':'基本地圖','rain':'雨天','fog':'迷霧','dragonboat':'端午節','nuclear':'核電站','arena2':'基本地圖(2)','flooded':'淹水房子','basemap3':'基本地圖(3)','fault':'斷層競技場'};
+      var mapEls={'base':document.getElementById('vote-base'),'rain':document.getElementById('vote-rain'),'fog':document.getElementById('vote-fog'),'dragonboat':document.getElementById('vote-dragonboat'),'nuclear':document.getElementById('vote-nuclear'),'arena2':document.getElementById('vote-arena2'),'flooded':document.getElementById('vote-flooded'),'basemap3':document.getElementById('vote-basemap3'),'fault':document.getElementById('vote-fault')};
       if(uniqueVotes.length<=1){
         // All votes same — skip animation, start game directly
         Object.keys(mapEls).forEach(function(k){mapEls[k].style.borderColor='rgba(68,170,255,.12)';mapEls[k].style.background='rgba(255,255,255,.04)';});
