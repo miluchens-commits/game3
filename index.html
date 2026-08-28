@@ -6937,6 +6937,8 @@ function processServerMessage(data){
       break;
     case 'match_found':
       window._reconnectAttempts=0;
+      // 若已進入對局卻又收到新的 match_found(重連/重複配對)，忽略以避免選地圖 UI 蓋住進行中的對局
+      if(gameStarted&&isMultiplayer)break;
       isMultiplayer=true;playerCount=data.playerCount||requestedPlayerCount||2;opponentName=data.opponent||'對手';
       if(data.opponents){opponentNames=data.opponents.slice();}else{opponentNames=[];for(var ni=0;ni<playerCount-1;ni++){opponentNames.push((data.opponent||'對手')+(playerCount>2?' '+(ni+2)+' 號':''));}}
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
@@ -7342,13 +7344,14 @@ function connectMultiplayerDirect(ip, mode){
   ws.onerror=function(){console.log('WS error');};
   ws.onclose=function(){
     if(window.multiSI)clearInterval(window.multiSI);
-    if(isMultiplayer&&!tdmWinSubmitted&&!window._pendingMultiEnd){
-      // 非主動結束的意外斷線：嘗試自動重連，避免 Render 偶發斷線就中斷對局
+    if(isMultiplayer&&!tdmWinSubmitted&&!window._pendingMultiEnd&&!gameStarted){
+      // 尚未進入對局（排隊/選單）時的意外斷線：嘗試自動重連回配對
+      // 若已進入對局(gameStarted)則不重連，避免重連重新配對並彈出選地圖 UI 蓋住進行中的對局
       var attempts=window._reconnectAttempts=(window._reconnectAttempts||0)+1;
       if(attempts<=3){
         document.getElementById('multi-status').innerHTML='連線中斷，嘗試重新連線 ('+attempts+'/3)...';
         setTimeout(function(){
-          if(!isMultiplayer||tdmWinSubmitted||window._pendingMultiEnd)return;
+          if(!isMultiplayer||tdmWinSubmitted||window._pendingMultiEnd||gameStarted)return;
           var ip=document.getElementById('server-ip').value.trim()||'localhost';
           connectMultiplayerDirect(ip,requestedPlayerCount||playerCount||2);
         },1500*attempts);
