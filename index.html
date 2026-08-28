@@ -10280,7 +10280,11 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
       var omE=opponentMeshes[oi];
       var osE=opponentStates[oi];
       if(omE&&osE){
-        omE.position.copy(osE.pos);
+        // 位置平滑插值（消除 100ms 位置跳動造成的『閃現』），幀率無關
+        var lerpA=1-Math.pow(0.003,dt);
+        omE.position.x+=(osE.pos.x-omE.position.x)*lerpA;
+        omE.position.y+=(osE.pos.y-omE.position.y)*lerpA;
+        omE.position.z+=(osE.pos.z-omE.position.z)*lerpA;
         omE.rotation.order='YXZ';
         omE.rotation.y=osE.yaw;
         omE.rotation.x=-osE.pitch*0.3;
@@ -10292,7 +10296,10 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
       var tmM=teammateMeshes[tmiR];
       var tmS=teammateStates[tmiR];
       if(tmM&&tmS){
-        tmM.position.copy(tmS.pos);
+        var tlerpA=1-Math.pow(0.003,dt);
+        tmM.position.x+=(tmS.pos.x-tmM.position.x)*tlerpA;
+        tmM.position.y+=(tmS.pos.y-tmM.position.y)*tlerpA;
+        tmM.position.z+=(tmS.pos.z-tmM.position.z)*tlerpA;
         tmM.rotation.order='YXZ';
         tmM.rotation.y=tmS.yaw;
         tmM.rotation.x=-tmS.pitch*0.3;
