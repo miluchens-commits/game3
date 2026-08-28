@@ -6936,6 +6936,7 @@ function processServerMessage(data){
       document.getElementById('multi-status').innerHTML='佇列中 ('+data.position+')...<br><small style="color:rgba(255,255,255,.3)">需要 '+playerCount+' 位玩家</small>';
       break;
     case 'match_found':
+      window._reconnectAttempts=0;
       isMultiplayer=true;playerCount=data.playerCount||requestedPlayerCount||2;opponentName=data.opponent||'對手';
       if(data.opponents){opponentNames=data.opponents.slice();}else{opponentNames=[];for(var ni=0;ni<playerCount-1;ni++){opponentNames.push((data.opponent||'對手')+(playerCount>2?' '+(ni+2)+' 號':''));}}
       opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
@@ -7341,9 +7342,21 @@ function connectMultiplayerDirect(ip, mode){
   ws.onerror=function(){console.log('WS error');};
   ws.onclose=function(){
     if(window.multiSI)clearInterval(window.multiSI);
-    if(isMultiplayer){
+    if(isMultiplayer&&!tdmWinSubmitted&&!window._pendingMultiEnd){
+      // 非主動結束的意外斷線：嘗試自動重連，避免 Render 偶發斷線就中斷對局
+      var attempts=window._reconnectAttempts=(window._reconnectAttempts||0)+1;
+      if(attempts<=3){
+        document.getElementById('multi-status').innerHTML='連線中斷，嘗試重新連線 ('+attempts+'/3)...';
+        setTimeout(function(){
+          if(!isMultiplayer||tdmWinSubmitted||window._pendingMultiEnd)return;
+          var ip=document.getElementById('server-ip').value.trim()||'localhost';
+          connectMultiplayerDirect(ip,requestedPlayerCount||playerCount||2);
+        },1500*attempts);
+        return;
+      }
+      window._reconnectAttempts=0;
       try{processServerMessage({type:'opponent_disconnected'});}catch(e){}
-    }else{
+    }else if(!isMultiplayer){
       document.getElementById('multi-status').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
     }
   };
