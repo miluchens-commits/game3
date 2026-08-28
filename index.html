@@ -6564,6 +6564,9 @@ document.getElementById('multi-cancel').onclick=function(){
   if(authToken)checkTeamStatus();
 };
 function showMultiSettlement(reason){
+  // 對局結束時停止射擊與連發音效，避免離開後仍持續槍聲
+  autoFire=false;isReloading=false;
+  if(window._autoLoop)stopAutoLoop();
   // 對局結束時隱藏 TDM 計分 HUD，避免回到選單仍顯示 A/B 隊分
   var hudEl=document.getElementById('tdm-score-hud');if(hudEl)hudEl.style.display='none';
   if(didPlayGame){
