@@ -6476,10 +6476,11 @@ if(goBtn)goBtn.addEventListener('click',function(){
  document.getElementById('menu-mode-btn-label').innerHTML=nm+' <span class="mode-arrow">▶</span>';
  if(pt){if(window.showPartyCountSelect){window.showPartyCountSelect(pt);}return;}
  if(idv==='extraction'){
-  var exo=document.querySelector('.ext-opt[data-extmode="normal"]');
-  if(exo){exo.click();return;}
-  if(window.startExtractionMode){window.startExtractionMode();return;}
- }
+   // 顯示普通/機密子選單，不直接開始
+   var exs=document.getElementById('ext-submenu');
+   if(exs)exs.classList.add('show');
+   return;
+  }
  if(idv==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
  var pb=document.getElementById('play-btn');
  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
