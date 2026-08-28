@@ -3890,6 +3890,9 @@ document.getElementById('back-menu-btn').onclick=function(){
   if(ufo&&ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);ufo=null;ufoActive=false;ufoSpawned=false;}if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];bombMode=false;ufoMode=false;
   try{var sv=JSON.parse(localStorage.getItem('ocgame_save'));if(sv&&sv.loadout){for(var si=0;si<sv.loadout.length;si++)playerLoadout[si]=sv.loadout[si];}}catch(e){}
   grenadeStacks=[0,0,0,0,0];grenadeTypes=['frag','frag','frag','frag','frag'];
+  // 還原炸彈模式覆蓋的第一格武器，避免殘留炸彈99卡住切武器
+  if(window._savedSlot0!==undefined){playerLoadout[0]=window._savedSlot0;window._savedSlot0=undefined;}
+  currentSlot=0;if(playerLoadout[0])try{switchToSlot(0)}catch(e){}
   if(boss&&boss.mesh){disposeMesh(boss.mesh);boss=null;bossActive=false;bossSpawned=false;}
   if(window.radRifleDrop){disposeMesh(window.radRifleDrop.mesh);disposeMesh(window.radRifleDrop.glow);disposeMesh(window.radRifleDrop.light);window.radRifleDrop=null;}
   radiationZones.forEach(function(rz){disposeMesh(rz.mesh);if(rz.light)disposeMesh(rz.light);});radiationZones=[];
@@ -6571,6 +6574,10 @@ function showMultiSettlement(reason){
   // 對局結束時停止射擊與連發音效，避免離開後仍持續槍聲
   autoFire=false;isReloading=false;
   if(window._autoLoop)stopAutoLoop();
+  // 還原炸彈模式覆蓋的第一格武器，避免殘留炸彈99
+  if(window._savedSlot0!==undefined){playerLoadout[0]=window._savedSlot0;window._savedSlot0=undefined;}
+  grenadeStacks=[0,0,0,0,0];grenadeTypes=['frag','frag','frag','frag','frag'];
+  currentSlot=0;if(playerLoadout[0])try{switchToSlot(0)}catch(e){}
   // 對局結束時隱藏 TDM 計分 HUD，避免回到選單仍顯示 A/B 隊分
   var hudEl=document.getElementById('tdm-score-hud');if(hudEl)hudEl.style.display='none';
   if(didPlayGame){
@@ -7256,6 +7263,7 @@ function startMultiGame(mapName){
   });
   tdmResetState();
   if(bombMode){
+    if(window._savedSlot0===undefined)window._savedSlot0=playerLoadout[0]||'ak47';
     playerLoadout[0]='grenade';
     grenadeStacks[0]=99;
     grenadeTypes[0]='frag';
@@ -7267,6 +7275,8 @@ function startMultiGame(mapName){
   ufoActive=false;ufoSpawned=false;
     for(var ei=0;ei<enemies.length;ei++){enemies[ei].hp=0;enemies[ei].mesh.visible=false;if(enemies[ei].hBar)enemies[ei].hBar.visible=false;if(enemies[ei].aBar)enemies[ei].aBar.visible=false;}
     var bosshp=document.getElementById('boss-hp-wrap');if(bosshp){bosshp.style.display='none';}
+    // 移除可能殘留的上一台 UFO mesh，避免 spawnUFO 疊出第兩台
+    if(ufo&&ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);ufo=null;}
     if(ufoBeamRing){scene.remove(ufoBeamRing);ufoBeamRing=null;}
     if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
   }
