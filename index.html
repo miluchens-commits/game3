@@ -6564,6 +6564,10 @@ document.getElementById('multi-cancel').onclick=function(){
   if(authToken)checkTeamStatus();
 };
 function showMultiSettlement(reason){
+  // 對局結束：關閉多人連線與心跳/定時器，避免舊 socket 殘留繼續收到訊息而誤彈死亡/重生/A/B隊等 UI
+  if(window.multiWS)try{window.multiWS.close()}catch(e){window.multiWS=null;}
+  if(window.multiSI){clearInterval(window.multiSI);window.multiSI=null;}
+  if(window.wsHB){clearInterval(window.wsHB);window.wsHB=null;}
   // 對局結束時停止射擊與連發音效，避免離開後仍持續槍聲
   autoFire=false;isReloading=false;
   if(window._autoLoop)stopAutoLoop();
@@ -7310,6 +7314,11 @@ function relaySend(payload){
 }
 function connectMultiplayerDirect(ip, mode){
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
+  // 開始新多人連線前，清理上一場(可能不同模式)殘留的對局 UI 與狀態，
+  // 避免切換模式時彈出舊的死亡重生鈕/UFO/A/B隊計分等
+  ['multi-death-prompt','down-overlay','multi-map-vote','multi-waiting','multi-end-options'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  if(window.voteTimer){clearInterval(window.voteTimer);window.voteTimer=null;}
+  window._reconnectAttempts=0;
   mode=mode||2;
   var url;
   if(ip.indexOf('://')!==-1){
