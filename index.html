@@ -2599,6 +2599,7 @@ function switchToSlot(slot){
     swapOutGroup.userData.oldGun=true;
   }
   currentGun=type;
+  stopAutoLoop(); // 換槍停止連發音效
   gunGroup=createGunModel(type);
   if(type==='grenade'){gunGroup.position.set(0.2,-0.15,-0.35);}else{gunGroup.position.set(0.55,-0.4,-0.05);}
   gunGroup.scale.set(1.5,1.5,1.5);
@@ -10010,6 +10011,14 @@ if(currentGun==='radrifle'&&autoFire&&locked&&!isReloading&&!isDowned){
   if(radRifleCharge>=gunData.radrifle.chargeTime){radRifleCharge=gunData.radrifle.chargeTime;fireRadRifle();autoFire=false;radRifleCharge=0;}
 }else if(currentGun==='radrifle'&&!autoFire&&radRifleCharge>0&&locked){fireRadRifle();radRifleCharge=0;}
 if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='radrifle')shoot();
+    // 連發槍聲控制：按住連發且仍有子彈時播放完整 mp3(loop)，鬆手/打完/換彈/死亡時停止
+    if(autoLoopGuns[currentGun]){
+      var wantLoop=autoFire&&!isReloading&&!isDowned&&(buffType==='infammo'||gunAmmo[currentGun]>0);
+      if(wantLoop&&!window._autoLoop)startAutoLoop(currentGun);
+      else if(!wantLoop&&window._autoLoop)stopAutoLoop();
+    }else if(window._autoLoop){
+      stopAutoLoop();
+    }
     // Smooth ADS FOV
     var fov=isADS?gunData[currentGun].adsFov:80;
     cam.fov+=(fov-cam.fov)*Math.min(1,dt*10);
@@ -10657,6 +10666,30 @@ function preloadSFX(){
     }
   }catch(e){}
 }
+// ── 連發槍聲：連發(按住)時播放完整 mp3 直到鬆手/彈夾打完/換彈 ──
+var autoLoopGuns={ak47:true,smg:true,deagle:true};
+function startAutoLoop(gun){
+  try{
+    if(!audioCtx){initAudio();if(!audioCtx)return;}
+    var buf=window._sfxBuf&&window._sfxBuf[gunLoopSrcOf(gun)];
+    if(!buf)return; // buffer 未載入則不播放 loop（維持原本單發）
+    if(window._autoLoop){try{window._autoLoop.stop();}catch(e){}window._autoLoop=null;}
+    var s=audioCtx.createBufferSource();
+    s.buffer=buf;s.loop=true;
+    var g=audioCtx.createGain();g.gain.value=0.28;
+    s.connect(g);g.connect(audioCtx.destination);
+    window._autoLoop=s;
+    try{s.start(audioCtx.currentTime);}catch(e){}
+  }catch(e){}
+}
+function stopAutoLoop(){
+  if(window._autoLoop){try{window._autoLoop.stop();}catch(e){}window._autoLoop=null;}
+}
+function gunLoopSrcOf(gun){
+  if(gun==='ak47'||gun==='radrifle'||gun==='deagle')return 'microsammy-ak-47-firing-8760.mp3';
+  if(gun==='smg')return 'ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3';
+  return null;
+}
 function playShort(src,dur,vol){
   try{
     var volSet=(vol===undefined||vol===null)?0.3:vol;
@@ -10687,6 +10720,8 @@ function playSniper(){playShort('dingman081130--286379.mp3',0.5,0.5);}
 function playSMG(){playShort('ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3',0.05);}
 function playKnife(){playShort('alexis_gaming_cam-katana-370403.mp3');}
 function playGunSound(gun){
+  // 連發(持有 auto loop)時由 loop 提供完整連射聲，避免每發再疊單發
+  if(autoLoopGuns[gun]&&window._autoLoop)return;
   if(gun==='ak47'||gun==='radrifle'||gun==='deagle')playAK47();
   else if(gun==='awp'||gun==='sniper')playSniper();
   else if(gun==='smg')playSMG();
