@@ -10642,23 +10642,49 @@ function initAudio(){
   audioCtx=new (window.AudioContext||window.webkitAudioContext)();
 }
 function preloadSFX(){
-  ['microsammy-ak-47-firing-8760.mp3','dingman081130--286379.mp3','ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3','freesound_community-assault-rifle-reload-104296.mp3','ElevenLabs_快节奏现代冲锋枪换弹，清晰的弹匣释放，快速插弹，干脆的枪机撞击声，逼真的金属与聚合物点击声，带有细微未来感伺服声，竞技射击风格，无语音，无音乐。.mp3','alexis_gaming_cam-katana-370403.mp3','soundreality-explosion-fx-343683.mp3','deejaycoxknot-vinyl-scratches-430214.mp3'].forEach(function(p){var e=new Audio(p);e.preload='auto';e.style.display='none';document.body.appendChild(e);});
+  var sfxList=['microsammy-ak-47-firing-8760.mp3','dingman081130--286379.mp3','ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3','freesound_community-assault-rifle-reload-104296.mp3','ElevenLabs_快节奏现代冲锋枪换弹，清晰的弹匣释放，快速插弹，干脆的枪机撞击声，逼真的金属与聚合物点击声，带有细微未来感伺服声，竞技射击风格，无语音，无音乐。.mp3','alexis_gaming_cam-katana-370403.mp3','soundreality-explosion-fx-343683.mp3','deejaycoxknot-vinyl-scratches-430214.mp3'];
+  sfxList.forEach(function(p){var e=new Audio(p);e.preload='auto';e.style.display='none';document.body.appendChild(e);});
+  // 預先以 Web Audio 解碼成 buffer，供 playShort 只播開頭片段成為單發槍聲
+  try{
+    if(!audioCtx)initAudio();
+    if(audioCtx){
+      window._sfxBuf=window._sfxBuf||{};
+      sfxList.forEach(function(p){
+        fetch(p).then(function(r){return r.arrayBuffer();}).then(function(ab){
+          audioCtx.decodeAudioData(ab,function(b){window._sfxBuf[p]=b;},function(){});
+        }).catch(function(){});
+      });
+    }
+  }catch(e){}
 }
 function playShort(src,dur,vol){
   try{
-    var volSet=vol||0.3;
-    var pool=window._sfxPool=window._sfxPool||{};
-    var arr=pool[src];
-    if(!arr){arr=pool[src]=[];for(var pi=0;pi<3;pi++){var e=new Audio(src);e.volume=volSet;arr.push(e);}arr._i=0;}
-    var s=arr[arr._i];arr._i=(arr._i+1)%arr.length;
-    s.volume=volSet;
-    try{s.currentTime=0;}catch(e){}
-    s.play().catch(function(){});
+    var volSet=(vol===undefined||vol===null)?0.3:vol;
+    if(!audioCtx){initAudio();if(!audioCtx)return;}
+    var slice=dur||0.08; // 只播放 mp3 開頭一小段 -> 單發槍聲，避免整段連射「抱抱抱」延續
+    var buf=window._sfxBuf&&window._sfxBuf[src];
+    if(buf){
+      var srcNode=audioCtx.createBufferSource();
+      srcNode.buffer=buf;
+      var g=audioCtx.createGain();
+      g.gain.value=volSet;
+      srcNode.connect(g);g.connect(audioCtx.destination);
+      var t=audioCtx.currentTime;
+      srcNode.start(t);
+      // 精確截斷：只保留開頭片段
+      try{srcNode.stop(t+Math.min(slice,buf.duration));}catch(e){srcNode.stop(t+0.08);}
+    }else{
+      // buffer 尚未載入(極少見的首次)，退化為 <audio> 短播
+      var a=new Audio(src);a.volume=volSet;a.style.display='none';document.body.appendChild(a);
+      a.play().catch(function(){});
+      var durMs=Math.max(60,(slice||0.08)*1000);
+      setTimeout(function(){try{a.pause();document.body.removeChild(a);}catch(e){}},durMs+30);
+    }
   }catch(e){}
 }
-function playAK47(){playShort('microsammy-ak-47-firing-8760.mp3',0.12);}
-function playSniper(){playShort('dingman081130--286379.mp3',0.6,0.5);}
-function playSMG(){playShort('ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3',0.1);}
+function playAK47(){playShort('microsammy-ak-47-firing-8760.mp3',0.06);}
+function playSniper(){playShort('dingman081130--286379.mp3',0.5,0.5);}
+function playSMG(){playShort('ElevenLabs_快速射击的机枪声，真实有力的子弹声，清脆的金属机械声，快速连续的自动射击，响亮有冲击力，仅一次射击，非常短暂.mp3',0.05);}
 function playKnife(){playShort('alexis_gaming_cam-katana-370403.mp3');}
 function playGunSound(gun){
   if(gun==='ak47'||gun==='radrifle'||gun==='deagle')playAK47();
