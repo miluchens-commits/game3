@@ -4517,11 +4517,14 @@ function launchSelected(){
  if(lbl)lbl.innerHTML=nm+' <span class="mode-arrow">▶</span>';
  floatMsg('🚀 正在進入 '+nm+' ...','#ffd97a');
  setTimeout(function(){
-   if(idv==='extraction'){
-    var exo=document.querySelector('.ext-opt[data-extmode="normal"]');
-    if(exo){exo.click();return;}
-    if(window.startExtractionMode){window.startExtractionMode();return;}
-   }
+ if(idv==='extraction'){
+   // 顯示普通/機密子選單，不直接開始
+   var dd=document.getElementById('mode-dropdown');
+   var exs=document.getElementById('ext-submenu');
+   if(dd)dd.classList.remove('show');
+   if(exs){exs.classList.add('show');}
+   return;
+  }
    if(idv==='party_obstacle'||idv==='party_battle'||idv==='party_target'||idv==='party_memory'||idv==='party_coinrush'){
     var ptype=selectedMode.partyType||idv.replace('party_','');
     if(window.showPartyCountSelect){window.showPartyCountSelect(ptype);return;}
@@ -6482,6 +6485,22 @@ if(goBtn)goBtn.addEventListener('click',function(){
  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
   if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||nm)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
  floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
+ });
+// 摸金子選單按鈕綁定
+document.querySelectorAll('#ext-submenu .ext-opt').forEach(function(btn){
+ btn.addEventListener('click',function(){
+  var mode=btn.dataset.extmode;
+  var exs=document.getElementById('ext-submenu');
+  if(exs)exs.classList.remove('show');
+  if(mode==='back'){
+   openMenuOverlay();
+   return;
+  }
+  // 強制地圖為失落基地(flooded)，只有這張可用
+  window._extDiffMode=mode;
+  window._extForcedMap='flooded';
+  startExtractionMatchmaking();
+ });
 });
 if(document.getElementById('mm-cancel'))document.getElementById('mm-cancel').onclick=closeMenuOverlay;
 if(ov)ov.addEventListener('click',function(e){if(e.target===ov)closeMenuOverlay();});
@@ -6495,6 +6514,8 @@ document.getElementById('play-btn').onclick=function(){
   var modeVal=mode?mode.dataset.mode:'solo';
   if(modeVal==='extraction'){
     document.getElementById('mode-dropdown').classList.remove('show');
+    var exs=document.getElementById('ext-submenu');
+    if(exs)exs.classList.add('show');
     return;
   }
   if(modeVal==='party'){
