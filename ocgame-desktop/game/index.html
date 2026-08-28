@@ -7263,7 +7263,7 @@ function startMultiGame(mapName){
   playerHP=100;playerArmor=100;
   opponentMeshes.forEach(function(m){if(m)scene.remove(m);});
   if(window.opponentBars)window.opponentBars.forEach(function(b){scene.remove(b.h);scene.remove(b.a);});
-  opponentMeshes=[];window.opponentBars=[];
+  opponentMeshes=[];opponentStates=[];opponentPlayerIds=[];window.opponentBars=[];
   var otherCount=playerCount-1;
   for(var oi=0;oi<otherCount;oi++){
     var om=createOpponentMesh();scene.add(om);
@@ -7300,6 +7300,7 @@ function startMultiGame(mapName){
     if(ufo&&ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);ufo=null;}
     if(ufoBeamRing){scene.remove(ufoBeamRing);ufoBeamRing=null;}
     if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}
+    ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];
   }
   if(ufoMode){spawnUFO();document.getElementById('round-clear').textContent='🛸 UFO 來襲！';document.getElementById('round-clear').style.color='#4df';document.getElementById('round-clear').style.display='block';setTimeout(function(){document.getElementById('round-clear').style.display='none';},2000);}
   gameStarted=true;
