@@ -7635,9 +7635,9 @@ function resolveCollisions(){
     var dx=Math.abs(pos.x-bx.pos.x),dy=Math.abs(pos.y-bx.pos.y),dz=Math.abs(pos.z-bx.pos.z);
     var ox=hS.x+pH.x-dx,oy=hS.y+pH.y-dy,oz=hS.z+pH.z-dz;
     if(ox<=0||oy<=0||oz<=0)continue;
-    if(ox<=oy&&ox<=oz){pos.x+=(pos.x<bx.pos.x?-1:1)*ox;vel.x=0;wN.set(pos.x<bx.pos.x?-1:1,0,0);wall=true;}
+    if(ox<=oy&&ox<=oz){var sgn=pos.x<bx.pos.x?-1:1;pos.x+=sgn*ox;var dot=vel.x*sgn;vel.x-=sgn*dot;wN.set(sgn,0,0);wall=true;}
     else if(oy<=ox&&oy<=oz){pos.y+=(pos.y<bx.pos.y?-1:1)*oy;vel.y=0;if(pos.y<bx.pos.y||pos.y-pH.y>=bx.pos.y+hS.y-0.01)gnd=true;}
-    else{pos.z+=(pos.z<bx.pos.z?-1:1)*oz;vel.z=0;wN.set(0,0,pos.z<bx.pos.z?-1:1);wall=true;}
+    else{var sgnZ=pos.z<bx.pos.z?-1:1;pos.z+=sgnZ*oz;var dotZ=vel.z*sgnZ;vel.z-=sgnZ*dotZ;wN.set(0,0,sgnZ);wall=true;}
   }
   return{gnd:gnd,wall:wall,wN:wN};
 }
@@ -14458,7 +14458,7 @@ function stopExtractionMode() {
   delete window.ext_toggleBackpack;
   delete window.ext_toggleMatchmaking;
   delete window.ext_backToMenu;
-  removeCarriedCrystal();
+  if(typeof removeCarriedCrystal==='function')removeCarriedCrystal();
 }
 
 // ========== PARTY GAME SYSTEM ==========
