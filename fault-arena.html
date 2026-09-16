@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>斷層競技場 · 3D 地圖模型</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{overflow:hidden;background:#08080d;font-family:Arial,'Microsoft JhengHei',sans-serif;color:#fff;user-select:none}
+  canvas{display:block}
+  #hint{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(12,12,26,.88);border:1px solid rgba(150,120,255,.4);padding:10px 22px;border-radius:10px;font-size:13px;letter-spacing:1px;z-index:10;text-align:center;pointer-events:none;box-shadow:0 0 30px rgba(150,120,255,.15);backdrop-filter:blur(6px)}
+  #hint b{color:#b49bff}
+  #hint span{color:rgba(255,255,255,.5)}
+  #legend{position:fixed;left:16px;bottom:16px;background:rgba(12,12,26,.88);border:1px solid rgba(255,255,255,.12);padding:14px 18px;border-radius:12px;font-size:12px;line-height:2.1;z-index:10;pointer-events:none;backdrop-filter:blur(6px)}
+  #legend div{display:flex;align-items:center}
+  #legend .dot{width:11px;height:11px;border-radius:3px;margin-right:8px;display:inline-block}
+  #crosshair{position:fixed;top:50%;left:50%;width:5px;height:5px;background:rgba(255,255,255,.4);border-radius:50%;transform:translate(-50%,-50%);z-index:5;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="crosshair"></div>
+<div id="hint">🧱 <b>斷層競技場</b> · 左鍵拖曳旋轉 ｜ 滾輪縮放 ｜ 右鍵拖曳平移 ｜ <span>點擊地圖飛行前往</span></div>
+<div id="legend">
+  <div><span class="dot" style="background:#ff6644"></span>左側重生（廢墟）</div>
+  <div><span class="dot" style="background:#44aaff"></span>右側重生（室內）</div>
+  <div><span class="dot" style="background:#ffd944"></span>中央能量核心</div>
+  <div><span class="dot" style="background:#9a6bff"></span>上層高台</div>
+  <div><span class="dot" style="background:#33ff99"></span>地下通道</div>
+</div>
+<script src="three.min.js"></script>
+<script>
+(function(){
+  var scene,camera,renderer,raycaster,pointer=new THREE.Vector2();
+  var c={theta:Math.PI*0.8,phi:0.45,dist:75,tx:0,ty:1,tz:0};
+  var fly=null,drag=false,rdrag=false,lastX=0,lastY=0,flyables=[];
+  var clock=new THREE.Clock();
+  var CLR={
+    ground:0x2a2d3a, wall:0x6a7086, wallH:0x5f6b82, ruin:0x8a736b,
+    indoor:0x54646f, white:0xaab0c0, dark:0x3a3e4c,
+    core:0xffc93f, coreDark:0xff9e2c, green:0x35e08a, blue:0x3da5ff,
+    red:0xff5a44, purple:0xb85cff, orange:0xff8a3d, teal:0x2fd8c8,
+    plat:0x6b6f80, concrete:0x8a8d98, groundAccent:0x4a5470
+  };
+
+  function init(){
+    scene=new THREE.Scene();
+    scene.background=new THREE.Color(0x12142a);
+    scene.fog=new THREE.Fog(0x12142a,120,280);
+    camera=new THREE.PerspectiveCamera(60,w()/h(),0.1,500);
+    renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.setSize(w(),h());
+    renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+    raycaster=new THREE.Raycaster();
+    lights();map();
+    window.addEventListener('resize',function(){renderer.setSize(w(),h());camera.aspect=w()/h();camera.updateProjectionMatrix();});
+    window.addEventListener('mousedown',function(e){if(e.button===0){drag=true;fly=null;}else if(e.button===2)rdrag=true;lastX=e.clientX;lastY=e.clientY;});
+    window.addEventListener('mouseup',function(e){if(e.button===0){drag=false;click(e);}if(e.button===2)rdrag=false;});
+    window.addEventListener('mousemove',function(e){var dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(drag&&!rdrag){c.theta-=dx*0.005;c.phi=Math.max(0.2,Math.min(1.4,c.phi+dy*0.005));}if(rdrag){c.tx-=dx*c.dist*0.001;c.tz-=dy*c.dist*0.001;}});
+    window.addEventListener('wheel',function(e){e.preventDefault();c.dist=Math.max(10,Math.min(150,c.dist+e.deltaY*0.05));},{passive:false});
+    window.addEventListener('contextmenu',function(e){e.preventDefault();});
+    // touch
+    var rr=null,lastTX=0,lastTY=0,pinch=0,rx2=null;
+    window.addEventListener('touchstart',function(e){e.preventDefault();if(e.touches.length===1){rr=e.touches[0].identifier;lastTX=e.touches[0].clientX;lastTY=e.touches[0].clientY;}else if(e.touches.length>=2){var a=e.touches[0],b=e.touches[1];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);rx2=true;}},{passive:false});
+    window.addEventListener('touchmove',function(e){e.preventDefault();if(e.touches.length===1&&!rx2){var t=e.touches[0];c.theta-=(t.clientX-lastTX)*0.005;c.phi=Math.max(0.2,Math.min(1.4,c.phi+(t.clientY-lastTY)*0.005));lastTX=t.clientX;lastTY=t.clientY;}else if(e.touches.length>=2){var a=e.touches[0],b=e.touches[1];var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);c.dist=Math.max(10,Math.min(150,c.dist*(pinch/Math.max(1,d))));pinch=d;}},{passive:false});
+    window.addEventListener('touchend',function(){rr=null;rx2=false;},{passive:true});
+    animate();
+  }
+  function w(){return window.innerWidth;}function h(){return window.innerHeight;}
+
+  function lights(){
+    scene.add(new THREE.HemisphereLight(0x9fb0ff,0x1c2333,0.85));
+    var d=new THREE.DirectionalLight(0xffffff,1.05);d.position.set(45,70,25);
+    d.castShadow=true;d.shadow.mapSize.set(2048,2048);
+    d.shadow.camera.left=-70;d.shadow.camera.right=70;d.shadow.camera.top=70;d.shadow.camera.bottom=-70;
+    scene.add(d);
+    scene.add(new THREE.AmbientLight(0xffffff,0.22));
+    // 區塊霓虹燈光（賦予各區活力色）
+    var rl=new THREE.PointLight(CLR.red,0.9,24);rl.position.set(-30,2,0);scene.add(rl);
+    var bl=new THREE.PointLight(CLR.blue,0.9,24);bl.position.set(30,2,0);scene.add(bl);
+    var pl=new THREE.PointLight(CLR.purple,0.8,26);pl.position.set(-12,3,18);scene.add(pl);
+    var ol=new THREE.PointLight(CLR.orange,0.8,26);ol.position.set(12,3,-16);scene.add(ol);
+    var tl=new THREE.PointLight(CLR.teal,0.7,20);tl.position.set(0,2,-8);scene.add(tl);
+  }
+
+  // materials
+  var M={
+    ground:new THREE.MeshStandardMaterial({color:CLR.ground,roughness:0.9,metalness:0.2}),
+    groundAccent:new THREE.MeshStandardMaterial({color:CLR.groundAccent,roughness:0.75,metalness:0.3}),
+    wall:new THREE.MeshStandardMaterial({color:CLR.wall,roughness:0.85,metalness:0.15}),
+    wallH:new THREE.MeshStandardMaterial({color:CLR.wallH,roughness:0.85,metalness:0.1}),
+    ruin:new THREE.MeshStandardMaterial({color:CLR.ruin,roughness:0.9}),
+    indoor:new THREE.MeshStandardMaterial({color:CLR.indoor,roughness:0.85,metalness:0.2}),
+    white:new THREE.MeshStandardMaterial({color:CLR.white,roughness:0.7,metalness:0.35}),
+    dark:new THREE.MeshStandardMaterial({color:CLR.dark,roughness:0.85,metalness:0.25}),
+    plat:new THREE.MeshStandardMaterial({color:CLR.plat,roughness:0.8,metalness:0.25}),
+    conc:new THREE.MeshStandardMaterial({color:CLR.concrete,roughness:0.85,metalness:0.2}),
+    purple:new THREE.MeshStandardMaterial({color:CLR.purple,emissive:CLR.purple,emissiveIntensity:0.35,roughness:0.6}),
+    orange:new THREE.MeshStandardMaterial({color:CLR.orange,emissive:0xff5500,emissiveIntensity:0.35,roughness:0.6}),
+    teal:new THREE.MeshStandardMaterial({color:CLR.teal,emissive:CLR.teal,emissiveIntensity:0.35,roughness:0.6}),
+    neonP:new THREE.MeshBasicMaterial({color:CLR.purple,transparent:true,opacity:0.85}),
+    neonO:new THREE.MeshBasicMaterial({color:CLR.orange,transparent:true,opacity:0.85}),
+    neonG:new THREE.MeshBasicMaterial({color:CLR.green,transparent:true,opacity:0.85}),
+    neonC:new THREE.MeshBasicMaterial({color:CLR.teal,transparent:true,opacity:0.85}),
+    coreM:new THREE.MeshStandardMaterial({color:CLR.core,emissive:CLR.core,emissiveIntensity:1.2,roughness:0.3,metalness:0.6}),
+    coreRing:new THREE.MeshBasicMaterial({color:CLR.core,transparent:true,opacity:0.4,side:THREE.DoubleSide}),
+    greenM:new THREE.MeshStandardMaterial({color:CLR.green,emissive:CLR.green,emissiveIntensity:0.7,roughness:0.5}),
+    blueM:new THREE.MeshStandardMaterial({color:CLR.blue,emissive:CLR.blue,emissiveIntensity:0.6,roughness:0.5}),
+    redM:new THREE.MeshStandardMaterial({color:CLR.red,emissive:0xaa2211,emissiveIntensity:0.7,roughness:0.5}),
+    glass:new THREE.MeshPhysicalMaterial({color:0x99ccff,transparent:true,opacity:0.15,roughness:0.15,metalness:0.1,side:THREE.DoubleSide}),
+    darkGlass:new THREE.MeshPhysicalMaterial({color:0x22334a,transparent:true,opacity:0.5,roughness:0.3,side:THREE.DoubleSide}),
+    crack:new THREE.MeshBasicMaterial({color:CLR.teal,transparent:true,opacity:0.6}),
+    crackDim:new THREE.MeshBasicMaterial({color:0x33ccee,transparent:true,opacity:0.3}),
+    glowFloor:new THREE.MeshBasicMaterial({color:0x333b5c,transparent:true,opacity:0.3})
+  };
+  M.groundEmissive=new THREE.MeshStandardMaterial({color:0x15161c,roughness:0.9,metalness:0.35});
+
+  function bx(x,y,z,sx,sy,s2,m,fly,sh){var b=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,s2),m||M.concat);b.position.set(x,y,z);b.castShadow=sh!==false;b.receiveShadow=true;scene.add(b);if(fly){b.userData.fly=1;flyables.push(b);}return b;}
+  function cy(x,y,z,r1,r2,hh,m,f,sg){var c=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,hh,sg||14),m);c.position.set(x,y,z);c.castShadow=true;c.receiveShadow=true;scene.add(c);if(f){c.userData.fly=1;flyables.push(c);}return c;}
+  function label(x,y,z,txt){
+    var cn=document.createElement('canvas');cn.width=256;cn.height=120;var cx=cn.getContext('2d');
+    cx.font='bold 30px Arial';cx.fillStyle='rgba(255,255,255,.92)';cx.textAlign='center';
+    var ls=txt.split('\n');cx.fillText(ls[0],128,ls.length>1?50:64);if(ls.length>1)cx.fillText(ls[1],128,86);
+    var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cn),transparent:true,depthTest:false}));
+    sp.position.set(x,y+3.6,z);sp.scale.set(7,3.3,1);scene.add(sp);
+    var pk=new THREE.Object3D();pk.position.set(x,y,z);flyables.push(pk);
+  }
+  function ring(x,y,z,r,thick,m){var g=new THREE.RingGeometry(r,r+thick,32);g.rotateX(-Math.PI/2);var me=new THREE.Mesh(g,m);me.position.set(x,y,z);me.userData.fly=1;scene.add(me);flyables.push(me);}
+
+  // ═══════════════════════
+  //  斷 層 競 技 場
+  // ═══════════════════════
+  function map(){
+    // ═══════════════════════════════════════════════
+    //  斷 層 競 技 場 — 完整重做
+    //  空間層次（上下分明，彼此不重疊）：
+    //  ┌ 上層高台 (y≈+3)
+    //  ├ 地表主戰場 (y=0)  ← 左右兩翼 + 中央核心塔
+    //  └ 地下斷層層 (y≈-4)  ← 只在斷層溝槽內，與核心塔完全分離
+    //  核心塔高高砌起，下方是實心平台，不是洞窟
+    // ═══════════════════════════════════════════════
+    var un=new THREE.MeshStandardMaterial({color:0x17181d,roughness:0.95});
+    var uWall=new THREE.MeshStandardMaterial({color:0x5a6170,roughness:0.92});
+    var uDark=new THREE.MeshStandardMaterial({color:0x33373f,roughness:0.9});
+    var pipe=new THREE.MeshStandardMaterial({color:0x2c2f38,roughness:0.6,metalness:0.5});
+    var pipeOpen=new THREE.MeshStandardMaterial({color:0x11131a,roughness:0.9});
+
+    // ═══ A. 地表本體（一整塊厚實平台，y=0 頂部）═══
+    bx(0,-0.5,0,70,1.0,66,M.ground,false);
+    // 地表頂層亮色面層 (增加活力)
+    bx(0,0.02,0,70,0.04,66,M.groundAccent,false);
+    // 地坪格線
+    var grid=new THREE.GridHelper(70,35,0x4d5579,0x383f5e);grid.position.y=0.05;scene.add(grid);
+    // 外框霓虹邊線
+    bx(0,0.06,-33,70,0.06,0.2,M.neonC);
+    bx(0,0.06,33,70,0.06,0.2,M.neonC);
+    bx(-35,0.06,0,0.2,0.06,66,M.neonC);
+    bx(35,0.06,0,0.2,0.06,66,M.neonC);
+
+    // ═══ B. 斷層溝槽（貫穿地表的塌陷溝，位於南半部，通往地下）═══
+    // 溝槽本體：從地表挖出一條 E-W 溝，溝底 y≈-4.4
+    // 溝槽 z 範圍 9.5~22.5（中心 z=16），與中央核心塔(0,0,0)完全分離
+    var trZ=16; // 溝槽中心 z
+    var tW=6.5; // 溝槽半寬
+    // 溝槽邊緣（發光）
+    bx(0,0.05,trZ-tW,40,0.12,0.2,M.crack);
+    bx(0,0.05,trZ+tW,40,0.12,0.2,M.crack);
+    // 溝槽內側牆（讓溝有壁）
+    bx(-10,-2.2,trZ-tW,40,4.5,0.6,uWall);  // 北溝壁
+    bx(-10,-2.2,trZ+tW,40,4.5,0.6,uWall);  // 南溝壁
+    // 溝底地板 = B1 地下層的地面
+    bx(-10,-4.4,trZ,40,0.4,13,uDark,true);
+    // 溝底能源光帶
+    bx(-10,-4.0,trZ,30,0.08,10,M.crackDim);
+
+    // ═══ C. 通往地下的階梯（真實下樓）═══
+    // 溝槽東端與西端地面開豁口，可直接走進溝裡
+    // 從北地表走下溝槽的階梯（z=trZ-tW 側）與南（z=trZ+tW 側）
+    function trenchStairs(cxOffset,dir){
+      // dir: -1 北側(從 z=trZ-tW 往下), +1 南側(從 z=trZ+tW 往下)
+      for(var i=0;i<5;i++){
+        var y=-0.5-i*0.75;
+        var z=dir<0?(trZ-tW+i*1.2):(trZ+tW-i*1.2);
+        bx(cxOffset,y,z,4.5,0.75,1.2,M.conc);
+      }
+    }
+    trenchStairs(0,-1); trenchStairs(0,1);
+    trenchStairs(-18,-1); trenchStairs(-18,1);
+    trenchStairs(18,-1); trenchStairs(18,1);
+
+    // ═══ D. B1 地下隧道網路（只在溝槽內，與核心塔分離）═══
+    // 地下天花板（橫跨溝槽，封閉地下空間；留有豎井開口）
+    bx(-10,-2.9,trZ,40,0.4,13,uDark,false);
+    // 地下天花板中央開孔（讓光與階梯下來）
+    ring(0,-2.85,trZ,2.2,0.15,M.crack);
+    // 地下內隔牆（把地下分成隧道與房間，留門口）
+    bx(-10,-3.6,trZ-2,40,1.0,0.5,uWall);
+    bx(-10,-3.6,trZ+2,40,1.0,0.5,uWall);
+    // 隔牆開口（門洞）
+    bx(-10,-3.6,trZ-2,8,1.0,0.5,uWall);bx(18,-3.6,trZ-2,8,1.0,0.5,uWall);
+    bx(-10,-3.6,trZ+2,8,1.0,0.5,uWall);bx(18,-3.6,trZ+2,8,1.0,0.5,uWall);
+    // 地下橫向支線
+    bx(-18,-4.0,trZ,3,0.3,8,uDark,true);
+    bx(18,-4.0,trZ,3,0.3,8,uDark,true);
+    // 地下小房間（東與西各一間，作為交戰據點）
+    bx(-24,-4.0,trZ-4,3.5,0.3,5,uDark,true);
+    bx(-25.5,-3.0,trZ-4,0.5,2.5,5,uWall);
+    bx(24,-4.0,trZ+4,3.5,0.3,5,uDark,true);
+    bx(25.5,-3.0,trZ+4,0.5,2.5,5,uWall);
+    // 地下梁柱
+    for(var px=-16;px<=16;px+=8){cy(px,-3.3,trZ-2,0.35,0.35,1.5,uDark);cy(px,-3.3,trZ+2,0.35,0.35,1.5,uDark);}
+    // 地下燈管
+    bx(-10,-2.6,trZ-2,30,0.05,0.06,M.crackDim);
+    bx(-10,-2.6,trZ+2,30,0.05,0.06,M.crackDim);
+    // 地下能量室（綠色核心——地下獨立的據點）
+    bx(-10,-3.5,trZ,2.4,0.8,2.4,uDark,true);
+    bx(-10,-2.8,trZ,1.4,0.6,1.4,M.greenM);
+    var uLight=new THREE.PointLight(0x33ff99,1.3,14);uLight.position.set(-10,-2.5,trZ);scene.add(uLight);
+    // 地下入口拱門標記（綠色，位於階梯底）
+    bx(0,-3.3,trZ-4,3,2.2,0.4,M.greenM);bx(0,-3.3,trZ+4,3,2.2,0.4,M.greenM);
+
+    // ═══ E. 通風管道（真實可穿越的直立筒，貫穿地下↔地表↔上層）═══
+    // 直立通風管分布在溝槽內外，形成上下層垂直交通
+    var vents=[[-20,trZ],[-20,trZ+4],[20,trZ],[20,trZ+4],[8,trZ-3],[-8,trZ-3]];
+    vents.forEach(function(v){
+      var vx=v[0],vz=v[1];
+      // 管體四壁（空心管）
+      bx(vx,-0.8,vz,1.9,3.4,0.15,pipe);
+      bx(vx,-0.8,vz,1.9,3.4,-0.15,pipe);
+      bx(vx,-0.8,vz+0.8,0.15,3.4,1.4,pipe);
+      bx(vx,-0.8,vz-0.8,0.15,3.4,1.4,pipe);
+      ring(vx,0.15,vz,1.0,0.2,pipe);
+      ring(vx,-3.3,vz,1.0,0.2,pipe);
+      // 管內爬梯橫桿
+      for(var r=0;r<4;r++){bx(vx,-1.2-r*0.6,vz,1.4,0.05,0.05,pipe);}
+    });
+    // 裝飾性透明豎井（顯示上下層）
+    bx(20,-3.3,trZ,2.4,6.6,2.4,M.glass);
+    ring(20,0.15,trZ,1.6,0.2,M.crackDim);
+    ring(20,-3.3,trZ,1.6,0.2,M.crackDim);
+
+    // ═══ F. 中央能量核心塔（高高在上，位於中央實心地面，與地下完全分離）═══
+    // 核心平台基座（實心，無地下）
+    bx(0,0.6,0,6,1.2,6,M.plat);
+    bx(0,1.3,0,4.5,0.4,4.5,M.white);
+    // 塔柱
+    for(var a=0;a<4;a++){
+      var ang=a*Math.PI/2+Math.PI/4;
+      cy(Math.cos(ang)*2.4,2.6,Math.sin(ang)*2.4,0.4,0.4,3.0,M.dark);
+    }
+    // 塔頂核心
+    bx(0,3.6,0,2,1.2,2,M.coreM);
+    bx(0,4.4,0,1.2,0.6,1.2,M.coreM);
+    // 核心光柱與光暈
+    var col=new THREE.Mesh(new THREE.CylinderGeometry(0.9,2,16,12,1,true),M.coreRing);
+    col.position.y=9;scene.add(col);
+    ring(0,1.4,0,3.4,0.2,M.coreRing);
+    ring(0,4.6,0,2.2,0.15,M.coreRing);
+    var coreLight=new THREE.PointLight(0xffcc33,1.8,26);coreLight.position.y=5;scene.add(coreLight);
+    // 核心塔周邊護欄掩體
+    bx(-3.2,0.6,-2,0.5,1.2,1.2,M.wall);bx(3.2,0.6,2,0.5,1.2,1.2,M.wall);
+    bx(-2,0.6,3.2,1.2,1.2,0.5,M.wall);bx(2,0.6,-3.2,1.2,1.2,0.5,M.wall);
+
+    // ═══ G. 左側翼（廢墟、開闊）═══
+    bx(-30,0.4,0,4,0.8,5,M.redM);
+    bx(-28,0.9,-2.3,0.5,1.8,2.4,M.redM);bx(-28,0.9,2.3,0.5,1.8,2.4,M.redM);
+    bx(-27,1.2,-5,5.5,2.4,0.5,M.ruin);bx(-27,1.2,5,4.5,2.4,0.5,M.ruin);
+    bx(-25,1.6,9,3.2,3.2,0.5,M.ruin);bx(-23,0.5,-8,1.4,1,1.4,M.dark);
+    bx(-24,0.5,-1,1.4,1,1.4,M.dark);bx(-20,0.5,8,1.4,1,1.4,M.dark);
+    bx(-21,1.2,-12,3.6,2.4,0.5,M.ruin);
+    bx(-17,0.5,-4,1.2,1,1.2,M.dark);bx(-15,0.5,11,1.2,1,1.2,M.dark);
+    cy(-21,1.5,-10,0.55,0.55,3,M.ruin);cy(-25,1.5,6,0.55,0.55,3,M.ruin);
+    // 左翼殘破斷橋（通往北高台）
+    bx(-15,1.2,-16,3,0.5,3,M.ruin);
+
+    // ═══ H. 右側翼（室內、狹窄）═══
+    bx(30,0.4,0,4,0.8,5,M.blueM);
+    bx(28,0.9,-2.3,0.5,1.8,2.4,M.blueM);bx(28,0.9,2.3,0.5,1.8,2.4,M.blueM);
+    bx(26,1.3,-4,2.8,2.6,0.4,M.indoor);bx(26,1.3,4,2.8,2.6,0.4,M.indoor);
+    bx(27.4,1.3,-12,3.2,2.6,0.5,M.indoor);bx(27.4,1.3,12,3.2,2.6,0.5,M.indoor);
+    bx(24,1.2,-9,0.5,2.4,3,M.indoor);bx(24,1.2,9,0.5,2.4,3,M.indoor);
+    bx(25.5,1.2,-7,3.6,2.4,0.5,M.indoor);bx(25.5,1.2,7,3.6,2.4,0.5,M.indoor);
+    bx(22,0.4,-1.5,1.2,0.8,1.2,M.dark);bx(22,0.4,1.5,1.2,0.8,1.2,M.dark);
+    bx(20,0.4,6,1.2,0.8,1.2,M.dark);
+    bx(18,1.2,11,3,2.4,0.4,M.indoor);bx(17,0.4,8,1.2,0.8,1.2,M.dark);
+    // 右翼樓梯上到東高台
+    bx(20,0.6,14,2,1.2,2,M.conc);bx(20,1.2,14,2,0.6,2,M.conc);
+
+    // ═══ I. 中央主戰場：密集的「中央要塞」（掩體迷宮＋房間＋走道）
+    // ── 中央要塞外牆（一圈全高牆，形成可躲藏的矩形要塞）──
+    // 北牆段（留兩個門口）
+    bx(-4,1.6,-10,7,3.2,0.5,M.wallH);bx(7,1.6,-10,7,3.2,0.5,M.wallH);
+    // 南牆段（留門）
+    bx(-6,1.6,10,5,3.2,0.5,M.wallH);bx(6,1.6,10,7,3.2,0.5,M.wallH);
+    // 西牆段
+    bx(-13,1.6,-2,0.5,3.2,8,M.wallH);bx(-13,1.6,6,0.5,3.2,8,M.wallH);
+    // 東牆段
+    bx(13,1.6,-2,0.5,3.2,8,M.wallH);bx(13,1.6,6,0.5,3.2,8,M.wallH);
+    // 要塞四個角落塔樓（可躲）
+    cy(-12,0.7,-9,1.2,1.2,1.4,M.wall);cy(12,0.7,-9,1.2,1.2,1.4,M.wall);
+    cy(-12,0.7,9,1.2,1.2,1.4,M.wall);cy(12,0.7,9,1.2,1.2,1.4,M.wall);
+    // ── 要塞內部：房間與走廊（全高內牆，留門洞）──
+    // 中央十字走廊牆（把要塞分四區，牆上留門口）
+    bx(0,1.5,-5,0.5,3.0,8,M.wall);     // 中央縱牆(北段)
+    bx(0,1.5,5,0.5,3.0,8,M.wall);      // 中央縱牆(南段)
+    bx(-6,1.5,0,8,3.0,0.5,M.wall);     // 中央橫牆(西段)
+    bx(6,1.5,0,8,3.0,0.5,M.wall);      // 中央橫牆(東段)
+    // → 形成東北/西北/東南/西南四個內室
+    // 四個內室的掩體
+    bx(-7,0.5,-6,1.5,1.0,1.5,M.dark);bx(7,0.5,-6,1.5,1.0,1.5,M.dark);
+    bx(-7,0.5,6,1.5,1.0,1.5,M.dark);bx(7,0.5,6,1.5,1.0,1.5,M.dark);
+    bx(-9,1.0,-3,0.8,2.0,0.8,M.dark);bx(9,1.0,3,0.8,2.0,0.8,M.dark);
+    // 內室低牆（形成小迷宮）
+    bx(-9,0.8,-7,2.5,1.6,0.4,M.wall);bx(9,0.8,7,2.5,1.6,0.4,M.wall);
+    // ── 要塞內部的箱陣（多層堆疊掩體）──
+    bx(-3,0.45,7,1.3,0.9,1.3,M.dark);bx(-3,1.15,7,1.3,0.5,1.3,M.dark);
+    bx(3,0.45,-7,1.3,0.9,1.3,M.dark);bx(3,1.15,-7,1.3,0.5,1.3,M.dark);
+    bx(-5,0.45,-8,1.3,0.9,1.3,M.dark);
+    bx(5,0.45,8,1.3,0.9,1.3,M.dark);
+    // ── 要塞外的散射掩體（連接左右翼的通道掩體）──
+    bx(-15,0.5,0,2.4,1.0,2.4,M.dark);cy(-17,0.5,0,0.8,0.8,1.0,M.orange);
+    bx(15,0.5,0,2.4,1.0,2.4,M.dark);cy(17,0.5,0,0.8,0.8,1.0,M.orange);
+    // 通往核心塔的護衛牆列
+    bx(-3,0.5,-3.5,2,1.0,0.5,M.wall);bx(-6,0.5,-3,1,1.0,0.6,M.wall);
+    bx(3,0.5,3.5,2,1.0,0.5,M.wall);bx(6,0.5,3,1,1.0,0.6,M.wall);
+    // ── 高架走道（連接中央要塞 ↔ 上層高台，二層交戰動線）──
+    // 北走道（要塞頂通往北高台）
+    bx(-1,3.2,-5,8,0.3,1.6,M.plat);
+    bx(-1,3.2,-13,6,0.3,1.6,M.plat);
+    // 走道護欄
+    bx(-1,3.4,-6,8,0.25,0.15,M.dark);bx(-1,3.4,-4,8,0.25,0.15,M.dark);
+    // 走道柱子
+    cy(-4,1.6,-5,0.3,0.3,3.2,M.dark);cy(3,1.6,-5,0.3,0.3,3.2,M.dark);
+    // 西走道通往西北高台
+    bx(-9,3.2,3,1.6,0.3,5,M.plat);
+    cy(-9,1.6,3,0.3,0.3,3.2,M.dark);
+    // 階梯上走道
+    bx(-4,0.7,-5,2,0.4,1.4,M.conc);bx(-4,1.3,-5,2,0.5,1.4,M.conc);
+    bx(-4,1.95,-5,2,0.5,1.4,M.conc);
+    // ── 中央要塞周邊矮掩體（補空隙）──
+    bx(-16,0.6,-6,3,1.2,0.6,M.teal);bx(-17,0.6,8,3,1.2,0.6,M.teal);
+    bx(16,0.6,-6,3,1.2,0.6,M.teal);bx(17,0.6,8,3,1.2,0.6,M.teal);
+
+    // ═══ I2. 全場密度填充：北/南走廊、左右翼內裝、散佈掩體建築 ═══
+    // ── 北走廊：橫向連續掩體牆（連接左↔右翼，遮蔽中線）──
+    bx(-22,0.6,-24,5,1.2,0.6,M.indoor);bx(-16,0.9,-22,4,1.8,0.5,M.indoor);
+    bx(-11,0.6,-24,4,1.2,0.6,M.indoor);bx(-5,0.9,-21,4,1.8,0.5,M.indoor);
+    bx(4,0.6,-24,6,1.2,0.6,M.indoor);bx(11,0.9,-22,5,1.8,0.5,M.indoor);
+    bx(17,0.6,-24,4,1.2,0.6,M.indoor);bx(23,0.9,-21,4,1.8,0.5,M.indoor);
+    // 北走廊箱子
+    bx(-19,0.4,-26,1.3,0.8,1.3,M.dark);bx(-9,0.4,-26,1.3,0.8,1.3,M.dark);
+    bx(8,0.4,-25,1.3,0.8,1.3,M.dark);bx(20,0.4,-26,1.3,0.8,1.3,M.dark);
+    // ── 南走廊：橫向掩體列（遮蔽南側直線）──
+    bx(-20,0.6,26,6,1.2,0.6,M.indoor);bx(-13,0.9,24,4,1.8,0.5,M.indoor);
+    bx(-6,0.6,26,5,1.2,0.6,M.indoor);bx(2,0.9,24,5,1.8,0.5,M.indoor);
+    bx(10,0.6,26,5,1.2,0.6,M.indoor);bx(18,0.9,24,5,1.8,0.5,M.indoor);
+    // 南走廊箱子
+    bx(-16,0.4,28,1.3,0.8,1.3,M.dark);bx(4,0.4,28,1.3,0.8,1.3,M.dark);
+    bx(14,0.4,27,1.3,0.8,1.3,M.dark);
+    // ── 左翼往中央的過渡掩體（廢墟建築群，密集）──
+    bx(-20,0.7,-14,4,1.4,0.6,M.ruin);bx(-16,1.0,-10,3,2.0,0.6,M.ruin);
+    bx(-19,0.7,12,4,1.4,0.6,M.ruin);bx(-15,1.0,8,3,2.0,0.6,M.ruin);
+    bx(-22,0.5,-18,2,1.0,2,M.dark);bx(-18,0.5,16,2,1.0,2,M.dark);
+    // 左翼內部補充（樓梯與錯層）
+    bx(-29,0.5,-10,2.4,1.0,2.4,M.ruin);
+    bx(-29,0.9,-10,2.4,0.4,2.4,M.white);
+    bx(-29,0.5,10,2.4,1.0,2.4,M.ruin);
+    bx(-29,0.9,10,2.4,0.4,2.4,M.white);
+    // ── 右翼往中央的過渡掩體 ──
+    bx(18,0.7,-14,4,1.4,0.6,M.indoor);bx(15,1.0,-10,3,2.0,0.6,M.indoor);
+    bx(19,0.7,12,4,1.4,0.6,M.indoor);bx(16,1.0,8,3,2.0,0.6,M.indoor);
+    bx(22,0.5,-18,2,1.0,2,M.dark);bx(18,0.5,16,2,1.0,2,M.dark);
+    // 右翼內部補充
+    bx(29,0.5,-10,2.4,1.0,2.4,M.indoor);
+    bx(29,0.9,-10,2.4,0.4,2.4,M.white);
+    bx(29,0.5,10,2.4,1.0,2.4,M.indoor);
+    bx(29,0.9,10,2.4,0.4,2.4,M.white);
+    // ── 中段開放帶：隨機散布掩體塊（填補空洞）──
+    // 西中段
+    bx(-14,0.55,-4,1.5,1.1,1.5,M.dark);bx(-14,0.5,9,1.5,1.0,1.5,M.dark);
+    bx(-17,0.6,3,2,1.2,0.5,M.wall);bx(-11,0.7,-9,2,1.4,0.5,M.wall);
+    // 東中段
+    bx(14,0.55,-4,1.5,1.1,1.5,M.dark);bx(14,0.5,9,1.5,1.0,1.5,M.dark);
+    bx(17,0.6,3,2,1.2,0.5,M.wall);bx(11,0.7,-9,2,1.4,0.5,M.wall);
+    // 北中段
+    bx(-5,0.5,20,1.6,1.0,1.6,M.dark);bx(6,0.5,20,1.6,1.0,1.6,M.dark);
+    bx(0,0.8,17,3,1.6,0.5,M.wall);
+    // ── 全圖散佈的獨立小掩體（增加躲點密度）──
+    // 分布在要塞四周約 -21~-7, 7~21 之間
+    [[-21,-17],[-18,14],[-14,-16],[14,-16],[18,14],[21,-17],
+     [-21,19],[-16,22],[16,22],[21,19],[-6,-18],[6,-18],
+     [-24,22],[24,22],[-24,-22],[24,-22]].forEach(function(p){
+       bx(p[0],0.5,p[1],1,1.0,1,M.dark);
+       bx(p[0],0.5,p[1]+4,1,0.7,1,M.dark);
+     });
+
+    // ═══ J. 上層高台（第二層，y≈+3）═══
+    bx(-1,3.0,-20,13,0.4,4.5,M.plat);      // 北高台
+    bx(-11,5.1,-16,4.5,0.35,4,M.plat);     // 西北高台2
+    bx(11,5.1,-16,4.5,0.35,4,M.plat);      // 東北高台2
+    bx(15,3.0,3,4.5,0.35,4.5,M.plat);      // 東高台
+    bx(-1,3.0,15,11,0.35,4,M.plat);        // 南高台
+    cy(-3,2.8,-20,0.4,0.4,5.6,M.dark);cy(3,2.8,-20,0.4,0.4,5.6,M.dark);
+    cy(15,1.5,3,0.4,0.4,3.0,M.dark);
+    cy(-5,1.5,15,0.4,0.4,3.0,M.dark);cy(5,1.5,15,0.4,0.4,3.0,M.dark);
+    // 上高台階梯/跳台
+    bx(-12,1.6,-20,4,0.5,2.4,M.plat);
+    bx(12,4.6,-18,4,0.5,2.4,M.plat);
+    bx(18,1.1,3,3,0.5,2.5,M.conc);
+    bx(-7,1.1,15,3,0.5,2.5,M.conc);
+    // 高台矮欄杆
+    bx(-1,3.2,-22.3,13,0.3,0.2,M.dark);bx(-1,3.2,-17.7,13,0.3,0.2,M.dark);
+    bx(-13.3,5.3,-16,0.2,0.3,4,M.dark);bx(-8.7,5.3,-16,0.2,0.3,4,M.dark);
+    bx(13.3,5.3,-16,0.2,0.3,4,M.dark);bx(8.7,5.3,-16,0.2,0.3,4,M.dark);
+    bx(-1,3.2,-20,13,0.06,0.1,M.crack); // 高台霓虹
+
+    // ═══ J2. 多樣地形起伏（加分激烈的對抗地形）═══
+    // ── 中央北側：階梯式錯層平台（可逐層往上爬）──
+    bx(-7,0.55,15,6,1.1,4,M.plat);       // 第一層
+    bx(-7,1.35,13,5,0.6,3,M.plat);       // 第二層（錯位疊上）
+    bx(-8,2.05,-11,3.4,0.8,2.4,M.plat);  // 第三層
+    bx(-4,2.35,-10,2,0.6,2,M.white);     // 頂層掩體平台
+    // 錯層側壁（讓階梯有支撐感）
+    bx(-5.5,0.2,18,2.5,0.4,2,M.dark);
+    // ── 西南：下陷凹地戰壕（潛行交火區）──
+    bx(-18,0.35,6,5,0.7,5,M.purple);     // 凹地邊緣抬起
+    bx(-18,-0.3,6,4,0.6,4,M.groundAccent); // 凹地底
+    // 凹地內低牆掩體
+    bx(-18,0.55,4,3,1.1,0.4,M.wall);
+    bx(-16,0.3,8,0.5,0.6,2,M.dark);
+    // 凹地階梯爬出
+    bx(-16,0.2,2,2,0.4,1.4,M.conc);bx(-15,0.6,1,2,0.4,1.4,M.conc);
+    // ── 東北：高架石台地形（多層棟起來的岩台）──
+    bx(13,0.5,-15,5,1.0,5,M.plat);
+    bx(13,1.25,-15,4,0.5,4,M.purple);
+    bx(14,1.9,-15,2.5,0.8,2.5,M.white);  // 頂部掩體
+    // 石台階梯
+    bx(9,0.25,-18,2,0.5,2,M.conc);bx(9,0.75,-17,2,0.5,2,M.conc);
+    bx(9,1.3,-15,2,0.6,2,M.conc);
+    // ── 大型斜坡跳台（連接高低差，製造動線）──
+    // 由多塊階梯式坡度組成的大斜坡（東側上到東高台）
+    for(var sl=0;sl<4;sl++){bx(17+sl*1.3,0.25+sl*0.6,3,1.3,0.6,3,M.orange);}
+    // 西側大斜坡（上到西北高台）
+    for(var sl2=0;sl2<4;sl2++){bx(-17-sl2*1.3,-0.15+sl2*0.6,-16,1.3,0.6,3,M.orange);}
+    // ── 中央廢墟石堆（高矮不一的掩體）──
+    bx(-2,0.35,-13,1.3,0.7,1.3,M.ruin);
+    bx(2,0.55,-14,1,1.1,1,M.ruin);
+    bx(-1,0.8,-12,1.4,0.5,1.4,M.dark);
+    bx(3,0.3,-12,1.2,0.6,1.2,M.ruin);
+    // ── 東西向半高斷牆（有高度落差的射擊平台）──
+    bx(2,0.9,8,6,1.8,0.4,M.teal);       // 高段
+    bx(-2,0.55,-3,5,1.1,0.4,M.teal);    // 低段（可跳上高段）
+    // ── 樓梯塔（攀升據點，可當狙擊點）──
+    cy(-2,0.6,5,1.1,1.1,1.2,M.orange);
+    cy(-2,1.4,5,1.1,1.1,1.2,M.orange);
+    cy(-2,2.2,5,0.9,0.9,0.7,M.orange);
+    bx(-2,2.55,5,1.6,0.3,1.6,M.white);   // 塔頂
+    // ── 左右重生區外的推進地形（高低錯落掩體）──
+    bx(-24,0.4,-18,2.6,0.8,2.6,M.purple);
+    bx(-26,0.9,-16,1.6,0.5,1.6,M.dark);
+    bx(24,0.4,18,2.6,0.8,2.6,M.orange);
+    bx(26,0.9,16,1.6,0.5,1.6,M.dark);
+    // ── 霓虹地帶標記線（各區有色地帶）──
+    bx(-2,0.05,18,10,0.06,0.25,M.neonG);   // 綠線中央區
+    bx(-18,0.05,6,5,0.06,0.25,M.neonP);    // 紫線西南
+    bx(13,0.05,-15,5,0.06,0.25,M.neonO);   // 橙線東北
+
+    // ═══ K. 外圍圍牆（有缺口）═══
+    bx(-20,2.5,-32,16,5,1.2,M.wallH);bx(0,2.5,-32,7,5,1.2,M.wallH);bx(18,2.5,-32,12,5,1.2,M.wallH);
+    bx(-13,1.2,-32,4,2.4,1.2,M.dark);bx(13,1.2,-32,4,2.4,1.2,M.dark);
+    bx(-22,2.5,32,14,5,1.2,M.wallH);bx(-2,2.5,32,9,5,1.2,M.wallH);bx(16,2.5,32,14,5,1.2,M.wallH);
+    bx(7,1.2,32,4,2.4,1.2,M.dark);
+    [-16,0,18].forEach(function(z){bx(-35,2.5,z,1.2,5,8,M.wallH);});
+    [-16,0,18].forEach(function(z){bx(35,2.5,z,1.2,5,8,M.wallH);});
+    [[-35,-32],[35,-32],[-35,32],[35,32]].forEach(function(p){bx(p[0],2.5,p[1],2,5,2,M.dark);});
+
+    // ═══ L. 隱藏捷徑 ═══
+    // 西牆可穿透窗
+    bx(-34.2,1.8,11,0.2,1.4,3,M.glass);
+    // 東牆隱藏隧道口
+    bx(34,1.3,14,0.2,2.6,3,M.glass);
+    // 玻璃跳台（南高台上方）
+    bx(-2,4.8,10,2,0.25,2,M.glass);
+    // 角落隱藏破洞
+    bx(-6,1.2,31,3.4,2.4,0.8,M.ruin);
+
+    // ═══ 標籤 ═══
+    label(-30,0.6,0,'左側重生\n(廢墟)');
+    label(30,0.6,0,'右側重生\n(室內)');
+    label(0,0.6,0,'中央核心塔');
+    label(0,3,-20,'上層高台');
+    label(-10,-2,16,'地下斷層層');
+    label(-21,0,-9,'左側翼');
+    label(19,0,10,'右側翼');
+    label(-20,0,16,'通風豎井');
+    label(-35,1,11,'隱藏窗');
+    label(20,-1,16,'管道');
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    var t=clock.getElapsedTime();
+    M.coreM.emissiveIntensity=1.0+Math.sin(t*2.2)*0.4;
+    M.crack.opacity=0.4+Math.sin(t*1.5)*0.15;
+    // 飛行
+    if(fly){c.tx+=(fly.x-c.tx)*0.08;c.ty+=(Math.max(0.5,fly.y)-c.ty)*0.08;c.tz+=(fly.z-c.tz)*0.08;if(Math.hypot(fly.x-c.tx,fly.y-c.ty,fly.z-c.tz)<0.4)fly=null;}
+    var cx=c.tx+c.dist*Math.sin(c.phi)*Math.cos(c.theta);
+    var cy=c.ty+c.dist*Math.cos(c.phi);cy=Math.max(2,cy);
+    var cz=c.tz+c.dist*Math.sin(c.phi)*Math.sin(c.theta);
+    camera.position.set(cx,cy,cz);camera.lookAt(c.tx,c.ty,c.tz);
+    renderer.render(scene,camera);
+  }
+  function click(e){
+    var r=renderer.domElement.getBoundingClientRect();
+    pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;
+    raycaster.setFromCamera(pointer,camera);
+    var arr=[];for(var i=0;i<flyables.length;i++){if(flyables[i].geometry)arr.push(flyables[i]);}
+    var hit=raycaster.intersectObjects(arr,false);
+    if(hit.length){var p=hit[0].object.position;fly={x:p.x,y:Math.max(0.5,p.y),z:p.z};}
+  }
+  init();
+})();
+</script>
+</body>
+</html>

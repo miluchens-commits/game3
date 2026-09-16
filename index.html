@@ -2594,6 +2594,16 @@ function switchToSlot(slot){
   if(type==='grenade'&&grenadeStacks[slot]<=0){playerLoadout[slot]=null;switchToSlot(slot<1?0:slot-1);return;}
   currentSlot=slot;
   detachFlashlightMesh();
+  // 清理鏡頭上殘留的舊槍：快速連按切換或換槍撞上死亡/暫停時，
+  // 上次的 swapOutGroup 可能沒被動畫移除而被孤兒化，全部先清掉。
+  for(var _ci=cam.children.length-1;_ci>=0;_ci--){
+    var _ch=cam.children[_ci];
+    if(_ch&&_ch!==gunGroup&&_ch.userData&&_ch.userData.oldGun&&typeof _ch.remove==='function')cam.remove(_ch);
+  }
+  if(swapOutGroup&&swapOutGroup!==gunGroup){
+    if(swapOutGroup.parent)cam.remove(swapOutGroup);
+    swapOutGroup=null;
+  }
   if(gunGroup){
     swapOutGroup=gunGroup;
     swapOutGroup.userData.oldGun=true;

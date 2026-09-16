@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>方塊人角色查看器</title>
+<style>
+body{margin:0;overflow:hidden;background:#14142a;color:#fff;font-family:Arial}
+#info{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);padding:8px 20px;border-radius:8px;font-size:14px;z-index:10;pointer-events:none;text-align:center;letter-spacing:.5px;white-space:nowrap}
+#info small{display:block;color:#888;font-size:11px;margin-top:4px}
+#hud{position:fixed;right:0;top:0;bottom:0;width:200px;background:rgba(0,0,0,.55);padding:16px;box-sizing:border-box;z-index:5;font-size:12px;color:#ccc;border-left:1px solid #333;overflow-y:auto}
+#hud h3{margin:0 0 12px;font-size:14px;color:#fff;border-bottom:1px solid #444;padding-bottom:8px}
+#hud button{display:block;width:100%;margin:4px 0;padding:8px;background:#2a3550;color:#fff;border:1px solid #3a4a70;border-radius:5px;cursor:pointer;font-size:12px;transition:all .15s}
+#hud button:hover{background:#3a4a70}
+#hud button.active{background:#4a6a9a;border-color:#6a9aca}
+#hud .label{color:#888;margin:10px 0 4px}
+</style></head><body>
+<div id="info">🧊 方塊人角色 <b style="color:#4a6a9a">v4</b> <small>滑鼠拖曳旋轉 · 滾輪縮放 · 右側切換姿勢</small></div>
+<div id="hud">
+  <h3>姿勢 / 動畫</h3>
+  <button data-an="idle" class="active">站立待機</button>
+  <button data-an="walk">行走</button>
+  <button data-an="run">奔跑</button>
+  <button data-an="jump">跳躍</button>
+  <button data-an="crouch">蹲下</button>
+  <button data-an="shoot">射擊</button>
+  <div class="label">武器</div>
+  <button data-gun="assault" class="active">步槍</button>
+  <button data-gun="knife">小刀</button>
+  <button data-gun="pistol">手槍</button>
+  <div class="label">外觀主題</div>
+  <button data-skin="default" class="active">預設</button>
+  <button data-skin="red">紅隊</button>
+  <button data-skin="blue">藍隊</button>
+  <button data-skin="gold">金色</button>
+  <div class="label">視角</div>
+  <button data-view="third" class="active">第三視角（整人）</button>
+  <button data-view="first">第一人稱（手拿槍）</button>
+</div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x14142a);
+scene.fog=new THREE.Fog(0x14142a,20,45);
+const cam=new THREE.PerspectiveCamera(38,window.innerWidth/window.innerHeight,0.1,100);
+cam.position.set(4.2,3,6.5);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.2;
+document.body.appendChild(renderer.domElement);
+const controls=new OrbitControls(cam,renderer.domElement);
+controls.target.set(0,1,0);
+controls.enableDamping=true;
+controls.update();
+
+const amb=new THREE.AmbientLight(0x4466aa,0.5);scene.add(amb);
+const hemi=new THREE.HemisphereLight(0x99bbff,0x445566,0.7);scene.add(hemi);
+const dir=new THREE.DirectionalLight(0xffeedd,2.2);dir.position.set(5,9,4);dir.castShadow=true;dir.shadow.mapSize.set(1024,1024);scene.add(dir);
+const fill=new THREE.DirectionalLight(0x4488ff,0.5);fill.position.set(-4,3,-5);scene.add(fill);
+
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(16,16),new THREE.MeshStandardMaterial({color:0x23233a,roughness:0.85,metalness:0.1}));
+gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;scene.add(gnd);
+scene.add(new THREE.GridHelper(16,16,0x44446a,0x2e2e4a));
+
+function mat(color,rough,metal,emiss){
+  return new THREE.MeshStandardMaterial({color,roughness:(rough===undefined?0.6:rough),metalness:(metal||0.1),emissive:(emiss||0),emissiveIntensity:emiss?0.2:0});
+}
+function box(w,h,d,m,cast){
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);
+  if(cast!==false){mesh.castShadow=true;}
+  return mesh;
+}
+// Pivot helper: create a group at pivot point, add part offset so part origin is at pivot
+function limb(w,h,d,m,pivX,pivY,pivZ,offY){
+  const g=new THREE.Group();
+  g.position.set(pivX,pivY,pivZ);
+  const b=box(w,h,d,m);
+  b.position.set(0,offY,0);
+  g.add(b);
+  g.castShadow=true;
+  return g;
+}
+
+// ===== CHARACTER =====
+const char=new THREE.Group();
+
+// Colors (dict by skin)
+const SKIN={
+  default:{torso:0x3388ff,sleeve:0x6699ff,pants:0x2266cc,shoe:0x554433,glove:0x445566,visor:0x44ddff},
+  red:{torso:0xcc4444,sleeve:0xdd6666,pants:0x883333,shoe:0x554433,glove:0x553333,visor:0xffcc44},
+  blue:{torso:0x4488ee,sleeve:0x6699ff,pants:0x3355aa,shoe:0x334455,glove:0x445566,visor:0x88eeff},
+  gold:{torso:0xddcc44,sleeve:0xe8d866,pants:0xaa9930,shoe:0x665511,glove:0x887744,visor:0xffaa22}
+};
+let curSkin=SKIN.default;
+
+// Materials
+let M={};
+function buildMaterials(s){
+  M={};
+  M.torso=mat(s.torso);M.sleeve=mat(s.sleeve);M.pants=mat(s.pants);
+  M.shoe=mat(s.shoe,0.7);M.glove=mat(s.glove);M.visor=mat(s.visor,0.2,0,0x88ccff);
+  M.skinM=mat(0xffcc8a,0.7);
+}
+buildMaterials(curSkin);
+
+// ===== BODY PARTS (using pivots for animation) =====
+// Torso group (also carries head/arms) at center ~0.8
+const body=new THREE.Group();
+body.position.set(0,0.9,0);
+const torso=box(0.85,0.82,0.52,M.torso);torso.position.y=0;body.add(torso);
+// Chest plate accents
+const chest=box(0.42,0.2,0.06,M.skinM);chest.position.set(0,0.12,0.27);body.add(chest);
+// Belt
+const belt=box(0.9,0.09,0.5,M.pants,false);belt.position.set(0,-0.36,0);body.add(belt);
+const buckle=box(0.14,0.13,0.06,mat(0xccaa44,0.3,0.6));buckle.position.set(0,-0.36,0.28);body.add(buckle);
+// Shoulder pads
+const lPad=box(0.15,0.15,0.32,M.sleeve,false);lPad.position.set(-0.49,0.22,0);body.add(lPad);
+const rPad=box(0.15,0.15,0.32,M.sleeve,false);rPad.position.set(0.49,0.22,0);body.add(rPad);
+char.add(body);
+
+// Head group
+const headG=new THREE.Group();
+headG.position.set(0,0.62,0);
+const head=box(0.46,0.44,0.46,M.skinM);head.position.y=0;headG.add(head);
+// Helmet
+const hel=box(0.5,0.22,0.5,M.torso);hel.position.set(0,0.19,0);headG.add(hel);
+const helRim=box(0.52,0.06,0.52,M.sleeve,false);helRim.position.set(0,0.08,0);headG.add(helRim);
+// Visor with emissive
+const visor=box(0.3,0.12,0.1,M.visor);visor.position.set(0,0.02,0.22);headG.add(visor);
+body.add(headG);
+
+// Left arm group (pivot at shoulder)
+const lArm=limb(0.26,0.68,0.26,M.sleeve,-0.5,0.22,0,-0.3);
+const lGlove=box(0.24,0.22,0.24,M.glove,false);lGlove.position.set(0,-0.68,0);lArm.add(lGlove);
+body.add(lArm);
+// Right arm group
+const rArm=limb(0.26,0.68,0.26,M.sleeve,0.5,0.22,0,-0.3);
+const rGlove=box(0.24,0.22,0.24,M.glove,false);rGlove.position.set(0,-0.68,0);rArm.add(rGlove);
+body.add(rArm);
+
+// Left leg group (pivot at hip ~0)
+const lLeg=limb(0.3,0.66,0.3,M.pants,-0.22,0,0,-0.3);
+const lFoot=box(0.32,0.14,0.42,M.shoe,false);lFoot.position.set(0,-0.66,0.07);lLeg.add(lFoot);
+body.add(lLeg);
+// Right leg group
+const rLeg=limb(0.3,0.66,0.3,M.pants,0.22,0,0,-0.3);
+const rFoot=box(0.32,0.14,0.42,M.shoe,false);rFoot.position.set(0,-0.66,0.07);rLeg.add(rFoot);
+body.add(rLeg);
+
+char.position.set(0,0,0);
+scene.add(char);
+
+// ===== WEAPONS (忠實複刻遊戲內 AK-47 createGunModel) =====
+// 遊戲內槍 -Z = 槍口/前方, +Z = 槍托
+function makeAssault(){
+  const g=new THREE.Group();
+  const matDark=mat(0x222222,0.7,0.3);
+  const matMetal=mat(0x666666,0.4,0.6);
+  const matWood=mat(0x8B5E3C,0.9,0);
+  const matScope=mat(0x111111,0.3,0.5);
+  const matLens=mat(0x4488ff,0.3,0,0x4488ff);
+  // barrel
+  const b1=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.014,0.28,6),matMetal);
+  b1.rotation.x=Math.PI/2;b1.position.set(0,0,-0.19);g.add(b1);
+  // gas tube
+  const gt=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,0.18,6),matDark);
+  gt.rotation.x=Math.PI/2;gt.position.set(0,0.025,-0.15);g.add(gt);
+  // front sight
+  const fs=new THREE.Mesh(new THREE.BoxGeometry(0.01,0.03,0.01),matDark);
+  fs.position.set(0,0.02,-0.31);g.add(fs);
+  // receiver
+  const rcv=new THREE.Mesh(new THREE.BoxGeometry(0.036,0.045,0.14),matDark);
+  rcv.position.set(0,0,-0.01);g.add(rcv);
+  // top rail
+  const rail=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.004,0.06),matMetal);
+  rail.position.set(0,0.026,-0.04);g.add(rail);
+  // scope
+  const scp=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,0.04,8),matScope);
+  scp.rotation.x=Math.PI/2;scp.position.set(0,0.04,-0.06);g.add(scp);
+  const sl=new THREE.Mesh(new THREE.CircleGeometry(0.01,8),matLens);
+  sl.position.set(0,0.04,-0.08);g.add(sl);
+  // pistol grip
+  const pg=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.04,0.02),matWood);
+  pg.position.set(0,-0.03,0.06);pg.rotation.x=0.2;g.add(pg);
+  // stock
+  const stk=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.035,0.08),matWood);
+  stk.position.set(0,0.01,0.1);g.add(stk);
+  // handguard
+  const hg=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.022,0.1),matWood);
+  hg.position.set(0,-0.015,-0.15);g.add(hg);
+  // flash hider
+  const fh=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.012,0.025,6),matDark);
+  fh.rotation.x=Math.PI/2;fh.position.set(0,0,-0.33);g.add(fh);
+  g.scale.setScalar(3.2);
+  return g;
+}
+function makePistol(){
+  const g=new THREE.Group();
+  const matM=mat(0x666666,0.4,0.6);
+  const matD=mat(0x222222,0.7,0.3);
+  const wood=mat(0x332211,0.9,0);
+  const b2=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.015,0.14,8),matM);
+  b2.rotation.x=Math.PI/2;b2.position.set(0,0,-0.12);g.add(b2);
+  const sd=new THREE.Mesh(new THREE.BoxGeometry(0.032,0.035,0.14),matD);
+  sd.position.set(0,0,-0.05);g.add(sd);
+  const fs2=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.018,0.006),matD);
+  fs2.position.set(0,0.028,-0.13);g.add(fs2);
+  const rs2=new THREE.Mesh(new THREE.BoxGeometry(0.008,0.015,0.006),matD);
+  rs2.position.set(0,0.026,0.02);g.add(rs2);
+  const fm=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.02,0.08),matM);
+  fm.position.set(0,-0.025,0.02);g.add(fm);
+  const tg=new THREE.Mesh(new THREE.BoxGeometry(0.018,0.012,0.03),matD);
+  tg.position.set(0,-0.035,0);g.add(tg);
+  const grp=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.055,0.04),wood);
+  grp.position.set(0,-0.06,0.07);grp.rotation.x=0.2;g.add(grp);
+  const mz=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.014,0.018,8),matD);
+  mz.rotation.x=Math.PI/2;mz.position.set(0,0,-0.15);g.add(mz);
+  g.scale.setScalar(3.2);
+  return g;
+}
+function makeKnife(){
+  const g=new THREE.Group();
+  const blade=mat(0xccccdd,0.3,0.8);
+  const handle=mat(0x3a3a44,0.6,0.3);
+  g.add(box(0.03,0.04,0.4,blade).translateY(0.02).translateZ(-0.2));
+  g.add(box(0.06,0.06,0.16,handle).translateY(0.03).translateZ(0.02));
+  g.scale.setScalar(3.2);
+  return g;
+}
+
+let weapon=makeAssault();
+// 兩手持槍姿勢：槍托收近右肩，槍口朝前(+Z)，雙手握住（右手握把、左手護木）
+function mountWeapon(gun){
+  if(weapon){body.remove(weapon);}
+  weapon=gun;
+  weapon.position.set(0.45,-0.4,0.3);
+  weapon.rotation.set(0.32,Math.PI,-0.05);
+  body.add(weapon);
+}
+mountWeapon(weapon);
+
+// ===== FIRST-PERSON VIEW RIG =====
+// 第一人稱：鏡頭位於眼睛高度，前方看到方塊人的雙手端著槍
+let viewMode='third'; // 'third' | 'first'
+const FP_FOV=75; // 第一人稱較寬視角，像遊戲 FPS
+const TP_FOV=38;  // 第三視角看整人的窄視角
+let fpWeapon=makeAssault();
+function fpMountWeapon(gun){
+  if(fpWeapon)fpKick.remove(fpWeapon);
+  fpWeapon=gun;
+  // 掛到鏡頭：槍托近鏡頭、槍口朝前(-Z)。makeAssault 內部已放大 3.2x，
+  // 這裡再稍微放大，讓槍正常大小、占畫面下方，符合 FPS 比例。
+  fpWeapon.position.set(0.05,-0.10,-0.5);
+  fpWeapon.rotation.set(0,0,0);
+  fpWeapon.scale.setScalar(1.3);
+  fpKick.add(fpWeapon);
+}
+// fpRig 直接掛在場景，每幀把它的位置/方向同步成鏡頭。
+// 不依賴「camera 子物件渲染」，任何瀏覽器都保證顯示。
+const fpRig=new THREE.Group();
+scene.add(fpRig);
+fpRig.visible=false; // 預設第三視角，不使用第一人稱物件
+// fpKick：槍+雙手都裝在這裡，後座力只動它，所以雙手永遠跟著槍一起動
+const fpKick=new THREE.Group();
+fpRig.add(fpKick);
+fpMountWeapon(fpWeapon);
+// 第一人稱雙臂：每一條是「肩膀→衣袖→手套」同一個群組串起來，手套必黏在衣袖末端。
+// 右手握後握把(扳機處)、左手扶護木(前部)。整組往前伸、到槍的高度(不是往下)。
+function fpArm(side,glovePos,sleeveLen){
+  const g=new THREE.Group();
+  // g.position 設在肩膀(靠近鏡頭、略低)，整個群組往前(-Z)伸向槍
+  g.position.set(side*0.16,-0.10,-0.10);
+  // 衣袖：一根長方體，從肩膀往前伸
+  const arm=box(0.075,0.075,sleeveLen,M.sleeve,false);
+  g.add(arm);
+  // 手套：在衣袖最前端(-Z 方向末端)，跟衣袖重疊黏住，不會分離
+  const hand=box(0.085,0.085,0.16,M.glove,false);
+  hand.position.set(0,0,-(sleeveLen/2+0.05));
+  g.add(hand);
+  // 旋轉整個群組：讓手朝向指定的槍上位置(微微內收)，絕不往下
+  const tx=glovePos.x-side*0.16, ty=glovePos.y+0.10, tz=glovePos.z+0.10;
+  g.rotation.y=tx*1.5;
+  g.rotation.x=-(ty/tz>0.4?0.4:ty/tz>0?ty/tz:0);
+  g.rotation.z=side*(-0.12);
+  return g;
+}
+// 右手：握後握把(槍的扳機握把處)
+const fpRGroup=fpArm(1,{x:0.10,y:-0.12,z:-0.45},0.42);
+// 左手：扶護木(槍前部)
+const fpLGroup=fpArm(-1,{x:-0.04,y:-0.14,z:-0.58},0.46);
+fpRGroup.rotation.x=-0.06; fpRGroup.rotation.z=-0.14;
+fpLGroup.rotation.x=0.02; fpLGroup.rotation.z=0.14;
+fpKick.add(fpRGroup);fpKick.add(fpLGroup);
+// 讓皮膚換色能改到衣袖/手套
+const [fpRArm,fpRGrip]=fpRGroup.children;
+const [fpLArm,fpLGrip]=fpLGroup.children;
+const fpParts=[fpRGroup,fpLGroup,fpWeapon];
+fpParts.forEach(p=>p.visible=true);
+
+// 第一人稱滑鼠拖曳視角
+let fpYaw=0,fpPitch=0,dragging=false,lastMX=0,lastMY=0;
+renderer.domElement.addEventListener('mousedown',e=>{
+  if(viewMode!=='first')return;
+  dragging=true;lastMX=e.clientX;lastMY=e.clientY;
+  fpFiring=true;fpTriggerShot(); // 按下開始射擊+立即一發
+});
+window.addEventListener('mouseup',()=>{dragging=false;fpFiring=false;});
+window.addEventListener('mousemove',e=>{
+  if(!dragging||viewMode!=='first')return;
+  fpYaw-=e.movementX!==undefined?e.movementX*0.003:(e.clientX-lastMX)*0.003;
+  fpPitch-=e.movementY!==undefined?e.movementY*0.003:(e.clientY-lastMY)*0.003;
+  fpPitch=Math.max(-1.4,Math.min(1.4,fpPitch));
+  lastMX=e.clientX;lastMY=e.clientY;
+});
+
+// ===== 第一人稱射擊動畫 =====
+// 按住滑鼠開槍：整組(槍+雙手)一起往後縮一下，完全不轉角度
+let fpRecoil=0,fpFiring=false,fpFireTimer=0;
+function fpTriggerShot(){fpRecoil=1;}
+function fpFireLoop(dt){
+  if(fpFiring){fpFireTimer-=dt;if(fpFireTimer<=0){fpTriggerShot();fpFireTimer=0.13;}}
+  fpRecoil*=Math.exp(-dt*9);
+  fpKick.position.set(0,0,fpRecoil*0.08); // 只往後縮，不轉
+}
+
+function setView(mode){
+  viewMode=mode;
+  document.querySelectorAll('#hud [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===mode));
+  if(mode==='first'){
+    char.visible=false;
+    controls.enabled=false;
+    fpRig.visible=true;
+    cam.fov=FP_FOV;cam.updateProjectionMatrix();
+    // 鏡頭移到角色眼睛處（頭頂~1.5），朝角色前方(+Z)但第一人稱用 -Z，故旋轉180
+    cam.position.set(0,1.5,0.6);
+    cam.rotation.set(0,Math.PI,0); // 轉向 +Z 方向
+    fpYaw=0;fpPitch=0;
+  }else{
+    char.visible=true;
+    controls.enabled=true;
+    fpRig.visible=false;
+    cam.fov=TP_FOV;cam.updateProjectionMatrix();
+    cam.position.set(4.2,3,6.5);
+    cam.rotation.set(0,0,0);
+    controls.target.set(0,1,0);
+  }
+}
+document.querySelectorAll('#hud [data-view]').forEach(b=>{
+  b.addEventListener('click',()=>setView(b.dataset.view));
+});
+// 測試/方便用：帶 ?first 直接進第一人稱
+if(location.search.indexOf('first')>=0){setTimeout(()=>setView('first'),300);}
+
+// ===== ANIMATION =====
+let anim='idle';
+let t=0;
+
+// The body group's origin sits at hip height (~0.9). Leg pivots are at the hips.
+// To keep feet planted on the ground: since the foot hangs from the hip pivot and we
+// rotate legs, we nudge the whole body up/down to compensate so feet stay grounded.
+function animateChar(dt){
+  t+=dt;
+  let cycle=0, speed=0, moving=false, crouch=false;
+  if(anim==='walk'){moving=true;speed=2.2;cycle=t*7;}
+  else if(anim==='run'){moving=true;speed=4.5;cycle=t*11;}
+  else if(anim==='crouch'){crouch=true;}
+
+  // Base hip height. Crouch lowers the whole body.
+  const GROUND=0;
+  const LEG_LEN=0.66; // hip to foot pivot
+  const hipBase=crouch?0.46:0.66;
+
+  // Walk/run leg swing (feet pivot from hips). Small amplitude keeps feet grounded;
+  // bob the body in anti-phase to hide lift.
+  const swingMove=moving?Math.sin(cycle):0;
+  const swingFac=(moving)?(0.5+(speed/4.5)*0.35):0;
+  body.position.y=hipBase+Math.abs(Math.cos(cycle)*(moving?0.04:0))*Math.min(1,speed/3);
+
+  const legSwingL=moving?Math.sin(cycle)*swingFac:(crouch?0.25:0);
+  const legSwingR=moving?Math.sin(cycle+Math.PI)*swingFac:(crouch?0.25:0);
+  if(anim==='jump'){lLeg.rotation.x=-0.7;rLeg.rotation.x=0.2;}
+  else{lLeg.rotation.x=legSwingL;rLeg.rotation.x=legSwingR;}
+
+  // Arms: 持槍姿勢 - 雙手握住槍（右手握把、左手護木），跳躍時才抬起
+  if(anim==='jump'){
+    lArm.rotation.x=0.7;rArm.rotation.x=0.7;
+  }else{
+    lArm.rotation.x=-0.55;
+    rArm.rotation.x=-0.55;
+  }
+
+  // Jump: hop up and tuck.
+  if(anim==='jump'){
+    const jp=(Math.sin(t*7)+1)/2; // 0..1..0
+    body.position.y=hipBase+Math.sin(jp*Math.PI)*0.45;
+    lArm.rotation.x=0.7;rArm.rotation.x=0.7;
+    lLeg.rotation.x=-0.7;rLeg.rotation.x=0.3;
+  }
+
+  // Idle breathing / subtle sway / head scan (保持持槍姿勢)
+  if(anim==='idle'){
+    body.position.y=hipBase+Math.sin(t*2.2)*0.012;
+    lArm.rotation.x=-0.55+Math.sin(t*1.4)*0.03;
+    rArm.rotation.x=-0.55+Math.sin(t*1.4+Math.PI)*0.03;
+    headG.rotation.y=Math.sin(t*0.7)*0.08;
+    lLeg.rotation.x=0;rLeg.rotation.x=0;
+  }
+  if(anim==='shoot'){
+    body.rotation.x=Math.sin(t*45)*0.02;
+  }
+}
+
+// Button wiring
+document.querySelectorAll('#hud [data-an]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#hud [data-an]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');anim=b.dataset.an;
+  });
+});
+document.querySelectorAll('#hud [data-gun]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#hud [data-gun]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const gun=b.dataset.gun==='assault'?makeAssault():b.dataset.gun==='pistol'?makePistol():makeKnife();
+    mountWeapon(gun);
+    fpMountWeapon(gun);
+    // hide visible parts accordingly (knife/pistol simpler)
+  });
+});
+document.querySelectorAll('#hud [data-skin]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#hud [data-skin]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const s=SKIN[b.dataset.skin];curSkin=s;rebuildSkin();
+  });
+});
+function rebuildSkin(){
+  buildMaterials(curSkin);
+  // torso
+  torso.material=M.torso;chest.material=M.skinM;belt.material=M.pants;buckle.material=mat(0xccaa44,0.3,0.6);
+  lPad.material=M.sleeve;rPad.material=M.sleeve;
+  head.material=M.skinM;hel.material=M.torso;helRim.material=M.sleeve;visor.material=M.visor;
+  lArm.children[0].material=M.sleeve;lGlove.material=M.glove;
+  rArm.children[0].material=M.sleeve;rGlove.material=M.glove;
+  lLeg.children[0].material=M.pants;lFoot.material=M.shoe;
+  rLeg.children[0].material=M.pants;rFoot.material=M.shoe;
+  // FP hands/arms
+  fpRArm.material=M.sleeve;fpRGrip.material=M.glove;
+  fpLArm.material=M.sleeve;fpLGrip.material=M.glove;
+}
+
+// ===== RENDER LOOP =====
+let prev=0;
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min((now-prev)/1000||0.016,0.05);prev=now;
+  animateChar(dt);
+  if(viewMode==='first'){
+    cam.rotation.order='YXZ';
+    cam.rotation.set(fpPitch,fpYaw+Math.PI,0);
+    // 同步第一人稱物件到鏡頭：位置+朝向都跟鏡頭，保證任何瀏覽器都顯示
+    cam.updateMatrixWorld();
+    fpRig.position.copy(cam.position);
+    fpRig.quaternion.copy(cam.quaternion);
+    fpRig.updateMatrixWorld();
+    fpFireLoop(dt);
+  }else{
+    controls.update();
+  }
+  renderer.render(scene,cam);
+}
+requestAnimationFrame(loop);
+
+window.addEventListener('resize',()=>{
+  cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+</script></body></html>
