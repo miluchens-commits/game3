@@ -815,6 +815,19 @@ body.mobile-mode #scope-overlay{display:none!important}
 #isl-mob-jp{position:absolute;bottom:calc(6vh + 18vmin);right:calc(3vw + 2vmin);width:14vmin;height:14vmin;max-width:80px;max-height:80px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(100,200,255,.5),rgba(0,80,160,.7));border:2px solid rgba(100,200,255,.4);display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:none;font-size:clamp(16px,4.5vmin,26px);font-weight:bold;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);box-shadow:0 0 20px rgba(100,200,255,.2)}
 #isl-mob-jp:active{transform:scale(0.9)}
 #isl-mob-menu{position:absolute;top:12px;right:calc(3vw + 16vmin);width:10vmin;height:10vmin;max-width:60px;max-height:60px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:none;font-size:20px;color:rgba(255,255,255,.7)}
+
+/* 受擊方向指示 */
+#hit-dir-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:38;display:none}
+#hit-dir-wrap .hdir{position:absolute;opacity:0;transition:opacity 0.08s}
+#hit-dir-top,#hit-dir-bottom{left:50%;width:120px;height:40px;transform:translateX(-50%)}
+#hit-dir-top{top:0;background:linear-gradient(to bottom,rgba(255,30,30,0.55),transparent);border-radius:0 0 60px 60px}
+#hit-dir-bottom{bottom:0;background:linear-gradient(to top,rgba(255,30,30,0.55),transparent);border-radius:60px 60px 0 0}
+#hit-dir-left,#hit-dir-right{top:50%;width:40px;height:120px;transform:translateY(-50%)}
+#hit-dir-left{left:0;background:linear-gradient(to right,rgba(255,30,30,0.55),transparent);border-radius:0 60px 60px 0}
+#hit-dir-right{right:0;background:linear-gradient(to left,rgba(255,30,30,0.55),transparent);border-radius:60px 0 0 60px}
+/* 自動倒數 */
+#auto-resume-timer{position:fixed;bottom:18%;left:50%;transform:translateX(-50%);font-family:Arial;font-size:16px;color:rgba(255,255,255,.5);z-index:46;letter-spacing:3px;display:none}
+
 </style>
 </head>
 <body>
@@ -933,6 +946,8 @@ body.mobile-mode #scope-overlay{display:none!important}
     <button id="multi-to-menu" style="padding:12px 40px;font-size:16px;color:#4af;background:transparent;border:1px solid rgba(68,170,255,.4);border-radius:4px;cursor:pointer;font-family:Arial;letter-spacing:4px">回 選 單</button>
   </div>
 </div>
+<div id="hit-dir-wrap"><div class="hdir" id="hit-dir-top"></div><div class="hdir" id="hit-dir-bottom"></div><div class="hdir" id="hit-dir-left"></div><div class="hdir" id="hit-dir-right"></div></div>
+<div id="auto-resume-timer"></div>
 <div id="multi-map-vote" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:45;display:none;flex-direction:column;align-items:center;font-family:Arial;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:30px 0;box-sizing:border-box">
   <div style="display:flex;flex-direction:column;align-items:center">
     <div style="font-size:28px;color:#4af;font-weight:900;letter-spacing:6px;margin-bottom:4px">選 擇 地 圖</div>
@@ -6630,7 +6645,7 @@ function showMultiSettlement(reason){
     document.getElementById('multi-end-options').style.display='flex';
   }
 }
-document.getElementById('multi-quit-btn').onclick=function(){
+document.getElementById('multi-quit-btn').onclick=function(){_stopAutoResume();
   document.getElementById('multi-death-prompt').style.display='none';
   relaySend({type:'round_quit'});
   isMultiplayer=false;
@@ -6638,7 +6653,7 @@ document.getElementById('multi-quit-btn').onclick=function(){
   showMultiSettlement('你選擇結束比賽');
   if(window.multiSI)clearInterval(window.multiSI);
 };
-document.getElementById('multi-continue-btn').onclick=function(){
+document.getElementById('multi-continue-btn').onclick=function(){_stopAutoResume();
   document.getElementById('multi-death-prompt').style.display='none';
   if(tdmMode){tdmRespawnLocal();return;}
   playerHP=100;playerArmor=100;
@@ -6909,7 +6924,7 @@ function updateUFOProj(dt){
     up.pos.x+=up.vel.x*dt;up.pos.y+=up.vel.y*dt;up.pos.z+=up.vel.z*dt;
     up.mesh.position.copy(up.pos);
     up.dist+=up.vel.length()*dt;
-    if(up.pos.distanceTo(pos)<0.6&&playerHP>0){up.alive=false;disposeMesh(up.mesh);disposeMesh(up.trail);hitMarkerTimer=0.15;playerDamage(up.dmg);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),up.dmg,'#44ff88');ufoProjectiles.splice(i,1);continue;}
+    if(up.pos.distanceTo(pos)<0.6&&playerHP>0){up.alive=false;disposeMesh(up.mesh);disposeMesh(up.trail);hitMarkerTimer=0.15;playerDamage(up.dmg,up.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),up.dmg,'#44ff88');ufoProjectiles.splice(i,1);continue;}
     if(isMultiplayer&&opponentStates.length>0){
       for(var oi=0;oi<opponentStates.length;oi++){
         var os=opponentStates[oi];if(!os.alive)continue;
@@ -7149,8 +7164,9 @@ function processServerMessage(data){
     case 'opponent_hit':
       if(data.hp&&(data.targetPlayerId===undefined||data.targetPlayerId===myPlayerId)){
         var od=data.hp;
-        if(playerArmor>0){playerArmor-=od;if(playerArmor<0){od=-playerArmor;playerArmor=0}else od=0}
-        if(od>0){playerHP-=od;if(playerHP<0)playerHP=0}
+        var _shp=null;
+        if(data.shooterPlayerId!==undefined){var _sidx=opponentPlayerIds.indexOf(data.shooterPlayerId);if(_sidx>=0&&_sidx<opponentStates.length)_shp=opponentStates[_sidx].pos;}
+        if(_shp){playerDamage(od,_shp);}else{playerDamage(od);}
         if(playerHP<=0)tdmLocalDown();
       }
       break;
@@ -7176,7 +7192,7 @@ function processServerMessage(data){
       if(document.pointerLockElement)document.exitPointerLock();
       break;
     case 'round_continue':
-      document.getElementById('multi-death-prompt').style.display='none';
+      document.getElementById('multi-death-prompt').style.display='none';_stopAutoResume();
       document.getElementById('multi-waiting').style.display='none';
       // Respawn
       playerHP=100;playerArmor=100;
@@ -7852,7 +7868,7 @@ function shoot(){
       if(isMultiplayer&&opponentMeshes.length>0){
         opponentMeshes.forEach(function(om,oidx){
           if(!om||!opponentStates[oidx]||!opponentStates[oidx].alive)return;
-          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx]});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){tdmEnemyDown(oidx,'🔪');}showDmgNum(hits[0].point,50,'#ff4444');}});
+          om.traverse(function(child){if(child===hitMesh){hitMarkerTimer=0.15;rankMatchHits++;relaySend({type:'hit',hp:50,targetPlayerId:opponentPlayerIds[oidx],shooterPlayerId:myPlayerId});var ld=50;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}if(opponentStates[oidx].hp<=0){tdmEnemyDown(oidx,'🔪');}showDmgNum(hits[0].point,50,'#ff4444');}});
         });
       }
       for(var ei=0;ei<enemies.length;ei++){
@@ -8150,7 +8166,7 @@ function shoot(){
           if(mpGd&&mpGd.damageRange!==undefined&&mpDist>mpGd.damageRange){var mpEx=mpDist-mpGd.damageRange;mpFall=Math.max(mpGd.damageFalloff||0.3,1-mpEx/(mpGd.damageRange*3));}
         var dmg=currentGun==='awp'?999:Math.round((mpGd?mpGd.dmg:0)*mpFall*(window.hsMult||1)*(window.dmgMult||1));
           rankMatchHits++;
-          relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx]});
+          relaySend({type:'hit',hp:dmg,targetPlayerId:opponentPlayerIds[oidx],shooterPlayerId:myPlayerId});
           var ld=dmg;if(opponentStates[oidx].armor>0){opponentStates[oidx].armor-=ld;if(opponentStates[oidx].armor<0){ld=-opponentStates[oidx].armor;opponentStates[oidx].armor=0}else ld=0}if(ld>0){opponentStates[oidx].hp-=ld;if(opponentStates[oidx].hp<0)opponentStates[oidx].hp=0}
           if(opponentStates[oidx].hp<=0){tdmEnemyDown(oidx,gunData[currentGun]?gunData[currentGun].name:'??');}
           showDmgNum(hits[0].point,Math.round(dmg),'#ff4444');
@@ -8436,6 +8452,16 @@ function tdmEnemyDown(oidx,weaponName){
   // 重生與計分由伺服器的死亡廣播（opponent_died/player_death）統一驅動，確保擊殺者與被殺者皆正確重整
 }
 // Local player reached 0 HP in TDM -> downed (4p) or death (2p)
+var _autoResumeCD=0;
+function _startAutoResume(){
+  _autoResumeCD=5;
+  var el=document.getElementById('auto-resume-timer');
+  el.style.display='block';
+}
+function _stopAutoResume(){
+  _autoResumeCD=0;
+  document.getElementById('auto-resume-timer').style.display='none';
+}
 function tdmLocalDown(){
   if(!tdmMode){onPlayerDeath();return;}
   if(tdmDead)return; // 已死亡，避免重複觸發死亡廣播造成伺服器重複計分
@@ -8455,14 +8481,14 @@ function tdmFinalDeath(){
   addProficiency();
   relaySend({type:'player_death',playerId:myPlayerId});
   addKillFeed(opponentNames.length?opponentNames[0]||opponentName:'??','你','??');
-  document.getElementById('multi-death-prompt').style.display='flex';
+  document.getElementById('multi-death-prompt').style.display='flex';_startAutoResume();
   var t=document.getElementById('multi-death-title');if(t)t.textContent='💀 陣 亡';
   var d=document.getElementById('multi-death-desc');if(d)d.textContent='我已倒下，等待下一場交戰…';
   var cBtn=document.getElementById('multi-continue-btn');if(cBtn)cBtn.textContent='🔁 重生';
   if(document.pointerLockElement)document.exitPointerLock();
 }
 function tdmRespawnLocal(){
-  document.getElementById('multi-death-prompt').style.display='none';
+  document.getElementById('multi-death-prompt').style.display='none';_stopAutoResume();
   playerHP=100;playerArmor=100;isDowned=false;downTimer=0;reviving=false;beingRevived=false;tdmDead=false;
   if(tdmSpawn&&tdmSpawn.x!==undefined){pos.set(tdmSpawn.x,0.8,tdmSpawn.z);}else{var rp=getRandomSpawnPos(false);pos.copy(rp);}
   vel.set(0,0,0);
@@ -8471,7 +8497,7 @@ function tdmRespawnLocal(){
 }
 // 擊殺後雙邊重生：本機重生到出生點（不廣播，廣播由 tdmEnemyDown 統一發出）
 function tdmRoundRespawnLocal(){
-  document.getElementById('multi-death-prompt').style.display='none';
+  document.getElementById('multi-death-prompt').style.display='none';_stopAutoResume();
   document.getElementById('multi-waiting').style.display='none';
   document.getElementById('down-overlay').style.display='none';
   document.getElementById('revive-prompt').style.display='none';
@@ -8556,6 +8582,7 @@ function onPlayerDeath(){
     addKillFeed(opponentName,'你','??');
     document.getElementById('multi-death-prompt').style.display='flex';
     if(document.pointerLockElement)document.exitPointerLock();
+    _startAutoResume();
     return;
   }
   if(bossRushMode){
@@ -8617,8 +8644,23 @@ function onPlayerDeath(){
   }
   var doEl=document.getElementById('death-overlay');doEl.style.display='flex';setTimeout(function(){doEl.style.display='none';},2000);
 }
-function playerDamage(dmg){
+var hitDirTimer=0,hitDirAngle=0;
+function showHitDir(angle){
+  hitDirTimer=0.35;hitDirAngle=angle;
+  document.getElementById('hit-dir-wrap').style.display='block';
+}
+var _resumeTimerID=null;
+function playerDamage(dmg,fromPos){
   if(isDowned)return;
+  if(fromPos){
+    // 計算受擊方向：視角正前方為0°，右為+，左為-（在水平面上）
+    var _fx=-Math.sin(yaw),_fz=-Math.cos(yaw); // 前方單位向量
+    var _rx=-_fz,_rz=_fx; // 右方單位向量
+    var _dx=fromPos.x-pos.x,_dz=fromPos.z-pos.z;
+    var _rcomp=_dx*_rx+_dz*_rz; // 左右分量(右為正)
+    var _fcomp=_dx*_fx+_dz*_fz; // 前後分量(前為正)
+    showHitDir(Math.atan2(_rcomp,_fcomp));
+  }
   inspectTimer=0;
   if(equippedPet==='guardian'&&Math.random()<0.15){showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),dmg,'#44aaff');return;}
   if(window.rageActive)dmg=Math.round(dmg*0.6);
@@ -8848,9 +8890,9 @@ function updateEnemies(dt){
       else moveTarget=e.pos.clone();
       // Attack
       if(isRusher){
-        if(d<2.5&&e.shootCD<=0){playerDamage(15);slowTimer=0.3;showDmgNum(pos.clone(),15,'#ff4444');e.shootCD=0.6;}
+        if(d<2.5&&e.shootCD<=0){playerDamage(15,e.pos);slowTimer=0.3;showDmgNum(pos.clone(),15,'#ff4444');e.shootCD=0.6;}
       }else if(isSuicider){
-        if(d<2.5){screenShake=2;playerDamage(40);slowTimer=0.8;showDmgNum(pos.clone(),40,'#ff4400');e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);continue;}
+        if(d<2.5){screenShake=2;playerDamage(40,e.pos);slowTimer=0.8;showDmgNum(pos.clone(),40,'#ff4400');e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);continue;}
       }else if(isGrenadier){
         if(e.shootCD<=0&&d<20){throwGrenade(e);e.shootCD=2+Math.random()*0.8;e.state='shoot'}
       }else if(isSniper){
@@ -9235,7 +9277,7 @@ function updateNuclear(dt){
     }
     // Boss melee damage when very close
     if(distToPlayer<1.5&&boss.shootCD<=0.4){
-      playerDamage(Math.round(10*diffMult));slowTimer=0.3;showDmgNum(pos.clone(),Math.round(10*diffMult),'#ff4444');
+      playerDamage(Math.round(10*diffMult),boss.pos);slowTimer=0.3;showDmgNum(pos.clone(),Math.round(10*diffMult),'#ff4444');
     }
     // Clamp to map
     boss.pos.x=Math.max(-18,Math.min(18,boss.pos.x));
@@ -9373,7 +9415,7 @@ function updateBossProjectiles(dt){
     bp.pos.x+=bp.vel.x*dt;bp.pos.y+=bp.vel.y*dt;bp.pos.z+=bp.vel.z*dt;
     bp.mesh.position.copy(bp.pos);
     bp.dist+=bp.vel.length()*dt;
-    if(bp.pos.distanceTo(pos)<0.6){bp.alive=false;disposeMesh(bp.mesh);disposeMesh(bp.trail);hitMarkerTimer=0.15;playerDamage(bp.dmg);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),bp.dmg,'#ff4444');bossProjectiles.splice(i,1);continue;}
+    if(bp.pos.distanceTo(pos)<0.6){bp.alive=false;disposeMesh(bp.mesh);disposeMesh(bp.trail);hitMarkerTimer=0.15;playerDamage(bp.dmg,bp.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),bp.dmg,'#ff4444');bossProjectiles.splice(i,1);continue;}
     if(bp.dist>bp.range){bp.alive=false;disposeMesh(bp.mesh);disposeMesh(bp.trail);bossProjectiles.splice(i,1);}
   }
 }
@@ -9500,13 +9542,13 @@ function updateBossRush(dt){
       showBossAtkLabel('💥 暴衝撞擊');
     }
     if(boss.phase===1){
-      if(boss._chTime>0){boss._chTime-=dt;boss.pos.x+=boss._chDir.x*12*dt;boss.pos.z+=boss._chDir.z*12*dt;if(dist2<2||boss._chTime<=0){boss.phase=0;if(dist2<2.5){showBossAtkLabel('👊 震地重擊');var slamDmg=Math.round(25*diffMult);playerDamage(slamDmg);slowTimer=1;showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),slamDmg,'#ff4444');var mzPos2=boss.pos.clone();mzPos2.y+=0.3;bossMuzzleFlash(mzPos2);}}}
+      if(boss._chTime>0){boss._chTime-=dt;boss.pos.x+=boss._chDir.x*12*dt;boss.pos.z+=boss._chDir.z*12*dt;if(dist2<2||boss._chTime<=0){boss.phase=0;if(dist2<2.5){showBossAtkLabel('👊 震地重擊');var slamDmg=Math.round(25*diffMult);playerDamage(slamDmg,boss.pos);slowTimer=1;showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),slamDmg,'#ff4444');var mzPos2=boss.pos.clone();mzPos2.y+=0.3;bossMuzzleFlash(mzPos2);}}}
     }else{
       if(dist2>2.5){var md2=new THREE.Vector3().copy(toPos2).sub(boss.pos).normalize();boss.pos.x+=md2.x*2.8*dt;boss.pos.z+=md2.z*2.8*dt;}
     }
     if(boss.shootCD<=0&&boss.phase===0){
       boss.shootCD=1.2;
-      if(dist2<3){showBossAtkLabel('✊ 近戰揮擊');var sd=Math.round(12*diffMult);playerDamage(sd);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),sd,'#ff4444');var mzPos3=boss.pos.clone();mzPos3.y+=0.3;bossMuzzleFlash(mzPos3);}
+      if(dist2<3){showBossAtkLabel('✊ 近戰揮擊');var sd=Math.round(12*diffMult);playerDamage(sd,boss.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),sd,'#ff4444');var mzPos3=boss.pos.clone();mzPos3.y+=0.3;bossMuzzleFlash(mzPos3);}
       else if(dist2<10){showBossAtkLabel('🔶 衝擊波');var wDir3=new THREE.Vector3(pos.x-boss.pos.x,pos.y+0.6-boss.pos.y,pos.z-boss.pos.z).normalize();wDir3.x+=(Math.random()-0.5)*0.08;wDir3.y+=(Math.random()-0.5)*0.06;wDir3.normalize();spawnBossProj(boss.pos.clone().add(new THREE.Vector3(0,0.5,0)),wDir3,10,16,Math.round(15*diffMult),0xff8844,0.1);var mzPos4=boss.pos.clone();mzPos4.y+=0.4;bossMuzzleFlash(mzPos4);var recoilDir2=new THREE.Vector3().copy(boss.pos).sub(toPos2).normalize();boss.pos.x+=recoilDir2.x*0.1;boss.pos.z+=recoilDir2.z*0.1;}
     }
   }else if(bossType==='turret'){
@@ -9554,13 +9596,13 @@ function updateBossRush(dt){
   }else if(bossType==='laser'){
     boss.laserTimer+=dt*0.6;
     var lAng=boss.laserTimer;
-    if(dist2<3){showBossAtkLabel('⚡ 電擊脈衝');var ld=Math.round(10*diffMult);playerDamage(ld);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),ld,'#ff4444');}
+    if(dist2<3){showBossAtkLabel('⚡ 電擊脈衝');var ld=Math.round(10*diffMult);playerDamage(ld,boss.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),ld,'#ff4444');}
     if(boss.shootCD<=0){
       boss.shootCD=0.6;
       var lDir=new THREE.Vector3(Math.sin(lAng)*0.4,Math.sin(lAng*0.5)*0.15,Math.cos(lAng)).normalize();
       var lRay=new THREE.Raycaster(boss.pos.clone().add(new THREE.Vector3(0,0.4,0)),lDir);
       var lHit=lRay.intersectObject(cam,true);
-      if(lHit.length>0&&lHit[0].distance<30){showBossAtkLabel('⚡ 雷射掃射');var ld2=Math.round(6*diffMult);hitMarkerTimer=0.15;playerDamage(ld2);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),ld2,'#ff4444');}
+      if(lHit.length>0&&lHit[0].distance<30){showBossAtkLabel('⚡ 雷射掃射');var ld2=Math.round(6*diffMult);hitMarkerTimer=0.15;playerDamage(ld2,boss.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),ld2,'#ff4444');}
       var mzPos8=boss.pos.clone();mzPos8.y+=0.45;bossMuzzleFlash(mzPos8);
     }
   }else if(bossType==='gemini'){
@@ -9606,7 +9648,7 @@ function updateBossRush(dt){
       showBossAtkLabel('💥 蓄力衝撞');
     }
     if(boss.phase===1){
-      if(boss._chTime>0){boss._chTime-=dt;boss.pos.x+=boss._chDir.x*14*dt;boss.pos.z+=boss._chDir.z*14*dt;if(dist2<2||boss._chTime<=0){boss.phase=0;if(dist2<2.5){var sd=Math.round(20*diffMult);playerDamage(sd);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),sd,'#ff4444');}}}
+      if(boss._chTime>0){boss._chTime-=dt;boss.pos.x+=boss._chDir.x*14*dt;boss.pos.z+=boss._chDir.z*14*dt;if(dist2<2||boss._chTime<=0){boss.phase=0;if(dist2<2.5){var sd=Math.round(20*diffMult);playerDamage(sd,boss.pos);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),sd,'#ff4444');}}}
     }
     if(boss.shootCD<=0&&boss.phase===0){
       boss.shootCD=1.0;
@@ -10107,6 +10149,29 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
     // Recoil recovery
     if(recoilKick>0){recoilKick*=0.85;if(recoilKick<0.001)recoilKick=0;}
     if(recoilRotX!==0){recoilRotX*=0.85;if(Math.abs(recoilRotX)<0.001)recoilRotX=0;}
+    // 受擊方向指示 fade
+    if(hitDirTimer>0){
+      hitDirTimer-=dt;
+      var hdt=Math.max(0,hitDirTimer/0.35);
+      var _ra=((hitDirAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2); // 換算成 0~2π
+      var _r2=_ra>Math.PI?_ra-Math.PI*2:_ra; // -π~π：0=前,π/2=右,±π=後,-π/2=左
+      var hTop=(Math.abs(_r2)<Math.PI*0.25)?1:0;
+      var hBottom=(Math.abs(_r2)>Math.PI*0.75)?1:0;
+      var hRight=(_r2>Math.PI*0.25&&_r2<Math.PI*0.75)?1:0;
+      var hLeft=(_r2<-Math.PI*0.25&&_r2>-Math.PI*0.75)?1:0;
+      document.getElementById('hit-dir-top').style.opacity=hTop?String(hdt*0.6):'0';
+      document.getElementById('hit-dir-bottom').style.opacity=hBottom?String(hdt*0.6):'0';
+      document.getElementById('hit-dir-left').style.opacity=hLeft?String(hdt*0.6):'0';
+      document.getElementById('hit-dir-right').style.opacity=hRight?String(hdt*0.6):'0';
+      if(hitDirTimer<=0)document.getElementById('hit-dir-wrap').style.display='none';
+    }
+    // 自動繼續倒數
+    if(_autoResumeCD>0){
+      _autoResumeCD-=dt;
+      var _arEl=document.getElementById('auto-resume-timer');
+      _arEl.textContent='自動繼續 '+Math.ceil(_autoResumeCD)+'s';
+      if(_autoResumeCD<=0){_arEl.style.display='none';document.getElementById('multi-continue-btn').click();}
+    }
     // Charging handle animation
     if(boltTarget!==0||boltOffset!==0){
       boltOffset+=(boltTarget-boltOffset)*Math.min(1,dt*15);
@@ -10492,9 +10557,9 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
             setTimeout(function(){scene.remove(expMesh);scene.remove(expGlow);scene.remove(expLight);},300);
             playShort('soundreality-explosion-fx-343683.mp3',null,0.6);
             var distToP=pj.pos.distanceTo(pos);
-            if(distToP<expR){var aoeDmg=Math.round(expDmg*(1-distToP/expR));playerDamage(aoeDmg);slowTimer=0.5;playerArmor=0;showDmgNum(pos.clone(),aoeDmg,'#ff8844');}
+            if(distToP<expR){var aoeDmg=Math.round(expDmg*(1-distToP/expR));playerDamage(aoeDmg,pj.pos);slowTimer=0.5;playerArmor=0;showDmgNum(pos.clone(),aoeDmg,'#ff8844');}
             for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;var distToE=pj.pos.distanceTo(ee.pos);if(distToE<expR){var edmg=Math.round(expDmg*0.8*(1-distToE/expR));ee.hp-=edmg;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;hitMarkerTimer=0.15;showDmgNum(ee.pos,edmg,'#ff8844');}}
-            for(var oi=0;oi<opponentStates.length;oi++){var os=opponentStates[oi];if(!os.alive)continue;var distO=pj.pos.distanceTo(os.pos);if(distO<expR){var odmg=Math.round(expDmg*0.8*(1-distO/expR));var ld=odmg;if(os.armor>0){os.armor-=ld;if(os.armor<0){ld=-os.armor;os.armor=0}else ld=0}if(ld>0){os.hp-=ld;if(os.hp<0)os.hp=0}if(os.hp<=0){tdmEnemyDown(oi,'💣');}hitMarkerTimer=0.15;showDmgNum(os.pos,odmg,'#ff8844');relaySend({type:'hit',hp:odmg,targetPlayerId:opponentPlayerIds[oi]});}}
+            for(var oi=0;oi<opponentStates.length;oi++){var os=opponentStates[oi];if(!os.alive)continue;var distO=pj.pos.distanceTo(os.pos);if(distO<expR){var odmg=Math.round(expDmg*0.8*(1-distO/expR));var ld=odmg;if(os.armor>0){os.armor-=ld;if(os.armor<0){ld=-os.armor;os.armor=0}else ld=0}if(ld>0){os.hp-=ld;if(os.hp<0)os.hp=0}if(os.hp<=0){tdmEnemyDown(oi,'💣');}hitMarkerTimer=0.15;showDmgNum(os.pos,odmg,'#ff8844');relaySend({type:'hit',hp:odmg,targetPlayerId:opponentPlayerIds[oi],shooterPlayerId:myPlayerId});}}
             if(!isMultiplayer&&bossFloodedActive&&abyssalMaw&&abyssalMaw.mesh){var distB=pj.pos.distanceTo(abyssalMaw.pos);if(distB<expR){abyssalMaw.hp-=Math.round(expDmg*0.5*(1-distB/expR));abyssalMaw.hitTimer=0.3;hitMarkerTimer=0.15;showDmgNum(abyssalMaw.pos,Math.round(expDmg*0.5*(1-distB/expR)),'#44ddff');}}
           }else if(st==='flashbang'){
             var fbMesh=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.6}));
@@ -10541,7 +10606,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
         continue; // skip normal projectile hit/remove logic
       }
       var hitP=false;var headshot=false;var headPos=pos.clone();headPos.y+=0.75;var steps=8;for(var si=0;si<steps;si++){var t=(si+1)/steps;var cp=new THREE.Vector3().lerpVectors(oldPos,pj.pos,t);if(cp.distanceTo(pos)<P_RADIUS+0.5){hitP=true;if(pj.isSniper&&cp.distanceTo(headPos)<0.4)headshot=true;break;}else if(pj.isSniper&&cp.distanceTo(headPos)<0.4){hitP=true;headshot=true;break;}}if(hitP){var pd=pj.dmg||12;if(headshot){pd=playerArmor+30;slowTimer=1.2;screenShake=3;var hsEl=document.getElementById('hs-text');if(hsEl){hsEl.style.display='block';hsEl.style.animation='none';void hsEl.offsetWidth;hsEl.style.animation='hsAnim 0.6s ease-out forwards';var oldCb=hsEl._cb;if(oldCb)clearTimeout(oldCb);hsEl._cb=setTimeout(function(){if(bombMode){document.getElementById('ammo-hud').innerHTML='∞';return;}
-  hsEl.style.display='none';},700);}}else if(pj.isSniper){pd=40;slowTimer=0.8;screenShake=1;}if(pj.fromEnemy&&currentMap==='nuclear')pd=Math.round(pd*diffMult);playerDamage(pd);if(headshot){seasonProgress.headshot++;saveSeasonProgress();if(window.hsHeal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}slowTimer=Math.max(slowTimer,0.5);showDmgNum(pos.clone(),pd,headshot?'#ff0000':'#ff4444');disposeMesh(pj.mesh);projectiles.splice(pi,1);continue;}
+  hsEl.style.display='none';},700);}}else if(pj.isSniper){pd=40;slowTimer=0.8;screenShake=1;}if(pj.fromEnemy&&currentMap==='nuclear')pd=Math.round(pd*diffMult);playerDamage(pd,pj.pos);if(headshot){seasonProgress.headshot++;saveSeasonProgress();if(window.hsHeal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}slowTimer=Math.max(slowTimer,0.5);showDmgNum(pos.clone(),pd,headshot?'#ff0000':'#ff4444');disposeMesh(pj.mesh);projectiles.splice(pi,1);continue;}
       for(var bi=0;bi<mapBoxes.length;bi++){
         var b=mapBoxes[bi];
         if(b.isPlatform||b.isDragonBoat||!b.mesh.visible)continue;
@@ -10589,7 +10654,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
     // Damage enemies in zone
     for(var ei=0;ei<enemies.length;ei++){var ee=enemies[ei];if(ee.hp<=0)continue;if(ee.pos.distanceTo(iz.pos)<2.5){ee.hp-=5*dt;if(ee.hitTimer)ee.hitTimer=0.3;if(ee.hp<=0)ee.hp=0;}}
     // Damage player in zone
-    if(pos.distanceTo(iz.pos)<2.5){playerDamage(2*dt);showDmgNum(pos.clone(),Math.round(2*dt),'#ff6622');}
+    if(pos.distanceTo(iz.pos)<2.5){playerDamage(2*dt,iz.pos);showDmgNum(pos.clone(),Math.round(2*dt),'#ff6622');}
     // Pulse visual
     var puls=0.8+0.2*Math.sin(iz.timer*4);iz.mesh.material.opacity=0.25*puls;iz.mesh2.material.opacity=0.08*puls;
   }
@@ -11332,7 +11397,7 @@ function updateAbyssalMaw(dt){
     if(distToPlayer>4){var moveDir=new THREE.Vector3().copy(toPos).sub(abyssalMaw.pos).normalize();abyssalMaw.pos.x+=moveDir.x*2.5*dt;abyssalMaw.pos.z+=moveDir.z*2.5*dt;}
     if(distToPlayer<8&&abyssalMaw.moveTimer<=0){abyssalMaw.moveTimer=0.5+Math.random()*0.5;var rgt=new THREE.Vector3(-(pos.x-abyssalMaw.pos.x),0,pos.z-abyssalMaw.pos.z).normalize();abyssalMaw.dir=rgt.clone().multiplyScalar(Math.random()<0.5?1:-1);}
     if(distToPlayer<8){abyssalMaw.pos.x+=abyssalMaw.dir.x*1.5*dt;abyssalMaw.pos.z+=abyssalMaw.dir.z*1.5*dt;}
-    if(distToPlayer<1.5&&abyssalMaw.shootCD<=0.4){playerDamage(Math.round(12*diffMult));slowTimer=0.3;showDmgNum(pos.clone(),Math.round(12*diffMult),'#ff4444');}
+    if(distToPlayer<1.5&&abyssalMaw.shootCD<=0.4){playerDamage(Math.round(12*diffMult),abyssalMaw.pos);slowTimer=0.3;showDmgNum(pos.clone(),Math.round(12*diffMult),'#ff4444');}
     if(abyssalMaw.shootCD<=0){
       abyssalMaw.shootCD=1.2;
       for(var hi=-1;hi<=1;hi++){
@@ -11355,7 +11420,7 @@ function updateAbyssalMaw(dt){
     var pullDist=pullDir.length();
     if(pullDist>0.5){pullDir.normalize().multiplyScalar(pullStr*dt);pos.x+=pullDir.x;pos.z+=pullDir.z;}
     if(distToPlayer>3){var moveDir=new THREE.Vector3().copy(toPos).sub(abyssalMaw.pos).normalize();abyssalMaw.pos.x+=moveDir.x*3.5*dt;abyssalMaw.pos.z+=moveDir.z*3.5*dt;}
-    if(distToPlayer<1.5){playerDamage(Math.round(18*diffMult));slowTimer=0.5;showDmgNum(pos.clone(),Math.round(18*diffMult),'#ff4444');abyssalMaw.shootCD=0.5;}
+    if(distToPlayer<1.5){playerDamage(Math.round(18*diffMult),abyssalMaw.pos);slowTimer=0.5;showDmgNum(pos.clone(),Math.round(18*diffMult),'#ff4444');abyssalMaw.shootCD=0.5;}
     if(abyssalMaw.shootCD<=0&&distToPlayer<12){
       abyssalMaw.shootCD=0.8;
       var cDir=new THREE.Vector3(pos.x-abyssalMaw.pos.x,pos.y+0.3-abyssalMaw.pos.y-0.4,pos.z-abyssalMaw.pos.z).normalize();
@@ -11430,7 +11495,7 @@ function updateHarpoonProjectiles(dt){
     if(hp.life<=0){scene.remove(hp.mesh);harpoonProjectiles.splice(hpi,1);continue;}
     var hitP=false;
     if(pos.distanceTo(hp.pos)<0.5){
-      var hpd=hp.dmg||12;playerDamage(hpd);slowTimer=0.5;screenShake=1;showDmgNum(pos.clone(),hpd,'#ff4444');hitP=true;
+      var hpd=hp.dmg||12;playerDamage(hpd,hp.pos);slowTimer=0.5;screenShake=1;showDmgNum(pos.clone(),hpd,'#ff4444');hitP=true;
     }
     for(var bi=0;bi<mapBoxes.length;bi++){
       var b=mapBoxes[bi];if(!b.mesh.visible)continue;
