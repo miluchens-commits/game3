@@ -16,8 +16,20 @@ const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : nul
 const DATABASE_URL = process.env.DATABASE_URL || '';
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+// 開發模式：不要讓瀏覽器快取 index.html，否則改了程式碼還在跑舊版
+app.use(express.static(path.join(__dirname), {
+  etag: true,
+  lastModified: true,
+  maxAge: 0,
+  setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+}));
 app.get('/favicon.ico', (req, res) => res.status(204).end());
+// 客戶端執行期錯誤回報（這樣不用靠猜，能直接從 log 看到真正的例外）
+app.get('/oc-log', (req, res) => {
+  console.log('[CLIENT-ERR] ' + String(req.query.m || '').slice(0, 600));
+  res.set('Cache-Control', 'no-store');
+  res.send('ok');
+});
 
 let dbPool = null;
 if (DATABASE_URL) {
@@ -626,6 +638,335 @@ const onlineUsers = new Set();
 const teams = {}; // teamId -> {leader, members:[]}
 let nextRoomId = 1;
 
+// ── Hybrid Mode：真人 + AI 自由混戰 (FFA) ──
+// 目標 4 真人 + 6 AI（總戰鬥員 10 人）。為了跳過配對頁，只要有人排隊就開房，
+// AI 數量 = 10 - 實際真人數。第一位進房的人是主機，AI 由主機客戶端模擬。
+const HYBRID_TOTAL = 10;
+const HYBRID_HUMAN_MAX = 4;
+const HYBRID_BATCH_MS = 2500;   // 收集同批真人的短暫視窗（客戶端不顯示配對頁）
+const hybridQueue = [];
+let hybridBatchTimer = null;
+const hybridRooms = {}; // roomId -> {players:[ws], hostWs, playerList:[], gameStarted:true}
+// 伺服器要求的客戶端版本：直接由「實際提供給瀏覽器的 index.html」內容算出來。
+// 舊版是寫死一個常數，結果改了幾百行程式碼版本號卻不動，
+// 版本閘門就形同虌設 —— 舊分頁帶著「看起來正確」的版本號進場，
+// 裡面卻沒有後來所有修正。
+const OC_REQUIRED_BUILD = (function(){
+  try {
+    const fs = require('fs'), path = require('path');
+    // 雜湊「原始位元組」而不是解碼後的字串。
+    // 用 utf8 字串會把檔案開頭的 BOM 算成一個字元，但瀏覽器 fetch 的
+    // .text() 解碼器會把 BOM 吃掉，兩邊因此永遠差一個字元，指紋永遠不相等，
+    // 版本閘門就會 100% 擋掉所有人。位元組對位元組就沒有這個問題。
+    const bytes = fs.readFileSync(path.join(__dirname, 'index.html'));
+    let h = 5381;
+    for (let i = 0; i < bytes.length; i++) h = ((h * 33) ^ bytes[i]) >>> 0;
+    return ('0000000' + h.toString(36)).slice(-7);
+  } catch (e) { return 'BUILDPENDING'; }
+})();
+
+function addToHybridQueue(ws, name) {
+  // 版本閘門：舊分頁不得進入多人對局。
+  // 舊分頁沒有 hybrid_ai_state 廣播，會讓其他人的 AI 永遠停在出生點。
+  // 必須「有送而且相符」才放行。舊分頁根本不會送 clientBuild，
+  // 只判斷 truthy 會讓它們直接通過 —— 而舊分頁沒有 hybrid_ai_state 廣播，
+  // 會讓其他人的 AI 永遠停在出生點。
+  if (OC_REQUIRED_BUILD !== 'BUILDPENDING') {
+    const have = ws.clientBuild || '(沒送版本)';
+    if (have !== OC_REQUIRED_BUILD) {
+      console.log('[Hybrid] rejected outdated client: have=' + have + ' need=' + OC_REQUIRED_BUILD);
+      try { ws.send(JSON.stringify({ type: 'build_mismatch', server: OC_REQUIRED_BUILD, got: have })); } catch (e) {}
+      try { ws.close(); } catch (e) {}
+      return;
+    }
+  }
+  if (ws.hybridData || ws.hybridRoomId) return;
+  ws.hybridData = { name: name || '玩家' };
+  console.log('[Hybrid] queue join, name=' + ws.hybridData.name);
+  // 優先接進「還有空位且主機還活著」的現有房間，
+  // 這樣單人開房後，第二個玩家會進同一場，而不是另外開一間（否則雙方永遠遇不到）
+  const open = findOpenHybridRoom();
+  if (open) { joinHybridRoom(open, ws); return; }
+  hybridQueue.push(ws);
+  console.log('[Hybrid] queued, size=' + hybridQueue.length);
+  // 短暫視窗收集同批玩家（不顯示配對頁），時間到就開房，AI 數 = 10 - 實際真人數
+  if (!hybridBatchTimer) {
+    hybridBatchTimer = setTimeout(() => {
+      hybridBatchTimer = null;
+      if (!hybridQueue.length) return;
+      const batch = hybridQueue.splice(0, HYBRID_HUMAN_MAX);
+      startHybridMatch(batch);
+    }, HYBRID_BATCH_MS);
+  }
+}
+function findOpenHybridRoom() {
+  for (const id in hybridRooms) {
+    const r = hybridRooms[id];
+    if (r.players.length < HYBRID_HUMAN_MAX && r.hostWs && r.hostWs.readyState === WebSocket.OPEN) return r;
+  }
+  return null;
+}
+// 房間已經開打，但還有位子 → 新玩家中途加入
+function joinHybridRoom(room, ws) {
+  // 用單調遞增 ID，不要用 players.length：有人離開後 players 會變短，
+  // 用長度當 ID 會跟還在房裡的玩家撞號，名單與狀態對應全錯。
+  if (room.nextPlayerId === undefined) room.nextPlayerId = room.players.length;
+  const newId = room.nextPlayerId++;
+  const name = (ws.hybridData && ws.hybridData.name) || ws.playerName || ('玩家' + (newId + 1));
+  ws.hybridRoomId = room.roomId;
+  ws.hybridPlayerId = newId;
+  ws.hybridName = name;
+  ws.hybridIsHost = false;
+  delete ws.hybridData;
+  room.players.push(ws);
+  const entry = { id: newId, name };
+  room.playerList.push(entry);
+  const humans = room.players.length;
+  const aiCount = Math.max(0, HYBRID_TOTAL - humans);
+  room.aiCount = aiCount;
+  console.log('[Hybrid] late join roomId=' + room.roomId + ' playerId=' + newId + ' humans=' + humans + ' ai=' + aiCount);
+  broadcastHybrid(room.roomId, { type: 'hybrid_roster', players: room.playerList.slice(), aiCount, totalFighters: humans + aiCount });
+  try {
+    ws.send(JSON.stringify({
+      type: 'hybrid_match_found', roomId: room.roomId, playerId: newId,
+      playerCount: humans, aiCount, totalFighters: humans + aiCount,
+      isHost: false, lateJoin: true, spawn: hybridSpawnPoint(HYBRID_TOTAL, newId), players: room.playerList.slice()
+    }));
+  } catch (e) { console.log('[Hybrid] late join send failed', e.message); }
+  // 既有玩家要重建名單（新增一個真人 mesh + 名稱牌）。
+  // aiCount 一起帶過去，主機就能一次調整 AI 數量，不必再收一次獨立訊息
+  broadcastHybrid(room.roomId, { type: 'hybrid_roster', players: room.playerList.slice(), aiCount }, ws);
+}
+// 依「真人數 + AI 數」在環上取一個出生點
+function hybridSpawnPoint(total, idx) {
+  const ang = (idx / Math.max(1, total)) * Math.PI * 2 + Math.random() * 0.5;
+  // 半徑要落在 AI 巡邆範圍內（AI 位置夾在 ±14），否則新加入的玩家 AI 走不到
+  const r = 8 + Math.random() * 4;
+  return { x: Math.round(Math.cos(ang) * r * 100) / 100, z: Math.round(Math.sin(ang) * r * 100) / 100 };
+}
+function removeFromHybridQueue(ws) {
+  const i = hybridQueue.indexOf(ws);
+  if (i !== -1) { hybridQueue.splice(i, 1); return true; }
+  return false;
+}
+function startHybridMatch(players) {
+  if (!players.length) return null;
+  const roomId = 'hyb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+  const humans = players.length;
+  const aiCount = Math.max(0, HYBRID_TOTAL - humans);
+  const total = humans + aiCount;
+  // FFA：所有戰鬥員在同一個環上散開，沒有隊伍概念
+  const spawns = [];
+  for (let i = 0; i < total; i++) {
+    const ang = (i / total) * Math.PI * 2 + Math.random() * 0.5;
+    // 半徑要落在 AI 巡邆範圍內（AI 位置夾在 ±14），否則 AI 永遠走不到玩家
+    const r = 8 + Math.random() * 4;
+    spawns.push({
+      x: Math.round(Math.cos(ang) * r * 100) / 100,
+      z: Math.round(Math.sin(ang) * r * 100) / 100
+    });
+  }
+  for (let i = spawns.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [spawns[i], spawns[j]] = [spawns[j], spawns[i]];
+  }
+  const playerList = players.map((p, i) => ({
+    id: i, name: (p.hybridData && p.hybridData.name) || ('玩家' + (i + 1))
+  }));
+  const hostWs = players[0];
+  hybridRooms[roomId] = { roomId, players, hostWs, playerList, gameStarted: true, aiCount, nextPlayerId: humans, createdAt: Date.now(), lastAiStateAt: Date.now() };
+  players.forEach((ws, idx) => {
+    ws.hybridRoomId = roomId;
+    ws.hybridPlayerId = idx;
+    ws.hybridName = (ws.hybridData && ws.hybridData.name) || ('玩家' + (idx + 1));
+    ws.hybridIsHost = (ws === hostWs);
+    delete ws.hybridData;
+    try {
+      ws.send(JSON.stringify({
+        type: 'hybrid_match_found', roomId, playerId: idx,
+        playerCount: humans, aiCount, totalFighters: total,
+        isHost: (ws === hostWs), spawn: spawns[idx], players: playerList
+      }));
+    } catch (e) { console.log('[Hybrid] send match_found failed for player', idx, e.message); }
+  });
+  console.log('[Hybrid] match started roomId=' + roomId + ' humans=' + humans + ' ai=' + aiCount);
+  // 名單／AI 數也用 hybrid_roster 廣播一次，避免只有 match_found 帶著一份會與後續更新不同步
+  broadcastHybrid(roomId, { type: 'hybrid_roster', players: playerList.slice(), aiCount, totalFighters: humans + aiCount });
+  return hybridRooms[roomId];
+}
+function broadcastHybrid(roomId, msg, excludeWs) {
+  const room = hybridRooms[roomId];
+  if (!room) return;
+  room.players.forEach((ws) => {
+    if (ws !== excludeWs && ws.readyState === WebSocket.OPEN) {
+      try { ws.send(JSON.stringify(msg)); } catch (e) {}
+    }
+  });
+}
+function relayHybridMsg(ws, msg) {
+  const roomId = ws.hybridRoomId;
+  if (roomId === undefined || !hybridRooms[roomId]) return;
+  broadcastHybrid(roomId, msg, ws);
+}
+// 主機掉線就順位轉移，否則 AI 會失去權威模擬者
+function hybridHostOf(roomId) {
+  if (roomId === undefined || roomId === null) return null;
+  const room = hybridRooms[roomId];
+  if (!room) return null;
+  if (room.hostWs && room.hostWs.readyState === WebSocket.OPEN) return room.hostWs;
+  const next = room.players.find((p) => p.readyState === WebSocket.OPEN);
+  if (next) {
+    room.hostWs = next;
+    next.hybridIsHost = true;
+    const entry = room.playerList.find((p) => p.id === next.hybridPlayerId);
+    broadcastHybrid(roomId, { type: 'hybrid_host_changed', hostId: next.hybridPlayerId, hostName: entry ? entry.name : '' });
+    console.log('[Hybrid] host migrated to playerId=' + next.hybridPlayerId + ' roomId=' + roomId);
+  }
+  return next;
+}
+function removeFromHybrid(ws) {
+  removeFromHybridQueue(ws);
+  const roomId = ws.hybridRoomId;
+  const leftId = ws.hybridPlayerId;
+  ws.hybridRoomId = null;
+  ws.hybridPlayerId = null;
+  ws.hybridIsHost = false;
+  if (roomId === undefined || roomId === null || !hybridRooms[roomId]) return;
+  const room = hybridRooms[roomId];
+  const i = room.players.indexOf(ws);
+  if (i === -1) return;
+  room.players.splice(i, 1);
+  // 舊碼只 splice players，從來沒更新 playerList／aiCount，也沒廣播新名單，
+  // 所以「有人離開後人數不會減少」，其他客戶端的名單永遠停在舊值。
+  room.playerList = room.players.map((p, idx) => ({
+    id: p.hybridPlayerId,
+    name: p.hybridName || ('玩家' + (idx + 1)),
+    online: true
+  }));
+  room.aiCount = Math.max(0, HYBRID_TOTAL - room.players.length);
+  console.log('[Hybrid] player left id=' + leftId + ' roomId=' + roomId + ' humans=' + room.players.length + ' ai=' + room.aiCount);
+  broadcastHybrid(roomId, { type: 'hybrid_player_left', playerId: leftId });
+  if (room.players.length === 0) {
+    delete hybridRooms[roomId];
+    console.log('[Hybrid] room closed ' + roomId);
+    return;
+  }
+  hybridHostOf(roomId);   // 順便處理主機轉移
+  broadcastHybrid(roomId, {
+    type: 'hybrid_roster',
+    players: room.playerList.slice(),
+    aiCount: room.aiCount,
+    totalFighters: room.players.length + room.aiCount
+  });
+}
+// Hybrid watchdog：主機分頁在背景時，Chrome 會暫停背景分頁的 requestAnimationFrame，
+// AI 就停止廣播，其他人看到的世界會整個凍結。定時檢查並記錄，不要等玩家回報才發現。
+setInterval(() => {
+  for (const id in hybridRooms) {
+    const r = hybridRooms[id];
+    if (r.players.length < 2) continue;
+    const gap = Date.now() - (r.lastAiStateAt || r.createdAt || Date.now());
+    if (gap > 2500 && !r.aiStaleLogged) {
+      r.aiStaleLogged = true;
+      console.log('[Hybrid] 主機 AI 廣播停滯 ' + (gap / 1000).toFixed(1) + ' 秒 roomId=' + id +
+        ' —— 通常是主機分頁在背景（Chrome 會暫停背景分頁的 rAF）');
+    } else if (gap <= 2500 && r.aiStaleLogged) {
+      r.aiStaleLogged = false;
+      console.log('[Hybrid] 主機 AI 廣播恢復 roomId=' + id);
+    }
+  }
+}, 1000);
+
+function handleHybridMessage(ws, msg) {
+  const roomId = ws.hybridRoomId;
+  if (roomId === undefined || !hybridRooms[roomId]) {
+    switch (msg.type) {
+      case 'join_hybrid_queue': ws.clientBuild = msg.clientBuild || ''; addToHybridQueue(ws, msg.name); break;
+      case 'leave_hybrid_queue':
+        if (removeFromHybridQueue(ws)) { try { ws.send(JSON.stringify({ type: 'queue_left' })); } catch (e) {} }
+        break;
+    }
+    return;
+  }
+  switch (msg.type) {
+    // 玩家之間的即時資料：轉成客戶端 processServerMessage 認得的名稱
+    case 'state':
+      relayHybridMsg(ws, { type: 'opponent_state', playerId: ws.hybridPlayerId, data: msg.data });
+      break;
+    case 'shoot':
+      relayHybridMsg(ws, { type: 'enemy_shoot', playerId: ws.hybridPlayerId, origin: msg.origin, dir: msg.dir, gun: msg.gun });
+      break;
+    case 'hit':
+      relayHybridMsg(ws, { type: 'opponent_hit', playerId: ws.hybridPlayerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor, shooterPlayerId: ws.hybridPlayerId });
+      break;
+    case 'footstep':
+      relayHybridMsg(ws, { type: 'footstep' });
+      break;
+    case 'ping':
+      try { ws.send(JSON.stringify({ type: 'pong' })); } catch (e) {}
+      break;
+    // 真人往 AI 開槍 → 交給主機做權威傷害判定
+    case 'hybrid_shoot': {
+      if (ws === hybridHostOf(roomId)) break;
+      const h = hybridHostOf(roomId);
+      if (h && h.readyState === WebSocket.OPEN) {
+        ws.hybridShotsIn = (ws.hybridShotsIn || 0) + 1;
+        ws.hybridShotsFwd = (ws.hybridShotsFwd || 0) + 1;
+        // 一定要補上 playerId：主機端要把 hybrid_shoot_hit / hybrid_ai_hit
+        // 送回「開槍的那個人」，否則射手端 if(data.toId===hybridMyId) 永遠不成立，
+        // 結果就是子彈有命中卻完全沒有回饋（看起來像打空氣）。
+        try { h.send(JSON.stringify(Object.assign({}, msg, { playerId: ws.hybridPlayerId }))); } catch (e) {}
+        console.log('[Hybrid] hybrid_shoot p' + ws.hybridPlayerId + ' → host gun=' + msg.gun
+          + ' origin=' + JSON.stringify(msg.origin).slice(0, 30)
+          + ' dir=' + JSON.stringify(msg.dir).slice(0, 30)
+          + ' in=' + (ws.hybridShotsIn||0) + ' fwd=' + (ws.hybridShotsFwd||0));
+      } else {
+        ws.hybridShotsIn = (ws.hybridShotsIn || 0) + 1;
+        ws.hybridShotsFwd = 'host-down';
+      }
+      break;
+    }
+    // 診斷信標：把客戶端真實狀態寫進 log（開發用，不影響遊戲）
+    case 'hybrid_debug_report': {
+      const d = msg.snap || {};
+      console.log('[HB] p' + ws.hybridPlayerId + ' host=' + d.host + ' roster=' + d.roster
+        + ' ai=' + d.aiCount + ' dead=' + d.dead + ' gun=' + d.gun
+        + ' me=(' + d.mx + ',' + d.mz + ') hp=' + d.hp + ' ar=' + d.ar
+        + ' | opp: ' + ((d.opp || []).join('  ') || '(none)')
+        + ' | ai: ' + ((d.ai || []).join('  ') || '(none)')
+        + (d.shot && d.shot !== '-' ? ' | 開槍診斷(收/mesh/中/傷害)=' + d.shot : '')
+        + (d.msg ? ' | 收到=' + d.msg : '')
+        + (d.ray && d.ray !== '-' ? ' | ' + d.ray : ''));
+      break;
+    }
+    // 主機的 AI 權威資料：只接受主機送來的
+    case 'hybrid_ai_state':
+      // 記錄主機最後一次廣播 AI 狀態的時間（watchdog 靠它抓主機分頁失焦）
+      { const aiRoom = hybridRooms[roomId]; if (aiRoom) aiRoom.lastAiStateAt = Date.now(); }
+      // falls through
+    case 'hybrid_ai_hit':
+    case 'hybrid_ai_killed':
+    case 'hybrid_shoot_hit':
+      if (ws === hybridHostOf(roomId)) broadcastHybrid(roomId, msg, ws);
+      break;
+    // 玩家擊殺玩家：任何人都要廣播（包含殺人的那個人自己），
+    // 不能像 AI 訊息那樣限制只有主機能轉發，因為發送者是受害者而非主機。
+    case 'hybrid_kill':
+      broadcastHybrid(roomId, msg, ws);
+      break;
+    // 死亡／重生：轉成既有的 opponent_died 流程 + 專屬重生通知
+    case 'hybrid_death':
+      relayHybridMsg(ws, { type: 'opponent_died', playerId: ws.hybridPlayerId });
+      break;
+    case 'hybrid_respawn':
+      relayHybridMsg(ws, { type: 'hybrid_respawn', playerId: ws.hybridPlayerId });
+      break;
+    case 'player_death':
+      relayHybridMsg(ws, { type: 'opponent_died', playerId: ws.hybridPlayerId });
+      break;
+  }
+}
+
 // ── Extraction Mode (5-player) ──
 const extractionQueue = [];
 const extractionRooms = {}; // roomId -> {players:[], spawns:[], gameStarted:false, safes:{}}
@@ -647,8 +988,8 @@ function removeFromExtractionQueue(ws) {
 function startExtractionMatch(players) {
   const roomId = 'ext_' + Date.now();
   const spawns = [
-    { x:45, z:270 }, { x:85, z:50 }, { x:270, z:80 },
-    { x:40, z:70 }, { x:270, z:260 }
+    { x:0, z:-24 }, { x:230, z:65 }, { x:45, z:88 },
+    { x:-60, z:80 }, { x:0, z:224 }
   ];
   for (let i = spawns.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -733,6 +1074,12 @@ function handleExtractionMessage(ws, msg) {
     case 'extraction_start_extract':
       broadcastExtraction(roomId, { type: 'remote_extraction_start', playerId }, ws);
       break;
+    case 'extraction_gate_open':
+      broadcastExtraction(roomId, { type: 'remote_gate_open', playerId }, ws);
+      break;
+    case 'extraction_board_train':
+      broadcastExtraction(roomId, { type: 'remote_board_train', playerId }, ws);
+      break;
     case 'extraction_extracted':
       broadcastExtraction(roomId, { type: 'remote_extracted', playerId, items: msg.items, value: msg.value }, ws);
       break;
@@ -757,6 +1104,7 @@ function cleanupExtraction(ws) {
     }
   }
   removeFromExtractionQueue(ws);
+  removeFromHybrid(ws);
 }
 
 // ── Lobby State ──
@@ -790,6 +1138,12 @@ wss.on('connection', (ws) => {
   ws.on('message', (raw) => {
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
+    // 單多混合 Hybrid：獨立房間體系，優先於一般多人/TDM/救援流程
+    if (msg.type === 'join_hybrid_queue' || msg.type === 'leave_hybrid_queue' ||
+        (ws.hybridRoomId && hybridRooms[ws.hybridRoomId])) {
+      handleHybridMessage(ws, msg);
+      return;
+    }
     switch (msg.type) {
       case 'ping': ws.send(JSON.stringify({ type: 'pong' })); break;
       case 'join_queue': ws.playerData = { name: msg.name || 'Player', username: msg.username || '', teamId: msg.teamId || '', gameMode: msg.gameMode || 'multi' }; onlineUsers.add(msg.name); ws.playerName = msg.name; addToQueue(ws); break;
@@ -862,6 +1216,8 @@ wss.on('connection', (ws) => {
       case 'extraction_hit_player':
       case 'extraction_player_death':
       case 'extraction_start_extract':
+      case 'extraction_gate_open':
+      case 'extraction_board_train':
       case 'extraction_extracted':
         handleExtractionMessage(ws, msg);
         break;
@@ -978,7 +1334,7 @@ function handleTeamMapVote(ws, map) {
 }
 function settleTeamVote(room, rid) {
   if (!room || room.gameStarted || rooms[rid] !== room) return;
-  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'flooded', 'basemap3', 'fault'];
+  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'flooded', 'basemap3', 'fault', 'arena3'];
   const votes = room.players.map(p => room.votes[p.playerId]).filter(Boolean);
   let chosen;
   if (votes.length === 0) chosen = maps[Math.floor(Math.random() * maps.length)];
@@ -1028,7 +1384,7 @@ function startMatch(p1, p2, gameMode) {
   try{p1.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p2.playerData.name, playerId: 0, playerCount: pc }));}catch(e){console.log('send to p1 failed');}
   try{p2.send(JSON.stringify({ type: 'match_found', roomId: rid, opponent: p1.playerData.name, playerId: 1, playerCount: pc }));}catch(e){console.log('send to p2 failed');}
   // Auto-pick map after 15s if not both voted
-  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'basemap3'];
+  const maps = ['base', 'rain', 'fog', 'dragonboat', 'nuclear', 'arena2', 'flooded', 'basemap3', 'fault', 'arena3'];
   rooms[rid].voteTimer = setTimeout(() => {
     const room = rooms[rid];
     if (!room) return;
@@ -1091,9 +1447,10 @@ function handleDisconnect(ws) {
     if (opp && opp.readyState === WebSocket.OPEN) opp.send(JSON.stringify({ type: 'opponent_disconnected' }));
   }
   cleanupExtraction(ws);
+  removeFromHybrid(ws);
 }
 
 process.on('uncaughtException', e => console.error('Uncaught:', e));
 process.on('unhandledRejection', e => console.error('Unhandled:', e));
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log('OCGAME server running on port ' + PORT));
+server.listen(PORT, () => console.log('OCGAME server running on port ' + PORT + '  required build=' + OC_REQUIRED_BUILD));
