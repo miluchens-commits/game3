@@ -897,7 +897,14 @@ function handleHybridMessage(ws, msg) {
       relayHybridMsg(ws, { type: 'enemy_shoot', playerId: ws.hybridPlayerId, origin: msg.origin, dir: msg.dir, gun: msg.gun });
       break;
     case 'hit':
-      relayHybridMsg(ws, { type: 'opponent_hit', playerId: ws.hybridPlayerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor, shooterPlayerId: ws.hybridPlayerId });
+      relayHybridMsg(ws, { type: 'opponent_hit', playerId: ws.hybridPlayerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor, pierce: msg.pierce || 0, shooterPlayerId: ws.hybridPlayerId });
+      break;
+    // 突擊兵範圍爆炸的擊倒同步：任何人（含非主機）都要能轉發
+    case 'oc_knock':
+      relayHybridMsg(ws, Object.assign({}, msg, { playerId: ws.hybridPlayerId }));
+      break;
+    case 'oc_medzone':
+      relayHybridMsg(ws, Object.assign({}, msg, { playerId: ws.hybridPlayerId }));
       break;
     case 'footstep':
       relayHybridMsg(ws, { type: 'footstep' });
@@ -1162,8 +1169,18 @@ wss.on('connection', (ws) => {
         else relayToOpponent(ws, { type: 'enemy_shoot', origin: msg.origin, dir: msg.dir, gun: msg.gun });
         break;
       case 'hit':
-        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_hit', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor });
-        else relayToOpponent(ws, { type: 'opponent_hit', playerId: ws.playerId, hp: msg.hp, armor: msg.armor });
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'opponent_hit', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, hp: msg.hp, armor: msg.armor, pierce: msg.pierce || 0 });
+        else relayToOpponent(ws, { type: 'opponent_hit', playerId: ws.playerId, hp: msg.hp, armor: msg.armor, pierce: msg.pierce || 0 });
+        break;
+      // 突擊兵範圍爆炸的擊倒同步（真人被炸倒）
+      case 'oc_knock':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'oc_knock', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, aiIdx: msg.aiIdx, dmg: msg.dmg, dx: msg.dx, dz: msg.dz, dur: msg.dur });
+        else relayToOpponent(ws, { type: 'oc_knock', playerId: ws.playerId, targetPlayerId: msg.targetPlayerId, aiIdx: msg.aiIdx, dmg: msg.dmg, dx: msg.dx, dz: msg.dz, dur: msg.dur });
+        break;
+      // 醫療兵區域效果（煙霧／薄霧／長煙）同步：區域掛在對方客戶端各自算效果
+      case 'oc_medzone':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'oc_medzone', playerId: ws.playerId, kind: msg.kind, x: msg.x, y: msg.y, z: msg.z, r: msg.r, owner: msg.owner });
+        else relayToOpponent(ws, { type: 'oc_medzone', playerId: ws.playerId, kind: msg.kind, x: msg.x, y: msg.y, z: msg.z, r: msg.r, owner: msg.owner });
         break;
       case 'player_death':        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) { relayTeamMsg(ws, { type: 'opponent_died', playerId: ws.playerId }); handleTdmDeathScore(ws); }
         else relayToOpponent(ws, { type: 'opponent_died' });
