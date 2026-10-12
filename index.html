@@ -13,9 +13,20 @@ canvas{display:block}
 #blocker div{color:#fff;font-size:24px;text-align:center;background:rgba(0,0,0,.7);padding:24px 48px;border-radius:8px;line-height:1.6}
 #blocker small{font-size:14px;opacity:.7}
 #crosshair{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.8);font-size:28px;pointer-events:none;z-index:5;font-family:monospace}
-#awp-scope{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;pointer-events:none;z-index:5;display:none}
-#awp-scope .ring{position:absolute;top:0;left:0;width:100%;height:100%;border:1px solid rgba(255,255,255,.5);border-radius:50%}
-#awp-scope .dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:#ff0000;border-radius:50%;box-shadow:0 0 8px rgba(255,0,0,.9)}
+#awp-scope{position:fixed;inset:0;pointer-events:none;z-index:7;display:none;font-family:Arial}
+#awp-scope .vig{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:92vmin;height:92vmin;border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,.97),inset 0 0 120px rgba(0,0,0,.92);border:3px solid #050505;background:radial-gradient(circle at 50% 44%,rgba(140,170,190,.05),rgba(0,0,0,.22) 68%,rgba(0,0,0,.6))}
+#awp-scope .ret{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:92vmin;height:92vmin}
+#awp-scope .ln{position:absolute;background:#000;box-shadow:0 0 2px rgba(0,0,0,.85)}
+#awp-scope .ln.h{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+#awp-scope .ln.v{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+#awp-scope .post{position:absolute;background:#000}
+#awp-scope .phl{top:50%;left:0;width:33%;height:4px;transform:translateY(-50%)}
+#awp-scope .phr{top:50%;right:0;width:33%;height:4px;transform:translateY(-50%)}
+#awp-scope .pvt{left:50%;top:0;height:33%;width:4px;transform:translateX(-50%)}
+#awp-scope .pvb{left:50%;bottom:0;height:33%;width:4px;transform:translateX(-50%)}
+#awp-scope .md{position:absolute;width:4px;height:4px;background:#000;border-radius:50%;transform:translate(-50%,-50%)}
+#awp-scope .cd{position:absolute;left:50%;top:50%;width:2.5px;height:2.5px;background:#000;transform:translate(-50%,-50%)}
+#awp-scope .mag{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);color:#cfd8dc;font:bold 15px Arial;letter-spacing:2px;text-shadow:0 0 4px #000}
 #shop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:40;font-family:Arial;display:none;align-items:center;justify-content:center}
 #shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 60%,#1a0e0a,#000);overflow:hidden}
 #shop-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,170,68,.04) 40px,rgba(255,170,68,.04) 41px),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,170,68,.04) 40px,rgba(255,170,68,.04) 41px);pointer-events:none}
@@ -578,10 +589,14 @@ body.mobile-mode #scope-overlay{display:none!important}
 .seasontab:hover{color:#fff;border-color:rgba(255,255,255,.25)}
 #pet-shop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:44;font-family:Arial;display:none;align-items:center;justify-content:center}
 #pet-shop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7)}
-#pet-shop-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(100,255,136,.25);border-radius:14px;padding:28px 30px;max-width:560px;width:92%;text-align:center;box-shadow:0 0 60px rgba(100,255,136,.1)}
+#pet-shop-box{position:relative;background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid rgba(100,255,136,.25);border-radius:14px;padding:28px 30px;max-width:560px;width:92%;max-height:88vh;text-align:center;box-shadow:0 0 60px rgba(100,255,136,.1)}
 #pet-shop-title{font-size:26px;font-weight:bold;color:#4f4;letter-spacing:6px;margin-bottom:6px;text-shadow:0 0 20px rgba(68,255,68,.2)}
 #pet-shop-coins{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:16px}
-#pet-list{display:flex;flex-direction:column;gap:8px}
+#pet-list{display:flex;flex-direction:column;gap:8px;max-height:62vh;overflow-y:auto;overflow-x:hidden;padding-right:8px;-webkit-overflow-scrolling:touch}
+#pet-list::-webkit-scrollbar{width:8px}
+#pet-list::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px}
+#pet-list::-webkit-scrollbar-thumb{background:rgba(68,255,68,.35);border-radius:4px}
+#pet-list::-webkit-scrollbar-thumb:hover{background:rgba(68,255,68,.6)}
 .pet-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(100,255,136,.15);border-radius:8px;padding:12px 14px;transition:all .2s;text-align:left}
 .pet-card:hover{border-color:rgba(100,255,136,.4);background:rgba(100,255,136,.06)}
 .pet-card-icon{font-size:28px;width:44px;text-align:center}
@@ -929,7 +944,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 <div id="scanlines"></div>
 <div id="sniper-warn"><span id="sniper-warn-txt">⚠ 你已被狙擊兵瞄準！快滑壘或找掩護</span></div>
 <div id="crosshair">+</div>
-<div id="awp-scope"><div class="ring"></div><div class="dot"></div></div>
+<div id="awp-scope"><div class="vig"></div><div class="ret"><div class="ln h"></div><div class="ln v"></div><div class="post phl"></div><div class="post phr"></div><div class="post pvt"></div><div class="post pvb"></div><div class="cd"></div><div class="md" style="left:50%;top:39%"></div><div class="md" style="left:50%;top:44%"></div><div class="md" style="left:50%;top:56%"></div><div class="md" style="left:50%;top:61%"></div><div class="md" style="left:50%;top:66%"></div><div class="md" style="left:39%;top:50%"></div><div class="md" style="left:44%;top:50%"></div><div class="md" style="left:56%;top:50%"></div><div class="md" style="left:61%;top:50%"></div><div class="md" style="left:66%;top:50%"></div></div><div class="mag">4.0x</div></div>
 <div id="death-overlay"><div>行 動 失 敗</div></div>
 <div id="down-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:8;pointer-events:none;font-family:Arial;color:#f44;text-align:center;text-shadow:0 0 20px rgba(255,0,0,.5);display:none"><div style="font-size:48px;font-weight:bold;letter-spacing:4px">💀 倒 地</div><div style="font-size:20px;color:#ff8;margin-top:8px;letter-spacing:2px">左鍵開最後一槍</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-top:6px">存活 <span id="down-timer">5</span> 秒</div></div>
 <div id="revive-prompt" style="position:fixed;top:56%;left:50%;transform:translateX(-50%);z-index:8;pointer-events:none;font-family:Arial;color:#6f6;text-align:center;text-shadow:0 0 16px rgba(68,255,68,.4);display:none;font-size:18px;letter-spacing:2px"></div>
@@ -1034,6 +1049,47 @@ body.mobile-mode #scope-overlay{display:none!important}
 <script>
 var authToken=localStorage.getItem('oc_token'),authUser=localStorage.getItem('oc_user')||'',currentTeamId=null;
 var API_BASE='';
+// ── 多人連線伺服器位址解析（全域，bootGame 與摸金模組共用）──
+// OC_SERVER_DEFAULT：線上（非本機）要連哪台伺服器，例：'https://game4-server.onrender.com'
+//   留空=沿用目前頁面網址（本機開發）。itch 是 HTTPS 頁面且沒有後端，必須設這值指向公開伺服器。
+window.OC_SERVER_DEFAULT=window.OC_SERVER_DEFAULT||'';
+function ocResolveIP(ip){
+  ip=(ip||'').trim();
+  if(!ip)ip=(window.OC_SERVER_DEFAULT||'').trim();
+  return ip;
+}
+function ocMultiWSURL(ip){
+  ip=ocResolveIP(ip);
+  if(ip&&ip.indexOf('://')!==-1){
+    var scheme=/^https:/i.test(ip)?'wss:':(/^http:/i.test(ip)?'ws:':(/^wss:/i.test(ip)?'wss:':'ws:'));
+    var rest=ip.replace(/^[a-z0-9]+:\/\//i,'').replace(/\/+$/,'');
+    var sp=rest.indexOf('/');
+    var host=sp===-1?rest:rest.slice(0,sp);
+    var pth=sp===-1?'':rest.slice(sp+1);
+    if(!pth||pth==='/'||!/game$/i.test(pth))pth='game';
+    return scheme+'//'+host+'/'+pth;
+  }
+  if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
+    if(location.protocol==='https:'){
+      return 'wss://'+(location.hostname||'localhost')+(location.port&&location.port!=='443'?':'+location.port:'')+'/game';
+    }
+    return 'ws://'+(location.hostname||'localhost')+(location.port&&location.port!=='80'?':'+location.port:':3000')+'/game';
+  }
+  if(location.protocol==='https:')return 'wss://'+ip+'/game';
+  return 'ws://'+ip+':3000/game';
+}
+function ocHttpBase(ip){
+  ip=ocResolveIP(ip);
+  if(ip&&ip.indexOf('://')!==-1){
+    return ip.replace(/^wss:/i,'https:').replace(/^ws:/i,'http:').replace(/\/game\/?$/i,'').replace(/\/+$/,'');
+  }
+  if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
+    if(location.protocol==='https:')return location.origin;
+    return 'http://'+(location.hostname||'localhost')+':3000';
+  }
+  if(location.protocol==='https:')return 'https://'+ip;
+  return 'http://'+ip+':3000';
+}
 function authFetch(url,opts){
   opts=opts||{};opts.headers=opts.headers||{};
   if(authToken)opts.headers['Authorization']='Bearer '+authToken;
@@ -2800,20 +2856,20 @@ function updateSlotFlashlightUI(){
   });
 }
 // ── Gun system ──
-var knifeSwingCount=0,knifeAnim=0,grenadeAnim=0,grenadeThrown=false,recoilKick=0,recoilRotX=0,boltOffset=0,boltTarget=0,swapAnimTimer=0,swapAnimDuration=0.4,swapOutGroup=null,swapTargetSlot=-1,swapTargetGun='';
-var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30,reloadTime:2,accuracyDecay:0.006,accuracyRecovery:10,maxSpread:0.08,damageRange:35,damageFalloff:0.5},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7,reloadTime:1.5,accuracyDecay:0.015,accuracyRecovery:7,maxSpread:0.06,damageRange:45,damageFalloff:0.55},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:15,zoom:4,mag:5,reloadTime:2.8,accuracyDecay:0,accuracyRecovery:0,maxSpread:0.003,damageRange:100,damageFalloff:1},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6,reloadTime:2.2,accuracyDecay:0.12,accuracyRecovery:5,maxSpread:0.35,damageRange:15,damageFalloff:0.3},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,reloadTime:2.4,chargeable:true,chargeTime:1.2,chargeMaxDmg:50,accuracyDecay:0.01,accuracyRecovery:8,maxSpread:0.07,damageRange:40,damageFalloff:0.6},smg:{name:'衝鋒槍',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40,reloadTime:1.6,accuracyDecay:0.012,accuracyRecovery:12,maxSpread:0.12,damageRange:25,damageFalloff:0.4},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
+var knifeSwingCount=0,knifeAnim=0,grenadeAnim=0,grenadeThrown=false,recoilKick=0,recoilRotX=0,boltOffset=0,boltTarget=0,awpBoltTimer=0,swapAnimTimer=0,swapAnimDuration=0.4,swapOutGroup=null,swapTargetSlot=-1,swapTargetGun='';
+var gunData={ak47:{name:'AK-47',dmg:20,fireRate:0.1,spread:0.025,adsFov:50,zoom:1.5,mag:30,reloadTime:2,accuracyDecay:0.006,accuracyRecovery:10,maxSpread:0.08,damageRange:35,damageFalloff:0.5},deagle:{name:'沙鷹',dmg:40,fireRate:0.32,spread:0.015,adsFov:55,zoom:1.8,mag:7,reloadTime:1.5,accuracyDecay:0.015,accuracyRecovery:7,maxSpread:0.06,damageRange:45,damageFalloff:0.55},awp:{name:'AWP',dmg:85,fireRate:1.1,spread:0.003,adsFov:20,zoom:4,mag:5,reloadTime:2.8,accuracyDecay:0,accuracyRecovery:0,maxSpread:0.003,damageRange:100,damageFalloff:1},grapple:{name:'勾爪槍',dmg:0,fireRate:0,spread:0,adsFov:80,zoom:1,mag:1},knife:{name:'刀',dmg:50,fireRate:0.45,spread:0,adsFov:80,zoom:1,mag:1},watergun:{name:'水槍',dmg:10,fireRate:0.35,spread:0.04,adsFov:80,zoom:1,mag:999},sniper:{name:'狙擊槍',dmg:80,fireRate:2,spread:0.005,adsFov:80,zoom:1,mag:1},shotgun:{name:'龍息霰彈',dmg:15,fireRate:0.7,spread:0.15,adsFov:60,zoom:1.2,mag:6,reloadTime:2.2,accuracyDecay:0.12,accuracyRecovery:5,maxSpread:0.35,damageRange:15,damageFalloff:0.3},radrifle:{name:'輻射步槍',dmg:12,fireRate:0.3,spread:0.008,adsFov:50,zoom:1.5,mag:20,reloadTime:2.4,chargeable:true,chargeTime:1.2,chargeMaxDmg:50,accuracyDecay:0.01,accuracyRecovery:8,maxSpread:0.07,damageRange:40,damageFalloff:0.6},smg:{name:'MP7',dmg:14,fireRate:0.07,spread:0.035,adsFov:55,zoom:1.4,mag:40,reloadTime:1.6,accuracyDecay:0.012,accuracyRecovery:12,maxSpread:0.12,damageRange:25,damageFalloff:0.4},grenade:{name:'手雷',dmg:50,fireRate:0.8,spread:0,adsFov:80,zoom:1,mag:1}};
 var currentGun='ak47',gunGroup=null,isADS=false,shootCD=0,autoFire=false,isReloading=false,reloadTimer=0,inspectTimer=0,reloadDuration=0,magazineMesh=null,grenadeStacks=[0,0,0,0,0],currentSpread=0,currentSpreadGun='';
 var footstepTimer=0,lastMoving=false;
 var gunKills={};
 var gunAmmo={ak47:30,deagle:7,awp:5,grapple:1,knife:1,watergun:999,sniper:999,shotgun:6,radrifle:20,smg:40,grenade:1};
-var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4),smg:new THREE.Vector3(0,0,-0.35),grenade:new THREE.Vector3(0,0,-0.25),grenade_frag:new THREE.Vector3(0,0,-0.25),grenade_flashbang:new THREE.Vector3(0,0,-0.25),grenade_smoke:new THREE.Vector3(0,0,-0.25),grenade_incendiary:new THREE.Vector3(0,0,-0.25)};
+var barrelTips={ak47:new THREE.Vector3(0,0,-0.495),deagle:new THREE.Vector3(0,0,-0.21),awp:new THREE.Vector3(0,0,-0.585),grapple:new THREE.Vector3(0,0,-0.2),knife:new THREE.Vector3(0,0,-0.25),sniper:new THREE.Vector3(0,0,-0.3),shotgun:new THREE.Vector3(0,0,-0.35),radrifle:new THREE.Vector3(0,0,-0.4),smg:new THREE.Vector3(0,0,-0.30),grenade:new THREE.Vector3(0,0,-0.25),grenade_frag:new THREE.Vector3(0,0,-0.25),grenade_flashbang:new THREE.Vector3(0,0,-0.25),grenade_smoke:new THREE.Vector3(0,0,-0.25),grenade_incendiary:new THREE.Vector3(0,0,-0.25)};
 // ── Economy system ──
 var specialCoins=parseInt(localStorage.getItem('oc_coin'))||50000;
-var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:1,radrifle:1,smg:1,grenade_frag:1,grenade_flashbang:1,grenade_smoke:1,grenade_incendiary:1};
-try{var inv=localStorage.getItem('oc_inv');if(inv){var parsed=JSON.parse(inv);for(var k in parsed)weaponInventory[k]=parsed[k];if(parsed.grenade!==undefined&&!parsed.grenade_frag){weaponInventory.grenade_frag=parsed.grenade;}delete weaponInventory.grenade;}}catch(e){}
+var weaponInventory={ak47:1,deagle:1,awp:1,knife:1,grapple:999,shotgun:1,radrifle:1,smg:1};
+try{var inv=localStorage.getItem('oc_inv');if(inv){var parsed=JSON.parse(inv);for(var k in parsed)weaponInventory[k]=parsed[k];delete weaponInventory.grenade;delete weaponInventory.grenade_frag;delete weaponInventory.grenade_flashbang;delete weaponInventory.grenade_smoke;delete weaponInventory.grenade_incendiary;}}catch(e){}
 function saveWeaponInventory(){try{localStorage.setItem('oc_inv',JSON.stringify(weaponInventory));}catch(e){}}
-var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0,smg:20000,grenade_frag:10000,grenade_flashbang:15000,grenade_smoke:12000,grenade_incendiary:18000};
-var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍',smg:'衝鋒槍',grenade_frag:'手雷',grenade_flashbang:'閃光彈',grenade_smoke:'煙霧彈',grenade_incendiary:'燃燒弹'};
+var weaponPrices={ak47:10000,deagle:5000,awp:30000,knife:1000,grapple:0,shotgun:100000,radrifle:0,smg:20000};
+var weaponNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',knife:'刀',grapple:'勾爪槍',sniper:'狙擊槍',shotgun:'龍息霰彈',radrifle:'輻射步槍',smg:'MP7'};
 var killCounter=0;
 // ── Attachment system ──
 var attachData={suppressor:{name:'滅音器',type:'muzzle',price:800,desc:'降低開火聲,降低被發現機率',effects:{noise:0.5,damage:0.97,range:0.9}},compensator:{name:'制退器',type:'muzzle',price:600,desc:'後座力-20%',effects:{recoil:0.8,noise:1.3}},red_dot:{name:'紅點鏡',type:'sight',price:500,desc:'精準度+15%',effects:{accuracy:1.15,adsSpeed:0.97}},scope_2x:{name:'2倍鏡',type:'sight',price:700,desc:'中距離更準',effects:{zoomFov:50,adsSpeed:0.9}},quick_mag:{name:'快速彈匣',type:'mag',price:400,desc:'換彈速度+25%',effects:{reloadSpeed:1.25}},extended_mag:{name:'擴充彈匣',type:'mag',price:500,desc:'彈量+15發',effects:{ammoBonus:15,reloadSpeed:0.9}},quick_ext_mag:{name:'快速擴充彈匣',type:'mag',price:900,desc:'彈量增加+換彈加快',effects:{ammoBonus:15,reloadSpeed:1.15,adsSpeed:0.95,moveSpeed:0.98}}};
@@ -2980,7 +3036,7 @@ function showShop(){
 function renderShopList(){
   document.getElementById('shop-coins').textContent='特種幣 $'+specialCoins;
   var list=document.getElementById('shop-list');list.innerHTML='';
-  var guns=['ak47','deagle','awp','shotgun','knife','smg','grenade_frag','grenade_flashbang','grenade_smoke','grenade_incendiary'];
+  var guns=['ak47','deagle','awp','shotgun','knife','smg'];
   guns.forEach(function(gun){
     var price=weaponPrices[gun];
     var cnt=weaponInventory[gun]||0;
@@ -3003,6 +3059,123 @@ function showToast(text,duration){
   if(el._toast)clearTimeout(el._toast);
   el._toast=setTimeout(function(){el.style.opacity='0';},(duration||1)*1000);
 }
+function ocAwpTex(){
+  if(window._ocAwpTex)return window._ocAwpTex;
+  var tex=new THREE.TextureLoader().load('awp_diff.jpg');
+  try{tex.colorSpace=THREE.SRGBColorSpace;}catch(e){}
+  try{tex.anisotropy=renderer.capabilities.getMaxAnisotropy();}catch(e){}
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  window._ocAwpTex=tex;
+  return tex;
+}
+// 程序生成的環境貼圖（天空漸層）給瞄準鏡鏡片反射用
+function ocAwpEnv(){
+  if(window._ocAwpEnv!==undefined)return window._ocAwpEnv;
+  try{
+    var c=document.createElement('canvas');c.width=512;c.height=256;var g=c.getContext('2d');
+    var grad=g.createLinearGradient(0,0,0,256);
+    grad.addColorStop(0,'#9cc4ee');grad.addColorStop(0.45,'#eef3f8');grad.addColorStop(0.55,'#c8d2dc');grad.addColorStop(1,'#2b2f36');
+    g.fillStyle=grad;g.fillRect(0,0,512,256);
+    g.fillStyle='rgba(90,110,130,.5)';g.fillRect(0,150,512,18);
+    g.fillStyle='#ffffff';g.beginPath();g.arc(400,50,22,0,7);g.fill();
+    var t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;
+    if(THREE.SRGBColorSpace)t.colorSpace=THREE.SRGBColorSpace;
+    window._ocAwpEnv=t;   // 直接用 equirect 貼圖當 envMap：任何 renderer 皆可用（不含跨 context 的 PMREM render target）
+  }catch(e){window._ocAwpEnv=null;}
+  return window._ocAwpEnv;
+}
+// 用烘焙好的 AWP OBJ 模型（awpdata.js）建立槍身網格；沒有資料就回傳 null（回退程序生成）
+// 三材質群組：槍身(metal色)、瞄準鏡(scope色)、鏡片(鏡面反光)
+function ocBuildAwpMesh(skinC){
+  if(!window.OC_AWP_MODEL)return null;
+  var geo=window._ocAwpGeo;
+  if(!geo){
+    var M=window.OC_AWP_MODEL;
+    geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(ocB64f32(M.p),3));
+    geo.setAttribute('normal',new THREE.BufferAttribute(ocB64f32(M.n),3));
+    geo.setAttribute('uv',new THREE.BufferAttribute(ocB64f32(M.u),2));
+    var idx=ocB64u16(M.i);geo.setIndex(new THREE.BufferAttribute(idx,1));
+    var g1=(M.g|0),g2=(M.g2|0);
+    if(g1>0&&g2>g1&&g2<=idx.length){geo.addGroup(0,g1,0);geo.addGroup(g1,g2-g1,1);geo.addGroup(g2,idx.length-g2,2);}
+    else{geo.addGroup(0,idx.length,0);}
+    geo.computeVertexNormals();
+    geo.computeBoundingSphere();
+    window._ocAwpGeo=geo;
+  }
+  var tex=ocAwpTex();
+  var metalCol=skinC&&skinC.metal!==undefined?skinC.metal:0x666666;
+  var scopeCol=skinC&&skinC.scope!==undefined?skinC.scope:0x111111;
+  var bodyMat=new THREE.MeshStandardMaterial({map:tex,color:metalCol,metalness:0.35,roughness:0.6,side:THREE.DoubleSide});
+  var scopeMat=new THREE.MeshStandardMaterial({map:tex,color:scopeCol,metalness:0.5,roughness:0.4,side:THREE.DoubleSide});
+  if(!window._ocAwpLensMat){window._ocAwpLensMat=new THREE.MeshStandardMaterial({color:0xdfeaf2,metalness:1.0,roughness:0.05,envMap:ocAwpEnv(),envMapIntensity:1.4,side:THREE.DoubleSide});}
+  var mesh=new THREE.Mesh(geo,[bodyMat,scopeMat,window._ocAwpLensMat]);
+  var grp=new THREE.Group();
+  grp.add(mesh);
+  var MM=window.OC_AWP_MODEL;
+  if(MM.bp&&MM.bi){
+    var bgeo=new THREE.BufferGeometry();
+    bgeo.setAttribute('position',new THREE.BufferAttribute(ocB64f32(MM.bp),3));
+    bgeo.setAttribute('normal',new THREE.BufferAttribute(ocB64f32(MM.bn),3));
+    bgeo.setAttribute('uv',new THREE.BufferAttribute(ocB64f32(MM.bu),2));
+    bgeo.setIndex(new THREE.BufferAttribute(ocB64u16(MM.bi),1));
+    bgeo.computeVertexNormals();
+    bgeo.computeBoundingSphere();
+    var boltMesh=new THREE.Mesh(bgeo,bodyMat);
+    grp.add(boltMesh);
+    grp.userData.boltMesh=boltMesh;
+  }
+  grp.userData.skinMats={metal:bodyMat,scope:scopeMat};
+  return grp;
+}
+// MP7 貼圖（單張 diffuse）
+function ocMp7Tex(){
+  if(window._ocMp7Tex)return window._ocMp7Tex;
+  var tex=new THREE.TextureLoader().load('mp7/mp7_color.png');
+  try{tex.colorSpace=THREE.SRGBColorSpace;}catch(e){}
+  try{tex.anisotropy=renderer.capabilities.getMaxAnisotropy();}catch(e){}
+  tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping;
+  window._ocMp7Tex=tex;return tex;
+}
+// 用烘焙好的 MP7 OBJ 模型（mp7data.js）建立槍身；沒有資料回傳 null（回退程序生成）
+function ocBuildMp7Mesh(skinC){
+  if(!window.OC_MP7_MODEL)return null;
+  var geo=window._ocMp7Geo;
+  if(!geo){
+    var M=window.OC_MP7_MODEL;
+    geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(ocB64f32(M.p),3));
+    geo.setAttribute('normal',new THREE.BufferAttribute(ocB64f32(M.n),3));
+    geo.setAttribute('uv',new THREE.BufferAttribute(ocB64f32(M.u),2));
+    geo.setIndex(new THREE.BufferAttribute(ocB64u16(M.i),1));
+    geo.computeBoundingSphere();
+    window._ocMp7Geo=geo;
+  }
+  // 全黑亮面：去掉貼圖，用亮黑底 + 輕微自發光，避免看起來太暗
+  var bodyMat=new THREE.MeshStandardMaterial({color:0x141414,emissive:0x161616,emissiveIntensity:1.2,metalness:0.1,roughness:0.55,side:THREE.DoubleSide});
+  var scopeMat=new THREE.MeshStandardMaterial({color:0x141414,emissive:0x161616,emissiveIntensity:1.2,metalness:0.1,roughness:0.55,side:THREE.DoubleSide});
+  var mesh=new THREE.Mesh(geo,bodyMat);
+  var grp=new THREE.Group();
+  grp.add(mesh);
+  // MP7 稍微縮小
+  grp.scale.setScalar(0.9);
+  // 彈匣做成獨立 mesh（模型自帶），reload 動畫直接拉動它，不再疊灰色彈匣
+  var M=window.OC_MP7_MODEL;
+  if(M.gi&&M.gp){
+    var mgeo=new THREE.BufferGeometry();
+    mgeo.setAttribute('position',new THREE.BufferAttribute(ocB64f32(M.gp),3));
+    mgeo.setAttribute('normal',new THREE.BufferAttribute(ocB64f32(M.gn),3));
+    mgeo.setAttribute('uv',new THREE.BufferAttribute(ocB64f32(M.gu),2));
+    mgeo.setIndex(new THREE.BufferAttribute(ocB64u16(M.gi),1));
+    mgeo.computeBoundingSphere();
+    var magMesh=new THREE.Mesh(mgeo,bodyMat);
+    grp.add(magMesh);
+    grp.userData.magMesh=magMesh;
+    grp.userData.magBaseY=magMesh.position.y;
+  }
+  grp.userData.skinMats={dark:scopeMat,metal:bodyMat,wood:bodyMat,scope:scopeMat};
+  return grp;
+}
 function createGunModel(type,plain){
   var g=new THREE.Group();
   var skinC=plain?null:getSkinColors(type);
@@ -3011,6 +3184,20 @@ function createGunModel(type,plain){
   var matWood=new THREE.MeshStandardMaterial({color:skinC&&skinC.wood!==undefined?skinC.wood:0x8B5E3C,roughness:0.9});
   var matScope=new THREE.MeshStandardMaterial({color:skinC&&skinC.scope!==undefined?skinC.scope:0x111111,metalness:0.5,roughness:0.3});
   var matLens=new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x4488ff,emissiveIntensity:0.15});
+  if(type==='flamethrower'){
+    var flBody=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.034,0.24,10),matDark);flBody.rotation.x=Math.PI/2;flBody.position.set(0,0,-0.02);g.add(flBody);
+    var flTankMat=new THREE.MeshStandardMaterial({color:0xcc5522,metalness:0.6,roughness:0.4});
+    var flTank=new THREE.Mesh(new THREE.CylinderGeometry(0.028,0.028,0.14,10),flTankMat);flTank.position.set(0,0.058,0.02);g.add(flTank);
+    var flTank2=new THREE.Mesh(new THREE.CylinderGeometry(0.028,0.028,0.14,10),flTankMat);flTank2.position.set(0,0.058,0.17);g.add(flTank2);
+    var flHose=new THREE.Mesh(new THREE.TorusGeometry(0.05,0.008,6,12,Math.PI),matDark);flHose.position.set(-0.05,0.02,-0.04);flHose.rotation.y=Math.PI/2;g.add(flHose);
+    var flNoz=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.014,0.22,8),matMetal);flNoz.rotation.x=Math.PI/2;flNoz.position.set(0,-0.005,-0.24);g.add(flNoz);
+    var flNozTip=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.01,0.03,8),matDark);flNozTip.rotation.x=Math.PI/2;flNozTip.position.set(0,-0.005,-0.35);g.add(flNozTip);
+    var flFlame=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.1,8),new THREE.MeshBasicMaterial({color:0xff7a1a,transparent:true,opacity:0.9}));flFlame.rotation.x=-Math.PI/2;flFlame.position.set(0,-0.005,-0.42);g.add(flFlame);g.userData.flameTip=flFlame;
+    var flGrip=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.05,0.02),matDark);flGrip.position.set(0,-0.035,0.02);g.add(flGrip);
+    var flBar=new THREE.Mesh(new THREE.BoxGeometry(0.012,0.03,0.014),matMetal);flBar.position.set(0,0.006,-0.07);g.add(flBar);
+    g.userData.skinMats={dark:matDark,metal:matMetal,wood:matWood,scope:matScope};
+    return g;
+  }
   if(type==='ak47'){
     var b1=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.014,0.28,6),matMetal);b1.rotation.x=Math.PI/2;b1.position.set(0,0,-0.19);g.add(b1);
     var gt=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,0.18,6),matDark);gt.rotation.x=Math.PI/2;gt.position.set(0,0.025,-0.15);g.add(gt);
@@ -3053,6 +3240,9 @@ function createGunModel(type,plain){
     // Slide serrations (rear)
     for(var si=0;si<3;si++){var serr=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.004,0.004),matMetal);serr.position.set(0,0.016,0.01+si*0.008);g.add(serr);}
   }else if(type==='awp'){
+    var ocAwp=ocBuildAwpMesh(skinC);
+    if(ocAwp){g.add(ocAwp);if(ocAwp.userData){if(ocAwp.userData.skinMats)g.userData.skinMats=ocAwp.userData.skinMats;if(ocAwp.userData.boltMesh)g.userData.boltMesh=ocAwp.userData.boltMesh;}}
+    else{
     var b3=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.013,0.34,6),matMetal);b3.rotation.x=Math.PI/2;b3.position.set(0,0,-0.22);g.add(b3);
     var bs=new THREE.Mesh(new THREE.CylinderGeometry(0.017,0.018,0.12,6),matDark);bs.rotation.x=Math.PI/2;bs.position.set(0,0,-0.13);g.add(bs);
     var bd2=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.05,0.16),matDark);bd2.position.set(0,0,-0.02);g.add(bd2);
@@ -3062,6 +3252,7 @@ function createGunModel(type,plain){
     var pg2=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.045,0.025),matDark);pg2.position.set(0,-0.035,0.07);pg2.rotation.x=0.3;g.add(pg2);
     var bp1=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.06,4),matMetal);bp1.position.set(0.015,-0.025,-0.18);bp1.rotation.z=0.3;g.add(bp1);
     var bp2=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.06,4),matMetal);bp2.position.set(-0.015,-0.025,-0.18);bp2.rotation.z=-0.3;g.add(bp2);
+    }
   }else if(type==='knife'){
     var fireMat=new THREE.MeshStandardMaterial({color:0xff4400,emissive:0xff2200,emissiveIntensity:2});
     var fireGlow=new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:3,transparent:true,opacity:0.7});
@@ -3117,25 +3308,43 @@ function createGunModel(type,plain){
     var pg4=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.055,0.03),matWood);pg4.position.set(0,-0.04,0.05);pg4.rotation.x=0.3;g.add(pg4);
     var stk3=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.04,0.1),matWood);stk3.position.set(0,0.01,0.1);g.add(stk3);
   }else if(type==='smg'){
-    var rcvs=new THREE.Mesh(new THREE.BoxGeometry(0.034,0.034,0.10),matDark);rcvs.position.set(0,0,0);g.add(rcvs);
-    var barrs=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.012,0.10,8),matMetal);barrs.rotation.x=Math.PI/2;barrs.position.set(0,0,-0.10);g.add(barrs);
-    var fhs=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.01,0.02,8),matDark);fhs.rotation.x=Math.PI/2;fhs.position.set(0,0,-0.16);g.add(fhs);g.userData.flashHider=fhs;
-    var hgs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.022,0.10),matDark);hgs.position.set(0,-0.014,-0.10);g.add(hgs);
-    var rails=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.004,0.10),matMetal);rails.position.set(0,0.019,0);g.add(rails);
-    var rss=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.016,0.006),matDark);rss.position.set(0,0.03,0.045);g.add(rss);
-    var fss=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.014,0.006),matDark);fss.position.set(0,0.026,-0.10);g.add(fss);
-    var rdss=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,0.025,8),matScope);rdss.rotation.x=Math.PI/2;rdss.position.set(0,0.04,-0.02);g.add(rdss);
-    var rdlens=new THREE.Mesh(new THREE.SphereGeometry(0.004,6,6),matLens);rdlens.position.set(0,0.04,-0.034);g.add(rdlens);
-    var chs=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.015,6),matMetal);chs.rotation.z=Math.PI/2;chs.position.set(0.02,0.012,-0.02);g.add(chs);
-    var mags=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.048,0.014),matDark);mags.position.set(0,-0.041,-0.01);g.add(mags);
-    var magcs=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.018,0.014),matDark);magcs.position.set(0,-0.063,-0.002);magcs.rotation.x=0.35;g.add(magcs);
-    var tgs=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.01,0.022),matDark);tgs.position.set(0,-0.022,0.045);g.add(tgs);
-    var trs=new THREE.Mesh(new THREE.BoxGeometry(0.003,0.008,0.004),matMetal);trs.position.set(0,-0.016,0.045);g.add(trs);
-    var grips=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.036,0.022),matWood);grips.position.set(0,-0.034,0.06);grips.rotation.x=0.3;g.add(grips);
-    var s1s=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);s1s.position.set(0.01,0.008,0.075);s1s.rotation.x=0.1;g.add(s1s);
-    var s2s=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.05,6),matDark);s2s.position.set(-0.01,0.008,0.075);s2s.rotation.x=0.1;g.add(s2s);
-    var sbs=new THREE.Mesh(new THREE.BoxGeometry(0.028,0.016,0.012),matDark);sbs.position.set(0,0.004,0.105);g.add(sbs);
-    var fgs=new THREE.Mesh(new THREE.BoxGeometry(0.014,0.02,0.022),matWood);fgs.position.set(0,-0.034,-0.10);g.add(fgs);
+    var ocMp7=ocBuildMp7Mesh(skinC);
+    if(ocMp7){
+      g.add(ocMp7);
+      if(ocMp7.userData){
+        if(ocMp7.userData.skinMats)g.userData.skinMats=ocMp7.userData.skinMats;
+        if(ocMp7.userData.magMesh){magazineMesh=ocMp7.userData.magMesh;g.userData.magMesh=ocMp7.userData.magMesh;g.userData.magBaseY=ocMp7.userData.magBaseY;}
+      }
+    }
+    else{
+    // MP7：緊湊 PDW 外型（程序化備援），持槍/動畫與 AK-47 共用同一套
+    var rcvs=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.05,0.16),matDark);rcvs.position.set(0,0,-0.02);g.add(rcvs);
+    var railT=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.005,0.16),matMetal);railT.position.set(0,0.028,-0.02);g.add(railT);
+    var barrs=new THREE.Mesh(new THREE.CylinderGeometry(0.011,0.013,0.10,8),matMetal);barrs.rotation.x=Math.PI/2;barrs.position.set(0,0,-0.14);g.add(barrs);
+    var fhs=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.011,0.025,8),matDark);fhs.rotation.x=Math.PI/2;fhs.position.set(0,0,-0.20);g.add(fhs);g.userData.flashHider=fhs;
+    var shroud=new THREE.Mesh(new THREE.BoxGeometry(0.032,0.03,0.09),matDark);shroud.position.set(0,-0.004,-0.13);g.add(shroud);
+    var fsMp7=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.016,0.006),matDark);fsMp7.position.set(0,0.036,-0.165);g.add(fsMp7);
+    // 內建紅點瞄準鏡（原本紅點樣式）
+    var rdss=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,0.028,8),matScope);rdss.rotation.x=Math.PI/2;rdss.position.set(0,0.046,-0.03);g.add(rdss);
+    var rdlens=new THREE.Mesh(new THREE.SphereGeometry(0.004,6,6),matLens);rdlens.position.set(0,0.046,-0.045);g.add(rdlens);
+    var rsMp7=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.014,0.006),matDark);rsMp7.position.set(0,0.034,0.045);g.add(rsMp7);
+    // 伸縮托桿 + 槍托底板
+    var rodL=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.06,8),matMetal);rodL.rotation.x=Math.PI/2;rodL.position.set(0.011,0.008,0.085);g.add(rodL);
+    var rodR=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.06,8),matMetal);rodR.rotation.x=Math.PI/2;rodR.position.set(-0.011,0.008,0.085);g.add(rodR);
+    var butt=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.05,0.014),matDark);butt.position.set(0,0.004,0.12);g.add(butt);
+    // 握把（AK 同角度）
+    var grips=new THREE.Mesh(new THREE.BoxGeometry(0.022,0.05,0.024),matDark);grips.position.set(0,-0.048,0.045);grips.rotation.x=0.3;g.add(grips);
+    // 彈匣（MP7 直插式）
+    var mags=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.06,0.018),matMetal);mags.position.set(0,-0.055,-0.005);g.add(mags);
+    var magBase=new THREE.Mesh(new THREE.BoxGeometry(0.024,0.01,0.022),matDark);magBase.position.set(0,-0.088,-0.005);g.add(magBase);
+    // 折疊前握把
+    var fgs=new THREE.Mesh(new THREE.BoxGeometry(0.016,0.045,0.018),matDark);fgs.position.set(0,-0.048,-0.115);g.add(fgs);
+    // 扳機護弓 + 扳機
+    var tgs=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.01,0.024),matDark);tgs.position.set(0,-0.028,0.02);g.add(tgs);
+    var trs=new THREE.Mesh(new THREE.BoxGeometry(0.003,0.008,0.004),matMetal);trs.position.set(0,-0.022,0.02);g.add(trs);
+    // 拉機柄
+    var chs=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.016,6),matMetal);chs.rotation.z=Math.PI/2;chs.position.set(0,0.02,0.03);g.add(chs);
+    }
   }else if(type==='radrifle'){
     var rMat=new THREE.MeshStandardMaterial({color:0x226622,metalness:0.6,roughness:0.3});
     var rGlow=new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x22ff22,emissiveIntensity:0.8});
@@ -3167,7 +3376,7 @@ function createGunModel(type,plain){
   var boltMat=new THREE.MeshStandardMaterial({color:0x666666,metalness:0.7,roughness:0.3});
   if(type==='ak47'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.004,0.014,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0.021,0.03,-0.02);g.add(bolt);g.userData.boltMesh=bolt;}
   else if(type==='deagle'){var bolt=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.008,0.004),boltMat);bolt.position.set(0,0.02,0.035);g.add(bolt);g.userData.boltMesh=bolt;}
-  else if(type==='awp'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.006,0.025,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0.024,0.015,-0.03);g.add(bolt);g.userData.boltMesh=bolt;}
+  else if(type==='awp'){if(!window.OC_AWP_MODEL){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.006,0.025,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0.024,0.015,-0.03);g.add(bolt);g.userData.boltMesh=bolt;}}
   else if(type==='shotgun'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.008,0.02,6),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(0,-0.015,-0.18);g.add(bolt);g.userData.boltMesh=bolt;}
   else if(type==='smg'){var bolt=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.012,6),boltMat);bolt.position.set(0.022,0.018,0.025);g.add(bolt);g.userData.boltMesh=bolt;}
   else if(type==='radrifle'){var bolt=new THREE.Mesh(new THREE.BoxGeometry(0.006,0.008,0.005),boltMat);bolt.position.set(0,0.038,-0.03);g.add(bolt);g.userData.boltMesh=bolt;}
@@ -3186,12 +3395,25 @@ function createGunModel(type,plain){
 // ── Loadout system ──
 var playerLoadout=['ak47',null,null,null,null],currentSlot=0,selectedArmorySlot=0;
 try{var _lo=JSON.parse(localStorage.getItem('oc_loadout'));if(_lo&&_lo.loadout){for(var _li=0;_li<5;_li++){if(_lo.loadout[_li]!==undefined)playerLoadout[_li]=_lo.loadout[_li];}}}catch(e){}
+// 手雷已從遊戲移除：把存檔裡殘留的 grenade 換掉，避免切到不存在的武器當機
+(function(){
+  var _fallback=['ak47','deagle','smg','awp','knife'];
+  for(var _li=0;_li<5;_li++){
+    var _t=playerLoadout[_li];
+    if(_t&&(_t==='grenade'||_t==='grenade_frag'||_t==='grenade_flashbang'||_t==='grenade_smoke'||_t==='grenade_incendiary')){
+      playerLoadout[_li]=_fallback[_li]||null;
+    }
+  }
+  try{localStorage.setItem('oc_loadout',JSON.stringify({loadout:playerLoadout}));}catch(e){}
+})();
 function switchToSlot(slot){
   if(isDowned)return;
   inspectTimer=0;
   if(slot<0||slot>4)return;
   var type=playerLoadout[slot];
   if(!type)return;
+  // 手雷只有「無限炸彈」模式還能用，一般模式直接跳過
+  if(type==='grenade'&&!bombMode){playerLoadout[slot]=null;switchToSlot(slot<1?0:slot-1);return;}
   if(type==='grenade'&&grenadeStacks[slot]<=0){playerLoadout[slot]=null;switchToSlot(slot<1?0:slot-1);return;}
   currentSlot=slot;
   detachFlashlightMesh();
@@ -3423,7 +3645,7 @@ document.getElementById('shop-btn').onclick=function(){document.getElementById('
 document.getElementById('shop-bg').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 document.getElementById('shop-close').onclick=function(){document.getElementById('shop').style.display='none';document.getElementById('menu').style.display='flex';updateCoinsDisplay();};
 // ── Skin system ──
-var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,scope:0x222222}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xcccccc,scope:0xaaaaaa}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xcc8800,scope:0x331100}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,scope:0x330000}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,scope:0x4400aa}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],smg:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C,scope:0x111111}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x333333,wood:0x222222,scope:0x222222}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411,scope:0x224411}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a,scope:0x330000}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044,scope:0x4400aa}}]};
+var gunSkins={ak47:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666,wood:0x8B5E3C}},{id:'red_dragon',name:'赤龍',colors:{dark:0x441111,metal:0xcc2222,wood:0x441111}},{id:'ice',name:'寒冰',colors:{dark:0x113355,metal:0x66aadd,wood:0x224466}},{id:'gold',name:'黃金',colors:{dark:0x443311,metal:0xddaa33,wood:0x664422}},{id:'neon',name:'霓虹',colors:{dark:0x224411,metal:0x44ff44,wood:0x224411}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],deagle:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0x666666}},{id:'chrome',name:'鉻銀',colors:{dark:0x888888,metal:0xcccccc}},{id:'fire',name:'烈焰',colors:{dark:0x662200,metal:0xff4400}},{id:'midnight',name:'暗夜',colors:{dark:0x111133,metal:0x223366}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],awp:[{id:'default',name:'原廠',colors:{dark:0x222222,metal:0xd8d8d8,scope:0x666666}},{id:'carbon',name:'碳纖',colors:{dark:0x111111,metal:0x555555,scope:0x333333}},{id:'arctic',name:'極地',colors:{dark:0xeeeeee,metal:0xffffff,scope:0xcccccc}},{id:'tiger',name:'猛虎',colors:{dark:0x442200,metal:0xd99933,scope:0x6b4a22}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x993322,scope:0x551100}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0xaa88ff,scope:0x5522cc}}],shotgun:[{id:'default',name:'原廠',colors:{dark:0x444444,metal:0x666666,wood:0x6B3E1C}},{id:'rust',name:'鐵鏽',colors:{dark:0x553322,metal:0x884422,wood:0x553322}},{id:'storm',name:'風暴',colors:{dark:0x223344,metal:0x4477aa,wood:0x223344}},{id:'dark_flame',name:'黯焰',locked:true,colors:{dark:0x0a0a0a,metal:0x881111,wood:0x0a0a0a}},{id:'cosmic',name:'✨ 宇宙星塵',locked:true,colors:{dark:0x0a0a2a,metal:0x9966ff,wood:0x220044}}],smg:[{id:'default',name:'黑色MP7',colors:{dark:0x1a1a1a,metal:0xffffff,wood:0x1a1a1a,scope:0x111111}},{id:'biohazard',name:'生化危機',colors:{dark:0x14301a,metal:0x66dd66,wood:0x244d22,scope:0x0f2a12}}]};
 function getEquippedSkin(type){var s;try{s=localStorage.getItem('oc_skin_'+type);}catch(e){}return s||'default';}
 function setSkin(type,id){try{localStorage.setItem('oc_skin_'+type,id);}catch(e){}if(type===currentGun&&gunGroup){detachFlashlightMesh();cam.remove(gunGroup);gunGroup=createGunModel(type);gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.scale.set(1.5,1.5,1.5);cam.add(gunGroup);gunGroup.rotation.set(0,0,0);attachFlashlightMesh();createMagazine();}}
 function unlockCosmicSkin(){var guns=['ak47','deagle','awp','shotgun','smg'];guns.forEach(function(g){var sk=gunSkins[g];if(!sk)return;for(var i=0;i<sk.length;i++){if(sk[i].id==='cosmic'){sk[i].locked=false;}}});}
@@ -3626,7 +3848,7 @@ function openSkinPanel(){
     document.getElementById('skin-gun-tabs').style.display='flex';document.getElementById('skin-list').style.display='flex';
     var tabs=document.getElementById('skin-gun-tabs');var list=document.getElementById('skin-list');
     tabs.innerHTML='';list.innerHTML='';
-    var guns=['ak47','deagle','awp','shotgun','smg'];var gunNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',shotgun:'霰彈槍',smg:'衝鋒槍'};
+    var guns=['ak47','deagle','awp','shotgun','smg'];var gunNames={ak47:'AK-47',deagle:'沙鷹',awp:'AWP',shotgun:'霰彈槍',smg:'MP7'};
     for(var i=0;i<guns.length;i++){var g=guns[i];if(!gunSkins[g])continue;var tab=document.createElement('button');
       tab.className='skin-gun-tab'+(g===skinSelectedGun?' active':'');tab.textContent=gunNames[g];
       tab.onclick=function(gg){return function(){skinSelectedGun=gg;openSkinPanel();};}(g);tabs.appendChild(tab);}
@@ -3750,7 +3972,33 @@ var petShopData=[
   {id:'guardian',name:'守護盾',icon:'🛡',desc:'15% 機率格擋傷害',price:15000,color:0x44aaff},
   {id:'scavenger',name:'拾荒機器人',icon:'🤖',desc:'自動拾取彈藥',price:6000,color:0x888866},
   {id:'mini_dragon',name:'迷你龍',icon:'🐉',desc:'自動攻擊附近敵人（每次 5 傷）',price:20000,color:0xff4400}
+  ,
+  {id:'cat',name:'貓',icon:'🐱',desc:'近戰撲咬（每次 4 傷）',price:4000,color:0xffaa66,atk:{d:4,cd:1.6,r:4,s:'melee',c:0xffaa66}},
+  {id:'dog',name:'狗',icon:'🐶',desc:'近戰撲咬（每次 5 傷）',price:5000,color:0xcc8844,atk:{d:5,cd:1.5,r:4.5,s:'melee',c:0xdc9a55}},
+  {id:'fox',name:'狐狸',icon:'🦊',desc:'近戰撕咬（每次 5 傷）',price:6000,color:0xff7722,atk:{d:5,cd:1.5,r:4.5,s:'melee',c:0xff8a33}},
+  {id:'tiger',name:'老虎',icon:'🐯',desc:'猛撲攻擊（每次 9 傷）',price:14000,color:0xffaa00,atk:{d:9,cd:2.0,r:4.5,s:'melee',c:0xffbb22}},
+  {id:'lion',name:'獅子',icon:'🦁',desc:'猛撲攻擊（每次 9 傷）',price:14000,color:0xffcc44,atk:{d:9,cd:2.0,r:4.5,s:'melee',c:0xffd466}},
+  {id:'monkey',name:'猴子',icon:'🐵',desc:'快速抓擊（每次 5 傷）',price:5000,color:0xcc9966,atk:{d:5,cd:1.3,r:4,s:'melee',c:0xd9a877}},
+  {id:'deer',name:'鹿',icon:'🦌',desc:'衝撞攻擊（每次 5 傷）',price:6000,color:0xbb8844,atk:{d:5,cd:1.6,r:5,s:'melee',c:0xcc9955}},
+  {id:'hog',name:'野豬',icon:'🐗',desc:'狂暴衝撞（每次 8 傷）',price:10000,color:0x996644,atk:{d:8,cd:1.9,r:4,s:'melee',c:0xaa7755}},
+  {id:'pig',name:'豬',icon:'🐷',desc:'憨撞攻擊（每次 6 傷）',price:6000,color:0xffbbcc,atk:{d:6,cd:1.7,r:4,s:'melee',c:0xffc3d4}},
+  {id:'cow',name:'牛',icon:'🐮',desc:'頂撞攻擊（每次 7 傷）',price:8000,color:0xcc4444,atk:{d:7,cd:1.8,r:4.5,s:'melee',c:0xdd5555}},
+  {id:'giraffe',name:'長頸鹿',icon:'🦒',desc:'遠距吐擊（每次 6 傷）',price:9000,color:0xffcc66,atk:{d:6,cd:1.6,r:7,s:'ranged',c:0xffd477,ps:14}},
+  {id:'elephant',name:'大象',icon:'🐘',desc:'重踏攻擊（每次 12 傷）',price:15000,color:0x8899aa,atk:{d:12,cd:2.6,r:5,s:'melee',c:0x99aabb}},
+  {id:'polar',name:'北極熊',icon:'🐻',desc:'巨掌猛擊（每次 10 傷）',price:14000,color:0xaaddff,atk:{d:10,cd:2.2,r:4.5,s:'melee',c:0xbbeeff}},
+  {id:'panda',name:'熊貓',icon:'🐼',desc:'熊掌攻擊（每次 7 傷）',price:8000,color:0xffffff,atk:{d:7,cd:1.8,r:4.5,s:'melee',c:0xf2f2f2}},
+  {id:'koala',name:'無尾熊',icon:'🐨',desc:'抓抓攻擊（每次 6 傷）',price:6000,color:0xaaaaaa,atk:{d:6,cd:1.7,r:4,s:'melee',c:0xbbbbbb}},
+  {id:'bunny',name:'兔子',icon:'🐰',desc:'遠距踢擊（每次 4 傷）',price:4000,color:0xffffff,atk:{d:4,cd:1.2,r:6,s:'ranged',c:0xffffff,ps:16}},
+  {id:'chick',name:'小雞',icon:'🐤',desc:'啄擊彈（每次 4 傷）',price:4000,color:0xffdd44,atk:{d:4,cd:1.3,r:6,s:'ranged',c:0xffe055,ps:15}},
+  {id:'penguin',name:'企鵝',icon:'🐧',desc:'投擲攻擊（每次 5 傷）',price:6000,color:0x88ccff,atk:{d:5,cd:1.5,r:6,s:'ranged',c:0x99ddff,ps:15}},
+  {id:'parrot',name:'鸚鵡',icon:'🦜',desc:'俯衝攻擊（每次 5 傷）',price:6000,color:0xff4444,atk:{d:5,cd:1.4,r:7,s:'ranged',c:0xff5555,ps:17}},
+  {id:'fish',name:'魚',icon:'🐟',desc:'水彈攻擊（每次 5 傷）',price:6000,color:0x44ccff,atk:{d:5,cd:1.4,r:6,s:'ranged',c:0x55ddff,ps:15}},
+  {id:'crab',name:'螃蟹',icon:'🦀',desc:'鉗擊攻擊（每次 6 傷）',price:6000,color:0xff6644,atk:{d:6,cd:1.6,r:3.5,s:'melee',c:0xff7755}},
+  {id:'bee',name:'蜜蜂',icon:'🐝',desc:'高速螫針（每次 3 傷）',price:5000,color:0xffcc00,atk:{d:3,cd:1.0,r:6,s:'ranged',c:0xffdd11,ps:18}},
+  {id:'caterpillar',name:'毛毛蟲',icon:'🐛',desc:'吐絲彈（每次 4 傷）',price:4000,color:0x88dd44,atk:{d:4,cd:1.4,r:5,s:'ranged',c:0x99ee55,ps:13}},
+  {id:'beaver',name:'河狸',icon:'🦫',desc:'啃咬攻擊（每次 7 傷）',price:8000,color:0xaa7744,atk:{d:7,cd:1.8,r:4.5,s:'melee',c:0xbb8855}}
 ];
+var ocPetAtk={},ocPetName={};petShopData.forEach(function(p){ocPetName[p.id]=p.name;if(p.atk)ocPetAtk[p.id]=p.atk;});
 var petInventory=[];try{var pi=JSON.parse(localStorage.getItem('oc_pets'));if(pi)petInventory=pi;}catch(e){}
 var equippedPet=null;try{var ep=localStorage.getItem('oc_pet_equip');if(ep)equippedPet=ep;}catch(e){}
 function savePetInv(){try{localStorage.setItem('oc_pets',JSON.stringify(petInventory));}catch(e){}}
@@ -4506,6 +4754,8 @@ document.getElementById('back-menu-btn').onclick=function(){
   document.getElementById('boss-hp-wrap').style.display='none';
   if(ufo&&ufo.mesh){scene.remove(ufo.mesh);disposeMesh(ufo.mesh);ufo=null;ufoActive=false;ufoSpawned=false;}if(ufoBeamMesh){scene.remove(ufoBeamMesh);disposeMesh(ufoBeamMesh);ufoBeamMesh=null;}ufoProjectiles.forEach(function(up){if(up.mesh){scene.remove(up.mesh);disposeMesh(up.mesh);}if(up.trail){scene.remove(up.trail);disposeMesh(up.trail);}});ufoProjectiles=[];bombMode=false;ufoMode=false;
   try{var sv=JSON.parse(localStorage.getItem('ocgame_save'));if(sv&&sv.loadout){for(var si=0;si<sv.loadout.length;si++)playerLoadout[si]=sv.loadout[si];}}catch(e){}
+  // 手雷已移除：存檔殘留的 grenade 換成其他武器
+  if(!bombMode){for(var _sl=0;_sl<5;_sl++){var _st=playerLoadout[_sl];if(_st&&(_st==='grenade'||_st==='grenade_frag'||_st==='grenade_flashbang'||_st==='grenade_smoke'||_st==='grenade_incendiary')){playerLoadout[_sl]=['ak47','deagle','smg','awp','knife'][_sl]||null;}}}
   grenadeStacks=[0,0,0,0,0];grenadeTypes=['frag','frag','frag','frag','frag'];
   // 還原炸彈模式覆蓋的第一格武器，避免殘留炸彈99卡住切武器
   if(window._savedSlot0!==undefined){playerLoadout[0]=window._savedSlot0;window._savedSlot0=undefined;}
@@ -4818,7 +5068,8 @@ var classData=[
   {id:'assault',name:'突擊兵',icon:'🔵',desc:'火力壓制',passive:'快速換彈 2.0s→1.2s',perks:['dmg','reload','spread']},
   {id:'sniper',name:'神射手',icon:'🟡',desc:'一發入魂',passive:'爆頭傷害+30%',perks:['dmg','pen','hs_heal']},
   {id:'tank',name:'鐵壁',icon:'🟣',desc:'堅不可摧',passive:'每波+50臨時護甲（上限150）',perks:['armor','lifesteal','hs_heal']},
-  {id:'ghost',name:'幽靈',icon:'⚪',desc:'高速游擊',passive:'移速+10%，滑鏟距離x1.5',perks:['speed','reload','spread']}
+  {id:'ghost',name:'幽靈',icon:'⚪',desc:'高速游擊',passive:'移速+10%，滑鏟距離x1.5',perks:['speed','reload','spread']},
+  {id:'engineer',name:'工程師',icon:'🟠',desc:'破壞控制',passive:'燒牆回HP/甲，近戰定身破甲',perks:['armor','lifesteal','hs_heal']}
 ];
 var classPerkLabels={dmg:'🔥傷害+25%',reload:'⚡換彈x2',pen:'🔩穿透+1',hs_heal:'💚爆頭回血',speed:'💨速度+20%',armor:'🛡護甲+50',lifesteal:'🩸擊殺回血',spread:'🎯擴散-40%'};
 // ── Skill Tree Upgrade System ──
@@ -4872,6 +5123,9 @@ var OC_CHARS=[
   {id:'medic',cls:'medic',name:'醫護兵',tag:'煙霧',desc:'煙霧控場',passive:'每秒+2HP+1甲',
    weapon:'ak47',weaponName:'AK-47',
    cub:{body:0x55ff99,accent:0xd9fff0,glow:0x33ff88,core:0x0a7a45,visor:0x99ffcc,visorEm:0x44ffaa}},
+  {id:'engineer',cls:'engineer',name:'工程師',tag:'破壞',desc:'焚牆破甲',passive:'Z燒牆 Q定身 X破甲 E聲波',
+   weapon:'flamethrower',weaponName:'火焰噴射槍',eng:true,
+   cub:{body:0xff8a3c,accent:0xffd9a0,glow:0xff6a00,core:0x7a3a00,visor:0xffcc88,visorEm:0xff8822}},
   // ↓ 之後的角色照這格式繼續加，框框會自己長出來 ↓
   // ↓ 例：{id:'mystic',cls:'mystic',name:'法師',tag:'範圍',desc:'…',passive:'…',
   // ↓     weapon:'ak47',weaponName:'AK-47',cub:{body:0x8a66ff,...}},
@@ -4889,6 +5143,18 @@ function ocCharMesh(def){
   if(opt.body===undefined)opt.body=0x6fa8d8;
   var g=createCubelingMesh(opt);
   g.userData.tick&&(g.userData.tick(0));
+  if(def&&def.eng){
+    var eHat=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.22,0.14,16),new THREE.MeshStandardMaterial({color:0x2a3b66,roughness:0.6,metalness:0.1}));
+    eHat.position.y=0.86;g.add(eHat);
+    var eBrim=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.03,0.3),new THREE.MeshStandardMaterial({color:0x22304f,roughness:0.6}));
+    eBrim.position.set(0,0.79,0.17);g.add(eBrim);
+    var eVisor=new THREE.Mesh(new THREE.BoxGeometry(0.36,0.08,0.05),new THREE.MeshStandardMaterial({color:0x0a0a0a,metalness:0.5,roughness:0.12}));
+    eVisor.position.set(0,0.53,0.24);g.add(eVisor);
+    var eTank=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.36,12),new THREE.MeshStandardMaterial({color:0xcc5522,metalness:0.6,roughness:0.4}));
+    eTank.position.set(0,0.42,-0.29);g.add(eTank);
+    var eTankTop=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,8),new THREE.MeshStandardMaterial({color:0xb04418,metalness:0.6,roughness:0.4}));
+    eTankTop.position.set(0,0.6,-0.29);g.add(eTankTop);
+  }
   return g;
 }
 // ── 手上那把槍：掛在方晶右前方，槍口(-Z)朝下前方 ──
@@ -5320,13 +5586,18 @@ var islPanelOpen=false;
 function _pnlLS(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
 function _pnlTag(text,color){return '<span class="ip-tag" style="background:'+color+'22;color:'+color+';border:1px solid '+color+'44">'+text+'</span>';}
 (function(){
- var allGuns=['ak47','deagle','awp','shotgun','knife','smg','watergun','radrifle','grenade','grapple'];
+ var allGuns=['ak47','deagle','awp','shotgun','knife','smg','watergun','radrifle','grapple'];
  var og=_pnlLS('oc_guns')||[];
  var inv=_pnlLS('oc_inv')||{};
  var changed=false;
  allGuns.forEach(function(g){
   if(og.indexOf(g)===-1){og.push(g);changed=true;}
   if(!inv[g]||inv[g]<1){inv[g]=1;changed=true;}
+ });
+ // 手雷／閃光彈／煙霧彈／燃燒彈已全面移除：清掉舊擁有清單與庫存殘留
+ ['grenade','grenade_frag','grenade_flashbang','grenade_smoke','grenade_incendiary'].forEach(function(g){
+  var oi=og.indexOf(g);if(oi!==-1){og.splice(oi,1);changed=true;}
+  if(inv[g]!==undefined){delete inv[g];changed=true;}
  });
  if(changed){
   try{localStorage.setItem('oc_guns',JSON.stringify(og));}catch(e){}
@@ -5338,11 +5609,11 @@ window._pnlArmoryGlobal=pnlArmoryGlobal;   // 跨作用域
  var inv=_pnlLS('oc_inv')||{};
  var owned=_pnlLS('oc_guns')||['ak47'];
  var coin=parseInt(localStorage.getItem('oc_coin'))||0;
- var gunNames={ak47:'AK-47',deagle:'沙漠之鷹',awp:'AWP',shotgun:'龍息霰彈',knife:'軍刀',smg:'MP5',watergun:'水槍',radrifle:'輻射步槍',grenade:'手榴彈',grapple:'鉤爪'};
- var gunIcons={ak47:'🔫',deagle:'🔫',awp:'🔭',shotgun:'💥',knife:'🔪',smg:'🔫',watergun:'💦',radrifle:'☢',grenade:'💣',grapple:'🪝'};
- var gunDescs={ak47:'全自動突擊步槍，均衡穩定',deagle:'高傷害手槍，後坐力大',awp:'重型狙擊槍，一擊必殺',shotgun:'近距離毀滅，遠距無力',knife:'近戰武器，快速切り',smg:'衝鋒槍，射速極快',watergun:'夏日限定，清涼一夏',radrifle:'蓄力發射輻射彈',grenade:'投擲爆炸物',grapple:'快速位移工具'};
- var gunStats={ak47:'DMG:25 | FR:100ms',deagle:'DMG:55 | FR:400ms',awp:'DMG:120 | FR:1200ms',shotgun:'DMG:15x8 | FR:800ms',knife:'DMG:40 | FR:350ms',smg:'DMG:18 | FR:70ms',watergun:'DMG:12 | FR:150ms',radrifle:'DMG:40-90 | 蓄力',grenade:'DMG:80 | 範圍',grapple:'位移工具'};
- var guns=['ak47','deagle','awp','shotgun','knife','smg','watergun','radrifle','grenade','grapple'];
+ var gunNames={ak47:'AK-47',deagle:'沙漠之鷹',awp:'AWP',shotgun:'龍息霰彈',knife:'軍刀',smg:'MP7',watergun:'水槍',radrifle:'輻射步槍',grapple:'鉤爪'};
+ var gunIcons={ak47:'🔫',deagle:'🔫',awp:'🔭',shotgun:'💥',knife:'🔪',smg:'🔫',watergun:'💦',radrifle:'☢',grapple:'🪝'};
+ var gunDescs={ak47:'全自動突擊步槍，均衡穩定',deagle:'高傷害手槍，後坐力大',awp:'重型狙擊槍，一擊必殺',shotgun:'近距離毀滅，遠距無力',knife:'近戰武器，快速切り',smg:'MP7，射速極快',watergun:'夏日限定，清涼一夏',radrifle:'蓄力發射輻射彈',grapple:'快速位移工具'};
+ var gunStats={ak47:'DMG:25 | FR:100ms',deagle:'DMG:55 | FR:400ms',awp:'DMG:120 | FR:1200ms',shotgun:'DMG:15x8 | FR:800ms',knife:'DMG:40 | FR:350ms',smg:'DMG:18 | FR:70ms',watergun:'DMG:12 | FR:150ms',radrifle:'DMG:40-90 | 蓄力',grapple:'位移工具'};
+ var guns=['ak47','deagle','awp','shotgun','knife','smg','watergun','radrifle','grapple'];
  var loadout=_pnlLS('oc_loadout');
  var loadoutArr=(loadout&&loadout.loadout)?loadout.loadout:['ak47',null,null,null,null];
  var ownedSet={};owned.forEach(function(g){ownedSet[g]=true;});
@@ -5406,6 +5677,7 @@ window._pnlArmoryGlobal=pnlArmoryGlobal;   // 跨作用域
  renderPanel();
 }
 window.pnlArmoryGlobal=pnlArmoryGlobal;
+window._pnlArmoryGlobal=pnlArmoryGlobal;
 // ═══ DRAG ROTATION STATE ═══
 var isDragging=false,dragSX=0,dragSY=0,dragMoved=false;
 // ═══ END ═══
@@ -6732,9 +7004,9 @@ function boot(){
    var inv=pnlLS('oc_inv')||{};
    var owned=pnlLS('oc_guns')||['ak47'];
    var coin=parseInt(localStorage.getItem('oc_coin'))||0;
-   var gunNames={ak47:'AK-47',deagle:'沙漠之鷹',awp:'AWP',shotgun:'龍息霰彈',knife:'軍刀',smg:'MP5',watergun:'水槍',radrifle:'輻射步槍',grenade:'手榴彈',grapple:'鉤爪'};
+   var gunNames={ak47:'AK-47',deagle:'沙漠之鷹',awp:'AWP',shotgun:'龍息霰彈',knife:'軍刀',smg:'MP7',watergun:'水槍',radrifle:'輻射步槍',grenade:'手榴彈',grapple:'鉤爪'};
    var gunIcons={ak47:'🔫',deagle:'🔫',awp:'🔭',shotgun:'💥',knife:'🔪',smg:'🔫',watergun:'💦',radrifle:'☢',grenade:'💣',grapple:'🪝'};
-   var gunDescs={ak47:'全自動突擊步槍，均衡穩定',deagle:'高傷害手槍，後坐力大',awp:'重型狙擊槍，一擊必殺',shotgun:'近距離毀滅，遠距無力',knife:'近戰武器，快速切り',smg:'衝鋒槍，射速極快',watergun:'夏日限定，清涼一夏',radrifle:'蓄力發射輻射彈',grenade:'投擲爆炸物',grapple:'快速位移工具'};
+   var gunDescs={ak47:'全自動突擊步槍，均衡穩定',deagle:'高傷害手槍，後坐力大',awp:'重型狙擊槍，一擊必殺',shotgun:'近距離毀滅，遠距無力',knife:'近戰武器，快速切り',smg:'MP7，射速極快',watergun:'夏日限定，清涼一夏',radrifle:'蓄力發射輻射彈',grenade:'投擲爆炸物',grapple:'快速位移工具'};
    var gunStats={ak47:'DMG:25 | FR:100ms',deagle:'DMG:55 | FR:400ms',awp:'DMG:120 | FR:1200ms',shotgun:'DMG:15x8 | FR:800ms',knife:'DMG:40 | FR:350ms',smg:'DMG:18 | FR:70ms',watergun:'DMG:12 | FR:150ms',radrifle:'DMG:40-90 | 蓄力',grenade:'DMG:80 | 範圍',grapple:'位移工具'};
    var guns=['ak47','deagle','awp','shotgun','knife','smg','watergun','radrifle','grenade','grapple'];
    var loadout=pnlLS('oc_loadout');
@@ -6934,7 +7206,7 @@ function boot(){
     {id:'deagle',name:'沙漠之鷹',icon:'🔫',price:800,desc:'高傷害手槍'},
     {id:'awp',name:'AWP',icon:'🔭',price:1500,desc:'重型狙擊槍'},
     {id:'shotgun',name:'龍息霰彈',icon:'💥',price:600,desc:'近距離毀滅'},
-     {id:'smg',name:'MP5',icon:'🔫',price:500,desc:'衝鋒槍，射速極快'},
+     {id:'smg',name:'MP7',icon:'🔫',price:500,desc:'MP7，射速極快'},
      {id:'knife',name:'軍刀',icon:'🔪',price:300,desc:'近戰快速武器'},
     {id:'watergun',name:'水槍',icon:'💦',price:200,desc:'夏日限定水槍'}
    ];
@@ -7733,14 +8005,18 @@ function addKillFeed(killer,victim,gun){
     victimType:isAiName(victim)?KT_AI:KT_PLAYER
   });
 }
-// Auto-detect server IP
-(function(){
-  var si=document.getElementById('server-ip');
-  if(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'&&location.hostname!==''){
-    si.value=location.hostname;
-    si.placeholder=location.hostname;
-  }
-})();
+ // Auto-detect server IP
+ // OC_SERVER_DEFAULT：線上（非本機）時要連哪台伺服器（例：Render / 隧道網址）。
+ // 留空=沿用目前頁面網址（開發模式）。itch 是 HTTPS 頁面，若沒設會誤連 itch 網域:3000
+ // 而失敗，所以 itch 版會把這值設定成公開伺服器網址。
+ window.OC_SERVER_DEFAULT=window.OC_SERVER_DEFAULT||'';
+ (function(){
+   var si=document.getElementById('server-ip');
+   if(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'&&location.hostname!==''){
+     si.value=window.OC_SERVER_DEFAULT||location.hostname;
+     si.placeholder=si.value;
+   }
+ })();
 // ── Multiplayer ──
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
 var tdmMode=false,useDowned=false,myTeam='A',myPlayerId=0,tdmSpawn={x:0,z:0},teamScore={A:0,B:0},tdmWinSubmitted=false,tdmDead=false;
@@ -8110,7 +8386,42 @@ function updateUFOProj(dt){
   }
 }
 var petMesh=null;
+function ocB64f32(s){var b=atob(s);var n=b.length;var u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=b.charCodeAt(i);return new Float32Array(u.buffer);}
+function ocB64u16(s){var b=atob(s);var n=b.length;var u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=b.charCodeAt(i);return new Uint16Array(u.buffer);}
+function ocPetTexture(){if(window._ocPetTex)return window._ocPetTex;if(!window.OC_PET_TEX)return null;var t=new THREE.TextureLoader().load(window.OC_PET_TEX);try{t.colorSpace=THREE.SRGBColorSpace;}catch(e){try{t.encoding=THREE.sRGBEncoding;}catch(e2){}}window._ocPetTex=t;return t;}
+// 用烘焙好的 Kenney Cube Pets 幾何建立動物寵物（世界座標幾何 + 共用 colormap 貼圖）
+function ocBuildAnimalPet(id){
+  var md=window.OC_PET_MODELS&&window.OC_PET_MODELS[id];if(!md)return null;
+  var g=new THREE.Group();
+  var mat=new THREE.MeshStandardMaterial({map:ocPetTexture(),metalness:0.0,roughness:0.85,side:THREE.DoubleSide});
+  for(var i=0;i<md.parts.length;i++){
+    var part=md.parts[i];
+    var geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(ocB64f32(part.p),3));
+    geo.setAttribute('normal',new THREE.BufferAttribute(ocB64f32(part.n),3));
+    geo.setAttribute('uv',new THREE.BufferAttribute(ocB64f32(part.u),2));
+    geo.setIndex(new THREE.BufferAttribute(ocB64u16(part.i),1));
+    g.add(new THREE.Mesh(geo,mat));
+  }
+  var box=new THREE.Box3().setFromObject(g),size=new THREE.Vector3();box.getSize(size);
+  var k=0.7/(size.y||1);
+  g.scale.setScalar(k);
+  g.position.set(-(box.min.x+box.max.x)*0.5*k,-box.min.y*k,-(box.min.z+box.max.z)*0.5*k);
+  var wrap=new THREE.Group();wrap.add(g);
+  return wrap;
+}
+// 寵物攻擊特效池
+var petFx=[];
+function ocPetHitFx(p,color){
+  var m=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshBasicMaterial({color:color,transparent:true,opacity:0.75,depthWrite:false}));
+  m.position.copy(p);scene.add(m);
+  petFx.push({kind:'burst',mesh:m,t:0,life:0.3,s0:0.6,s1:1.9,o0:0.75});
+}
 function createPetMesh(type){
+  if(window.OC_PET_MODELS&&window.OC_PET_MODELS[type]){
+    var ap=ocBuildAnimalPet(type);
+    if(ap){ap.traverse(function(c){if(c.isMesh){c.frustumCulled=false;c.castShadow=true;}});return ap;}
+  }
   var g=new THREE.Group();var mat=function(c,em){return new THREE.MeshStandardMaterial({color:c,emissive:em||0,emissiveIntensity:em?0.4:0});};
   if(type==='mech_dog'){
     var body=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.5),mat(0x666666));body.position.y=0.08;g.add(body);
@@ -8626,6 +8937,41 @@ function processServerMessage(data){
           if(kkoi>=0)ocKnockOpponent(kkoi,kkdir,kkdur);
         }
       }
+      break;
+    }
+    case 'oc_root':{
+      // 工程師 Q 強化轉頭：定身 3s（不扣護甲），期間每秒 1 傷
+      var rtDur=Math.max(0.5,Math.min(6,+data.dur||3));
+      if(data.aiIdx!==undefined&&data.aiIdx!==null){
+        if(!hybridMode||hybridHost){var rte=enemies[data.aiIdx|0];if(rte&&rte.hp>0)rte.rootT=rtDur;}
+        var rtr=hybridRemoteAi[data.aiIdx|0];if(rtr&&rtr.alive)rtr.rootT=rtDur;
+      }
+      if(data.targetPlayerId!==undefined&&data.targetPlayerId!==null&&Number(data.targetPlayerId)===myPlayerId){
+        if(!isDowned&&playerHP>0){ocEngRootT=rtDur;showToast('⚠ 強化轉頭！被定身 '+Math.round(rtDur)+'s',1.4);}
+      }
+      break;
+    }
+    case 'oc_armorbreak':{
+      // 工程師 X 強化錘子：直接扣護甲
+      var abAmt=Math.max(0,+data.amount||80);
+      if(data.aiIdx!==undefined&&data.aiIdx!==null){
+        if(!hybridMode||hybridHost){var abe=enemies[data.aiIdx|0];if(abe&&abe.hp>0){abe.armor=Math.max(0,(abe.armor||0)-abAmt);abe.hitTimer=0.3;}}
+        var abr=hybridRemoteAi[data.aiIdx|0];if(abr&&abr.alive){abr.armor=Math.max(0,(abr.armor||0)-abAmt);}
+      }
+      if(data.targetPlayerId!==undefined&&data.targetPlayerId!==null){
+        if(Number(data.targetPlayerId)===myPlayerId){playerArmor=Math.max(0,playerArmor-abAmt);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),abAmt,'#66ccff');showToast('🛡 護甲被擊碎 -'+abAmt,1.2);}
+        else{var abidx=opponentPlayerIds.indexOf(+data.targetPlayerId);}
+      }
+      break;
+    }
+    case 'oc_sonic':{
+      // 工程師 E 聲波發射器：干擾區同步（半徑 5m、8s）
+      var sox=+data.x||0,soz=+data.z||0,sor=+data.r||5,sodur=+data.dur||8;
+      var sodome=new THREE.Mesh(new THREE.SphereGeometry(sor,20,12,0,Math.PI*2,0,Math.PI/2),new THREE.MeshBasicMaterial({color:0x33aaff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false}));
+      sodome.position.set(sox,0.1,soz);scene.add(sodome);
+      var soring=new THREE.Mesh(new THREE.RingGeometry(sor*0.92,sor,32),new THREE.MeshBasicMaterial({color:0x66ddff,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+      soring.rotation.x=-Math.PI/2;soring.position.set(sox,0.06,soz);scene.add(soring);
+      ocEngSonicZones.push({pos:new THREE.Vector3(sox,0.1,soz),timer:sodur,radius:sor,owner:data.owner,dome:sodome,ring:soring});
       break;
     }
     case 'opponent_died':
@@ -9509,8 +9855,7 @@ window.addEventListener('message',function(e){
   }
 });
 function httpSend(payload){
-  var ip=document.getElementById('server-ip').value.trim()||'localhost';
-  fetch('http://'+ip+':3000/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client:httpClientId,msg:payload})});
+  fetch(ocHttpBase(null)+'/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client:httpClientId,msg:payload})});
 }
 function relaySend(payload){
   if(location.protocol==='file:'){httpSend(payload);return;}
@@ -9530,21 +9875,7 @@ function connectMultiplayerDirect(ip, mode){
   if(window.voteTimer){clearInterval(window.voteTimer);window.voteTimer=null;}
   window._reconnectAttempts=0;
   mode=mode||2;
-  var url;
-  if(ip.indexOf('://')!==-1){
-    url=ip;
-  }else if(!ip||ip==='localhost'||ip==='127.0.0.1'||ip===location.hostname||ip===location.host){
-    // 同源：若為 HTTPS（線上 Render 等反向代理），WebSocket 走同源 443（不帶 :3000），
-    // 否則本機 http 開發用 :3000
-    if(location.protocol==='https:'){
-      url='wss://'+(location.hostname||'localhost')+'/game';
-      if(location.port&&location.port!=='443')url='wss://'+(location.hostname||'localhost')+':'+location.port+'/game';
-    }else{
-      url='ws://'+(location.hostname||'localhost')+(location.port&&location.port!=='80'?':'+location.port:':3000')+'/game';
-    }
-  }else{
-    url='ws://'+ip+':3000/game';
-  }
+  var url=ocMultiWSURL(ip);
   window.multiWS=new WebSocket(url);
   var ws=window.multiWS;
   ws.onopen=function(){
@@ -9608,7 +9939,7 @@ function connectMultiplayerDirect(ip, mode){
 
 function connectMultiplayerHTTP(ip){
   httpClientId='';
-  var base='http://'+ip+':3000';
+  var base=ocHttpBase(ip);
   // Join queue via HTTP
   fetch(base+'/api/join')
     .then(function(r){return r.json()})
@@ -9699,16 +10030,18 @@ document.addEventListener('keydown',function(e){
   if(e.code==='Digit5'||e.code==='Numpad5')switchToSlot(4);
   if(e.code==='KeyR'&&!bombMode)reload();
   if(e.code==='KeyF'&&gameStarted&&locked&&!isDowned)useClassSkill();
-  if(e.code==='KeyQ'&&gameStarted&&locked&&!isDowned)ocUseDash();
+  if(e.code==='KeyQ'&&gameStarted&&locked&&!isDowned){if(ocEngineer()){if(!e.repeat)ocEngRootStrike();}else ocUseDash();}
   if(e.code==='KeyG'&&currentGun!=='grapple'&&playerClass==='assault'&&gameStarted&&locked&&!isDowned)ocThrowArmorNade();
   if(e.code==='KeyC'&&gameStarted&&locked&&!isDowned&&ocMedic())ocMedSmokeNade();
   if(e.code==='KeyB'&&gameStarted&&locked&&!isDowned&&ocMedic())ocMedThrowDart();
   if(e.code==='KeyT'&&gameStarted&&locked&&!isDowned&&ocMedic())ocMedLongSmoke();
+  if(e.code==='KeyZ'&&gameStarted&&locked&&!isDowned&&ocEngineer()&&!e.repeat)ocEngStartBurn();
+  if(e.code==='KeyX'&&gameStarted&&locked&&!isDowned&&ocEngineer()){if(!e.repeat)ocEngHammerStrike();return;}
 if(bombMode)return;
       if(e.code==='KeyG'&&currentGun==='grapple')fireGrapple();
   if(e.code==='KeyJ'&&gameStarted&&locked&&!inspectTimer&&currentGun!=='knife'&&currentGun!=='grapple'&&currentGun!=='grenade')inspectTimer=1.8;
   if(e.code==='Space'&&grappleActive)releaseGrapple();
-  if(e.code==='KeyX'&&playerLoadout[currentSlot]==='grenade'){
+  if(e.code==='KeyX'&&playerLoadout[currentSlot]==='grenade'&&bombMode){
     var types=['frag','flashbang','smoke','incendiary'];
     var ci=types.indexOf(grenadeTypes[currentSlot]);
     grenadeTypes[currentSlot]=types[(ci+1)%types.length];
@@ -9717,7 +10050,8 @@ if(bombMode)return;
     showToast('切換: '+ic+' '+nn,0.8);
   }
   if(e.code==='KeyE'){
-    if(boatRideActive){releaseBoat();}
+    if(ocEngineer()&&gameStarted&&locked&&!isDowned){if(!e.repeat)ocEngSonic();}
+    else if(boatRideActive){releaseBoat();}
     else if(ziplineActive){releaseZipline();}
     else if(!tryGrabBoat()){tryGrabZipline();}
   }
@@ -9956,6 +10290,8 @@ function updatePhysics(dt){
     var swSpd=(SPEED*(window.skillMoveSpeed||1))*0.55;
     if(isADS)swSpd*=0.45;
     if(slowTimer>0)swSpd*=0.55;
+    if(ocEngSonicLocal>0)swSpd*=0.5;
+    if(ocEngRootT>0)swSpd=0;
     vel.x=mDir.x*swSpd;vel.z=mDir.z*swSpd;
     if(keys['Space']||mobileJumping){vel.y=4;mobileJumping=false;}
     var swSlideKey=keys['ShiftLeft']||keys['ShiftRight']||mobileSlide;
@@ -9992,6 +10328,8 @@ function updatePhysics(dt){
   if(isADS)spdMul*=0.45;
   if(slowTimer>0)spdMul*=0.55;
   if(window.rageActive)spdMul*=1.3;
+  if(ocEngSonicLocal>0)spdMul*=0.5;
+  if(ocEngRootT>0)spdMul=0;
   var attachEffSpd=getAttachEffects(currentGun);spdMul*=(attachEffSpd.moveSpeed||1);
   if(onGround){
     wallClinging=false;wallTimer=0;
@@ -10137,6 +10475,7 @@ function shoot(){
   shootCD=buffType==='atkspeed'?gd.fireRate*0.5:gd.fireRate;
   recoilKick=0.04;recoilRotX=-0.025;
   playGunSound(currentGun);
+  if(currentGun==='awp')awpBoltTimer=0.5;   // 自動拉栓動畫（不需手動）
   // Bullet origin from actual barrel tip (accounts for scale + ADS position)
   var bt=barrelTips[currentGun].clone();
   if(gunGroup){gunGroup.updateMatrixWorld(true);gunGroup.localToWorld(bt);}else{bt.set(0.2,-0.15,-0.6);bt.applyQuaternion(cam.quaternion);bt.add(cam.position);}
@@ -10806,9 +11145,11 @@ function tdmRemoteSpawn(playerId){
 }
 
 function createMagazine(){
-  if(magazineMesh){if(gunGroup)gunGroup.remove(magazineMesh);magazineMesh=null;}
+  if(magazineMesh){if(gunGroup&&magazineMesh.parent===gunGroup)gunGroup.remove(magazineMesh);magazineMesh=null;}
   var g=currentGun;
   if(g==='knife'||g==='grapple'||g==='grenade'||!gunGroup)return;
+  // MP7（OBJ 模型）用自帶彈匣，不再疊灰色彈匣
+  if(g==='smg'&&gunGroup.userData&&gunGroup.userData.magMesh){magazineMesh=gunGroup.userData.magMesh;return;}
   var mg=new THREE.Group();
   var base=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.055,0.014),new THREE.MeshStandardMaterial({color:0x444444,metalness:0.5,roughness:0.4}));
   base.position.set(0,-0.04,0);mg.add(base);
@@ -10821,7 +11162,7 @@ function createMagazine(){
   magazineMesh=mg;
 }
 function removeMagazine(){
-  if(magazineMesh){if(gunGroup)gunGroup.remove(magazineMesh);magazineMesh=null;}
+  if(magazineMesh){if(gunGroup&&magazineMesh.parent===gunGroup)gunGroup.remove(magazineMesh);magazineMesh=null;}
 }
 function onPlayerDeath(){
   if(currentMap==='nuclear'){achData.nuclearStreak=0;saveAch();}
@@ -11041,7 +11382,7 @@ function updateEnemies(dt){
   syncEnemyNameplates();
   for(var i=0;i<enemies.length;i++){
     var e=enemies[i];if(e.hp<=0){if(e.mesh.visible!==false){e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);if(currentMap==='nuclear'&&e.isCleaner)nuclearClears++;if(e.type!=='suicider'){earnCoins(1000);checkKillAch();roundEarnings+=1000;sessionSP++;document.getElementById('session-sp-val').textContent=sessionSP;killCounter++;if(killCounter%10===0)awardSkillPoints(1);showDmgNum(e.pos.clone(),1000,'#fa4');if(window.bonusLifesteal){playerHP=Math.min(100,playerHP+window.bonusLifesteal);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),window.bonusLifesteal,'#44ff88');}if(window.chainKill)classSkillCD=0;if(e.type==='sniper')seasonProgress.kill_sniper++;seasonProgress.kill++;gunKills[currentGun]=(gunKills[currentGun]||0)+1;if(dailyChallenge)dailyKills++;questProgress.kill++;saveSeasonProgress();saveDragonboatProgress();if(window.lifesteal){playerHP=Math.min(100,playerHP+10);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),10,'#44ff88');}}}continue}else if(!e.mesh.visible)e.mesh.visible=true;
-    e.shootCD-=dt;e.detectCD-=dt;e.walkTime+=dt;
+    e.shootCD-=dt*(ocEngSonicAt(e.pos.x,e.pos.z)?0.5:1);e.detectCD-=dt;e.walkTime+=dt;
     // 方晶待機動畫（原本靠走路的腿部動畫，現在改成懸浮 + 內核脈動）
     if(e.mesh.userData&&e.mesh.userData.cubeling&&e.mesh.userData.cubeling.userData.tick)e.mesh.userData.cubeling.userData.tick(e.walkTime);
     if(!e.strafeCD)e.strafeCD=0;else e.strafeCD-=dt;
@@ -11116,6 +11457,8 @@ function updateEnemies(dt){
     // Movement
     var isRusher=e.type==='rusher',isGrenadier=e.type==='grenadier',isSuicider=e.type==='suicider',isHealer=e.type==='healer',isSniper=e.type==='sniper',isShield=e.type==='shield';
     var spd=(e.state==='chase'?(isRusher?7:(isSuicider?9:(isSniper?1.2:(isShield?2.5:4.5)))):1.5);   // isSniper 原本是 0 → sniper 偵測到人後完全無法移動
+    if(ocEngSonicAt(e.pos.x,e.pos.z))spd*=0.5;
+    if(e.rootT>0)spd=0;
     var moveTarget=null,aimAtPlayer=false;
     if(currentMap==='basemap3'&&e.hp>0){
       if(e.roofTop){
@@ -11212,7 +11555,7 @@ function updateEnemies(dt){
       }else if(isSuicider){
         if(d<2.5){screenShake=2;playerDamage(40,e.pos);slowTimer=0.8;showDmgNum(pos.clone(),40,'#ff4400');e.hp=0;e.mesh.visible=false;if(e.hBar){e.hBar.visible=false;e.aBar.visible=false}dropPickup(e.pos);continue;}
       }else if(isGrenadier){
-        if(e.shootCD<=0&&d<20){e.firingNow=true;throwGrenade(e);e.shootCD=2+Math.random()*0.8;e.state='shoot'}
+        if(e.shootCD<=0&&d<20){e.firingNow=true;enemyShoot(e);e.shootCD=0.5+Math.random()*0.4;e.state='shoot'}
       }else if(isSniper){
         if(d<40&&e.shootCD<=0){
           e.chargeTimer=(e.chargeTimer||0)+dt;
@@ -11227,7 +11570,7 @@ function updateEnemies(dt){
       aimAtPlayer=true;
       var toP2=new THREE.Vector3().copy(pos);toP2.y=0;toP2.sub(e.pos);
       if(isGrenadier){
-        if(e.shootCD<=0&&toP2.length()<20){e.firingNow=true;throwGrenade(e);e.shootCD=2+Math.random()*0.8}
+        if(e.shootCD<=0&&toP2.length()<20){e.firingNow=true;enemyShoot(e);e.shootCD=0.5+Math.random()*0.4}
         var idealG=10+Math.random()*3;
         var rgtG=new THREE.Vector3(-toP2.x,0,toP2.z).normalize();
         if(toP2.length()>idealG+3)moveTarget=e.pos.clone().add(toP2.clone().normalize());
@@ -11449,13 +11792,13 @@ function updateEnemies(dt){
     e.firingNow=false;
   }
 }
-function showDmgNum(p3d,dmg,clr,shield){
+function showDmgNum(p3d,dmg,clr,shield,label){
   if(!clr)clr='#ff4444';
   var v=p3d.clone();v.project(cam);
   var x=(v.x*0.5+0.5)*window.innerWidth,y=(-v.y*0.5+0.5)*window.innerHeight;
   var el=document.createElement('div');
   var prefix= (clr==='#fa4'||clr==='#44ff88'||clr==='#44ff44')?'+':'-';
-  el.textContent=(shield?'🛡 ':'')+prefix+dmg;
+  el.textContent=(label?label+' ':'')+(shield?'🛡 ':'')+prefix+dmg;
   el.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;pointer-events:none;z-index:7;font-size:'+(shield?'28':'22')+'px;font-weight:bold;color:'+clr+';font-family:Arial;text-shadow:-1px -1px 2px #000,1px -1px 2px #000,-1px 1px 2px #000,1px 1px 2px #000,0 0 8px #000;opacity:1;transition:all 0.7s ease-out';
   document.body.appendChild(el);
   requestAnimationFrame(function(){el.style.transform='translateY(-35px)';el.style.opacity='0';});
@@ -12205,10 +12548,11 @@ var classSkillCD=0,classSkillTimer=0,classSkillActive=false;
 var classSkillData={
   berserker:{name:'狂怒',cd:20,dur:6,desc:'速度+30% 小刀x3 減傷40%'},
   medic:{name:'長煙',cd:30,dur:0,desc:'被動每秒+2HP+1甲；C煙霧彈 B煙霧針 T長煙15m'},
-  assault:{name:'高壓氣縮彈',cd:120,dur:0,desc:'橘色高壓彈 範圍6m爆+擊倒1.5s'},
+  assault:{name:'高壓氣縮彈',cd:90,dur:0,desc:'橘色高壓彈 範圍6m爆+擊倒1.5s'},
   sniper:{name:'狙擊標記',cd:20,dur:0,desc:'標記敵人 下一發x2.5'},
   tank:{name:'震地擊',cd:18,dur:0,desc:'範圍30傷+緩速50% 3s'},
-  ghost:{name:'相位閃現',cd:16,dur:0,desc:'瞬移10m+隱形2s'}
+  ghost:{name:'相位閃現',cd:16,dur:0,desc:'瞬移10m+隱形2s'},
+  engineer:{name:'勤儉持家',cd:30,dur:0,desc:'Z燒牆回HP/甲 Q定身3s X破80甲 E聲波干擾'}
 };
   // ═════════ 突擊兵專屬：Q 氣能輔助 / G 碎甲破片手雷 / F 高壓氣縮彈 ═════════
   var ocDashMax=20,ocDashCD=0,ocDashT=0,ocDashDir=new THREE.Vector3();
@@ -12564,7 +12908,7 @@ var classSkillData={
     ocUltAiming=false;
     if(ocUltTraj)ocUltTraj.visible=false;
     ocUltShowT=0.5;ocUltRecoil=1;
-    classSkillCD=120;   // CD 從「真的發射」才開始算
+    classSkillCD=(classSkillData.assault&&classSkillData.assault.cd)||90;   // CD 從「真的發射」才開始算
     ocFireUlt();
   }
   // ── 拋物線預覽：與 projectiles 的 ocburst 用同一套物理（同速、同重力、同反彈） ──
@@ -13002,6 +13346,13 @@ var classSkillData={
     ocMedOutlineSync();
   }
   function ocSkillHudText(){
+    if(ocEngineer()){
+      var zT=ocEngBurnCD>0?(Math.ceil(ocEngBurnCD)+'s'):'就緒';
+      var qT=ocEngRootCD>0?(Math.ceil(ocEngRootCD)+'s'):'就緒';
+      var xT=ocEngHammerCD>0?(Math.ceil(ocEngHammerCD)+'s'):'就緒';
+      var eT=ocEngSonicCD>0?(Math.ceil(ocEngSonicCD)+'s'):'就緒';
+      return 'Z 焚牆 '+zT+' ｜ Q 定身 '+qT+' ｜ X 破甲 '+xT+' ｜ E 聲波 '+eT;
+    }
     if(ocMedic()){
       var cT=ocMedSmokeCh>0?(ocMedSmokeCh+' 顆'):(ocMedSmokeTimer>0?(Math.ceil(ocMedSmokeTimer)+'s'):'0 顆');
       var bT=ocMedDartCh>0?(ocMedDartCh+' 根'):(ocMedDartTimer>0?(Math.ceil(ocMedDartTimer)+'s'):'0 根');
@@ -13082,6 +13433,247 @@ function useClassSkill(){
     showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),0,'#4488ff');
   }
   classSkillCD=cd;
+}
+// ═════════ 工程師專屬：Z 勤儉持家(焚牆) / Q 強化轉頭(定身) / X 強化錘子(破甲) / E 聲波發射器 ═════════
+var ocEngBurnCD=0,ocEngRootCD=0,ocEngHammerCD=0,ocEngSonicCD=0;
+var ocEngBurnActive=false,ocEngBurnT=0,ocEngTargetBox=null,ocEngFlameMesh=null;
+var ocEngRootT=0,ocEngSwingT=0,ocEngHammerMesh=null,ocEngDrone=null;
+var ocEngSonicZones=[],ocEngSonicLocal=0,ocEngVigEl=null,ocEngVigOn=false,ocEngVigT=0;
+function ocEngineer(){return playerClass==='engineer';}
+function ocEngCanBurn(bx){
+  if(!bx||!bx.mesh||!bx.mesh.visible)return false;
+  if(bx.isPermanent||bx.isFloor||bx.isPlatform||bx.isDragonBoat||bx.isTarget||bx.border||bx.cyl||bx.light||bx.isRange)return false;
+  if(bx.size&&bx.size.y<0.6)return false;
+  return true;
+}
+function ocEngNearest(maxD,minDot){
+  var fwd=new THREE.Vector3(0,0,-1).applyQuaternion(cam.quaternion);fwd.y=0;
+  var fl=Math.sqrt(fwd.x*fwd.x+fwd.z*fwd.z)||1;fwd.x/=fl;fwd.z/=fl;
+  var best=null,bd=maxD;
+  for(var i=0;i<enemies.length;i++){var e=enemies[i];if(!e||e.hp<=0||!e.mesh||!e.mesh.visible)continue;var dx=e.pos.x-pos.x,dz=e.pos.z-pos.z,d=Math.sqrt(dx*dx+dz*dz);if(d>maxD)continue;var dt0=d>0.001?(dx*fwd.x+dz*fwd.z)/d:1;if(dt0<minDot)continue;if(d<bd){bd=d;best={kind:'e',idx:i,obj:e,pos:new THREE.Vector3(e.pos.x,e.pos.y+0.45,e.pos.z)};}}
+  for(var j=0;j<opponentStates.length;j++){var os=opponentStates[j];if(!os||!os.alive||!os.pos)continue;var dx2=os.pos.x-pos.x,dz2=os.pos.z-pos.z,d2=Math.sqrt(dx2*dx2+dz2*dz2);if(d2>maxD)continue;var dt1=d2>0.001?(dx2*fwd.x+dz2*fwd.z)/d2:1;if(dt1<minDot)continue;if(d2<bd){bd=d2;best={kind:'o',idx:j,obj:os,pos:new THREE.Vector3(os.pos.x,os.pos.y+0.7,os.pos.z)};}}
+  if(hybridRemoteAi){for(var k=0;k<hybridRemoteAi.length;k++){var a=hybridRemoteAi[k];if(!a||!a.alive||!a.mesh)continue;var mp=a.mesh.position,dx3=mp.x-pos.x,dz3=mp.z-pos.z,d3=Math.sqrt(dx3*dx3+dz3*dz3);if(d3>maxD)continue;var dt2=d3>0.001?(dx3*fwd.x+dz3*fwd.z)/d3:1;if(dt2<minDot)continue;if(d3<bd){bd=d3;best={kind:'r',idx:k,obj:a,pos:new THREE.Vector3(mp.x,mp.y+0.5,mp.z)};}}}
+  return best;
+}
+function ocEngFlameGunMesh(){
+  var g=new THREE.Group();
+  var body=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.055,0.34,10),new THREE.MeshStandardMaterial({color:0x2b2f33,metalness:0.6,roughness:0.5}));
+  body.rotation.x=Math.PI/2;g.add(body);
+  var tMat=new THREE.MeshStandardMaterial({color:0xcc5522,metalness:0.6,roughness:0.4});
+  var tank=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.2,10),tMat);tank.position.set(0,0.09,0.06);g.add(tank);
+  var tank2=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.2,10),tMat);tank2.position.set(0,0.09,0.28);g.add(tank2);
+  var noz=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.026,0.3,8),new THREE.MeshStandardMaterial({color:0x9aa0a6,metalness:0.8,roughness:0.3}));
+  noz.rotation.x=Math.PI/2;noz.position.set(0,0,-0.3);g.add(noz);
+  var tip=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.02,0.04,8),new THREE.MeshStandardMaterial({color:0x222222,metalness:0.7,roughness:0.4}));
+  tip.rotation.x=Math.PI/2;tip.position.set(0,0,-0.46);g.add(tip);
+  var pilot=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.12,8),new THREE.MeshBasicMaterial({color:0xff7a1a,transparent:true,opacity:0.9}));
+  pilot.rotation.x=-Math.PI/2;pilot.position.set(0,0,-0.55);g.add(pilot);g.userData.tip=pilot;
+  return g;
+}
+function ocEngHammerModel(){
+  var g=new THREE.Group();
+  var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.024,0.5,8),new THREE.MeshStandardMaterial({color:0x5a3a22,roughness:0.8}));
+  handle.rotation.z=Math.PI/2.2;g.add(handle);
+  var head=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.12,0.12),new THREE.MeshStandardMaterial({color:0x777d84,metalness:0.85,roughness:0.3}));
+  head.position.set(0.3,0.11,0);g.add(head);
+  var spike=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.1,6),new THREE.MeshStandardMaterial({color:0x9aa0a6,metalness:0.9,roughness:0.25}));
+  spike.position.set(0.3,0.22,0);g.add(spike);
+  return g;
+}
+function ocEngDroneMesh(){
+  var g=new THREE.Group();
+  var core=new THREE.Mesh(new THREE.SphereGeometry(0.12,12,10),new THREE.MeshStandardMaterial({color:0x3a3f45,metalness:0.8,roughness:0.3}));g.add(core);
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(0.16,0.02,6,16),new THREE.MeshStandardMaterial({color:0x66ddff,emissive:0x22aaff,emissiveIntensity:0.9}));ring.rotation.x=Math.PI/2;g.add(ring);
+  var ant=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,0.14,6),new THREE.MeshStandardMaterial({color:0x9aa0a6,metalness:0.8}));ant.position.y=0.16;g.add(ant);
+  var tip=new THREE.Mesh(new THREE.SphereGeometry(0.02,6,6),new THREE.MeshBasicMaterial({color:0xff3333}));tip.position.y=0.24;g.add(tip);
+  return g;
+}
+function ocEngFlameFX(p){
+  if(Math.random()<0.75){
+    var fl=new THREE.Mesh(new THREE.SphereGeometry(0.08+Math.random()*0.07,6,6),new THREE.MeshBasicMaterial({color:(Math.random()<0.5?0xff5a00:0xffaa22),transparent:true,opacity:0.85,depthWrite:false}));
+    fl.position.set(p.x+(Math.random()-0.5)*0.2,p.y+(Math.random()-0.5)*0.2,p.z+(Math.random()-0.5)*0.2);
+    fl.userData={vy:0.7,lifetime:0.5};scene.add(fl);smokeParticles.push(fl);
+  }
+}
+function ocEngImpactFX(p,big){
+  var ring=new THREE.Mesh(new THREE.RingGeometry(0.1,big?0.7:0.4,20),new THREE.MeshBasicMaterial({color:0xffcc44,transparent:true,opacity:0.85,side:THREE.DoubleSide,depthWrite:false}));
+  ring.position.copy(p);ring.rotation.x=-Math.PI/2;scene.add(ring);
+  (function(m){var t=0,iv=setInterval(function(){t+=0.033;if(t>=0.5){clearInterval(iv);scene.remove(m);return;}m.scale.setScalar(1+t*5);m.material.opacity=0.85*(1-t/0.5);},33);})(ring);
+  var n=big?12:7;
+  for(var i=0;i<n;i++){
+    var sp=new THREE.Mesh(new THREE.SphereGeometry(0.03,5,5),new THREE.MeshBasicMaterial({color:0xffdd55,transparent:true,opacity:0.9}));
+    sp.position.copy(p);scene.add(sp);
+    var dd=new THREE.Vector3(Math.random()-0.5,Math.random()*0.8,Math.random()-0.5).normalize().multiplyScalar(2+Math.random()*2);
+    (function(m,d2){var t=0,iv=setInterval(function(){t+=0.033;if(t>=0.5){clearInterval(iv);scene.remove(m);return;}m.position.addScaledVector(d2,0.05);m.material.opacity=0.9*(1-t/0.5);},33);})(sp,dd);
+  }
+}
+// Q 強化轉頭：近戰定身 3s（不扣護甲），期間每秒 1 傷
+function ocEngRootStrike(){
+  if(!ocEngineer()||ocEngRootCD>0||!gameStarted||isDowned||!locked||ocSelfKnockT>0)return;
+  ocEngRootCD=20;
+  var tgt=ocEngNearest(2.8,0.2);
+  if(!tgt){showToast('強化轉頭 落空',0.6);return;}
+  ocEngImpactFX(tgt.pos,false);screenShake=Math.max(screenShake,0.8);
+  if(tgt.kind==='e'){tgt.obj.rootT=3;showDmgNum(tgt.pos.clone(),0,'#88ddff');}
+  else if(tgt.kind==='r'){try{relaySend({type:'oc_root',aiIdx:tgt.idx,dur:3,shooterPlayerId:myPlayerId});}catch(e){}showDmgNum(tgt.pos.clone(),0,'#88ddff');}
+  else if(tgt.kind==='o'){var rpid=opponentPlayerIds[tgt.idx];try{relaySend({type:'oc_root',targetPlayerId:rpid,dur:3,shooterPlayerId:myPlayerId});}catch(e){}showDmgNum(tgt.pos.clone(),0,'#88ddff');}
+  showToast('強化轉頭！定身 3s',0.8);
+}
+// X 強化錘子：近戰破 80 護甲 + 重擊特效
+function ocEngHammerStrike(){
+  if(!ocEngineer()||ocEngHammerCD>0||!gameStarted||isDowned||!locked||ocSelfKnockT>0)return;
+  ocEngHammerCD=25;
+  if(!ocEngHammerMesh){ocEngHammerMesh=ocEngHammerModel();scene.add(ocEngHammerMesh);}
+  ocEngSwingT=0.35;
+  var tgt=ocEngNearest(2.8,0.15);
+  if(!tgt){showToast('強化錘子 落空',0.6);return;}
+  ocEngImpactFX(tgt.pos,true);screenShake=Math.max(screenShake,1.6);
+  if(tgt.kind==='e'){tgt.obj.armor=Math.max(0,(tgt.obj.armor||0)-80);tgt.obj.hitTimer=0.3;showDmgNum(tgt.pos.clone(),80,'#66ccff');}
+  else if(tgt.kind==='r'){try{relaySend({type:'oc_armorbreak',aiIdx:tgt.idx,amount:80,shooterPlayerId:myPlayerId});}catch(e){}showDmgNum(tgt.pos.clone(),80,'#66ccff');}
+  else if(tgt.kind==='o'){var hpid=opponentPlayerIds[tgt.idx];try{relaySend({type:'oc_armorbreak',targetPlayerId:hpid,amount:80,shooterPlayerId:myPlayerId});}catch(e){}showDmgNum(tgt.pos.clone(),80,'#66ccff');}
+  showToast('強化錘子！-80 護甲',0.8);
+}
+// Z 勤儉持家：持續焚燒可燃牆 5 秒 → 摧毀 + 回 50HP/10甲
+function ocEngStartBurn(){
+  if(!ocEngineer()||ocEngBurnCD>0||!gameStarted||isDowned||!locked||ocSelfKnockT>0)return;
+  ocEngBurnActive=true;ocEngBurnT=0;ocEngTargetBox=null;
+  if(!ocEngFlameMesh){ocEngFlameMesh=ocEngFlameGunMesh();scene.add(ocEngFlameMesh);}
+  showToast('持續噴火 5 秒焚毀牆壁',1.2);
+}
+function ocEngBurnCancel(){ocEngBurnActive=false;ocEngBurnT=0;ocEngTargetBox=null;if(ocEngFlameMesh){scene.remove(ocEngFlameMesh);ocEngFlameMesh=null;}}
+function ocEngDestroyWall(bx){
+  if(!bx||!bx.mesh)return;
+  scene.remove(bx.mesh);disposeMesh(bx.mesh);
+  var idx=mapBoxes.indexOf(bx);if(idx>=0)mapBoxes.splice(idx,1);
+  playerHP=Math.min(100,playerHP+50);
+  playerArmor=Math.min(100,playerArmor+10);
+  showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),50,'#ffaa44');
+  showToast('🔥 牆壁焚毀！+50HP +10甲',1.6);
+  screenShake=Math.max(screenShake,1.0);
+  ocEngBurnCD=30;ocEngBurnCancel();
+}
+// E 聲波發射器：發射干擾無人機 → 半徑 5m 干擾區
+function ocEngSonic(){
+  if(!ocEngineer()||ocEngSonicCD>0||!gameStarted||isDowned||!locked||ocSelfKnockT>0)return;
+  ocEngSonicCD=35;
+  var fwd=ocCamDir();fwd.y=Math.max(0.06,fwd.y);fwd.normalize();
+  var start=ocFromCam(new THREE.Vector3(0.22,-0.05,-0.45));
+  var drone=ocEngDroneMesh();drone.position.copy(start);scene.add(drone);
+  var to=start.clone().add(fwd.multiplyScalar(10));to.y=Math.max(0.5,to.y);
+  ocEngDrone={mesh:drone,from:start.clone(),to:to,t:0};
+  showToast('聲波發射器 已發射',0.8);
+}
+function ocEngDeploySonic(p){
+  var q=new THREE.Vector3(p.x,0.1,p.z);
+  var dome=new THREE.Mesh(new THREE.SphereGeometry(5,20,12,0,Math.PI*2,0,Math.PI/2),new THREE.MeshBasicMaterial({color:0x33aaff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false}));
+  dome.position.copy(q);scene.add(dome);
+  var ring=new THREE.Mesh(new THREE.RingGeometry(4.6,5,32),new THREE.MeshBasicMaterial({color:0x66ddff,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+  ring.rotation.x=-Math.PI/2;ring.position.set(q.x,0.06,q.z);scene.add(ring);
+  ocEngSonicZones.push({pos:q,timer:8,radius:5,owner:'self',dome:dome,ring:ring});
+  try{relaySend({type:'oc_sonic',x:q.x,y:q.y,z:q.z,r:5,owner:myPlayerId,dur:8});}catch(e){}
+}
+function ocEngSonicAt(x,z){
+  for(var i=0;i<ocEngSonicZones.length;i++){var zn=ocEngSonicZones[i];var dx=x-zn.pos.x,dz=z-zn.pos.z;if(dx*dx+dz*dz<zn.radius*zn.radius)return true;}
+  return false;
+}
+function ocEngVigUpdate(inSonic,dt){
+  if(inSonic&&!ocEngVigOn){
+    ocEngVigOn=true;
+    if(!ocEngVigEl){
+      ocEngVigEl=document.createElement('div');
+      ocEngVigEl.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:11;pointer-events:none;opacity:0;transition:opacity .15s;overflow:hidden';
+      var scan=document.createElement('div');
+      scan.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,rgba(90,205,255,.20) 0px,rgba(90,205,255,.20) 2px,rgba(0,0,0,0) 2px,rgba(0,0,0,0) 5px)';
+      var rip=document.createElement('div');
+      rip.style.cssText='position:absolute;left:50%;top:50%;width:0;height:0;border-radius:50%;border:2px solid rgba(120,225,255,.55);transform:translate(-50%,-50%);will-change:width,height,opacity';
+      var vig=document.createElement('div');
+      vig.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0) 30%,rgba(10,60,120,.55) 100%)';
+      var gl=document.createElement('div');
+      gl.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;background:linear-gradient(90deg,rgba(255,60,60,.18),rgba(60,255,120,.14),rgba(60,140,255,.20),rgba(255,60,60,.18));mix-blend-mode:screen';
+      ocEngVigEl.appendChild(vig);ocEngVigEl.appendChild(scan);ocEngVigEl.appendChild(rip);ocEngVigEl.appendChild(gl);
+      ocEngVigEl._scan=scan;ocEngVigEl._rip=rip;ocEngVigEl._gl=gl;ocEngVigEl._ripP=0;
+      document.body.appendChild(ocEngVigEl);
+    }
+    ocEngVigEl.style.opacity='1';
+  }else if(!inSonic&&ocEngVigOn){
+    ocEngVigOn=false;
+    if(ocEngVigEl)ocEngVigEl.style.opacity='0';
+    if(renderer&&renderer.domElement){renderer.domElement.style.filter='';renderer.domElement.style.transform='';}
+  }
+  if(inSonic){
+    ocEngVigT+=dt;
+    var t=ocEngVigT;
+    var wob=Math.sin(t*11)*26+Math.sin(t*23)*10;
+    var blur=1.4+Math.abs(Math.sin(t*15))*2.6;
+    if(renderer&&renderer.domElement){
+      renderer.domElement.style.filter='hue-rotate('+wob.toFixed(1)+'deg) blur('+blur.toFixed(2)+'px) saturate(1.9) contrast(1.18)';
+      var jx=Math.sin(t*17.3)*3.2, jy=Math.sin(t*13.7)*2.6;
+      renderer.domElement.style.transform='perspective(620px) translate('+jx.toFixed(2)+'px,'+jy.toFixed(2)+'px) rotateY('+(Math.sin(t*9.1)*4.5).toFixed(2)+'deg) rotateX('+(Math.sin(t*7.3)*3.5).toFixed(2)+'deg) skewX('+(Math.sin(t*11.7)*3).toFixed(2)+'deg) scale('+(1.02+Math.abs(Math.sin(t*6))*0.03).toFixed(3)+')';
+    }
+    if(ocEngVigEl){
+      ocEngVigEl._scan.style.backgroundPositionY=(t*46%10).toFixed(1)+'px';
+      ocEngVigEl._gl.style.opacity=(0.35+Math.abs(Math.sin(t*19))*0.65).toFixed(2);
+      ocEngVigEl._ripP+=dt/0.9;
+      if(ocEngVigEl._ripP>1){ocEngVigEl._ripP=0;}
+      var rp=ocEngVigEl._ripP;
+      if(ocEngVigEl._rip){ocEngVigEl._rip.style.width=(rp*70)+'vmax';ocEngVigEl._rip.style.height=(rp*70)+'vmax';ocEngVigEl._rip.style.opacity=((1-rp)*0.8).toFixed(2);}
+    }
+    screenShake=Math.max(screenShake,0.5);
+  }
+}
+function ocTickEngineer(dt){
+  if(ocEngBurnCD>0)ocEngBurnCD=Math.max(0,ocEngBurnCD-dt);
+  if(ocEngRootCD>0)ocEngRootCD=Math.max(0,ocEngRootCD-dt);
+  if(ocEngHammerCD>0)ocEngHammerCD=Math.max(0,ocEngHammerCD-dt);
+  if(ocEngSonicCD>0)ocEngSonicCD=Math.max(0,ocEngSonicCD-dt);
+  // 被定身（被其他工程師）→ 每秒 1 傷
+  if(ocEngRootT>0){ocEngRootT-=dt;if(playerHP>0)playerHP=Math.max(0,playerHP-1*dt);if(ocEngRootT<0)ocEngRootT=0;}
+  for(var i=0;i<enemies.length;i++){var e=enemies[i];if(e&&e.rootT>0){e.rootT-=dt;if(e.hp>0)e.hp=Math.max(0,e.hp-1*dt);if(e.rootT<0)e.rootT=0;}}
+  if(hybridRemoteAi){for(var j=0;j<hybridRemoteAi.length;j++){var a=hybridRemoteAi[j];if(a&&a.rootT>0){a.rootT-=dt;if(a.alive&&a.hp>0)a.hp=Math.max(0,a.hp-1*dt);if(a.rootT<0)a.rootT=0;}}}
+  // 錘子揮擊顯示
+  if(ocEngSwingT>0){ocEngSwingT-=dt;if(ocEngSwingT<=0&&ocEngHammerMesh){scene.remove(ocEngHammerMesh);ocEngHammerMesh=null;}}
+  // Z 焚牆通道
+  if(ocEngineer()&&ocEngBurnActive){
+    if(!keys['KeyZ']||isDowned||!gameStarted||ocSelfKnockT>0){ocEngBurnCancel();}
+    else{
+      if(ocEngFlameMesh){ocEngFlameMesh.position.copy(ocFromCam(new THREE.Vector3(0.22,-0.2,-0.5)));ocEngFlameMesh.quaternion.copy(cam.quaternion);if(ocEngFlameMesh.userData.tip)ocEngFlameMesh.userData.tip.scale.setScalar(0.8+Math.random()*0.6);}
+      var fwd=ocCamDir();
+      var ray=new THREE.Raycaster(cam.position,fwd,0.1,3.6);
+      var cand=[];for(var b=0;b<mapBoxes.length;b++){if(ocEngCanBurn(mapBoxes[b]))cand.push(mapBoxes[b].mesh);}
+      var hits=ray.intersectObjects(cand,false);
+      if(hits.length){
+        var hitBox=null;for(var k=0;k<mapBoxes.length;k++){if(mapBoxes[k].mesh===hits[0].object){hitBox=mapBoxes[k];break;}}
+        if(hitBox){
+          if(hitBox===ocEngTargetBox)ocEngBurnT+=dt;else{ocEngTargetBox=hitBox;ocEngBurnT=dt;}
+          ocEngFlameFX(hits[0].point);
+          if(ocEngBurnT>=5)ocEngDestroyWall(hitBox);
+        }
+      }else{ocEngBurnT=0;ocEngTargetBox=null;}
+    }
+  }else if(!ocEngineer()&&ocEngFlameMesh){ocEngBurnCancel();}
+  // 無人機飛行
+  if(ocEngDrone){
+    var dr=ocEngDrone;dr.t+=dt*1.05;
+    if(dr.t>=1){scene.remove(dr.mesh);ocEngDeploySonic(dr.to);ocEngDrone=null;}
+    else{dr.mesh.position.lerpVectors(dr.from,dr.to,dr.t);dr.mesh.rotation.y+=dt*6;}
+  }
+  // 聲波區更新
+  for(var zi=ocEngSonicZones.length-1;zi>=0;zi--){
+    var zn=ocEngSonicZones[zi];zn.timer-=dt;
+    if(zn.dome&&zn.dome.material)zn.dome.material.opacity=0.10+0.05*Math.sin(Date.now()*0.006);
+    if(zn.ring)zn.ring.rotation.z+=dt*1.6;
+    if(zn.timer<=0){if(zn.dome)scene.remove(zn.dome);if(zn.ring)scene.remove(zn.ring);ocEngSonicZones.splice(zi,1);}
+  }
+  // 自己是否身處（非自己發射的）聲波區
+  var inSonic=false;
+  for(var si=0;si<ocEngSonicZones.length;si++){
+    var sz=ocEngSonicZones[si];
+    if(ocMedZoneMine(sz))continue;
+    if(pos.distanceTo(sz.pos)<sz.radius){inSonic=true;break;}
+  }
+  if(isDowned||playerHP<=0)inSonic=false;
+  ocEngSonicLocal=inSonic?1:0;
+  ocEngVigUpdate(inSonic,dt);
 }
 function getMapBounds(){
   if(currentMap==='nuclear')return{minX:-20,maxX:20,minZ:-20,maxZ:20};
@@ -13179,9 +13771,11 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
   for(var i=0;i<h2.length;i++){if(h2[i].distance<0.6){sg=false;break;}}
   if(gunGroup)gunGroup.visible=sg;
   if(gunGroup&&(ocUltShowT>0||ocUltAiming))gunGroup.visible=false;
+  if(gunGroup&&currentGun==='awp'&&isADS)gunGroup.visible=false;
   if(ocUltMesh)ocUltMesh.visible=(ocUltShowT>0||ocUltAiming);
   ocTickAssault(dt);
   ocTickMedic(dt);
+  ocTickEngineer(dt);
   // Radiation projectile updates
   for(var rpi=projectiles.length-1;rpi>=0;rpi--){
     var rp=projectiles[rpi];
@@ -13321,6 +13915,14 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(hostAiSim()){hybridHostAiTick(dt);updateEnemies(dt);}   // 主機權威 AI 移動
     else hybridRemoteAiTick(dt);                               // 非主機 AI 插值
   }
+  // 死亡自動繼續倒數「不能」受指標鎖定限制：死亡畫面會 exitPointerLock，
+  // 若放在 if(locked&&gameStarted) 內，locked=false 會讓倒數凍結、玩家永遠卡在死亡畫面。
+  if(_autoResumeCD>0&&gameStarted){
+    _autoResumeCD-=dt;
+    var _arEl=document.getElementById('auto-resume-timer');
+    _arEl.textContent='自動繼續 '+Math.ceil(_autoResumeCD)+'s';
+    if(_autoResumeCD<=0){_arEl.style.display='none';document.getElementById('multi-continue-btn').click();}
+  }
   if(locked&&gameStarted){
     if(slowTimer>0)slowTimer-=dt;
     // Down state
@@ -13384,7 +13986,7 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     if(window.autoHeal){window._autoHealCD=(window._autoHealCD||0)+dt;if(window._autoHealCD>=window.autoHealCD){window._autoHealCD=0;playerHP=Math.min(100,playerHP+window.autoHeal);showDmgNum(pos.clone().add(new THREE.Vector3(0,1.5,0)),window.autoHeal,'#44ff88');}}
     if(window.combatRegen&&bossActive){playerHP=Math.min(100,playerHP+window.combatRegen*dt);}
     if(window.adrenaline&&playerHP<25){SPEED=window.baseSPEED*1.3;}else if(window.adrenaline){SPEED=window.baseSPEED;}
-if(shootCD>0)shootCD-=dt;
+if(shootCD>0)shootCD-=dt*(ocEngSonicLocal>0?0.5:1);
 if(currentGun==='radrifle'&&autoFire&&locked&&!isReloading&&!isDowned){
   radRifleCharge+=dt;
   if(radRifleCharge>=gunData.radrifle.chargeTime){radRifleCharge=gunData.radrifle.chargeTime;fireRadRifle();autoFire=false;radRifleCharge=0;}
@@ -13428,13 +14030,6 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
       document.getElementById('hit-dir-left').style.opacity=hLeft?String(hdt*0.6):'0';
       document.getElementById('hit-dir-right').style.opacity=hRight?String(hdt*0.6):'0';
       if(hitDirTimer<=0)document.getElementById('hit-dir-wrap').style.display='none';
-    }
-    // 自動繼續倒數
-    if(_autoResumeCD>0){
-      _autoResumeCD-=dt;
-      var _arEl=document.getElementById('auto-resume-timer');
-      _arEl.textContent='自動繼續 '+Math.ceil(_autoResumeCD)+'s';
-      if(_autoResumeCD<=0){_arEl.style.display='none';document.getElementById('multi-continue-btn').click();}
     }
     // Charging handle animation
     if(boltTarget!==0||boltOffset!==0){
@@ -13545,6 +14140,16 @@ if(autoFire&&shootCD<=0&&!isReloading&&currentGun!=='grapple'&&currentGun!=='rad
         else if(gt<0.5){var thrust=(gt-0.2)/0.3;gunGroup.position.x=0.07-thrust*0.15;gunGroup.position.y=-0.17+thrust*0.15;gunGroup.position.z=-0.38+thrust*0.2;gunGroup.rotation.x=0.5-thrust*0.8;gunGroup.rotation.z=-0.3+thrust*0.5;}
         else if(!grenadeThrown){grenadeThrown=true;throwPlayerGrenade();gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.rotation.set(0,0,0);}
         else{gunGroup.position.set(0.2,-0.15,-0.35);gunGroup.rotation.set(0,0,0);if(grenadeAnim<=0)grenadeAnim=0;}
+      }else if(currentGun==='awp'&&awpBoltTimer>0){
+        // AWP 自動拉栓：槍身後縮微抬，拉栓手柄（Ручка）延 Z 往後再推回
+        awpBoltTimer-=dt;
+        var ap=1-Math.max(0,awpBoltTimer)/0.5;
+        var cycle=Math.sin(Math.min(1,ap)*Math.PI);
+        var baseP=isADS?new THREE.Vector3(0.15,-0.08,-0.28):new THREE.Vector3(0.2,-0.15,-0.35);
+        gunGroup.position.lerp(new THREE.Vector3(baseP.x,baseP.y-0.012*cycle,baseP.z+0.022*cycle),Math.min(1,dt*14));
+        gunGroup.rotation.x=0.05*cycle;gunGroup.rotation.y*=0.9;gunGroup.rotation.z=0.03*cycle;
+        if(gunGroup.userData&&gunGroup.userData.boltMesh)gunGroup.userData.boltMesh.position.z=0.03*cycle;
+        if(awpBoltTimer<=0&&gunGroup.userData&&gunGroup.userData.boltMesh)gunGroup.userData.boltMesh.position.z=0;
       }else{
         var isDefGren=currentGun==='grenade';
         var baseX=isADS?0.15:(isDefGren?0.12:0.2);
@@ -14131,7 +14736,7 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
   if(skEl){
     if(playerClass&&gameStarted&&!rangeMode){
       skEl.style.display='block';
-      if(playerClass==='assault'||playerClass==='medic'){
+      if(playerClass==='assault'||playerClass==='medic'||playerClass==='engineer'){
         skEl.textContent=ocSkillHudText();
         skEl.style.fontSize='13px';
       }else{
@@ -14179,8 +14784,55 @@ if(!isMultiplayer&&currentMap!=='nuclear'&&currentMap!=='flooded'&&!rangeMode){
           else if(equippedPet==='scavenger'&&dist<6&&pk.type==='ammo'){pk.life=0;if(pk.collect)pk.collect();showDmgNum(pos.clone().add(new THREE.Vector3(0,1.2,0)),1,'#4af');pickups.splice(ppi,1);}
         }
       }
+    }else if(ocPetAtk[equippedPet]){
+      var pcfg=ocPetAtk[equippedPet];
+      petMesh.userData.attackTimer=(petMesh.userData.attackTimer||0)+dt;
+      if(petMesh.userData.attackTimer>=pcfg.cd){
+        var nearestP=null,ndp=pcfg.r;
+        for(var pei2=0;pei2<enemies.length;pei2++){var pe2=enemies[pei2];if(pe2&&pe2.mesh&&pe2.mesh.visible&&pe2.hp>0){var pdd=pos.distanceTo(pe2.pos);if(pdd<ndp){ndp=pdd;nearestP=pe2;}}}
+        if(nearestP){
+          petMesh.userData.attackTimer=0;
+          var pname=ocPetName[equippedPet]||'寵物';
+          var cstr='#'+('000000'+pcfg.c.toString(16)).slice(-6);
+          if(pcfg.s==='ranged'){
+            var st=petMesh.position.clone();st.y+=0.2;
+            var proj=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),new THREE.MeshBasicMaterial({color:pcfg.c}));
+            proj.position.copy(st);scene.add(proj);
+            petFx.push({kind:'proj',mesh:proj,spawn:st.clone(),target:nearestP,tpos:nearestP.pos.clone().add(new THREE.Vector3(0,0.6,0)),speed:pcfg.ps||14,dmg:pcfg.d,color:pcfg.c,label:pname,cstr:cstr});
+          }else{
+            var hitP=nearestP.pos.clone().add(new THREE.Vector3(0,0.6,0));
+            var dealtP=damageEnemy(nearestP,pcfg.d,{name:pname,type:'pet'});
+            ocPetHitFx(hitP,pcfg.c);
+            if(dealtP>0)showDmgNum(nearestP.pos.clone().add(new THREE.Vector3(0,1.5,0)),dealtP,cstr,false,pname);
+            if(nearestP.hp<=0)dailyKills++;
+          }
+        }
+      }
     }
   }else if(petMesh&&petMesh.parent){scene.remove(petMesh);disposeMesh(petMesh);petMesh=null;}
+  // 寵物攻擊特效更新（投射物 + 命中爆花）
+  for(var fxi=petFx.length-1;fxi>=0;fxi--){
+    var fx=petFx[fxi];
+    if(!fx.mesh){petFx.splice(fxi,1);continue;}
+    if(fx.kind==='proj'){
+      if(fx.target&&fx.target.mesh&&fx.target.mesh.visible&&fx.target.hp>0)fx.tpos.set(fx.target.pos.x,fx.target.pos.y+0.6,fx.target.pos.z);
+      var fdir=fx.tpos.clone().sub(fx.mesh.position),fdl=fdir.length();
+      if(fdl<0.3){
+        var dealtF=damageEnemy(fx.target,fx.dmg,{name:fx.label,type:'pet'});
+        ocPetHitFx(fx.tpos.clone(),fx.color);
+        if(dealtF>0)showDmgNum(fx.tpos.clone().add(new THREE.Vector3(0,0.8,0)),dealtF,fx.cstr,false,fx.label);
+        if(fx.target&&fx.target.hp<=0)dailyKills++;
+        scene.remove(fx.mesh);disposeMesh(fx.mesh);petFx.splice(fxi,1);continue;
+      }
+      fx.mesh.position.add(fdir.normalize().multiplyScalar(fx.speed*dt));
+      if(fx.mesh.position.distanceTo(fx.spawn)>45){scene.remove(fx.mesh);disposeMesh(fx.mesh);petFx.splice(fxi,1);}
+    }else{
+      fx.t+=dt;var fk=fx.t/fx.life;
+      if(fk>=1){scene.remove(fx.mesh);disposeMesh(fx.mesh);petFx.splice(fxi,1);continue;}
+      fx.mesh.scale.setScalar(fx.s0+(fx.s1-fx.s0)*fk);
+      if(fx.mesh.material)fx.mesh.material.opacity=fx.o0*(1-fk);
+    }
+  }
   renderer.render(scene,cam);
   requestAnimationFrame(animate);
   // Expose for extraction mode
@@ -14959,7 +15611,10 @@ preloadSFX();
 document.addEventListener('click',function(){if(!audioCtx)initAudio();if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();},{once:true});
 requestAnimationFrame(animate);
 }
-</script>
+ </script>
+<script src="petdata.js"></script>
+<script src="awpdata.js"></script>
+<script src="mp7data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js" onload="bootGame()" onerror="
 var s=document.createElement('script');
 s.src='https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js';
@@ -15277,7 +15932,7 @@ function startExtractionMatchmaking() {
   var cancelBtn = document.getElementById('ext-mm-cancel');
   if (cancelBtn) cancelBtn.onclick = cancelExtMM;
   updateExtMMDisplay();
-  var wsUrl = (window.location.protocol==='https:'?'wss://':'ws://') + (window.location.hostname||'localhost') + ':3000';
+  var wsUrl = ocMultiWSURL('');
   try {
     _extMMWs = new WebSocket(wsUrl);
     _extMMWs.onopen = function() {
@@ -15577,7 +16232,7 @@ function moveToward(ai, target, speed, dt) {
 
 // ============ WEB SOCKET / MATCHMAKING ============
 const WS_HOST = window.location.hostname || 'localhost';
-const WS_URL = (window.location.protocol==='https:'?'wss://':'ws://') + WS_HOST + ':3000';
+const WS_URL = ocMultiWSURL('');
 let ws = null;
 let mmState = 'idle'; // idle, connecting, in_queue, matched, in_game
 let mmName = '玩家' + Math.floor(Math.random()*9000+1000);
@@ -16363,7 +17018,8 @@ function switchExtGun(type) {
   var bt = window.barrelTips ? window.barrelTips[type] : null;
   if (bt) extGunGroup.userData.barrelTip.copy(bt);
   // Magazine
-  if (type!=='knife'&&type!=='grapple'&&type!=='grenade') {
+  // MP7（OBJ 模型）自帶彈匣，不再疊灰色彈匣
+  if (type!=='knife'&&type!=='grapple'&&type!=='grenade'&&!(type==='smg'&&extGunGroup.userData&&extGunGroup.userData.magMesh)) {
     var mgMat = new THREE.MeshStandardMaterial({color:0x444444,metalness:0.5,roughness:0.4});
     var mgBase = new THREE.Mesh(new THREE.BoxGeometry(0.04,0.055,0.014),mgMat);
     mgBase.position.set(0,-0.04,0); extGunGroup.add(mgBase);
@@ -16378,6 +17034,7 @@ function switchExtGun(type) {
   var gd = window.gunData;
   showHUD('🔫 '+(gd&&gd[type]?gd[type].name||type:type));
 }
+window._testExtGun = function(){return {type:extGunType, group:extGunGroup};};
 
 const ambient = new THREE.AmbientLight(0x404060, 0.4);
 scene.add(ambient);
