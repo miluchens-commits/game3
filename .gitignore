@@ -3,6 +3,31 @@ tools/
 __pycache__/
 *.pyc
 node_modules/
+.DS_Store
+*.zip
+*.mp4
+*.textClipping
+
+# 模型/素材工作目錄（未用於主遊戲）
+/deagle/
+/mp7/
+/zombie/
+/kenney_cube-pets_1.0/
+
+# 開發草稿
+/bake_deagle.js
+/bake_zombie.js
+/fbx2obj.js
+/deagledata.js
+/zombiedata.js
+/train_mid.js
+/arena-smooth.html
+/sirit-base.html
+/sirit-dam.html
+/train-station.html
+/char-preview.html
+/mp7_preview.html
+/__awp_preview.html
 # data.json tracked as seed for Render deploy
 *.import
 

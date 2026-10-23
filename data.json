@@ -19,9 +19,18 @@
       "coins": 0,
       "rank": "",
       "last_read_msg": 1782823669238
+    },
+    {
+      "id": 3,
+      "username": "11111",
+      "nickname": "44444",
+      "password": "$2a$06$U/TOTyGoABZHr42DclG2hOiw0jRBTJbZOTF7yIHpwX1b.ZoNhSJcy",
+      "xp": 0,
+      "coins": 0,
+      "rank": ""
     }
   ],
-  "nextId": 3,
+  "nextId": 4,
   "friends": [
     {
       "username": "1234",

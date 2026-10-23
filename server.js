@@ -906,6 +906,12 @@ function handleHybridMessage(ws, msg) {
     case 'oc_medzone':
       relayHybridMsg(ws, Object.assign({}, msg, { playerId: ws.hybridPlayerId }));
       break;
+    // 工程師技能：定身 / 破甲 / 聲波區
+    case 'oc_root':
+    case 'oc_armorbreak':
+    case 'oc_sonic':
+      relayHybridMsg(ws, Object.assign({}, msg, { playerId: ws.hybridPlayerId }));
+      break;
     case 'footstep':
       relayHybridMsg(ws, { type: 'footstep' });
       break;
@@ -1078,15 +1084,33 @@ function handleExtractionMessage(ws, msg) {
       broadcastExtraction(roomId, { type: 'remote_player_death', playerId }, ws);
       break;
     }
-    case 'extraction_start_extract':
-      broadcastExtraction(roomId, { type: 'remote_extraction_start', playerId }, ws);
+    case 'extraction_lever_pull':
+      broadcastExtraction(roomId, { type: 'remote_lever_pull', playerId, remoteT: msg.remoteT }, ws);
       break;
-    case 'extraction_gate_open':
-      broadcastExtraction(roomId, { type: 'remote_gate_open', playerId }, ws);
+    case 'extraction_stone_pickup':
+      broadcastExtraction(roomId, { type: 'remote_stone_pickup', playerId, stoneId: msg.stoneId }, ws);
       break;
-    case 'extraction_board_train':
-      broadcastExtraction(roomId, { type: 'remote_board_train', playerId }, ws);
+    case 'extraction_stone_drop':
+      broadcastExtraction(roomId, { type: 'remote_stone_drop', playerId, stoneId: msg.stoneId, x: msg.x, y: msg.y, z: msg.z }, ws);
       break;
+    case 'extraction_decrypt_start': {
+      const room = extractionRooms[roomId];
+      if (!room.decrypt || room.decrypt.done) {
+        const pendingId = msg.pendingId || ('PEND_' + Date.now() + '_' + playerId);
+        const endsAt = Date.now() + 60000;
+        room.decrypt = { pendingId, endsAt, by: playerId, done: false };
+        broadcastExtraction(roomId, { type: 'extraction_decrypt_started', pendingId, endsAt, by: playerId }, null);
+        console.log('[Extraction] decrypt started room=' + roomId + ' pending=' + pendingId);
+        setTimeout(() => {
+          if (room.decrypt && room.decrypt.pendingId === pendingId && !room.decrypt.done) {
+            room.decrypt.done = true;
+            broadcastExtraction(roomId, { type: 'extraction_decrypt_done', pendingId, by: playerId }, null);
+            console.log('[Extraction] decrypt done room=' + roomId + ' pending=' + pendingId);
+          }
+        }, 60000);
+      }
+      break;
+    }
     case 'extraction_extracted':
       broadcastExtraction(roomId, { type: 'remote_extracted', playerId, items: msg.items, value: msg.value }, ws);
       break;
@@ -1182,6 +1206,13 @@ wss.on('connection', (ws) => {
         if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'oc_medzone', playerId: ws.playerId, kind: msg.kind, x: msg.x, y: msg.y, z: msg.z, r: msg.r, owner: msg.owner });
         else relayToOpponent(ws, { type: 'oc_medzone', playerId: ws.playerId, kind: msg.kind, x: msg.x, y: msg.y, z: msg.z, r: msg.r, owner: msg.owner });
         break;
+      // 工程師技能同步：定身 / 破甲 / 聲波區
+      case 'oc_root':
+      case 'oc_armorbreak':
+      case 'oc_sonic':
+        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, Object.assign({}, msg, { playerId: ws.playerId }));
+        else relayToOpponent(ws, Object.assign({}, msg, { playerId: ws.playerId }));
+        break;
       case 'player_death':        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) { relayTeamMsg(ws, { type: 'opponent_died', playerId: ws.playerId }); handleTdmDeathScore(ws); }
         else relayToOpponent(ws, { type: 'opponent_died' });
         break;
@@ -1232,9 +1263,10 @@ wss.on('connection', (ws) => {
       case 'extraction_shoot':
       case 'extraction_hit_player':
       case 'extraction_player_death':
-      case 'extraction_start_extract':
-      case 'extraction_gate_open':
-      case 'extraction_board_train':
+      case 'extraction_lever_pull':
+      case 'extraction_stone_pickup':
+      case 'extraction_stone_drop':
+      case 'extraction_decrypt_start':
       case 'extraction_extracted':
         handleExtractionMessage(ws, msg);
         break;
