@@ -2135,6 +2135,10 @@ window.checkTeamStatus=function(){
     var members=document.getElementById('team-members');
     var ts=document.getElementById('team-status');
     var blocked=!!(d.inTeam&&d.members);
+    // 雙人／四人模式本來就是要跟隊友一起玩，組隊中不應封鎖 GO（可跟好友 1v1）
+    var modeSel=document.querySelector('#mode-dropdown .mode-opt.selected');
+    var modeVal=modeSel?modeSel.dataset.mode:'';
+    if(modeVal==='multi2'||modeVal==='multi4') blocked=false;
     if(blocked){
       info.style.display='block';
       members.textContent=d.members.join(', ');
@@ -6425,8 +6429,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 (function(){var ib=document.getElementById('island-btn');if(ib)ib.addEventListener('click',function(){if(window.ocIslandOpen)window.ocIslandOpen();});})();
 
 document.getElementById('play-btn').onclick=function(){
-  if(currentTeamId){window.showTeamBlockTip();return;}
   var mode=document.querySelector('#mode-dropdown .mode-opt.selected');
+  var modeVal=mode?mode.dataset.mode:'solo';
+  // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
+  if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4'){window.showTeamBlockTip();return;}
   var modeVal=mode?mode.dataset.mode:'solo';
   if(modeVal==='extraction'){
     document.getElementById('mode-dropdown').classList.remove('show');
@@ -6435,6 +6441,8 @@ document.getElementById('play-btn').onclick=function(){
   }
   if(modeVal==='party'){
     document.getElementById('mode-dropdown').classList.remove('show');
+    var ps=document.getElementById('party-submenu');
+    if(ps)ps.style.display='flex';
     return;
   }
   document.getElementById('menu').style.display='none';
