@@ -115,7 +115,7 @@ body.mobile-mode #scope-overlay{display:none!important}
 @keyframes sweepShine{0%{transform:translateX(-100%)}50%{transform:translateX(100%)}100%{transform:translateX(100%)}}
 @keyframes textPulse{0%,100%{filter:drop-shadow(0 0 8px rgba(255,68,170,.4)) drop-shadow(0 0 20px rgba(68,170,255,.2))}50%{filter:drop-shadow(0 0 15px rgba(68,255,170,.6)) drop-shadow(0 0 40px rgba(170,68,255,.3))}}
 @keyframes glowBorder{0%,100%{border-color:rgba(255,68,170,.15);box-shadow:0 0 8px rgba(255,68,170,.05)}50%{border-color:rgba(68,170,255,.25);box-shadow:0 0 20px rgba(68,170,255,.1)}}
-#top-bar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;padding:10px 24px;background:linear-gradient(180deg,rgba(8,8,20,.98) 60%,transparent);z-index:3;gap:30px}
+#top-bar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;padding:10px 24px;background:linear-gradient(180deg,rgba(8,8,20,.98) 60%,transparent);z-index:5;gap:30px}
 #logo{font-size:42px;font-weight:900;letter-spacing:8px;background:linear-gradient(90deg,#f4a,#4af,#4fa,#a4f,#f4a);background-size:200%;background-clip:text;-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 25px rgba(255,68,170,.5)) drop-shadow(0 0 60px rgba(68,170,255,.3)) drop-shadow(0 0 100px rgba(68,255,170,.15));white-space:nowrap;animation:textPulse 3s ease-in-out infinite}
 #top-nav{display:flex;gap:8px}
 .top-nav-btn{all:unset;display:flex;align-items:center;gap:4px;padding:10px 22px;font-size:14px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;letter-spacing:2px;font-family:Arial;transition:all .3s;position:relative;overflow:hidden;text-shadow:0 0 12px rgba(255,255,255,.3),0 0 25px rgba(255,255,255,.12),0 0 50px rgba(255,255,255,.05);box-shadow:0 0 15px rgba(255,255,255,.05),0 0 30px rgba(255,255,255,.02)}
@@ -804,6 +804,8 @@ body.mobile-mode #scope-overlay{display:none!important}
 .mf-desc{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:2px}
 #mf-ext-diff{display:none;gap:10px;margin-top:4px}
 body.mf-ext #mf-ext-diff{display:flex}
+#mf-us-btns{display:none;gap:8px;margin-top:10px}
+body.mf-ext #mf-us-btns{display:flex}
 .mf-diff-opt{all:unset;padding:10px 22px;font-size:13px;font-weight:bold;letter-spacing:2px;border-radius:8px;cursor:pointer;color:rgba(255,170,68,.7);background:rgba(255,170,68,.08);border:1px solid rgba(255,170,68,.25);transition:all .2s;white-space:nowrap;text-align:center}
 .mf-diff-opt:hover{color:#fff;background:rgba(255,170,68,.2)}
 .mf-diff-opt.sel{color:#fff;background:rgba(255,170,68,.28);box-shadow:inset 2px 0 0 #ffae44}

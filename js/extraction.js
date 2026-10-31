@@ -1,10 +1,70 @@
 
 // ========== EXTRACTION MODE (embedded) ==========
 // 全域 stub：保險箱關閉鈕在 startExtractionMode 執行前就可能存在於 HTML onclick
-window.ext_closeSafeUI = function(){ var el=document.getElementById('safe-ui'); if(el) el.style.display='none'; };
+window.ext_closeSafeUI = function(){ if (typeof endSafeCrack === 'function' && _crackActive) { endSafeCrack(false); } var el=document.getElementById('safe-ui'); if(el) el.style.display='none'; };
 window.ext_toggleBackpack = function(){};
 window.ext_toggleMatchmaking = function(){};
 window.ext_backToMenu = function(){ window.location.href = 'index.html'; };
+
+// ========== 保險箱開鎖小遊戲（時機條） ==========
+var _crackActive = false, _crackRAF = null, _crackPins = 0, _crackBar = 0, _crackDir = 1, _crackZoneC = 0.5, _crackZoneW = 0.22;
+window._extCrackSuccess = null; // 由 openSafeUI 設定：3銷全解後要做的事
+function startSafeCrack() {
+  _crackActive = true; _crackPins = 0; _crackBar = 0; _crackDir = 1;
+  _crackZoneC = 0.3 + Math.random() * 0.4; _crackZoneW = 0.22;
+  var cp = document.getElementById('safe-crack-panel'); if (cp) cp.style.display = 'block';
+  var lp = document.getElementById('safe-loot-panel'); if (lp) lp.style.display = 'none';
+  var msg = document.getElementById('crack-msg'); if (msg) msg.textContent = '在黃條進入綠色區域時按 空白鍵 / 點擊（3個銷）';
+  var pinsEl = document.getElementById('crack-pins'); if (pinsEl) pinsEl.innerHTML = '';
+  var last = performance.now();
+  function frame(now) {
+    if (!_crackActive) { _crackRAF = null; return; }
+    var d = Math.min((now - last) / 1000, 0.05); last = now;
+    _crackBar += _crackDir * d * 0.85;
+    if (_crackBar >= 1) { _crackBar = 1; _crackDir = -1; }
+    if (_crackBar <= 0) { _crackBar = 0; _crackDir = 1; }
+    var bar = document.getElementById('crack-bar'); if (bar) bar.style.left = (_crackBar * 100) + '%';
+    var zone = document.getElementById('crack-zone');
+    if (zone) { zone.style.left = ((_crackZoneC - _crackZoneW / 2) * 100) + '%'; zone.style.width = (_crackZoneW * 100) + '%'; }
+    _crackRAF = requestAnimationFrame(frame);
+  }
+  if (_crackRAF) cancelAnimationFrame(_crackRAF);
+  _crackRAF = requestAnimationFrame(frame);
+}
+function crackAttempt() {
+  if (!_crackActive) return;
+  var msg = document.getElementById('crack-msg');
+  var pinsEl = document.getElementById('crack-pins');
+  var hit = Math.abs(_crackBar - _crackZoneC) <= _crackZoneW / 2;
+  if (hit) {
+    _crackPins++;
+    if (pinsEl) { var p = document.createElement('span'); p.textContent = '🔓'; p.style.fontSize = '18px'; pinsEl.appendChild(p); }
+    if (_crackPins >= 3) { endSafeCrack(true); return; }
+    _crackZoneC = 0.25 + Math.random() * 0.5; _crackZoneW = Math.max(0.1, _crackZoneW - 0.04);
+    if (msg) msg.textContent = '銷 ' + _crackPins + '/3 已解 — 繼續！';
+  } else {
+    if (msg) msg.textContent = '❌ 失手！黃條偏了，再試一次';
+    _crackBar = 0; _crackDir = 1;
+  }
+}
+function endSafeCrack(success) {
+  _crackActive = false;
+  if (_crackRAF) { cancelAnimationFrame(_crackRAF); _crackRAF = null; }
+  var cp = document.getElementById('safe-crack-panel'); if (cp) cp.style.display = 'none';
+  if (success) {
+    if (typeof window._extCrackSuccess === 'function') window._extCrackSuccess();
+  } else {
+    var el = document.getElementById('safe-ui'); if (el) el.style.display = 'none';
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (!_crackActive) return;
+  if (e.code === 'Space') { e.preventDefault(); crackAttempt(); }
+});
+document.addEventListener('click', function(e) {
+  if (!_crackActive) return;
+  if (e.target && e.target.id === 'crack-btn') crackAttempt();
+});
 window.addEventListener('error', function(ev){
   try {
     var d = document.getElementById('ext-diag');
@@ -340,20 +400,9 @@ function updateAIPlayers(dt) {
         ai.yaw=Math.atan2(atpos.x-ai.pos.x,atpos.z-ai.pos.z);
         if(ai.shootTimer>0.8+Math.random()*0.5){
           ai.shootTimer=0;
-          // LOS check: AI 不穿牆射擊 — 射向目標方向做 scene raycast，有障礙物擋在中間就不開槍
-          var _losDir = atpos.clone().setY(atpos.y+1.2).sub(ai.pos.clone().setY(ai.pos.y+1.2));
-          var _losDist = _losDir.length(); _losDir.normalize();
-          var _losRay = new THREE.Raycaster(ai.pos.clone().setY(ai.pos.y+1.2), _losDir, 0, _losDist);
-          var _losHits = _losRay.intersectObjects(scene.children, true);
-          var _losBlocked = false;
-          for (var _hi=0;_hi<_losHits.length;_hi++) {
-            var _h = _losHits[_hi];
-            if (_h.object === ai.mesh) continue;
-            if (ai.target && ai.target.mesh && _h.object === ai.target.mesh) continue;
-            if (_h.object.userData && _h.object.userData.noRaycast) continue;
-            if (_h.distance < _losDist - 0.5) { _losBlocked = true; break; }
-          }
-          if (!_losBlocked && Math.random()<0.6){var dmg=10+Math.floor(Math.random()*10);if(ai.target.type){ai.target.health-=dmg;if(ai.target.health<=0&&typeof killBot==='function')killBot(ai.target);}else if(ai.target===nearestEnemy&&nearestEnemy){nearestEnemy.health-=dmg;if(nearestEnemy.health<=0&&typeof killBot==='function')killBot(nearestEnemy);}
+          // LOS check: AI 不穿牆射擊（箱型牆 slab test）
+          var _losOk = extLosClear(ai.pos.x, ai.pos.y+1.2, ai.pos.z, atpos.x, atpos.y+1.2, atpos.z);
+          if (_losOk && Math.random()<0.6){var dmg=10+Math.floor(Math.random()*10);if(ai.target.type){ai.target.health-=dmg;if(ai.target.health<=0&&typeof killBot==='function')killBot(ai.target);}else if(ai.target===nearestEnemy&&nearestEnemy){nearestEnemy.health-=dmg;if(nearestEnemy.health<=0&&typeof killBot==='function')killBot(nearestEnemy);}
           var fl=new THREE.PointLight(0xffff88,2,10);fl.position.copy(ai.pos);fl.position.y+=0.5;scene.add(fl);setTimeout(function(){scene.remove(fl);},80);}
         }
         break;
@@ -907,15 +956,11 @@ function makeStoneMesh(){
   return g;
 }
 
-// 本局是否生成小黃石＋破譯站（難度：普通50% / 機密100%）
+// 本局是否生成小黃石＋破譯站（兩種難度皆生成，確保玩家一定看得到）
 function startStoneRaid(){
   stones = [];
   decryptActive = false; decryptEndsAt = 0; decryptPendingId = null;
   decryptLocalInitiator = false; decryptStoneId = null; decryptDoneIds = {};
-  stoneRaidOn = false;
-  const mode = window._extDiffMode || window._extDiffSelected || 'normal';
-  const chance = (mode === 'classified') ? 1 : 0.5;
-  if (Math.random() >= chance) return;
   stoneRaidOn = true;
   const spots = [
     {x:0,z:-20},{x:70,z:40},{x:-70,z:40},{x:0,z:92},{x:110,z:0},{x:-110,z:0},
@@ -929,6 +974,11 @@ function startStoneRaid(){
     spawnStoneAt(sp.x, sp.z);
     placed++;
   }
+  // 安全網：若全部點位被擋，強制在前 3 個點生成，確保一定有石頭
+  if (placed === 0) {
+    for (const sp of spots.slice(0, 3)) { spawnStoneAt(sp.x, sp.z); placed++; }
+  }
+  console.log('[StoneRaid] stones spawned:', stones.length, 'decrypt:', !!decryptStation);
   if (stones.length > 0) spawnDecryptStation();
   showAnnounce('🟣 本局偵測到未鑑定小黃石 ×' + stones.length + '（藍色破譯站解析後才會入帳）', 'rgba(155,89,182,.6)');
 }
@@ -1282,6 +1332,21 @@ var SIRIT_TEACUP = { x:-2.4, y:1.35, z:-0.6 }; // 車廂內茶水位置（局部
 
 const colliders = [];
 function addCollider(x,y,z,w,h,d) { const co={x,y,z,w,h,d,bx:x, x0:x-w/2, x1:x+w/2, y0:y-h/2, y1:y+h/2, z0:z-d/2, z1:z+d/2}; colliders.push(co); return co; }
+// 視線檢查：線段 (x0,y0,z0)->(x1,y1,z1) 是否被任何箱型牆擋住（slab test）
+function extLosClear(x0,y0,z0,x1,y1,z1) {
+  var dx=x1-x0, dy=y1-y0, dz=z1-z0;
+  for (var i=0;i<colliders.length;i++) {
+    var b=colliders[i], tmin=0, tmax=1, t1, t2, tt;
+    if (Math.abs(dx)<1e-8) { if(x0<b.x0||x0>b.x1) continue; }
+    else { t1=(b.x0-x0)/dx; t2=(b.x1-x0)/dx; if(t1>t2){tt=t1;t1=t2;t2=tt;} if(t1>tmin)tmin=t1; if(t2<tmax)tmax=t2; if(tmin>tmax) continue; }
+    if (Math.abs(dy)<1e-8) { if(y0<b.y0||y0>b.y1) continue; }
+    else { t1=(b.y0-y0)/dy; t2=(b.y1-y0)/dy; if(t1>t2){tt=t1;t1=t2;t2=tt;} if(t1>tmin)tmin=t1; if(t2<tmax)tmax=t2; if(tmin>tmax) continue; }
+    if (Math.abs(dz)<1e-8) { if(z0<b.z0||z0>b.z1) continue; }
+    else { t1=(b.z0-z0)/dz; t2=(b.z1-z0)/dz; if(t1>t2){tt=t1;t1=t2;t2=tt;} if(t1>tmin)tmin=t1; if(t2<tmax)tmax=t2; if(tmin>tmax) continue; }
+    if (tmin>0.03 && tmin<0.97) return false;
+  }
+  return true;
+}
 
 // 踩踏/擋牆判定（移植自 sirit-base.html，支援站上箱頂、0.45 踏步、樓梯連續上升）
 function floorAt(px,pz,py,cap){var best=0;for(var i=0;i<colliders.length;i++){var b=colliders[i];if(px>b.x0&&px<b.x1&&pz>b.z0&&pz<b.z1&&b.y1<=py+0.45&&(cap===void 0||b.y1<=cap)&&b.y1>best)best=b.y1;}return best;}
@@ -2649,9 +2714,11 @@ function updateBots(dt) {
         bot.attackTimer -= dt;
         if (bot.attackTimer <= 0 && distToPlayer < bot.attackRange * 1.3) {
           bot.attackTimer = bot.type.attackCooldown;
+          // 不穿牆：被牆擋住就不造成傷害（仍顯示槍口閃光）
+          const _losOk = extLosClear(bot.pos.x, bot.pos.y+1.2, bot.pos.z, camera.position.x, camera.position.y, camera.position.z);
           // Bot shoots player (hitscan with accuracy penalty)
           const accuracy = 0.45 + Math.random() * 0.35;
-          if (Math.random() < accuracy) {
+          if (_losOk && Math.random() < accuracy) {
             const dmg = bot.damage * (0.5 + Math.random() * 0.5);
             damagePlayer(Math.floor(dmg));
           }
@@ -3026,32 +3093,41 @@ function updateSpray(dt){
 // ============ SAFE UI ============
 function openSafeUI(safe) {
   if (safe.opened) return;
+  activeSafe = safe;
   document.getElementById('safe-ui').style.display='flex';
-  document.getElementById('safe-loot-panel').style.display='flex';
   document.querySelector('#safe-right .title').textContent = '🔐 保險箱';
   if (safe.lidMesh) safe.lidMesh.rotation.x = -1.2;
   if (document.pointerLockElement) document.exitPointerLock();
-  document.getElementById('safe-backpack-status').textContent = `🎒 ${collectedItems.length}/${BACKPACK_MAX}`;
-  const grid = document.getElementById('safe-items-grid');
-  grid.innerHTML = '';
-  for (let i=0; i<safe.loot.length; i++) {
-    const item = safe.loot[i];
-    if (item.taken) continue;
-    const div = document.createElement('div');
-    div.className = 'safe-item';
-    div.innerHTML = `<div class="iname">${item.name}</div><div class="irarity" style="color:${item.color || RARITY_COLORS[item.rarity]}">${item.purity ? (item.purity+'級純度') : (RARITY_NAMES[item.rarity])}</div><div class="isize">📦 ${item.size}格</div>`;
-    div.onclick = () => takeItemFromSafe(safe, i);
-    grid.appendChild(div);
-  }
-  if (grid.children.length === 0) {
-    grid.innerHTML = '<div style="color:rgba(255,255,255,.3);padding:20px;text-align:center">保險箱已空</div>';
-  }
-  drawCharacterPreview('safe-character', safe.rarity);
+  // 先玩開鎖小遊戲，3銷全解才顯示戰利品
+  window._extCrackSuccess = function() {
+    safe.opened = true;
+    document.getElementById('safe-loot-panel').style.display='flex';
+    document.getElementById('safe-backpack-status').textContent = `🎒 ${collectedItems.length}/${BACKPACK_MAX}`;
+    const grid = document.getElementById('safe-items-grid');
+    grid.innerHTML = '';
+    for (let i=0; i<safe.loot.length; i++) {
+      const item = safe.loot[i];
+      if (item.taken) continue;
+      const div = document.createElement('div');
+      div.className = 'safe-item';
+      div.innerHTML = `<div class="iname">${item.name}</div><div class="irarity" style="color:${item.color || RARITY_COLORS[item.rarity]}">${item.purity ? (item.purity+'級純度') : (RARITY_NAMES[item.rarity])}</div><div class="isize">📦 ${item.size}格</div>`;
+      div.onclick = () => takeItemFromSafe(safe, i);
+      grid.appendChild(div);
+    }
+    if (grid.children.length === 0) {
+      grid.innerHTML = '<div style="color:rgba(255,255,255,.3);padding:20px;text-align:center">保險箱已空</div>';
+    }
+    drawCharacterPreview('safe-character', safe.rarity);
+  };
+  startSafeCrack();
 }
 
 function closeSafeUI() {
+  _crackActive = false;
+  if (_crackRAF) { cancelAnimationFrame(_crackRAF); _crackRAF = null; }
+  var cp = document.getElementById('safe-crack-panel'); if (cp) cp.style.display = 'none';
   document.getElementById('safe-ui').style.display='none';
-  if (activeSafe) activeSafe.opened = true;
+  if (activeSafe && !activeSafe.opened) activeSafe.opened = false;
   activeSafe = null;
   if (!document.pointerLockElement) {
     var bl=document.getElementById('ext-blocker'); bl.style.display='flex';
@@ -5011,8 +5087,13 @@ window.stopPartyGame = stopPartyGame;
     refreshHub: function(){
       var p = document.getElementById('mm-us-pending');
       var c = document.getElementById('mm-us-collected');
-      if (p) p.textContent = '🟡 未開啟的小黃石（' + this.pending().length + '）';
-      if (c) c.textContent = '💎 收藏小黃石（' + this.collected().length + '）';
+      var pn = this.pending().length, cn = this.collected().length;
+      if (p) p.textContent = '🟡 未開啟的小黃石（' + pn + '）';
+      if (c) c.textContent = '💎 收藏小黃石（' + cn + '）';
+      var mp = document.getElementById('mf-us-pending');
+      var mc2 = document.getElementById('mf-us-collected');
+      if (mp) mp.textContent = '🟡 未開啟（' + pn + '）';
+      if (mc2) mc2.textContent = '💎 收藏（' + cn + '）';
       var mc = document.getElementById('menu-coins');
       if (mc) mc.textContent = localStorage.getItem('oc_coin')||'0';
     },
@@ -5027,7 +5108,9 @@ window.stopPartyGame = stopPartyGame;
         var r = list[i];
         var row = document.createElement('div');
         row.className = 'us-row';
-        row.innerHTML = '<span class="us-id">🧱 ' + r.id + '</span><button class="us-btn" data-id="'+r.id+'">✨ 開啟</button>';
+        var when = '';
+        try { when = ' · ' + new Date(r.ts).toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e){}
+        row.innerHTML = '<span class="us-id">🟡 未鑑定小黃石 #' + (i+1) + when + '</span><button class="us-btn" data-id="'+r.id+'">✨ 開啟</button>';
         box.appendChild(row);
       }
       var self = this;
@@ -5044,16 +5127,23 @@ window.stopPartyGame = stopPartyGame;
         return;
       }
       var pe = document.getElementById('us-pending-overlay'); if (pe) pe.style.display='none';
-      var re = document.getElementById('us-reveal-overlay');
-      if (re){
-        document.getElementById('us-reveal-name').textContent = roll.name;
-        document.getElementById('us-reveal-name').style.color = roll.color || '#ffd76a';
-        document.getElementById('us-reveal-sub').textContent = roll.purity ? ('純度 ' + roll.purity + ' 級') : '';
-        document.getElementById('us-reveal-value').textContent = '💰 ' + roll.value;
-        re.dataset.id = id;
-        re.style.display='flex';
-      }
+      this._showReveal(id);
       this.refreshHub();
+    },
+    _showReveal: function(id){
+      this.refresh();
+      var r = null;
+      for (var i=0;i<this.list.length;i++){ if (this.list[i].id===id){ r=this.list[i]; break; } }
+      if (!r || r.st!=='REVEALED' || !r.roll) return false;
+      var re = document.getElementById('us-reveal-overlay');
+      if (!re) return false;
+      document.getElementById('us-reveal-name').textContent = r.roll.name;
+      document.getElementById('us-reveal-name').style.color = r.roll.color || '#ffd76a';
+      document.getElementById('us-reveal-sub').textContent = r.roll.purity ? ('純度 ' + r.roll.purity + ' 級') : '';
+      document.getElementById('us-reveal-value').textContent = '💰 ' + r.roll.value;
+      re.dataset.id = id;
+      re.style.display = 'flex';
+      return true;
     },
     openCollection: function(){
       this.refresh();
@@ -5073,31 +5163,45 @@ window.stopPartyGame = stopPartyGame;
         box.appendChild(row);
       }
       box.querySelectorAll('.us-sell').forEach(function(b){
-        b.onclick = function(){ self.askSell(b.dataset.id); };
+        b.onclick = function(){ self.askSell(b.dataset.id, 'collection'); };
       });
       if (el) el.style.display='flex';
     },
     _sellId: null,
-    askSell: function(id){
+    _sellFrom: null,
+    askSell: function(id, from){
       this.refresh();
       var r = null;
       for (var i=0;i<this.list.length;i++){ if (this.list[i].id===id){ r=this.list[i]; break; } }
       if (!r) return;
       this._sellId = id;
+      this._sellFrom = from || 'collection';
       var el = document.getElementById('us-sell-confirm');
       if (!el){ this.confirmSell(); return; }
       document.getElementById('us-sell-name').textContent = (r.roll?r.roll.name:'未鑑定小黃石');
       document.getElementById('us-sell-value').textContent = (r.roll?r.roll.value:0);
       el.style.display='flex';
     },
+    cancelSell: function(){
+      var el = document.getElementById('us-sell-confirm'); if (el) el.style.display='none';
+      var from = this._sellFrom || 'collection';
+      var id = this._sellId;
+      this._sellFrom = null; this._sellId = null;
+      if (from==='reveal' && id && this._showReveal(id)) return;   // 回到揭示頁
+      if (from==='collection'){ this.openCollection(); return; }   // 回到收藏頁
+      this.openPending();
+    },
     confirmSell: function(){
+      var from = this._sellFrom || 'collection';
+      var id = this._sellId;
       var v = this.sell(this._sellId);
       var el = document.getElementById('us-sell-confirm'); if (el) el.style.display='none';
-      this._sellId = null;
+      this._sellId = null; this._sellFrom = null;
       if (v>0){
         if (window._floatMsg) window._floatMsg('🪙 出售成功 +'+v,'#ffd76a');
-        var ce = document.getElementById('us-collection-overlay');
-        if (ce && ce.style.display==='flex') this.openCollection();
+        this.openCollection();   // 出售成功 → 回收藏頁看餘額變化
+      } else {
+        if (from==='reveal' && this._showReveal(id)) {} else if (from==='collection'){ this.openCollection(); } else { this.openPending(); }
       }
       this.refreshHub();
     },
@@ -5122,15 +5226,15 @@ window.stopPartyGame = stopPartyGame;
     var re = document.getElementById('us-reveal-overlay'); if(!re) return;
     var id = re.dataset.id;
     re.style.display='none';
-    window.US.askSell(id);
+    window.US.askSell(id, 'reveal');
   };
 
-  // 摸金樞紐按鈕（事件委派，避免 DOM 時序問題）
+  // 摸金樞紐按鈕（事件委派，避免 DOM 時序問題；用 closest 兼容按鈕內的 span 子元素）
   document.addEventListener('click', function(e){
     var t = e.target;
-    if (!t) return;
-    if (t.id === 'mm-us-pending'){ window.US.openPending(); }
-    else if (t.id === 'mm-us-collected'){ window.US.openCollection(); }
+    if (!t || !t.closest) return;
+    if (t.closest('#mm-us-pending') || t.closest('#mf-us-pending') || t.closest('#us-menu-btn')){ window.US.openPending(); }
+    else if (t.closest('#mm-us-collected') || t.closest('#mf-us-collected')){ window.US.openCollection(); }
   });
 
   // GO 直接開始匹配（難度用 mf-panel 選的，沒選預設普通）
@@ -5139,3 +5243,5 @@ window.stopPartyGame = stopPartyGame;
     startExtractionMatchmaking();
   };
 })();
+// 版本標記：HTML 引用的版本（從自己的 script src 讀）；看不到這行 = 舊版沒載入
+console.log('%c[ext] extraction.js 已載入 HTML版=' + (document.querySelector('script[src*="extraction.js"]').src.match(/v=([a-z0-9]+)/)||[,'無'])[1] + ' US=' + (typeof window.US), 'color:#b882e0;font-weight:bold');
