@@ -5,11 +5,14 @@ window.__ocLogErr=function(tag,msg){
   try{
     var t=tag+' | '+msg;
     window.__ocErrs.push(t);if(window.__ocErrs.length>20)window.__ocErrs.shift();
+    // 本地開發不外送 log，避免 console 404 噪音；部署後仍會上報
+    function _ocLocalHost(){var h=location.hostname;return h==='localhost'||h==='127.0.0.1'||h==='::1';}
     // 同一則錯誤每幀重複送出會把 log 洗爆，所以相同內容 10 秒只送一次
     var key=tag+'|'+msg;
     var now=Date.now();
     if(window.__ocSeen[key]&&now-window.__ocSeen[key]<10000)return;
     window.__ocSeen[key]=now;
+    if(_ocLocalHost())return;
     fetch('/oc-log?m='+encodeURIComponent(t).slice(0,600),{cache:'no-store'}).catch(function(){});
   }catch(e){}
 };
@@ -29,8 +32,14 @@ var _ocCE=console.error;console.error=function(){window.__ocLogErr('CONSOLE',Arr
     window.__ocBuild=id;
     console.log('%c[ocgame] BUILD '+id+(extra?' '+extra:''),'color:#8f8');
     // 自我回報：我要知道使用者到底是從哪個 port／哪個 app 開啟這頁的
-    try{fetch('/oc-log?m=LOAD build='+id+' port='+location.port+' href='+location.href
-      +' electron='+(!!window.electron)+' ua='+navigator.userAgent.slice(0,72),{cache:'no-store'}).catch(function(){});}catch(e){}
+    // 本地開發不外送，避免 console 404 噪音
+    try{
+      var _ocH=location.hostname;
+      if(_ocH!=='localhost'&&_ocH!=='127.0.0.1'&&_ocH!=='::1'){
+        fetch('/oc-log?m=LOAD build='+id+' port='+location.port+' href='+location.href
+          +' electron='+(!!window.electron)+' ua='+navigator.userAgent.slice(0,72),{cache:'no-store'}).catch(function(){});
+      }
+    }catch(e){}
   }
   // 抓一份伺服器實際提供的 index.html，用和 server.js 相同的 djb2 算指紋。
   // 這樣只要檔案一改，指紋必變，舊分頁一定會被閘門擋下來。
