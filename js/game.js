@@ -4142,6 +4142,7 @@ mapOptions.forEach(function(opt){
       return;
     }
     currentMap=opt.dataset.map;
+    window._extActive=false;   // 確保從摸金模式回來後，單人 animate 不會被跳過
     gameDifficulty='normal';diffMult=1;
     if(window.radRifleDrop){disposeMesh(window.radRifleDrop.mesh);disposeMesh(window.radRifleDrop.glow);disposeMesh(window.radRifleDrop.light);window.radRifleDrop=null;}
     radiationZones.forEach(function(rz){disposeMesh(rz.mesh);if(rz.light)disposeMesh(rz.light);});radiationZones=[];
