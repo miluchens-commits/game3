@@ -6439,10 +6439,29 @@ document.getElementById('play-btn').onclick=function(){
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
   }
-  if(modeVal==='party'){
+  if(modeVal==='party' || modeVal.indexOf('party_')===0){
     document.getElementById('mode-dropdown').classList.remove('show');
     var ps=document.getElementById('party-submenu');
-    if(ps)ps.style.display='flex';
+    if(ps){
+        ps.style.display='flex';
+        // 綁定派對遊戲按鈕點擊事件
+        var partyBtns = ps.querySelectorAll('.party-opt');
+        partyBtns.forEach(function(btn){
+            btn.onclick = function(e){
+                e.stopPropagation();
+                var ptype = btn.dataset.party;
+                if(ptype === 'back'){
+                    ps.style.display = 'none';
+                    return;
+                }
+                ps.style.display = 'none';
+                document.getElementById('menu').style.display = 'none';
+                dailyChallenge=false;bossRushMode=false;ufoMode=false;bombMode=false;
+                // 進入角色選擇頁 → 5秒倒數 → 地圖選擇
+                ocCsOpen('solo');
+            };
+        });
+    }
     return;
   }
   document.getElementById('menu').style.display='none';
