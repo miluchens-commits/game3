@@ -6374,7 +6374,8 @@ var MENU_MODES=[
  {id:'party_memory',name:'記憶翻牌',desc:'翻牌配對',icon:'🧠',c1:'#8a5be0',c2:'#c39bff',partyType:'memory'},
  {id:'party_coinrush',name:'金幣搶奪',desc:'搶金幣',icon:'💰',c1:'#3fbf7f',c2:'#7fe8b0',partyType:'coinrush'},
  {id:'extraction',name:'摸金模式',desc:'搜刮撤離',icon:'⛏',c1:'#a07a4a',c2:'#d4af7a',extraction:true},
- {id:'range',name:'射擊訓練',desc:'練習射擊',icon:'🎯',c1:'#44aacc',c2:'#77ddee'}
+ {id:'range',name:'射擊訓練',desc:'練習射擊',icon:'🎯',c1:'#44aacc',c2:'#77ddee'},
+{id:'breach',name:'爆破模式',desc:'4人安裝炸彈',icon:'💣',c1:'#ff6b6b',c2:'#ffd43b',breach:true}
 ];
 var _mmSelected=null;
 var ov=document.getElementById('menu-mode-overlay');
@@ -6490,6 +6491,15 @@ document.getElementById('play-btn').onclick=function(){
     document.getElementById('class-select').dataset.multi=modeVal==='bomb2'?'2':'4';
   }else if(modeVal==='extraction'){
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
+    return;
+  }else if(modeVal==='breach'){
+    // 爆破模式：4人真人匹配，禁止AI補位
+    document.getElementById('mode-dropdown').classList.remove('show');
+    if(window.startBreachMatchmaking){
+      startBreachMatchmaking();
+    }else{
+      window._floatMsg('⚠ 爆破模式匹配系統載入中...','#f66');
+    }
     return;
   }else{
     renderClassSelect();
@@ -7496,6 +7506,12 @@ function processServerMessage(data){
       if(ufoMode||bombMode){
         document.getElementById('multi-map-vote').style.display='none';
         if(requestedPlayerCount>2&&playerCount<requestedPlayerCount){document.getElementById('multi-status').innerHTML='⚠️ 伺服器不支援 '+(requestedPlayerCount)+' 人配對<br><small style="color:rgba(255,255,255,.3)">以 '+(playerCount)+' 人模式開始</small>';setTimeout(function(){document.getElementById('multi-connecting').style.display='none';startMultiGame('base');},2000);}else{document.getElementById('multi-connecting').style.display='none';setTimeout(function(){startMultiGame('base');},500);}
+        break;
+      }
+      // 爆破模式：4人匹配成功，直接進入爆破遊戲，不走地圖投票
+      if(data.gameMode==='breach4'){
+        document.getElementById('multi-connecting').style.display='none';
+        if(window._onBreachMatchFound)window._onBreachMatchFound(data);
         break;
       }
       document.getElementById('multi-connecting').style.display='none';
@@ -8683,6 +8699,96 @@ function connectMultiplayerDirect(ip, mode){
       document.getElementById('multi-status').innerHTML='無法連線到伺服器<br><small style="color:rgba(255,255,255,.3)">請確認伺服器已啟動</small>';
     }
   };
+}
+
+// ── 爆破模式匹配（4人真人，禁止AI補位） ──
+function startBreachMatchmaking(){
+  if(window._breachMatching)return;
+  window._breachMatching=true;
+  document.getElementById('menu').style.display='none';
+  
+  // 顯示匹配中 UI
+  var mm=document.getElementById('breach-mm-ui');
+  if(!mm){
+    mm=document.createElement('div');
+    mm.id='breach-mm-ui';
+    mm.style.cssText='position:fixed;inset:0;background:rgba(10,10,16,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;color:#fff;font-family:Arial';
+    mm.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:20px;color:#ff6b6b">💣 爆破模式匹配中</div>'+
+                 '<div id="breach-mm-status" style="font-size:16px;margin-bottom:30px">等待 4 位真人玩家加入...</div>'+
+                 '<button id="breach-mm-cancel" style="padding:10px 30px;font-size:16px;background:#ff4444;color:#fff;border:none;border-radius:6px;cursor:pointer">取消匹配</button>';
+    document.body.appendChild(mm);
+    document.getElementById('breach-mm-cancel').onclick=function(){
+      window._breachMatching=false;
+      mm.style.display='none';
+      document.getElementById('menu').style.display='flex';
+      if(window.multiWS)relaySend({type:'leave_queue'});
+    };
+  }else{
+    mm.style.display='flex';
+    document.getElementById('breach-mm-status').textContent='等待 4 位真人玩家加入...';
+  }
+  
+  // 發送匹配請求
+  relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:4,gameMode:'breach4'});
+  
+  // 監聽匹配結果
+  window._breachMatchHandler=function(data){
+    if(data.type==='match_found'&&data.gameMode==='breach4'){
+      window._breachMatching=false;
+      var mm=document.getElementById('breach-mm-ui');
+      if(mm)mm.style.display='none';
+      // 進入爆破模式遊戲（階段2會實作完整邏輯，這裡先顯示進入提示）
+      window._floatMsg('💣 匹配成功！進入爆破模式...','#4da6ff');
+      setTimeout(function(){
+        startBreachGame(data);
+      },1500);
+      relaySend({type:'leave_queue'});
+    }
+  };
+  // 將 handler 註冊到 processServerMessage 的延伸點（階段2整合）
+  window._breachHandlerRegistered=true;
+}
+
+// 處理 match_found 的延伸點（會在 processServerMessage 中呼叫）
+window._onBreachMatchFound=function(data){
+  if(window._breachMatchHandler)window._breachMatchHandler(data);
+}
+
+function startBreachGame(matchData){
+  // 階段2：建立爆破模式遊戲場景、隊伍、炸彈系統等
+  // 這裡先設定基本狀態
+  isMultiplayer=true;
+  gameStarted=true;
+  currentTeamId=matchData.team||'A';
+  playerCount=4;
+  document.getElementById('menu').style.display='none';
+  document.getElementById('breach-mm-ui').style.display='none';
+  window._floatMsg('💣 爆破模式 - 隊伍：'+(matchData.team==='A'?'A隊（安裝炸彈）':'B隊（阻止爆破）'), matchData.team==='A'?'#ff6b6b':'#4da6ff');
+  
+  // 隊伍顯示
+  var teamEl=document.getElementById('breach-team-info');
+  if(!teamEl){
+    teamEl=document.createElement('div');
+    teamEl.id='breach-team-info';
+    teamEl.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:6px;z-index:150;font-weight:bold;font-size:16px;font-family:Arial';
+    document.body.appendChild(teamEl);
+  }
+  teamEl.textContent=matchData.team==='A'?'🔴 A隊：安裝炸彈':'🔵 B隊：阻止爆破';
+  teamEl.style.background=matchData.team==='A'?'rgba(255,107,107,0.9)':'rgba(77,166,255,0.9)';
+  
+  // 顯示遊戲 HUD（階段2會加入炸彈倒數、小地圖等）
+  var hud=document.getElementById('breach-hud');
+  if(!hud){
+    hud=document.createElement('div');
+    hud.id='breach-hud';
+    hud.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:6px;z-index:150;font-size:18px;font-weight:bold;font-family:Arial;color:#fff';
+    document.body.appendChild(hud);
+  }
+  hud.textContent='💣 炸彈倒數：準備中';
+  hud.style.background='rgba(0,0,0,0.7)';
+  
+  // 進入遊戲場景（使用現有的單人/多人場景初始化，階段2會替換為爆破地圖）
+  document.body.requestPointerLock().catch(function(){});
 }
 
 function connectMultiplayerHTTP(ip){

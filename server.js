@@ -1294,7 +1294,7 @@ function playerModeCount(gm) {
 }
 function addToQueue(ws) {
   const gm = ws.playerData.gameMode || 'multi';
-  const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1)
+  const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1 || gm.indexOf('breach') !== -1)
     ? playerModeCount(gm) : 2;
   // Same-team premade pairing (2p): pair two same-teamId players into a 2p room
   if (needed === 2 && ws.playerData.teamId) {
