@@ -8886,6 +8886,7 @@ function updateBreachDirIndicator(){
   if(!window.breachState.roundActive)return;
   var dirEl=document.getElementById('breach-dir');
   var actEl=document.getElementById('breach-action');
+  if(!dirEl||!actEl)return;
   var myPos=new THREE.Vector3(pos.x,pos.y,pos.z);
   var site=window.breachSites[window.breachState.bombSite];
   if(!site){dirEl.style.display='none';return;}
@@ -8939,6 +8940,7 @@ function updateBreachDirIndicator(){
 // 更新倒數顯示
 function updateBreachTimer(){
   var timerEl=document.getElementById('breach-timer');
+  if(!timerEl)return;
   if(!window.breachState.bombPlanted){
     timerEl.style.display='none';
     return;
