@@ -6447,10 +6447,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 document.getElementById('play-btn').onclick=function(){
   // 優先使用選單卡片選中的模式（_mmSelected），否則查詢下拉選單
   var mode=_mmSelected||document.querySelector('#mode-dropdown .mode-opt.selected');
-  var modeVal=mode?mode.dataset.mode||mode.dataset.mid||mode.id:'solo';
+  var modeVal=mode?mode.id||(mode.dataset&&mode.dataset.mode)||(mode.dataset&&mode.dataset.mid):'solo';
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4'){window.showTeamBlockTip();return;}
-  var modeVal=mode?mode.dataset.mode||mode.dataset.mid||mode.id:'solo';
+  var modeVal=mode?mode.id||(mode.dataset&&mode.dataset.mode)||(mode.dataset&&mode.dataset.mid):'solo';
   if(modeVal==='extraction'){
     document.getElementById('mode-dropdown').classList.remove('show');
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
