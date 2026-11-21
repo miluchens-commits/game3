@@ -6386,7 +6386,21 @@ if(grid){grid.innerHTML='';MENU_MODES.forEach(function(m){
   var c=document.createElement('button');c.className='mm-card';c.dataset.mid=m.id;
   c.style.setProperty('--c1',m.c1);c.style.setProperty('--c2',m.c2);
  c.innerHTML='<span class="cico">'+m.icon+'</span><span class="cname">'+m.name+'</span><span class="cdesc">'+m.desc+'</span>';
- c.onclick=function(){var prev=grid.querySelector('.sel');if(prev)prev.classList.remove('sel');c.classList.add('sel');_mmSelected=m;goBtn.classList.add('ready');var es=document.getElementById('mm-ext-sub');if(es)es.style.display=(m.extraction?'flex':'none');if(m.extraction){var opt2=document.querySelector('#mode-dropdown .mode-opt[data-mode="extraction"]');if(opt2){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt2.classList.add('selected');}var lbl2=document.getElementById('menu-mode-btn-label');if(lbl2)lbl2.innerHTML='⛏ 摸金模式 <span class="mode-arrow">▶</span>';}};
+ c.onclick=function(){
+   var prev=grid.querySelector('.sel');if(prev)prev.classList.remove('sel');c.classList.add('sel');_mmSelected=m;goBtn.classList.add('ready');
+   // 爆破模式：點擊就直接開始匹配，不選幹員、不選地圖、不需要再點 GO
+   if(m.id === 'breach'){
+     document.getElementById('mode-dropdown').classList.remove('show');
+     document.getElementById('menu').style.display='none';
+     dailyChallenge=false;bossRushMode=false;ufoMode=false;bombMode=false;
+     if(window.startBreachMatchmaking){
+       startBreachMatchmaking();
+     } else if(window._floatMsg){
+       window._floatMsg('⚠ 爆破模式匹配系統載入中...','#f66');
+     }
+     return;
+   }
+   var es=document.getElementById('mm-ext-sub');if(es)es.style.display=(m.extraction?'flex':'none');if(m.extraction){var opt2=document.querySelector('#mode-dropdown .mode-opt[data-mode="extraction"]');if(opt2){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt2.classList.add('selected');}var lbl2=document.getElementById('menu-mode-btn-label');if(lbl2)lbl2.innerHTML='⛏ 摸金模式 <span class="mode-arrow">▶</span>';}};
  grid.appendChild(c);
 });}
 function openMenuOverlay(){if(!ov)return;ov.classList.add('open');if(window.US)window.US.refreshHub();var es=document.getElementById('mm-ext-sub');if(es){es.style.display='none';var btns=es.querySelectorAll('.mm-ext-opt');for(var bi=0;bi<btns.length;bi++)btns[bi].classList.remove('sel');var pk=es.querySelector('.mm-ext-pick');if(pk)pk.textContent='';}var selOpt=document.querySelector('#mode-dropdown .mode-opt.selected');var preId=selOpt?selOpt.dataset.mode:null;if(preId){var match=MENU_MODES.find(function(m){return m.id===preId;});if(match){var card=grid.querySelector('.mm-card[data-mid=\"'+preId+'\"]');if(card){grid.querySelectorAll('.mm-card').forEach(function(x){x.classList.remove('sel');});card.classList.add('sel');_mmSelected=match;goBtn.classList.add('ready');var es2=document.getElementById('mm-ext-sub');if(es2)es2.style.display=(match.extraction?'flex':'none');}}}}
