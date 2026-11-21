@@ -8769,26 +8769,67 @@ function connectMultiplayerDirect(ip, mode){
   };
 }
 
-// ── 爆破模式：點擊直接進入爆破地圖（單人測試模式） ──
+// ── 爆破模式匹配（4人真人，禁止AI補位） ──
 function startBreachMatchmaking(){
   if(window._breachMatching)return;
   window._breachMatching=true;
   document.getElementById('menu').style.display='none';
   
-  // 直接進入爆破地圖（單人測試，不需要匹配）
-  window._breachMatching=false;
-  var fakeMatchData = {
-    team: 'A',
-    playerId: 0,
-    bombSite: 'A',
-    players: [
-      {id: 0, name: '你', team: 'A'},
-      {id: 1, name: '玩家2', team: 'A'},
-      {id: 2, name: '玩家3', team: 'B'},
-      {id: 3, name: '玩家4', team: 'B'}
-    ]
+  // 顯示匹配中 UI（z-index 300，蓋過選單）
+  var mm=document.getElementById('breach-mm-ui');
+  if(!mm){
+    mm=document.createElement('div');
+    mm.id='breach-mm-ui';
+    mm.style.cssText='position:fixed;inset:0;background:rgba(10,10,16,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;color:#fff;font-family:Arial';
+    mm.innerHTML='<div style="font-size:26px;font-weight:bold;margin-bottom:24px;color:#ff6b6b">💣 爆破模式匹配中</div>'+
+                 '<div id="breach-mm-status" style="font-size:18px;margin-bottom:32px">等待 4 位真人玩家加入...</div>'+
+                 '<button id="breach-mm-cancel" style="padding:12px 40px;font-size:17px;background:#ff4444;color:#fff;border:none;border-radius:8px;cursor:pointer">取消匹配</button>';
+    document.body.appendChild(mm);
+    document.getElementById('breach-mm-cancel').onclick=function(){
+      window._breachMatching=false;
+      mm.style.display='none';
+      document.getElementById('menu').style.display='flex';
+      if(window.multiWS)relaySend({type:'leave_queue'});
+    };
+  }else{
+    mm.style.display='flex';
+    document.getElementById('breach-mm-status').textContent='等待 4 位真人玩家加入...';
+  }
+  
+  // 發送匹配請求
+  relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:4,gameMode:'breach4'});
+  
+  // 監聽匹配結果
+  window._breachMatchHandler=function(data){
+    if(data.type==='match_found'&&data.gameMode==='breach4'){
+      window._breachMatching=false;
+      var mm=document.getElementById('breach-mm-ui');
+      if(mm)mm.style.display='none';
+      
+      // 顯示隊伍分配過渡畫面（A組 2人 / B組 2人）
+      var myTeam = data.team || 'A';
+      var teamColor = myTeam === 'A' ? '#ff6b6b' : '#4da6ff';
+      var teamName = myTeam === 'A' ? 'A組（安裝炸彈）' : 'B組（阻止爆破）';
+      
+      var trans=document.createElement('div');
+      trans.id='breach-match-trans';
+      trans.style.cssText='position:fixed;inset:0;background:rgba(10,10,16,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:400;color:#fff;font-family:Arial;text-align:center';
+      trans.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:16px;color:#ffd76a">✅ 匹配成功！</div>'+
+                      '<div style="font-size:20px;margin-bottom:10px">你分在：</div>'+
+                      '<div style="font-size:32px;font-weight:bold;padding:20px 40px;border-radius:12px;border:4px solid '+teamColor+';background:'+teamColor+';color:#fff;letter-spacing:4px;margin-bottom:24px">'+teamName+'</div>'+
+                      '<div style="font-size:16px;opacity:0.8">2秒後進入遊戲...</div>';
+      document.body.appendChild(trans);
+      
+      setTimeout(function(){
+        var t=document.getElementById('breach-match-trans');
+        if(t)t.remove();
+        startBreachGame(data);
+      },2000);
+      relaySend({type:'leave_queue'});
+    }
   };
-  startBreachGame(fakeMatchData);
+  // 將 handler 註冊到 processServerMessage 的延伸點（階段2整合）
+  window._breachHandlerRegistered=true;
 }
 
 // 處理 match_found 的延伸點（會在 processServerMessage 中呼叫）
