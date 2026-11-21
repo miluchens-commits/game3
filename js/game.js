@@ -4391,7 +4391,7 @@ function launchSelected(){
   var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+mv+'"]');
   var pb=document.getElementById('play-btn');
   if(opt&&pb){opt.click();pb.click();return;}
-  window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
+  if(window._floatMsg)window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
  },80);
 }
 function refreshIslInfo(){
@@ -6410,7 +6410,7 @@ if(goBtn)goBtn.addEventListener('click',function(){
  var pb=document.getElementById('play-btn');
  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
   if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||nm)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
- window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
+ if(window._floatMsg)window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
  });
 // 模式選單內嵌 普通/機密 子選單按鈕（點選只記錄難度，按 GO 才開始匹配）
 document.querySelectorAll('#mm-ext-sub .mm-ext-opt').forEach(function(btn){
