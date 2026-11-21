@@ -7640,6 +7640,22 @@ function processServerMessage(data){
       }
       break;
     case 'opponent_hit':
+      // 爆破模式：隊內不可互傷（A不能打A，B不能打B）
+      if(window.breachState){
+        var shooterTeam=null;
+        if(data.shooterPlayerId!==undefined&&window.breachState.players){
+          for(var pi=0;pi<window.breachState.players.length;pi++){
+            if(window.breachState.players[pi].id===data.shooterPlayerId){
+              shooterTeam=window.breachState.players[pi].team;
+              break;
+            }
+          }
+        }
+        // 射手與目標同隊 → 不扣血
+        if(shooterTeam&&shooterTeam===window.breachState.team){
+          break;
+        }
+      }
       if(data.hp&&(data.targetPlayerId===undefined||Number(data.targetPlayerId)===myPlayerId)){
         var od=data.hp;
         var _shp=null;
@@ -7921,6 +7937,16 @@ function rebuildOpponentVisuals(names){
   buildMultiRoster(window._mpRosterData);
   for(var oi=0;oi<opponentStates.length;oi++){
     var om=createOpponentMesh();scene.add(om);applyCharSkin(om);opponentMeshes.push(om);
+    // 爆破模式：隊伍顏色區分（A=藍色，B=紅色）
+    if(window.breachState){
+      var teamColor = opponentStates[oi].team === 'A' ? 0x4da6ff : 0xff6b6b;
+      om.traverse(function(c){
+        if(c.isMesh && c.material && c.material.color){
+          c.material.color.setHex(teamColor);
+          c.material.needsUpdate=true;
+        }
+      });
+    }
     var onm=(names&&names[oi])||('玩家'+(oi+2));
     opponentStates[oi].name=onm;
     var opPlate=window._makeNamePlate(onm,false);scene.add(opPlate);
@@ -8632,6 +8658,22 @@ function httpSend(payload){
   fetch(ocHttpBase(null)+'/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client:httpClientId,msg:payload})});
 }
 function relaySend(payload){
+  // 爆破模式：隊內不可互傷（攔截同隊傷害訊息，不發送給伺服器）
+  if(window.breachState&&payload.type==='hit'&&payload.targetPlayerId!==undefined){
+    var targetTeam=null;
+    if(window.breachState.players){
+      for(var pi=0;pi<window.breachState.players.length;pi++){
+        if(window.breachState.players[pi].id===payload.targetPlayerId){
+          targetTeam=window.breachState.players[pi].team;
+          break;
+        }
+      }
+    }
+    // 目標與自己同隊 → 攔截，不發送
+    if(targetTeam&&targetTeam===window.breachState.team){
+      return;
+    }
+  }
   if(location.protocol==='file:'){httpSend(payload);return;}
   if(window.multiWS&&window.multiWS.readyState===1){
     window.multiWS.send(JSON.stringify(payload));
@@ -8774,7 +8816,9 @@ window.breachState={
   roundActive:true,   // 回合是否進行中
   roundWinner:null,   // 'A'/'B'/null
   myId:null,
-  players:[]          // {id,name,team,alive,hp,pos}
+  players:[],         // {id,name,team,alive,hp,pos}
+  planting:{active:false,progress:0,maxProgress:3,site:null}, // 安裝進度（秒）
+  defusing:{active:false,progress:0,maxProgress:3,site:null}  // 解除進度（秒）
 };
 
 // 炸彈安裝點位置（對應 breach_ab_map.html 的 A/B 點）
@@ -8797,11 +8841,20 @@ function createBreachUI(){
   timerEl.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:8px;z-index:200;font-weight:bold;font-size:22px;font-family:Arial;color:#fff;display:none;pointer-events:none';
   document.body.appendChild(timerEl);
 
-  // 3. 中央：安裝/解除提示
+  // 3. 中央：安裝/解除提示 + 進度條
   var actEl=document.createElement('div');
   actEl.id='breach-action';
-  actEl.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;border-radius:10px;z-index:250;font-weight:bold;font-size:20px;font-family:Arial;color:#fff;display:none;pointer-events:none;border:3px solid #fff';
+  actEl.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;border-radius:10px;z-index:250;font-weight:bold;font-size:20px;font-family:Arial;color:#fff;display:none;pointer-events:none;border:3px solid #fff;text-align:center';
   document.body.appendChild(actEl);
+  // 進度條（安裝/解除中顯示）
+  var progWrap=document.createElement('div');
+  progWrap.id='breach-prog-wrap';
+  progWrap.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-20px);width:300px;height:12px;background:rgba(0,0,0,0.5);border:2px solid #fff;border-radius:6px;z-index:251;overflow:hidden;display:none';
+  var progFill=document.createElement('div');
+  progFill.id='breach-prog-fill';
+  progFill.style.cssText='width:0%;height:100%;background:#0f0;transition:none';
+  progWrap.appendChild(progFill);
+  document.body.appendChild(progWrap);
 
   // 4. 右上角：小地圖
   var mmEl=document.createElement('div');
@@ -8988,23 +9041,40 @@ function startBreachRound(){
   document.getElementById('breach-hud').style.background='rgba(0,0,0,0.7)';
 }
 
-// 安裝炸彈
+// 安裝炸彈（按住 E 持續 3 秒）
 function plantBomb(){
   if(window.breachState.team!=='A'||window.breachState.bombPlanted||!window._breachNearPlant)return;
   window._breachNearPlant=false;
   document.getElementById('breach-action').style.display='none';
-  window.breachState.bombPlanted=true;
-  relaySend({type:'breach_plant',site:window.breachState.bombSite});
-  window._floatMsg('💣 炸彈已安裝！','#ff6b6b');
+  window.breachState.planting={active:true,progress:0,maxProgress:3,site:window.breachState.bombSite};
+  document.getElementById('breach-prog-wrap').style.display='block';
+  document.getElementById('breach-prog-fill').style.width='0%';
+  document.getElementById('breach-prog-fill').style.background='#ff6b6b';
 }
 
-// 解除炸彈
+// 解除炸彈（按住 E 持續 3 秒）
 function defuseBomb(){
   if(window.breachState.team!=='B'||!window.breachState.bombPlanted||!window._breachNearDefuse)return;
   window._breachNearDefuse=false;
   document.getElementById('breach-action').style.display='none';
-  relaySend({type:'breach_defuse',site:window.breachState.bombSite});
-  window._floatMsg('🔵 正在解除炸彈...','#4da6ff');
+  window.breachState.defusing={active:true,progress:0,maxProgress:3,site:window.breachState.bombSite};
+  document.getElementById('breach-prog-wrap').style.display='block';
+  document.getElementById('breach-prog-fill').style.width='0%';
+  document.getElementById('breach-prog-fill').style.background='#4da6ff';
+}
+
+// 釋放 E 鍵取消安裝/解除
+function cancelBreachAction(){
+  if(window.breachState.planting.active){
+    window.breachState.planting.active=false;
+    document.getElementById('breach-prog-wrap').style.display='none';
+    window._floatMsg('❌ 安裝已取消','#ff6b6b');
+  }
+  if(window.breachState.defusing.active){
+    window.breachState.defusing.active=false;
+    document.getElementById('breach-prog-wrap').style.display='none';
+    window._floatMsg('❌ 解除已取消','#4da6ff');
+  }
 }
 
 // 處理伺服器廣播的爆破模式訊息
@@ -9053,6 +9123,54 @@ function updateBreachTimerLoop(dt){
   }
 }
 
+// ── 安裝/解除進度條更新 ──
+function updateBreachAction(dt){
+  // 安裝進度
+  if(window.breachState.planting.active){
+    window.breachState.planting.progress+=dt;
+    var pct=Math.min(100,Math.round((window.breachState.planting.progress/window.breachState.planting.maxProgress)*100));
+    var fill=document.getElementById('breach-prog-fill');
+    var wrap=document.getElementById('breach-prog-wrap');
+    var act=document.getElementById('breach-action');
+    if(fill){fill.style.width=pct+'%';}
+    if(wrap)wrap.style.display='block';
+    if(act){act.textContent='💣 安裝炸彈中... '+pct+'%';act.style.display='block';act.style.background='rgba(255,107,107,0.95)';}
+    if(window.breachState.planting.progress>=window.breachState.planting.maxProgress){
+      window.breachState.planting.active=false;
+      if(wrap)wrap.style.display='none';
+      if(act)act.style.display='none';
+      window.breachState.bombPlanted=true;
+      relaySend({type:'breach_plant',site:window.breachState.planting.site});
+      window._floatMsg('💣 炸彈已安裝！','#ff6b6b');
+    }
+  }
+  // 解除進度
+  if(window.breachState.defusing.active){
+    window.breachState.defusing.progress+=dt;
+    var pct=Math.min(100,Math.round((window.breachState.defusing.progress/window.breachState.defusing.maxProgress)*100));
+    var fill=document.getElementById('breach-prog-fill');
+    var wrap=document.getElementById('breach-prog-wrap');
+    var act=document.getElementById('breach-action');
+    if(fill){fill.style.width=pct+'%';}
+    if(wrap)wrap.style.display='block';
+    if(act){act.textContent='🔵 解除炸彈中... '+pct+'%';act.style.display='block';act.style.background='rgba(77,166,255,0.95)';}
+    if(window.breachState.defusing.progress>=window.breachState.defusing.maxProgress){
+      window.breachState.defusing.active=false;
+      if(wrap)wrap.style.display='none';
+      if(act)act.style.display='none';
+      relaySend({type:'breach_defuse',site:window.breachState.defusing.site});
+      window._floatMsg('✅ 炸彈已解除！','#4da6ff');
+    }
+  }
+}
+
+// ── E 鍵釋放取消安裝/解除 ──
+document.addEventListener('keyup',function(e){
+  if(e.code==='KeyE'){
+    cancelBreachAction();
+  }
+});
+
 // ================= 爆破模式遊戲啟動 =================
 function startBreachGame(matchData){
   isMultiplayer=true;
@@ -9073,6 +9191,11 @@ function startBreachGame(matchData){
 
   // 建立 UI
   createBreachUI();
+
+  // 玩家角色顏色：A隊藍色，B隊紅色
+  var myTeamColor = window.breachState.team === 'A' ? 0x4da6ff : 0xff6b6b;
+  if(playerBody){playerBody.material.color.setHex(myTeamColor);playerBody.material.needsUpdate=true;}
+  if(head){head.material.color.setHex(0xffddbb);}
 
   // 隊伍顯示
   var teamEl=document.getElementById('breach-team-info');
@@ -13310,6 +13433,7 @@ if(localStorage.getItem('oc_ui_mode')==='mobile'){moveX+=mobileMoveX;moveZ+=mobi
     updateBreachDirIndicator();
     updateBreachTimer();
     drawBreachMinimap();
+    updateBreachAction(dt);
   }
   cam.position.set(pos.x,pos.y+EYE_H-(sliding?0.35:0),pos.z);
   cam.rotation.order='YXZ';cam.rotation.set(pitch,yaw,0);
