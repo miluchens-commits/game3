@@ -6497,7 +6497,7 @@ document.getElementById('play-btn').onclick=function(){
     document.getElementById('mode-dropdown').classList.remove('show');
     if(window.startBreachMatchmaking){
       startBreachMatchmaking();
-    }else{
+    }else if(window._floatMsg){
       window._floatMsg('⚠ 爆破模式匹配系統載入中...','#f66');
     }
     return;
