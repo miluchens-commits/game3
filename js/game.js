@@ -9431,7 +9431,8 @@ function startBreachGame(matchData){
   // 進入遊戲場景 - 鎖定視角並設置遊戲狀態
   locked=true;
   gameStarted=true;
-  controls.lock();
+  if(controls.lock) controls.lock();
+  controls.isLocked=true;
   camera.position.copy(player.position);
   camera.position.y+=1.6;
   camera.lookAt(player.position.x, player.position.y+1.6, player.position.z-1);
