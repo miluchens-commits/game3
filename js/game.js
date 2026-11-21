@@ -8775,6 +8775,24 @@ function startBreachMatchmaking(){
   window._breachMatching=true;
   document.getElementById('menu').style.display='none';
   
+  // 如果 WebSocket 沒有連接，直接進入單人測試模式（進入爆破地圖）
+  if(!window.multiWS || window.multiWS.readyState !== 1){
+    window._breachMatching=false;
+    var fakeMatchData = {
+      team: 'A',
+      playerId: 0,
+      bombSite: 'A',
+      players: [
+        {id: 0, name: '你', team: 'A'},
+        {id: 1, name: '玩家2', team: 'A'},
+        {id: 2, name: '玩家3', team: 'B'},
+        {id: 3, name: '玩家4', team: 'B'}
+      ]
+    };
+    startBreachGame(fakeMatchData);
+    return;
+  }
+  
   // 顯示匹配中 UI（z-index 300，蓋過選單）
   var mm=document.getElementById('breach-mm-ui');
   if(!mm){
