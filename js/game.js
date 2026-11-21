@@ -8827,6 +8827,160 @@ window.breachSites={
   B:{x:-20,z:0,name:'B 點'}
 };
 
+// ================= 爆破地圖生成（參考 breach_ab_map.html） =================
+window.breachMapObjects=[];
+
+function initBreachMap(){
+  // 清除舊地圖物件
+  window.breachMapObjects.forEach(function(o){if(o&&o.parent)o.parent.remove(o);});
+  window.breachMapObjects=[];
+
+  // 地板（明亮混凝土，已有全局 floor，這裡不重複建）
+  // 建房子（規律排列，不亂）
+  function buildHouse(cx,cy,cz,sx,sy,sz,breakable=true){
+    var h=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),new THREE.MeshStandardMaterial({color:0xe8e8e8,roughness:0.6,metalness:0.2}));
+    h.position.set(cx,cy+sy/2,cz);
+    h.castShadow=true;h.receiveShadow=true;
+    h.userData={breakable:breakable,hp:3};
+    scene.add(h);
+    window.breachMapObjects.push(h);
+    // 屋頂（不破壞）
+    var roof=new THREE.Mesh(new THREE.BoxGeometry(sx+0.4,0.4,sz+0.4),new THREE.MeshStandardMaterial({color:0x888888}));
+    roof.position.set(cx,cy+sy+0.2,cz);
+    roof.castShadow=true;roof.receiveShadow=true;
+    scene.add(roof);
+    window.breachMapObjects.push(roof);
+    return h;
+  }
+
+  function buildHouseGrid(startX,startZ,cols,rows,spacing){
+    for(var i=0;i<cols;i++){
+      for(var j=0;j<rows;j++){
+        var x=startX+(i-(cols-1)/2)*spacing;
+        var z=startZ+(j-(rows-1)/2)*spacing;
+        var nearA=Math.abs(x-20)<7&&Math.abs(z)<7;
+        var nearB=Math.abs(x+20)<7&&Math.abs(z)<7;
+        if(nearA||nearB)continue;
+        var sx=4+Math.floor((i+j)%3);
+        var sy=3+Math.floor((i*j)%3);
+        buildHouse(x,0,z,sx,sy,sx,true);
+      }
+    }
+  }
+
+  // 左側 A 區、右側 B 區房子
+  buildHouseGrid(-10,10,4,4,12);
+  buildHouseGrid(10,-10,4,4,12);
+  buildHouseGrid(-10,-10,3,3,14);
+  buildHouseGrid(10,10,3,3,14);
+
+  // 水道
+  function buildWaterChannel(x1,z1,x2,z2,width=3){
+    var dx=x2-x1,dz=z2-z1;
+    var len=Math.sqrt(dx*dx+dz*dz);
+    var midX=(x1+x2)/2,midZ=(z1+z2)/2;
+    var angle=Math.atan2(dz,dx);
+    var water=new THREE.Mesh(new THREE.PlaneGeometry(len+2,width),new THREE.MeshStandardMaterial({color:0x6fb8e8,roughness:0.3,metalness:0.6,transparent:true,opacity:0.8}));
+    water.rotation.x=-Math.PI/2;water.rotation.z=angle;
+    water.position.set(midX,0.02,midZ);
+    water.receiveShadow=true;
+    scene.add(water);
+    window.breachMapObjects.push(water);
+  }
+
+  buildWaterChannel(-50,-20,50,-20,4);
+  buildWaterChannel(-50,20,50,20,4);
+  buildWaterChannel(-20,-50,-20,50,4);
+  buildWaterChannel(20,-50,20,50,4);
+
+  // 橋
+  function buildBridge(x,z,angle,len=7,w=3.5){
+    var bridge=new THREE.Mesh(new THREE.BoxGeometry(len,0.5,w),new THREE.MeshStandardMaterial({color:0xc8b6a0}));
+    bridge.position.set(x,0.5,z);
+    bridge.rotation.y=angle;
+    bridge.castShadow=true;bridge.receiveShadow=true;
+    scene.add(bridge);
+    window.breachMapObjects.push(bridge);
+  }
+  buildBridge(-15,-20,0,7,4);
+  buildBridge(15,-20,0,7,4);
+  buildBridge(-20,15,Math.PI/2,7,4);
+  buildBridge(20,15,Math.PI/2,7,4);
+
+  // A/B 點標記（地面旗幟）
+  function placeABPoint(x,z,letter,color){
+    var pole=new THREE.Mesh(new THREE.BoxGeometry(0.3,4,0.3),new THREE.MeshStandardMaterial({color:0x555555}));
+    pole.position.set(x,2,z);
+    pole.castShadow=true;pole.receiveShadow=true;
+    scene.add(pole);
+    window.breachMapObjects.push(pole);
+    var flag=new THREE.Mesh(new THREE.BoxGeometry(1.4,0.9,0.1),new THREE.MeshBasicMaterial({color:color}));
+    flag.position.set(x+0.7,4,z);
+    scene.add(flag);
+    window.breachMapObjects.push(flag);
+    var label=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.4,0.1),new THREE.MeshBasicMaterial({color:0xffffff}));
+    label.position.set(x+0.7,4.6,z);
+    scene.add(label);
+    window.breachMapObjects.push(label);
+  }
+  placeABPoint(20,0,'A',0xff6b6b);
+  placeABPoint(-20,0,'B',0x4da6ff);
+
+  // 滑索
+  function buildZipline(start,end){
+    var startTower=new THREE.Mesh(new THREE.BoxGeometry(1.2,9,1.2),new THREE.MeshStandardMaterial({color:0x555555}));
+    startTower.position.set(start.x,4.5,start.z);
+    startTower.castShadow=true;startTower.receiveShadow=true;
+    scene.add(startTower);
+    window.breachMapObjects.push(startTower);
+    var endTower=new THREE.Mesh(new THREE.BoxGeometry(1.2,9,1.2),new THREE.MeshStandardMaterial({color:0x555555}));
+    endTower.position.set(end.x,4.5,end.z);
+    endTower.castShadow=true;endTower.receiveShadow=true;
+    scene.add(endTower);
+    window.breachMapObjects.push(endTower);
+    var rope=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,start.distanceTo(end),8),new THREE.MeshBasicMaterial({color:0xffaa00}));
+    var mid=new THREE.Vector3().addVectors(start,end).multiplyScalar(0.5);
+    rope.position.copy(mid);
+    rope.lookAt(end);
+    rope.rotation.x+=Math.PI/2;
+    scene.add(rope);
+    window.breachMapObjects.push(rope);
+  }
+  buildZipline(new THREE.Vector3(17,10,-3),new THREE.Vector3(-17,10,3));
+  buildZipline(new THREE.Vector3(-17,10,-3),new THREE.Vector3(17,10,3));
+
+  // 小山丘
+  for(var i=0;i<10;i++){
+    var hx=-45+Math.random()*90;
+    var hz=-45+Math.random()*90;
+    if(Math.abs(hx)<25&&Math.abs(hz)<25)continue;
+    var hill=new THREE.Mesh(new THREE.ConeGeometry(5+Math.random()*3,4+Math.random()*3,8),new THREE.MeshStandardMaterial({color:0x7fb069,roughness:1}));
+    hill.position.set(hx,2+Math.random()*2,hz);
+    hill.castShadow=true;hill.receiveShadow=true;
+    scene.add(hill);
+    window.breachMapObjects.push(hill);
+  }
+
+  // 中央廣場
+  var plaza=new THREE.Mesh(new THREE.BoxGeometry(10,0.2,10),new THREE.MeshStandardMaterial({color:0xbbbbbb}));
+  plaza.position.set(0,0.1,0);
+  plaza.receiveShadow=true;
+  scene.add(plaza);
+  window.breachMapObjects.push(plaza);
+}
+
+// 設置玩家出生點（根據隊伍）
+function setBreachSpawn(team){
+  if(team==='A'){
+    pos.set(20,0.6,-5);
+  }else{
+    pos.set(-20,0.6,-5);
+  }
+  vel.set(0,0,0);
+  camera.position.copy(pos);
+  camera.lookAt(pos.x,pos.y+1.6,pos.z-1);
+}
+
 // ================= 爆破模式 UI 建立 =================
 function createBreachUI(){
   // 1. 上方中央：炸彈安裝方向指引
@@ -9190,6 +9344,12 @@ function startBreachGame(matchData){
   window.breachState.bombPlanted=false;
   window.breachState.bombTimer=180;
   window.breachState.roundActive=true;
+
+  // 生成爆破地圖（房子、水道、A/B點、滑索、山丘）
+  initBreachMap();
+
+  // 設置出生點（根據隊伍）
+  setBreachSpawn(window.breachState.team);
 
   // 建立 UI
   createBreachUI();
