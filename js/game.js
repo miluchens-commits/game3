@@ -9443,8 +9443,21 @@ function startBreachGame(matchData){
   };
   document.addEventListener('keydown',window._breachKeyDownHandler);
 
-  // 進入遊戲場景
-  document.body.requestPointerLock().catch(function(){});
+  // 進入遊戲場景 - 鎖定視角並設置遊戲狀態
+  locked=true;
+  gameStarted=true;
+  document.body.requestPointerLock().then(function(){
+    controls.lock();
+    camera.position.copy(player.position);
+    camera.position.y+=1.6;
+    camera.lookAt(player.position.x, player.position.y+1.6, player.position.z-1);
+  }).catch(function(){
+    // 如果 requestPointerLock 失敗（例如單人模式），直接鎖定
+    controls.lock();
+    camera.position.copy(player.position);
+    camera.position.y+=1.6;
+    camera.lookAt(player.position.x, player.position.y+1.6, player.position.z-1);
+  });
 
   // 啟動第一回合（使用匹配時已分配的隊伍，不隨機重新分配）
   window.breachState.roundActive=true;
