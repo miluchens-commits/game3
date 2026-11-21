@@ -13624,6 +13624,7 @@ function animate(time){try{
   if(window._extActive){requestAnimationFrame(animate);return;}
   var dt=Math.min((time-lastTime)/1000,0.05);lastTime=time;
   moveX=0;moveZ=0;
+  if(locked) controls.isLocked = true;
   if(!reviving){if(keys['KeyA']||keys['ArrowLeft'])moveX-=1;
   if(keys['KeyD']||keys['ArrowRight'])moveX+=1;
 if(keys['KeyW']||keys['ArrowUp'])moveZ+=1;
