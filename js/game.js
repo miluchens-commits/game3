@@ -9360,6 +9360,8 @@ document.addEventListener('keyup',function(e){
 
 // ================= 爆破模式遊戲啟動 =================
 function startBreachGame(matchData){
+  // 防止摸金模式的 _extActive 導致 animate 直接返回，無法移動
+  window._extActive=false;
   isMultiplayer=true;
   gameStarted=true;
   currentTeamId=matchData.team||'A';
