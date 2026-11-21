@@ -4038,14 +4038,6 @@ function ocCsEnter(){
   }else if(m==='multi2'||m==='multi4'){
     document.getElementById('multi-connecting').style.display='flex';
     connectMultiplayer(m==='multi2'?2:4);
-  }else if(m==='breach'){
-    // 爆破模式：選完幹員後進入 4人真人匹配
-    document.getElementById('char-select').style.display='none';
-    if(window.startBreachMatchmaking){
-      startBreachMatchmaking();
-    }else if(window._floatMsg){
-      window._floatMsg('⚠ 爆破模式匹配系統載入中...','#f66');
-    }
   }else{
     document.getElementById('map-select').style.display='flex';
   }
@@ -6501,12 +6493,15 @@ document.getElementById('play-btn').onclick=function(){
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
   }else if(modeVal==='breach'){
-    // 爆破模式：先選幹員 → 4人真人匹配 → 分AB組 → 進入遊戲
+    // 爆破模式：直接4人真人匹配，不選幹員、不選地圖
     document.getElementById('mode-dropdown').classList.remove('show');
     document.getElementById('menu').style.display='none';
     dailyChallenge=false;bossRushMode=false;ufoMode=false;bombMode=false;
-    // 進入幹員選擇頁（復用現有的角色選擇系統）
-    ocCsOpen('breach');
+    if(window.startBreachMatchmaking){
+      startBreachMatchmaking();
+    }else if(window._floatMsg){
+      window._floatMsg('⚠ 爆破模式匹配系統載入中...','#f66');
+    }
     return;
   }else{
     renderClassSelect();
