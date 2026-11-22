@@ -6408,28 +6408,35 @@ window._openMenuOverlay=openMenuOverlay;
 window._closeMenuOverlay=closeMenuOverlay;
 if(mb)mb.addEventListener('click',function(e){e.stopPropagation();openMenuOverlay();});
 if(goBtn)goBtn.addEventListener('click',function(){
- if(!_mmSelected){var so=document.querySelector('#mode-dropdown .mode-opt.selected');if(so){var pre=MENU_MODES.find(function(m){return m.id===so.dataset.mode;});if(pre)_mmSelected=pre;}}
- if(!_mmSelected)return;
- var idv=_mmSelected.id,nm=_mmSelected.name,pt=_mmSelected.partyType;
- closeMenuOverlay();
- document.getElementById('menu-mode-btn-label').innerHTML=nm+' <span class="mode-arrow">▶</span>';
- if(pt){if(window.showPartyCountSelect){window.showPartyCountSelect(pt);}return;}
- if(idv==='extraction'){
-   // 按 GO → 難度選擇 modal → 開始匹配
-   if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
-   return;
+  // 優先檢查卡片網格選中的模式
+  var selCard = document.querySelector('.mm-card.sel');
+  var mid = selCard ? selCard.dataset.mid : null;
+  var match = mid ? MENU_MODES.find(function(m){return m.id===mid;}) : null;
+  var idv = match ? match.id : (_mmSelected ? _mmSelected.id : null);
+  var nm = match ? match.name : (_mmSelected ? _mmSelected.name : '');
+  var pt = match ? match.partyType : (_mmSelected ? _mmSelected.partyType : null);
+  if(!idv){
+    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
+    return;
   }
- if(idv==='breach'){
-   // 按 GO → 進入爆破模式匹配（4人真人，不補AI，不選幹員不選地圖）
-   closeMenuOverlay();
-   breachJoinQueue();
-   return;
-  }
- if(idv==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
- var pb=document.getElementById('play-btn');
- var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
-  if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||nm)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
- if(window._floatMsg)window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
+  closeMenuOverlay();
+  document.getElementById('menu-mode-btn-label').innerHTML=nm+' <span class="mode-arrow">▶</span>';
+  if(pt){if(window.showPartyCountSelect){window.showPartyCountSelect(pt);}return;}
+  if(idv==='extraction'){
+    // 按 GO → 難度選擇 modal → 開始匹配
+    if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
+    return;
+   }
+  if(idv==='breach'){
+    // 按 GO → 進入爆破模式匹配（4人真人，不補AI，不選幹員不選地圖）
+    closeMenuOverlay();
+    breachJoinQueue();
+    return;
+   }
+  if(idv==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
+  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
+   if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||nm)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
+  if(window._floatMsg)window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
  });
 // 模式選單內嵌 普通/機密 子選單按鈕（點選只記錄難度，按 GO 才開始匹配）
 document.querySelectorAll('#mm-ext-sub .mm-ext-opt').forEach(function(btn){
@@ -6450,28 +6457,12 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 (function(){var ib=document.getElementById('island-btn');if(ib)ib.addEventListener('click',function(){if(window.ocIslandOpen)window.ocIslandOpen();});})();
 
 document.getElementById('play-btn').onclick=function(){
-  // 優先找出選中的遊戲模式：檢查卡片網格 .mm-card.sel，然後是 _mmSelected，最後是下拉選單
-  var selectedMode = null;
+  // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
-  if(selCard){
-    var mid = selCard.dataset.mid;
-    var match = MENU_MODES.find(function(m){return m.id===mid;});
-    if(match) selectedMode = match;
-  }
-  if(!selectedMode && window._mmSelected) selectedMode = window._mmSelected;
-  if(!selectedMode){
-    var modeEl=document.querySelector('#mode-dropdown .mode-opt.selected');
-    if(modeEl){
-      var m2=MENU_MODES.find(function(m){return m.id===modeEl.dataset.mode;});
-      if(m2) selectedMode = m2;
-    }
-  }
-  if(!selectedMode){
-    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
-    return;
-  }
-  var modeVal = selectedMode.id;
-  var nm = selectedMode.name;
+  var mid = selCard ? selCard.dataset.mid : null;
+  var match = mid ? MENU_MODES.find(function(m){return m.id===mid;}) : null;
+  var modeVal = match ? match.id : (mode ? mode.dataset.mode : 'solo');
+  var mode = document.querySelector('#mode-dropdown .mode-opt.selected');
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
   if(modeVal==='extraction'){
@@ -8732,48 +8723,41 @@ function connectMultiplayerDirect(ip, mode){
 
 // ================= 爆破模式匹配（4人真人，不補AI） =================
 function breachJoinQueue(){
-  try{
-    var ipEl=document.getElementById('server-ip');
-    var ip = ipEl ? ipEl.value.trim() : 'localhost';
-    ip = ip || 'localhost';
-    var url=ocMultiWSURL(ip);
-    if(window.multiWS)try{window.multiWS.close()}catch(e){}
-    window.multiWS=new WebSocket(url);
-    var ws=window.multiWS;
-    breachMode = true;
-    
-    ws.onopen=function(){
-      relayReady=true;
+  var url = 'ws://localhost:3000/game';
+  if(window.multiWS)try{window.multiWS.close()}catch(e){}
+  window.multiWS=new WebSocket(url);
+  var ws=window.multiWS;
+  breachMode = true;
+  
+  ws.onopen=function(){
+    relayReady=true;
+    var ms=document.getElementById('multi-status');
+    if(ms)ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 4 位真人玩家（不補AI）</small>';
+    ws.send(JSON.stringify({
+      type:'join_queue',
+      name:authUser||'Player'+Math.floor(Math.random()*1000),
+      username:authUser||'',
+      teamId:'',
+      mode:4,
+      gameMode:'breach4'
+    }));
+  };
+  
+  ws.onmessage=function(e){
+    try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
+  };
+  
+  ws.onerror=function(){
+    var ms=document.getElementById('multi-status');
+    if(ms)ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';
+  };
+  
+  ws.onclose=function(){
+    if(breachMode && !breachGameStarted){
       var ms=document.getElementById('multi-status');
-      if(ms)ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 4 位真人玩家（不補AI）</small>';
-      ws.send(JSON.stringify({
-        type:'join_queue',
-        name:authUser||'Player'+Math.floor(Math.random()*1000),
-        username:authUser||'',
-        teamId:'',
-        mode:4,
-        gameMode:'breach4'
-      }));
-    };
-    
-    ws.onmessage=function(e){
-      try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
-    };
-    
-    ws.onerror=function(){
-      var ms=document.getElementById('multi-status');
-      if(ms)ms.innerHTML='連線失敗，請確認伺服器已啟動';
-    };
-    
-    ws.onclose=function(){
-      if(breachMode && !breachGameStarted){
-        var ms=document.getElementById('multi-status');
-        if(ms)ms.innerHTML='連線中斷';
-      }
-    };
-  }catch(e){
-    console.error('breachJoinQueue error:', e);
-  }
+      if(ms)ms.innerHTML='連線中斷';
+    }
+  };
 }
 
 function processBreachMessage(data){
