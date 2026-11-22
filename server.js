@@ -1225,12 +1225,6 @@ wss.on('connection', (ws) => {
       case 'flashbang':
         if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'flashbang', pos: msg.pos }); else relayToOpponent(ws, { type: 'flashbang', pos: msg.pos });
         break;
-      case 'breach_bomb_planted':
-        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'breach_bomb_planted', playerId: ws.playerId, x: msg.x, z: msg.z, team: msg.team }); else relayToOpponent(ws, { type: 'breach_bomb_planted', playerId: ws.playerId, x: msg.x, z: msg.z, team: msg.team });
-        break;
-      case 'breach_bomb_defused':
-        if (ws.roomId && rooms[ws.roomId] && rooms[ws.roomId].teamMatch) relayTeamMsg(ws, { type: 'breach_bomb_defused', playerId: ws.playerId, team: msg.team }); else relayToOpponent(ws, { type: 'breach_bomb_defused', playerId: ws.playerId, team: msg.team });
-        break;
       case 'round_clear': relayToOpponent(ws, { type: 'opponent_cleared', roundNum: msg.roundNum }); break;
       case 'round_continue': relayToOpponent(ws, { type: 'round_continue' }); break;
       case 'round_quit': relayToOpponent(ws, { type: 'round_quit' }); break;
@@ -1292,13 +1286,34 @@ const heartbeatInterval = setInterval(() => {
 wss.on('close', () => clearInterval(heartbeatInterval));
 
 function playerModeCount(gm) {
-  // gameMode like 'multi2'/'multi4'/'ufo2'/'bomb4'. Team TDM rooms support 2 or 4.
+  // gameMode like 'multi2'/'multi4'/'ufo2'/'bomb4'/'breach4'. Team TDM rooms support 2 or 4.
+  if (gm === 'breach4') return 4; // 爆破模式固定 4 人
   const m = /(\d+)$/.exec(gm || '');
   if (!m) return 2;
   const n = parseInt(m[1], 10);
   return (n === 4) ? 4 : 2;
 }
-function addToQueue(ws) {
+function addToQueue(ws) {  // 爆破模式：必須 4 位真人，不補 AI
+  if (gm === 'breach4') {
+    const pending = [];
+    for (let i = 0; i < queue.length; i++) {
+      const q = queue[i];
+      if (q.playerData && q.playerData.gameMode === gm && q.readyState === WebSocket.OPEN) {
+        pending.push({ ws: q, idx: i });
+      }
+    }
+    if (pending.length >= 3) {
+      const chosen = pending.slice(0, 3).map(p => p.ws);
+      pending.slice(0, 3).sort((a, b) => b.idx - a.idx).forEach(p => queue.splice(p.idx, 1));
+      const all = chosen.concat([ws]);
+      startBreachMatch(all);
+      return;
+    }
+    queue.push(ws);
+    ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
+    return;
+  }
+
   const gm = ws.playerData.gameMode || 'multi';
   const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1)
     ? playerModeCount(gm) : 2;
@@ -1330,6 +1345,53 @@ function addToQueue(ws) {
   queue.push(ws);
   ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
 }
+function startBreachMatch(players) {
+  const rid = nextRoomId++;
+  players.sort(() => Math.random() - 0.5);
+  rooms[rid] = {
+    teamMatch: true,
+    players,
+    gameMode: 'breach4',
+    breach: {
+      planted: false,
+      plantTime: 0,
+      bombPos: null,
+      defuser: null,
+      winner: null
+    },
+    votes: {}, score: { A: 0, B: 0 }, chosenMap: null, gameStarted: false
+  };
+  players.forEach((p, idx) => {
+    p.roomId = rid;
+    p.playerId = idx;
+    p.team = (idx < 2) ? 'A' : 'B';
+    p.spawn = idx < 2 ? { x: -25, z: -25 } : { x: 25, z: 25 };
+    p.send(JSON.stringify({
+      type: 'breach_start',
+      team: p.team,
+      spawn: p.spawn,
+      bombPos: { x: 0, z: 0 },
+      players: players.map(p => ({ id: p.playerId, name: p.playerData.name, team: p.team }))
+    }));
+  });
+  // 3分鐘後自動結束（若未拆除，A隊獲勝）
+  setTimeout(() => {
+    const room = rooms[rid];
+    if (room && room.breach && !room.breach.winner) {
+      room.breach.winner = 'A';
+      broadcastBreachEnd(rid);
+    }
+  }, 180000);
+}
+
+function broadcastBreachEnd(rid) {
+  const room = rooms[rid];
+  if (!room) return;
+  room.players.forEach(p => {
+    try { p.send(JSON.stringify({ type: 'breach_end', winner: room.breach.winner })); } catch(e) {}
+  });
+}
+
 function removeFromQueue(ws) { const i = queue.indexOf(ws); if (i !== -1) queue.splice(i, 1); }
 function startTeamMatch(players, gm) {
   const rid = nextRoomId++;
