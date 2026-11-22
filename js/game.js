@@ -9037,6 +9037,14 @@ function drawBreachMinimap(){
   // AB點
   ctx.fillStyle='#ff6b6b'; ctx.beginPath(); ctx.arc(ox+20*scale, oy-0*scale, 5, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle='#4da6ff'; ctx.beginPath(); ctx.arc(ox-20*scale, oy-0*scale, 5, 0, Math.PI*2); ctx.fill();
+  // 炸彈位置（安裝後顯示，黃色點，所有隊伍都能看到）
+  if(breachBombPlanted && breachBombPos){
+    ctx.fillStyle='#ffd700'; // 黃色
+    ctx.shadowColor='#ffd700';
+    ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.arc(ox+breachBombPos.x*scale, oy-breachBombPos.z*scale, 6, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+  }
   // 玩家
   ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(ox+pos.x*scale, oy-pos.z*scale, 4, 0, Math.PI*2); ctx.fill();
   // 玩家方向
