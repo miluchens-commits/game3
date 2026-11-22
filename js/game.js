@@ -6846,6 +6846,21 @@ function endBreachRound(winner){
   var aEl = document.getElementById('breach-result-a');
   var bEl = document.getElementById('breach-result-b');
   res.style.display = 'flex';
+  var isWin = (myTeam === 'A' && winner === 'A') || (myTeam === 'B' && winner === 'B');
+  var rankChanged = '';
+  if(isWin){
+    if(rankStage < 20){rankStage++;rankChanged = '+1 階';}
+    else{rankChanged = '已達最高階';}
+  }else{
+    if(rankStage > 0){rankStage--;rankChanged = '-1 階';}
+    else{rankChanged = '已在最低階';}
+  }
+  rankGames++;
+  rankStreak = isWin ? rankStreak + 1 : 0;
+  if(rankStreak > rankBestStreak)rankBestStreak = rankStreak;
+  saveRank();
+  saveRankUI();
+  res.style.display = 'flex';
   if(winner === 'A'){
     title.textContent = 'A 隊獲 勝';
     title.style.color = '#ff6b6b';
@@ -6864,11 +6879,48 @@ function endBreachRound(winner){
     aEl.textContent = '0';
     bEl.textContent = '0';
   }
+  // 段位變化顯示
+  var rankInfo = getRankInfo(rankStage);
+  var rankMsg = document.createElement('div');
+  rankMsg.style.cssText = 'margin-top:16px;padding:10px 20px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:16px;font-weight:bold;';
+  rankMsg.textContent = isWin ? ('勝利！段位：' + rankInfo.name + ' ' + numChinese(rankInfo.sub) + '階  ' + rankChanged) : ('敗北！段位：' + rankInfo.name + ' ' + numChinese(rankInfo.sub) + '階  ' + rankChanged);
+  rankMsg.style.color = isWin ? '#4df' : '#f66';
+  var okBtn = document.getElementById('breach-result-ok');
+  okBtn.parentNode.insertBefore(rankMsg, okBtn);
   document.getElementById('breach-result-ok').onclick = function(){
     res.style.display = 'none';
     window.location.href = 'index.html';
   };
 }
+// 更新段位 UI（供主選單 rank-overlay 使用）
+function saveRankUI(){
+  try{
+    var badge=document.getElementById('rank-badge');
+    var fill=document.getElementById('rank-progress-fill');
+    var info=getRankInfo(rankStage);
+    if(badge){var colors=['#c6f','#4af','#fa4','#f44','#ff0'];badge.textContent=info.name+' '+numChinese(info.sub)+'階';badge.style.color=colors[info.rankIdx]||'#fff';}
+    if(fill)fill.style.width=(info.subIdx/info.total*100)+'%';
+    var games=document.getElementById('rank-games');
+    if(games)games.textContent=rankGames;
+    var streak=document.getElementById('rank-streak');
+    if(streak)streak.textContent=rankStreak;
+  }catch(e){}
+}
+// E 鍵快速安裝/拆除
+document.addEventListener('keydown',function(e){
+  if(e.code === 'KeyE' && window.breachMode){
+    var dist = pos.distanceTo(new THREE.Vector3(breachBombSite.x,0,breachBombSite.z));
+    if(dist < 4){
+      if(myTeam === 'A' && !breachBombPlanted){
+        breachPlanting = !breachPlanting;
+        if(breachPlanting) breachDefusing = false;
+      }else if(myTeam === 'B' && breachBombPlanted){
+        breachDefusing = !breachDefusing;
+        if(breachDefusing) breachPlanting = false;
+      }
+    }
+  }
+});
 // E 鍵快速安裝/拆除
 document.addEventListener('keydown',function(e){
   if(e.code === 'KeyE' && window.breachMode){
