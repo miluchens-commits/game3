@@ -6381,6 +6381,7 @@ var MENU_MODES=[
  {id:'party_memory',name:'記憶翻牌',desc:'翻牌配對',icon:'🧠',c1:'#8a5be0',c2:'#c39bff',partyType:'memory'},
  {id:'party_coinrush',name:'金幣搶奪',desc:'搶金幣',icon:'💰',c1:'#3fbf7f',c2:'#7fe8b0',partyType:'coinrush'},
  {id:'extraction',name:'摸金模式',desc:'搜刮撤離',icon:'⛏',c1:'#a07a4a',c2:'#d4af7a',extraction:true},
+ {id:'breach',name:'爆破模式',desc:'4人真人競技 · 安裝/解除炸彈',icon:'💣',c1:'#e67e22',c2:'#f39c12'},
  {id:'range',name:'射擊訓練',desc:'練習射擊',icon:'🎯',c1:'#44aacc',c2:'#77ddee'}
 ];
 var _mmSelected=null;
