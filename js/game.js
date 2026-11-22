@@ -6459,10 +6459,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 document.getElementById('play-btn').onclick=function(){
   // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
-  var mid = selCard ? selCard.dataset.mid : null;
-  var match = mid ? MENU_MODES.find(function(m){return m.id===mid;}) : null;
-  var modeVal = match ? match.id : (mode ? mode.dataset.mode : 'solo');
-  var mode = document.querySelector('#mode-dropdown .mode-opt.selected');
+  var match = selCard ? MENU_MODES.find(function(m){return m.id===selCard.dataset.mid;}) : null;
+  if(!match){
+    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
+    return;
+  }
+  var modeVal = match.id;
+  var nm = match.name;
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
   if(modeVal==='extraction'){
