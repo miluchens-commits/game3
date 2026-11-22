@@ -8798,7 +8798,11 @@ function startBreachMatchmaking(){
   }
   
   // 發送匹配請求
-  relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:4,gameMode:'breach4'});
+  try {
+    relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:4,gameMode:'breach4'});
+  } catch(e) {
+    // 忽略錯誤，繼續顯示匹配 UI
+  }
   
   // 即使沒有 WebSocket 連接，也模擬匹配成功（單人測試模式）
   if(!window.multiWS || window.multiWS.readyState !== 1){
