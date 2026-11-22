@@ -6775,6 +6775,115 @@ function addKillFeed(killer,victim,gun){
 // ── Multiplayer ──
 var isMultiplayer=false,playerCount=2,opponentMeshes=[],opponentStates=[],opponentPlayerIds=[],multiStateTimer=0;
 var tdmMode=false,useDowned=false,myTeam='A',myPlayerId=0,tdmSpawn={x:0,z:0},teamScore={A:0,B:0},tdmWinSubmitted=false,tdmDead=false;
+// 爆破模式狀態
+var breachMode=false,breachBombPlanted=false,breachBombTime=180,breachBombTimer=0,breachBombSite={x:0,z:0},breachPlantProgress=0,breachDefuseProgress=0,breachPlanting=false,breachDefusing=false;
+function updateBreachUI(){
+  var teamEl=document.getElementById('breach-team');
+  var bombEl=document.getElementById('breach-bomb');
+  var timerEl=document.getElementById('breach-timer');
+  var actionEl=document.getElementById('breach-action');
+  var actionBtn=document.getElementById('breach-action-btn');
+  var actionTitle=document.getElementById('breach-action-title');
+  var actionProg=document.getElementById('breach-action-prog');
+  var actionFill=document.getElementById('breach-action-prog-fill');
+  var dirEl=document.getElementById('breach-distance');
+  if(!teamEl)return;
+  if(myTeam==='A'){
+    teamEl.textContent = breachBombPlanted ? 'A隊 — 炸彈已安裝' : 'A隊 — 安裝炸彈';
+    teamEl.style.color = breachBombPlanted ? '#ff4444' : '#ff6b6b';
+  }else{
+    teamEl.textContent = breachBombPlanted ? 'B隊 — 拆除炸彈' : 'B隊 — 阻止爆破';
+    teamEl.style.color = breachBombPlanted ? '#4da6ff' : '#4da6ff';
+  }
+  if(breachBombPlanted){
+    bombEl.style.display='block';
+    timerEl.textContent = Math.max(0,Math.ceil(breachBombTimer));
+  }else{
+    bombEl.style.display='none';
+  }
+  // 顯示/隱藏互動按鈕
+  var dist = pos.distanceTo(new THREE.Vector3(breachBombSite.x,0,breachBombSite.z));
+  var nearBomb = dist < 4;
+  if(myTeam==='A' && !breachBombPlanted && nearBomb){
+    actionEl.style.display='flex';
+    actionTitle.textContent = '安裝炸彈';
+    actionBtn.textContent = breachPlanting ? '安裝中...' : '安裝炸彈';
+    actionBtn.onclick = function(){ breachPlanting = !breachPlanting; if(breachPlanting){breachDefusing=false;} };
+    actionProg.style.display = breachPlanting ? 'block' : 'none';
+    if(breachPlanting){ actionFill.style.width = (breachPlantProgress*100)+'%'; }
+  }else if(myTeam==='B' && breachBombPlanted && nearBomb){
+    actionEl.style.display='flex';
+    actionTitle.textContent = '拆除炸彈';
+    actionBtn.textContent = breachDefusing ? '拆除中...' : '拆除炸彈';
+    actionBtn.onclick = function(){ breachDefusing = !breachDefusing; if(breachDefusing){breachPlanting=false;} };
+    actionProg.style.display = breachDefusing ? 'block' : 'none';
+    if(breachDefusing){ actionFill.style.width = (breachDefuseProgress*100)+'%'; }
+  }else{
+    actionEl.style.display='none';
+    breachPlanting = false;
+    breachDefusing = false;
+  }
+  // 方向指引（只在 A 隊且未安裝時顯示）
+  if(myTeam==='A' && !breachBombPlanted){
+    dirEl.style.display='block';
+    var dx = breachBombSite.x - pos.x;
+    var dz = breachBombSite.z - pos.z;
+    var ang = Math.atan2(dx, -dz) * 180 / Math.PI;
+    var dirIcon = Math.abs(ang) < 45 ? '⬆' : (ang > 45 && ang < 135 ? '➡' : (ang > 135 || ang < -135 ? '⬇' : '⬅'));
+    dirEl.textContent = '炸彈安裝點：' + dirIcon + ' ' + Math.round(dist) + 'm';
+  }else{
+    dirEl.style.display='none';
+  }
+}
+function endBreachRound(winner){
+  if(window._breachRoundEnded)return;
+  window._breachRoundEnded = true;
+  window.breachMode = false;
+  document.getElementById('breach-ui').style.display = 'none';
+  var res = document.getElementById('breach-result');
+  var title = document.getElementById('breach-result-title');
+  var sub = document.getElementById('breach-result-sub');
+  var aEl = document.getElementById('breach-result-a');
+  var bEl = document.getElementById('breach-result-b');
+  res.style.display = 'flex';
+  if(winner === 'A'){
+    title.textContent = 'A 隊獲 勝';
+    title.style.color = '#ff6b6b';
+    sub.textContent = '炸彈已引爆！';
+    aEl.textContent = '1';
+    bEl.textContent = '0';
+  }else if(winner === 'B'){
+    title.textContent = 'B 隊獲 勝';
+    title.style.color = '#4da6ff';
+    sub.textContent = '炸彈已成功拆除！';
+    aEl.textContent = '0';
+    bEl.textContent = '1';
+  }else{
+    title.textContent = '回合結束';
+    sub.textContent = '結果：' + winner;
+    aEl.textContent = '0';
+    bEl.textContent = '0';
+  }
+  document.getElementById('breach-result-ok').onclick = function(){
+    res.style.display = 'none';
+    window.location.href = 'index.html';
+  };
+}
+// E 鍵快速安裝/拆除
+document.addEventListener('keydown',function(e){
+  if(e.code === 'KeyE' && window.breachMode){
+    var dist = pos.distanceTo(new THREE.Vector3(breachBombSite.x,0,breachBombSite.z));
+    if(dist < 4){
+      if(myTeam === 'A' && !breachBombPlanted){
+        breachPlanting = !breachPlanting;
+        if(breachPlanting) breachDefusing = false;
+      }else if(myTeam === 'B' && breachBombPlanted){
+        breachDefusing = !breachDefusing;
+        if(breachDefusing) breachPlanting = false;
+      }
+    }
+  }
+});
 var teamMates=[{id:0,downed:false,reviveProgress:0,reviving:false}];
 var teammateMeshes=[],teammateStates=[];
 var reviveTargetIdx=-1,reviveTimer=0,reviving=false,beingRevived=false;
@@ -7508,8 +7617,9 @@ function processServerMessage(data){
         opponentStates.push({pos:new THREE.Vector3(0,0,0),yaw:0,pitch:0,gun:'ak47',shooting:false,alive:true,hp:100,armor:100,cls:null,team:opTeam||(opId<Math.ceil(playerCount/2)?'A':'B'),downed:false,reviveProgress:0,reviving:false});
         opponentPlayerIds.push(opId);
       }
-      if(ufoMode||bombMode){
+      if(ufoMode||bombMode||window._breachMode){
         document.getElementById('multi-map-vote').style.display='none';
+        window.breachMode = window._breachMode || false;
         if(requestedPlayerCount>2&&playerCount<requestedPlayerCount){document.getElementById('multi-status').innerHTML='⚠️ 伺服器不支援 '+(requestedPlayerCount)+' 人配對<br><small style="color:rgba(255,255,255,.3)">以 '+(playerCount)+' 人模式開始</small>';setTimeout(function(){document.getElementById('multi-connecting').style.display='none';startMultiGame('base');},2000);}else{document.getElementById('multi-connecting').style.display='none';setTimeout(function(){startMultiGame('base');},500);}
         break;
       }
@@ -8594,7 +8704,27 @@ function startMultiGame(mapName){
   var rp=getRandomSpawnPos(false);pos.copy(rp);vel.set(0,0,0);
   document.getElementById('blocker').style.display='flex';
   document.querySelector('#blocker div').innerHTML='點擊開始對戰';
-}
+  // 爆破模式初始化
+  if(window.breachMode){
+    document.getElementById('breach-ui').style.display='block';
+    document.getElementById('breach-team').textContent = myTeam === 'A' ? 'A隊 — 安裝炸彈' : 'B隊 — 阻止爆破';
+    document.getElementById('breach-team').style.color = myTeam === 'A' ? '#ff6b6b' : '#4da6ff';
+    // 設定炸彈安裝點（A點偏右，B點偏左）
+    breachBombSite = { x: myTeam === 'A' ? 20 : -20, z: 0 };
+    breachBombPlanted = false;
+    breachBombTimer = breachBombTime;
+    breachPlantProgress = 0;
+    breachDefuseProgress = 0;
+    breachPlanting = false;
+    breachDefusing = false;
+    updateBreachUI();
+    // 如果是 A 隊，顯示方向指引
+    if(myTeam === 'A'){
+      var dirEl = document.getElementById('breach-direction');
+      dirEl.style.display = 'block';
+      dirEl.textContent = '炸彈安裝點：⬆ 前方';
+    }
+  }
 window.addEventListener('message',function(e){
   var msg=e.data;
   if(msg.type==='relay_status'){
@@ -9135,6 +9265,43 @@ function updatePhysics(dt){
     playerHP-=fDmg;
     if(playerHP<=0){onPlayerDeath();}
     showDmgNum(new THREE.Vector3(-10,1.5,-10),5,'#ff4444');
+  }
+  // 爆破模式邏輯
+  if(window.breachMode){
+    updateBreachUI();
+    // 炸彈倒數
+    if(breachBombPlanted){
+      breachBombTimer -= dt;
+      if(breachBombTimer <= 0){
+        breachBombTimer = 0;
+        endBreachRound('A'); // 時間到，A隊獲勝
+      }
+    }
+    // 安裝進度
+    if(breachPlanting){
+      breachPlantProgress += dt * 0.5; // 需要 2 秒安裝
+      if(breachPlantProgress >= 1){
+        breachPlantProgress = 1;
+        breachPlanting = false;
+        breachBombPlanted = true;
+        breachBombTimer = breachBombTime;
+        // 通知伺服器炸彈已安裝
+        relaySend({type:'breach_bomb_planted',x:breachBombSite.x,z:breachBombSite.z,team:myTeam});
+        endBreachRound('planting'); // 繼續倒數
+      }
+    }
+    // 拆除進度
+    if(breachDefusing){
+      breachDefuseProgress += dt * 0.5; // 需要 2 秒拆除
+      if(breachDefuseProgress >= 1){
+        breachDefuseProgress = 1;
+        breachDefusing = false;
+        breachBombPlanted = false;
+        breachBombTimer = 0;
+        relaySend({type:'breach_bomb_defused',team:myTeam});
+        endBreachRound('B'); // B隊獲勝
+      }
+    }
   }
 }
 var impacts=[];

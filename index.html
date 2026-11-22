@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>OCGAME</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23101828'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/main.css?v=ext2041">
+<link rel="stylesheet" href="css/main.css?v=ext2042">
 <link rel="stylesheet" href="css/island.css">
 </head>
 <body>
@@ -54,6 +54,42 @@
 <div id="scanlines"></div>
 <div id="sniper-warn"><span id="sniper-warn-txt">⚠ 你已被狙擊兵瞄準！快滑壘或找掩護</span></div>
 <div id="crosshair">+</div>
+<!-- 爆破模式 UI -->
+<div id="breach-ui" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;font-family:Arial;">
+  <!-- 隊伍與炸彈狀態（上方中央） -->
+  <div id="breach-top" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;">
+    <div id="breach-team" style="font-size:16px;font-weight:bold;color:#fff;text-shadow:0 0 8px rgba(0,0,0,0.8);padding:4px 12px;background:rgba(0,0,0,0.4);border-radius:6px;">A隊</div>
+    <div id="breach-bomb" style="font-size:20px;font-weight:bold;color:#ff4444;text-shadow:0 0 8px rgba(255,0,0,0.8);padding:4px 16px;background:rgba(0,0,0,0.4);border-radius:6px;display:none;">💣 炸彈已安裝：<span id="breach-timer">180</span>s</div>
+  </div>
+  <!-- 安裝/拆除提示（螢幕中央） -->
+  <div id="breach-action" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;flex-direction:column;align-items:center;gap:12px;pointer-events:auto;">
+    <div id="breach-action-title" style="font-size:24px;font-weight:bold;color:#ffd76a;text-shadow:0 0 10px rgba(0,0,0,1);">安裝炸彈</div>
+    <button id="breach-action-btn" style="padding:14px 32px;font-size:18px;font-weight:bold;background:#ff4444;color:#fff;border:none;border-radius:8px;box-shadow:0 0 20px rgba(255,0,0,0.5);cursor:pointer;">安裝炸彈</button>
+    <div id="breach-action-prog" style="width:200px;height:6px;background:rgba(0,0,0,0.3);border-radius:3px;display:none;"><div id="breach-action-prog-fill" style="height:100%;width:0%;background:#0f0;border-radius:3px;"></div></div>
+  </div>
+  <!-- 方向指引（上方中央偏下） -->
+  <div id="breach-direction" style="position:absolute;top:70px;left:50%;transform:translateX(-50%);font-size:15px;font-weight:bold;color:#ffd76a;text-shadow:0 0 6px rgba(0,0,0,1);padding:6px 16px;background:rgba(0,0,0,0.5);border-radius:6px;display:none;">炸彈安裝點：⬆ 前方</div>
+  <!-- 小地圖（右上角） -->
+  <div id="breach-minimap" style="position:absolute;top:70px;right:20px;width:160px;height:140px;background:rgba(0,0,0,0.6);border:2px solid #4af;border-radius:8px;pointer-events:none;overflow:hidden;">
+    <canvas id="breach-mm-canvas" width="160" height="140" style="width:100%;height:100%;"></canvas>
+  </div>
+</div>
+<!-- 結算畫面 -->
+<div id="breach-result" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;color:#fff;text-align:center;">
+  <div id="breach-result-title" style="font-size:48px;font-weight:bold;margin-bottom:20px;text-shadow:0 0 20px rgba(255,255,0,0.6);">獲 勝</div>
+  <div id="breach-result-sub" style="font-size:20px;margin-bottom:30px;">炸彈已引爆</div>
+  <div style="display:flex;gap:40px;margin-bottom:40px;">
+    <div style="text-align:center;">
+      <div style="font-size:16px;color:#ffd76a;">A隊</div>
+      <div style="font-size:24px;font-weight:bold;" id="breach-result-a">0</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:16px;color:#4da6ff;">B隊</div>
+      <div style="font-size:24px;font-weight:bold;" id="breach-result-b">0</div>
+    </div>
+  </div>
+  <button id="breach-result-ok" style="padding:14px 40px;font-size:18px;background:#4af;color:#fff;border:none;border-radius:8px;cursor:pointer;">回到大廳</button>
+</div>
 <div id="awp-scope"><div class="vig"></div><div class="ret"><div class="ln h"></div><div class="ln v"></div><div class="post phl"></div><div class="post phr"></div><div class="post pvt"></div><div class="post pvb"></div><div class="cd"></div><div class="md" style="left:50%;top:39%"></div><div class="md" style="left:50%;top:44%"></div><div class="md" style="left:50%;top:56%"></div><div class="md" style="left:50%;top:61%"></div><div class="md" style="left:50%;top:66%"></div><div class="md" style="left:39%;top:50%"></div><div class="md" style="left:44%;top:50%"></div><div class="md" style="left:56%;top:50%"></div><div class="md" style="left:61%;top:50%"></div><div class="md" style="left:66%;top:50%"></div></div><div class="mag">4.0x</div></div>
 <div id="death-overlay"><div>行 動 失 敗</div></div>
 <div id="down-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:8;pointer-events:none;font-family:Arial;color:#f44;text-align:center;text-shadow:0 0 20px rgba(255,0,0,.5);display:none"><div style="font-size:48px;font-weight:bold;letter-spacing:4px">💀 倒 地</div><div style="font-size:20px;color:#ff8;margin-top:8px;letter-spacing:2px">左鍵開最後一槍</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-top:6px">存活 <span id="down-timer">5</span> 秒</div></div>
@@ -157,8 +193,8 @@
 </div>
 
 
-<script src="js/auth.js?v=ext2041"></script>
-<script src="js/game.js?v=ext2041"></script>
+<script src="js/auth.js?v=ext2042"></script>
+<script src="js/game.js?v=ext2042"></script>
 <script src="petdata.js"></script>
 <script src="awpdata.js"></script>
 <script src="mp7data.js"></script>
@@ -182,7 +218,7 @@ document.head.appendChild(s);
 "></script>
 
 <!-- === EXTRACTION MODE CSS === -->
-<link rel="stylesheet" href="css/ext.css?v=ext2041">
+<link rel="stylesheet" href="css/ext.css?v=ext2042">
 
 <!-- === PARTY MODE HTML === -->
 
@@ -379,7 +415,7 @@ document.head.appendChild(s);
 </div>
 
 <!-- === EXTRACTION MODE JS === -->
-<script src="js/extraction.js?v=ext2041"></script>
+<script src="js/extraction.js?v=ext2042"></script>
 
 <!-- 版本指紋：由「伺服器實際提供的檔案內容」計算，與 server.js 同一套演算法。
      舊版把版本號寫死成常數，結果改了幾百行程式碼版本號卻不變，
