@@ -6408,35 +6408,27 @@ window._openMenuOverlay=openMenuOverlay;
 window._closeMenuOverlay=closeMenuOverlay;
 if(mb)mb.addEventListener('click',function(e){e.stopPropagation();openMenuOverlay();});
 if(goBtn)goBtn.addEventListener('click',function(){
-  // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
   var mid = selCard ? selCard.dataset.mid : null;
-  var match = mid ? MENU_MODES.find(function(m){return m.id===mid;}) : null;
-  var idv = match ? match.id : (_mmSelected ? _mmSelected.id : null);
-  var nm = match ? match.name : (_mmSelected ? _mmSelected.name : '');
-  var pt = match ? match.partyType : (_mmSelected ? _mmSelected.partyType : null);
-  if(!idv){
+  if(!mid){
     if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
     return;
   }
   closeMenuOverlay();
-  document.getElementById('menu-mode-btn-label').innerHTML=nm+' <span class="mode-arrow">▶</span>';
-  if(pt){if(window.showPartyCountSelect){window.showPartyCountSelect(pt);}return;}
-  if(idv==='extraction'){
-    // 按 GO → 難度選擇 modal → 開始匹配
+  document.getElementById('menu-mode-btn-label').innerHTML=selCard.querySelector('.cname').textContent+' <span class="mode-arrow">▶</span>';
+  if(mid==='extraction'){
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
    }
-  if(idv==='breach'){
-    // 按 GO → 進入爆破模式匹配（4人真人，不補AI，不選幹員不選地圖）
+  if(mid==='breach'){
     closeMenuOverlay();
     breachJoinQueue();
     return;
    }
-  if(idv==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
-  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
-   if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||nm)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
-  if(window._floatMsg)window._floatMsg('⚠ 找不到 '+nm+' 的入口','#f66');
+  if(mid==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
+  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+mid+'"]');
+   if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||selCard.querySelector('.cname').textContent)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
+  if(window._floatMsg)window._floatMsg('⚠ 找不到 '+mid+' 的入口','#f66');
  });
 // 模式選單內嵌 普通/機密 子選單按鈕（點選只記錄難度，按 GO 才開始匹配）
 document.querySelectorAll('#mm-ext-sub .mm-ext-opt').forEach(function(btn){
@@ -6459,26 +6451,22 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 document.getElementById('play-btn').onclick=function(){
   // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
-  var mm = window.MENU_MODES || window._mmSelected;
-  var match = selCard ? mm.find(function(m){return m.id===selCard.dataset.mid;}) : null;
-  if(!match){
+  if(!selCard){
     alert('請先點選一個遊戲模式卡片');
     return;
   }
-  var modeVal = match.id;
-  var nm = match.name;
-  // 直接進入選中的模式
-  if(modeVal==='breach'){
+  var mid = selCard.dataset.mid;
+  if(mid==='breach'){
     document.getElementById('mode-dropdown').classList.remove('show');
     breachJoinQueue();
     return;
   }
-  if(modeVal==='extraction'){
+  if(mid==='extraction'){
     document.getElementById('mode-dropdown').classList.remove('show');
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
   }
-  if(modeVal==='party' || modeVal.indexOf('party_')===0){
+  if(mid==='party' || mid.indexOf('party_')===0){
     document.getElementById('mode-dropdown').classList.remove('show');
     var ps=document.getElementById('party-submenu');
     if(ps){
