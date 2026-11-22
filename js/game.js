@@ -6370,7 +6370,7 @@ window.ocIslandClose=function(){
 };
 })();
 (function(){
-var MENU_MODES=[
+window.MENU_MODES=[
  {id:'solo',name:'單人模式',desc:'經典模式',icon:'🎮',c1:'#4a90d9',c2:'#6bb5ff'},
  {id:'multi2',name:'雙人連線',desc:'2人合作',icon:'👥',c1:'#4ac29a',c2:'#7be8c0'},
  {id:'multi4',name:'四人連線',desc:'4人合作',icon:'👥',c1:'#4ac29a',c2:'#7be8c0'},
