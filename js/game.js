@@ -6415,6 +6415,12 @@ if(goBtn)goBtn.addEventListener('click',function(){
    if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
    return;
   }
+ if(idv==='breach'){
+   // 按 GO → 進入爆破模式匹配（4人真人，不補AI，不選幹員不選地圖）
+   closeMenuOverlay();
+   breachJoinQueue();
+   return;
+  }
  if(idv==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
  var pb=document.getElementById('play-btn');
  var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+idv+'"]');
