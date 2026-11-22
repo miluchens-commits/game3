@@ -6452,6 +6452,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 document.getElementById('play-btn').onclick=function(){
   var mode=document.querySelector('#mode-dropdown .mode-opt.selected');
   var modeVal=mode?mode.dataset.mode:'solo';
+  // 如果模式選擇面板中選中了 breach，優先使用 breach（不選幹員不選地圖）
+  if(window._mmSelected && window._mmSelected.id==='breach'){
+    modeVal='breach';
+  }
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
   var modeVal=mode?mode.dataset.mode:'solo';
