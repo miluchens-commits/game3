@@ -6458,7 +6458,6 @@ document.getElementById('play-btn').onclick=function(){
   }
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
-  var modeVal=mode?mode.dataset.mode:'solo';
   if(modeVal==='extraction'){
     document.getElementById('mode-dropdown').classList.remove('show');
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
