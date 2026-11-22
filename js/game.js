@@ -8800,6 +8800,40 @@ function startBreachMatchmaking(){
   // 發送匹配請求
   relaySend({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:currentTeamId||'',mode:4,gameMode:'breach4'});
   
+  // 即使沒有 WebSocket 連接，也模擬匹配成功（單人測試模式）
+  if(!window.multiWS || window.multiWS.readyState !== 1){
+    window._breachMatching=false;
+    var mm=document.getElementById('breach-mm-ui');
+    if(mm)mm.style.display='none';
+    
+    var trans=document.createElement('div');
+    trans.id='breach-match-trans';
+    trans.style.cssText='position:fixed;inset:0;background:rgba(10,10,16,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:400;color:#fff;font-family:Arial;text-align:center';
+    trans.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:16px;color:#ffd76a">✅ 匹配成功！</div>'+
+                    '<div style="font-size:20px;margin-bottom:10px">你分在：</div>'+
+                    '<div style="font-size:32px;font-weight:bold;padding:20px 40px;border-radius:12px;border:4px solid #ff6b6b;background:#ff6b6b;color:#fff;letter-spacing:4px;margin-bottom:24px">A組（安裝炸彈）</div>'+
+                    '<div style="font-size:16px;opacity:0.8">2秒後進入遊戲...</div>';
+    document.body.appendChild(trans);
+    
+    setTimeout(function(){
+      var t=document.getElementById('breach-match-trans');
+      if(t)t.remove();
+      var fakeMatchData = {
+        team: 'A',
+        playerId: 0,
+        bombSite: 'A',
+        players: [
+          {id: 0, name: '你', team: 'A'},
+          {id: 1, name: '玩家2', team: 'A'},
+          {id: 2, name: '玩家3', team: 'B'},
+          {id: 3, name: '玩家4', team: 'B'}
+        ]
+      };
+      startBreachGame(fakeMatchData);
+    },2000);
+    return;
+  }
+  
   // 監聽匹配結果
   window._breachMatchHandler=function(data){
     if(data.type==='match_found'&&data.gameMode==='breach4'){
