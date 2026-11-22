@@ -9043,6 +9043,7 @@ function setBreachSpawn(team){
     pos.set(-20,0.6,-5);
   }
   vel.set(0,0,0);
+  player.position.copy(pos);
   camera.position.copy(pos);
   camera.lookAt(pos.x,pos.y+1.6,pos.z-1);
 }
