@@ -6452,12 +6452,11 @@ document.getElementById('play-btn').onclick=function(){
   // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
   if(!selCard){
-    // 沒選卡片，顯示模式選單
-    var ov=document.getElementById('menu-mode-overlay');
-    if(ov)ov.classList.add('open');
+    alert('請先點選一個遊戲模式卡片');
     return;
   }
   var mid = selCard.dataset.mid;
+  console.log('play-btn clicked, mid:', mid);
   // 直接進入選中的模式
   if(mid==='breach'){
     document.getElementById('mode-dropdown').classList.remove('show');
