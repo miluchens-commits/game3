@@ -7898,6 +7898,7 @@ function processServerMessage(data){
       soring.rotation.x=-Math.PI/2;soring.position.set(sox,0.06,soz);scene.add(soring);
       ocEngSonicZones.push({pos:new THREE.Vector3(sox,0.1,soz),timer:sodur,radius:sor,owner:data.owner,dome:sodome,ring:soring});
       break;
+    }
     case 'breach_bomb_planted':
       breachBombPlanted = true;
       breachBombTimer = breachBombTime;
