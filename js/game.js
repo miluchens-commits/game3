@@ -6456,6 +6456,7 @@ document.getElementById('play-btn').onclick=function(){
     return;
   }
   var mid = selCard.dataset.mid;
+  var modeVal = mid;
   if(mid==='breach'){
     document.getElementById('mode-dropdown').classList.remove('show');
     breachJoinQueue();
