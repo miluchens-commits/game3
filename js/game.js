@@ -6450,12 +6450,28 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 (function(){var ib=document.getElementById('island-btn');if(ib)ib.addEventListener('click',function(){if(window.ocIslandOpen)window.ocIslandOpen();});})();
 
 document.getElementById('play-btn').onclick=function(){
-  var mode=document.querySelector('#mode-dropdown .mode-opt.selected');
-  var modeVal=mode?mode.dataset.mode:'solo';
-  // 如果模式選擇面板中選中了 breach，優先使用 breach（不選幹員不選地圖）
-  if(window._mmSelected && window._mmSelected.id==='breach'){
-    modeVal='breach';
+  // 優先找出選中的遊戲模式：檢查卡片網格 .mm-card.sel，然後是 _mmSelected，最後是下拉選單
+  var selectedMode = null;
+  var selCard = document.querySelector('.mm-card.sel');
+  if(selCard){
+    var mid = selCard.dataset.mid;
+    var match = MENU_MODES.find(function(m){return m.id===mid;});
+    if(match) selectedMode = match;
   }
+  if(!selectedMode && window._mmSelected) selectedMode = window._mmSelected;
+  if(!selectedMode){
+    var modeEl=document.querySelector('#mode-dropdown .mode-opt.selected');
+    if(modeEl){
+      var m2=MENU_MODES.find(function(m){return m.id===modeEl.dataset.mode;});
+      if(m2) selectedMode = m2;
+    }
+  }
+  if(!selectedMode){
+    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
+    return;
+  }
+  var modeVal = selectedMode.id;
+  var nm = selectedMode.name;
   // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
   if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
   if(modeVal==='extraction'){
