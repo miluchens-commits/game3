@@ -8776,7 +8776,9 @@ function connectMultiplayerDirect(ip, mode){
 function startBreachMatchmaking(){
   if(window._breachMatching)return;
   window._breachMatching=true;
-  closeMenuOverlay();
+  // 關閉選單遮罩，但保留 _mmSelected（避免被 closeMenuOverlay 重置為 null 導致後續點 GO 進入單人模式）
+  var ov=document.getElementById('menu-mode-overlay');
+  if(ov)ov.classList.remove('open');
   document.getElementById('menu').style.display='none';
   
   // 顯示匹配中 UI（z-index 300，蓋過選單）
