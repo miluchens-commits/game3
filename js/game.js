@@ -6452,11 +6452,13 @@ document.getElementById('play-btn').onclick=function(){
   // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
   if(!selCard){
-    alert('請先點選一個遊戲模式卡片');
+    // 沒選卡片，顯示模式選單
+    var ov=document.getElementById('menu-mode-overlay');
+    if(ov)ov.classList.add('open');
     return;
   }
   var mid = selCard.dataset.mid;
-  var modeVal = mid;
+  // 直接進入選中的模式
   if(mid==='breach'){
     document.getElementById('mode-dropdown').classList.remove('show');
     breachJoinQueue();
@@ -8725,37 +8727,42 @@ function breachJoinQueue(){
   }
   ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</small>';
   
-  var url = 'ws://localhost:3000/game';
-  if(window.multiWS)try{window.multiWS.close()}catch(e){}
-  window.multiWS=new WebSocket(url);
-  var ws=window.multiWS;
-  breachMode = true;
-  
-  ws.onopen=function(){
-    relayReady=true;
-    ws.send(JSON.stringify({
-      type:'join_queue',
-      name:authUser||'Player'+Math.floor(Math.random()*1000),
-      username:authUser||'',
-      teamId:'',
-      mode:4,
-      gameMode:'breach4'
-    }));
-  };
-  
-  ws.onmessage=function(e){
-    try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
-  };
-  
-  ws.onerror=function(){
-    ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';
-  };
-  
-  ws.onclose=function(){
-    if(breachMode && !breachGameStarted){
-      ms.innerHTML='連線中斷';
-    }
-  };
+  // 嘗試連 WebSocket（即使失敗也顯示匹配 UI）
+  try{
+    var url = 'ws://localhost:3000/game';
+    if(window.multiWS)try{window.multiWS.close()}catch(e){}
+    window.multiWS=new WebSocket(url);
+    var ws=window.multiWS;
+    breachMode = true;
+    
+    ws.onopen=function(){
+      relayReady=true;
+      ws.send(JSON.stringify({
+        type:'join_queue',
+        name:authUser||'Player'+Math.floor(Math.random()*1000),
+        username:authUser||'',
+        teamId:'',
+        mode:4,
+        gameMode:'breach4'
+      }));
+    };
+    
+    ws.onmessage=function(e){
+      try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
+    };
+    
+    ws.onerror=function(){
+      ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';
+    };
+    
+    ws.onclose=function(){
+      if(breachMode && !breachGameStarted){
+        ms.innerHTML='連線中斷';
+      }
+    };
+  }catch(e){
+    ms.innerHTML='WebSocket 建立失敗：'+e.message;
+  }
 }
 
 function processBreachMessage(data){
