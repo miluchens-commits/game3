@@ -24,7 +24,8 @@ function ocMultiWSURL(ip){
     if(location.protocol==='https:'){
       return 'wss://'+(location.hostname||'localhost')+(location.port&&location.port!=='443'?':'+location.port:'')+'/game';
     }
-    return 'ws://'+(location.hostname||'localhost')+(location.port&&location.port!=='80'?':'+location.port:':3000')+'/game';
+    // 本地開發：前端可能在 8080，但 WebSocket 伺服器在 3000
+    return 'ws://'+(location.hostname||'localhost')+':3000/game';
   }
   if(location.protocol==='https:')return 'wss://'+ip+'/game';
   return 'ws://'+ip+':3000/game';
