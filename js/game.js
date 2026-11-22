@@ -6449,26 +6449,27 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 (function(){var ib=document.getElementById('island-btn');if(ib)ib.addEventListener('click',function(){if(window.ocIslandOpen)window.ocIslandOpen();});})();
 
 document.getElementById('play-btn').onclick=function(){
-  // 優先檢查卡片網格選中的模式
-  var selCard = document.querySelector('.mm-card.sel');
-  if(!selCard){
-    alert('請先點選一個遊戲模式卡片');
-    return;
-  }
-  var mid = selCard.dataset.mid;
-  console.log('play-btn clicked, mid:', mid);
-  // 直接進入選中的模式
-  if(mid==='breach'){
-    document.getElementById('mode-dropdown').classList.remove('show');
-    breachJoinQueue();
-    return;
-  }
-  if(mid==='extraction'){
-    document.getElementById('mode-dropdown').classList.remove('show');
-    if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
-    return;
-  }
-  if(mid==='party' || mid.indexOf('party_')===0){
+  try{
+    // 優先檢查卡片網格選中的模式
+    var selCard = document.querySelector('.mm-card.sel');
+    if(!selCard){
+      alert('請先點選一個遊戲模式卡片');
+      return;
+    }
+    var mid = selCard.dataset.mid;
+    console.log('play-btn clicked, mid:', mid);
+    // 直接進入選中的模式
+    if(mid==='breach'){
+      document.getElementById('mode-dropdown').classList.remove('show');
+      breachJoinQueue();
+      return;
+    }
+    if(mid==='extraction'){
+      document.getElementById('mode-dropdown').classList.remove('show');
+      if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
+      return;
+    }
+    if(mid==='party' || mid.indexOf('party_')===0){
     document.getElementById('mode-dropdown').classList.remove('show');
     var ps=document.getElementById('party-submenu');
     if(ps){
@@ -6523,6 +6524,10 @@ document.getElementById('play-btn').onclick=function(){
   }else{
     renderClassSelect();
     document.getElementById('class-select').style.display='flex';
+  }
+  }catch(e){
+    console.error('play-btn error:', e);
+    alert('啟動失敗：'+e.message);
   }
 };
 // ── 側邊模式框架切換（派對 / 摸金） ──
