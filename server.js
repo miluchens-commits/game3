@@ -1270,6 +1270,39 @@ wss.on('connection', (ws) => {
       case 'extraction_extracted':
         handleExtractionMessage(ws, msg);
         break;
+      // ── 爆破模式訊息 ──
+      case 'bomb_plant': {
+        const room = rooms[ws.roomId];
+        if (!room || room.gameMode !== 'bomb_defuse' || room.result || room.bombPlanted || room.bombDefused) break;
+        // 只有 A 隊可以安裝
+        if (ws.team !== 'A') break;
+        room.bombPlanted = true;
+        room.bombPlanterId = ws.playerId;
+        room.bombDefused = false;
+        room.bombTimeLeft = 180;
+        room.roundEnded = false;
+        broadcastTeam(room, { type: 'bomb_planted', planterId: ws.playerId, timeLeft: 180 }, null);
+        startBombDefuseTimer(room, ws.roomId);
+        break;
+      }
+      case 'bomb_defuse': {
+        const room = rooms[ws.roomId];
+        if (!room || room.gameMode !== 'bomb_defuse' || !room.bombPlanted || room.bombDefused || room.roundEnded) break;
+        if (ws.team !== 'B') break;
+        room.bombDefused = true;
+        room.roundEnded = true;
+        room.result = 'B';
+        room.score.B++;
+        broadcastTeam(room, { type: 'bomb_defused', defuserId: ws.playerId, winner: 'B' }, null);
+        setTimeout(() => { endBombDefuseRound(room, ws.roomId); }, 3000);
+        break;
+      }
+      case 'bomb_round_end': {
+        const room = rooms[ws.roomId];
+        if (!room || room.gameMode !== 'bomb_defuse') break;
+        endBombDefuseRound(room, ws.roomId);
+        break;
+      }
       default: break;
     }
   });
@@ -1286,7 +1319,8 @@ const heartbeatInterval = setInterval(() => {
 wss.on('close', () => clearInterval(heartbeatInterval));
 
 function playerModeCount(gm) {
-  // gameMode like 'multi2'/'multi4'/'ufo2'/'bomb4'. Team TDM rooms support 2 or 4.
+  // gameMode like 'multi2'/'multi4'/'ufo2'/'bomb4'/'bomb_defuse'. Team TDM rooms support 2 or 4.
+  if (gm === 'bomb_defuse') return 4; // 爆破模式固定 4 人真人
   const m = /(\d+)$/.exec(gm || '');
   if (!m) return 2;
   const n = parseInt(m[1], 10);
@@ -1294,8 +1328,26 @@ function playerModeCount(gm) {
 }
 function addToQueue(ws) {
   const gm = ws.playerData.gameMode || 'multi';
-  const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1 || gm.indexOf('breach') !== -1)
+  const needed = (gm.indexOf('multi') !== -1 || gm.indexOf('ufo') !== -1 || gm.indexOf('bomb') !== -1)
     ? playerModeCount(gm) : 2;
+  // 爆破模式禁止 AI 補位，也不要 premade 組隊：四人隨機進入同一房間
+  if (gm === 'bomb_defuse') {
+    const pending = [];
+    for (let i = 0; i < queue.length; i++) {
+      const q = queue[i];
+      if (q.playerData && q.playerData.gameMode === gm && q.readyState === WebSocket.OPEN) pending.push({ ws: q, idx: i });
+    }
+    if (pending.length >= needed - 1) {
+      const chosen = pending.slice(0, needed - 1).map(p => p.ws);
+      pending.slice(0, needed - 1).sort((a, b) => b.idx - a.idx).forEach(p => queue.splice(p.idx, 1));
+      const all = chosen.concat([ws]);
+      startBombDefuseMatch(all, gm);
+      return;
+    }
+    queue.push(ws);
+    ws.send(JSON.stringify({ type: 'in_queue', position: queue.length }));
+    return;
+  }
   // Same-team premade pairing (2p): pair two same-teamId players into a 2p room
   if (needed === 2 && ws.playerData.teamId) {
     for (let i = 0; i < queue.length; i++) {
@@ -1349,6 +1401,85 @@ function startTeamMatch(players, gm) {
     })); } catch (e) { console.log('startTeamMatch send failed', i); }
   });
   rooms[rid].voteTimer = setTimeout(() => { settleTeamVote(rooms[rid], rid); }, 15000);
+}
+// ── 爆破模式匹配：4人真人，隨機 A/B 隊伍，不補 AI ──
+function startBombDefuseMatch(players, gm) {
+  const rid = nextRoomId++;
+  const n = players.length; // 應為 4
+  rooms[rid] = {
+    teamMatch: true, players, votes: {}, score: { A: 0, B: 0 },
+    gameMode: gm || 'bomb_defuse', chosenMap: 'breach_ab', gameStarted: true,
+    result: null, voteTimer: null, deadFlags: {},
+    // 爆破模式專屬狀態
+    bombPlanted: false, bombPlanterId: null, bombTimer: null, bombTimeLeft: 180,
+    bombDefused: false, roundWinner: null, roundEnded: false,
+    bombSite: { x: 0, z: 0 }, // 伺服器可隨機設定，這裡先預設
+  };
+  // 隨機打散後再分配隊伍（確保每局重新隨機）
+  players.sort(() => Math.random() - 0.5);
+  players.forEach((p, idx) => {
+    p.roomId = rid;
+    p.playerId = idx;
+    p.spawnIdx = idx;
+  });
+  players.forEach((p, idx) => { p.team = (idx < Math.ceil(n / 2)) ? 'A' : 'B'; });
+  const spawns = teamSpawns(n);
+  const lobby = players.map((p, i) => ({ id: i, name: (p.playerData && p.playerData.name) || ('玩家' + (i + 1)), team: p.team }));
+  players.forEach((p, i) => {
+    p.spawn = spawns[i];
+    const teamMate = players.find(q => q !== p && q.team === p.team);
+    const opponents = players.filter(q => q !== p && q.team !== p.team).map(q => ({ id: q.playerId, name: (q.playerData && q.playerData.name) || ('玩家' + (q.playerId + 1)), team: q.team }));
+    try { p.send(JSON.stringify({
+      type: 'match_found', roomId: rid, playerCount: n, playerId: i, team: p.team,
+      teamMate: teamMate ? { id: teamMate.playerId, name: (teamMate.playerData && teamMate.playerData.name) || '' } : null,
+      opponents, spawn: spawns[i], players: lobby, gameMode: 'bomb_defuse'
+    })); } catch (e) { console.log('startBombDefuseMatch send failed', i); }
+  });
+  // 啟動伺服器端炸彈倒數監控（由客戶端 bomb_plant 觸發後設定）
+  rooms[rid].bombTimer = null;
+}
+// ── 爆破模式回合結束：廣播結果並清理房間 ──
+function endBombDefuseRound(room, rid) {
+  if (!room || room.roundEnded && room._roundEndedNotified) return;
+  room._roundEndedNotified = true;
+  const winner = room.result || (room.bombDefused ? 'B' : 'A');
+  // 廣播回合結束
+  room.players.forEach(p => {
+    try { p.send(JSON.stringify({
+      type: 'round_end', winner, score: { A: room.score.A, B: room.score.B },
+      bombDefused: room.bombDefused, bombPlanterId: room.bombPlanterId
+    })); } catch (e) {}
+  });
+  // 重置炸彈狀態，保留房間讓玩家可重新開始（或由客戶端離開）
+  room.bombPlanted = false;
+  room.bombPlanterId = null;
+  room.bombDefused = false;
+  room.bombTimeLeft = 180;
+  room.roundEnded = true;
+  if (room.bombTimer) { clearInterval(room.bombTimer); room.bombTimer = null; }
+}
+// ── 伺服器端炸彈倒數：每秒檢查，到 0 則 A 隊獲勝 ──
+function startBombDefuseTimer(room, rid) {
+  if (room.bombTimer) return;
+  room.bombTimer = setInterval(() => {
+    if (!room || !room.bombPlanted || room.bombDefused || room.roundEnded) {
+      if (room.bombTimer) { clearInterval(room.bombTimer); room.bombTimer = null; }
+      return;
+    }
+    room.bombTimeLeft--;
+    // 廣播倒數（每 5 秒或最後 10 秒廣播，避免頻繁）
+    if (room.bombTimeLeft % 5 === 0 || room.bombTimeLeft <= 10) {
+      broadcastTeam(room, { type: 'bomb_timer', timeLeft: room.bombTimeLeft }, null);
+    }
+    if (room.bombTimeLeft <= 0) {
+      room.result = 'A';
+      room.score.A++;
+      room.roundEnded = true;
+      broadcastTeam(room, { type: 'bomb_explode', winner: 'A' }, null);
+      if (room.bombTimer) { clearInterval(room.bombTimer); room.bombTimer = null; }
+      setTimeout(() => { endBombDefuseRound(room, rid); }, 3000);
+    }
+  }, 1000);
 }
 function teamSpawns(n) {
   // Two balanced spawn clusters: A left (-20,0), B right (20,0); 4p adds offsets
