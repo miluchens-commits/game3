@@ -4386,9 +4386,13 @@ function launchSelected(){
    return;
   }
   if(idv==='breach'){
-    // 按 GO → 進入爆破模式匹配（4人真人，不補AI）
-    closeMenuOverlay();
-    breachJoinQueue();
+    // 按 GO → 進入爆破模式匹配（4人真人，不補AI，不選幹員不選地圖）
+    try{
+      closeMenuOverlay();
+      breachJoinQueue();
+    }catch(e){
+      console.error('breach go error:', e);
+    }
     return;
    }
    if(idv==='party_obstacle'||idv==='party_battle'||idv==='party_target'||idv==='party_memory'||idv==='party_coinrush'){
@@ -8709,39 +8713,48 @@ function connectMultiplayerDirect(ip, mode){
 
 // ================= 爆破模式匹配（4人真人，不補AI） =================
 function breachJoinQueue(){
-  var ip=document.getElementById('server-ip').value.trim()||'localhost';
-  var url=ocMultiWSURL(ip);
-  if(window.multiWS)try{window.multiWS.close()}catch(e){}
-  window.multiWS=new WebSocket(url);
-  var ws=window.multiWS;
-  breachMode = true;
-  
-  ws.onopen=function(){
-    relayReady=true;
-    document.getElementById('multi-status').innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 4 位真人玩家（不補AI）</small>';
-    ws.send(JSON.stringify({
-      type:'join_queue',
-      name:authUser||'Player'+Math.floor(Math.random()*1000),
-      username:authUser||'',
-      teamId:'',
-      mode:4,
-      gameMode:'breach4'
-    }));
-  };
-  
-  ws.onmessage=function(e){
-    try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
-  };
-  
-  ws.onerror=function(){
-    document.getElementById('multi-status').innerHTML='連線失敗，請確認伺服器已啟動';
-  };
-  
-  ws.onclose=function(){
-    if(breachMode && !breachGameStarted){
-      document.getElementById('multi-status').innerHTML='連線中斷';
-    }
-  };
+  try{
+    var ipEl=document.getElementById('server-ip');
+    var ip = ipEl ? ipEl.value.trim() : 'localhost';
+    ip = ip || 'localhost';
+    var url=ocMultiWSURL(ip);
+    if(window.multiWS)try{window.multiWS.close()}catch(e){}
+    window.multiWS=new WebSocket(url);
+    var ws=window.multiWS;
+    breachMode = true;
+    
+    ws.onopen=function(){
+      relayReady=true;
+      var ms=document.getElementById('multi-status');
+      if(ms)ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 4 位真人玩家（不補AI）</small>';
+      ws.send(JSON.stringify({
+        type:'join_queue',
+        name:authUser||'Player'+Math.floor(Math.random()*1000),
+        username:authUser||'',
+        teamId:'',
+        mode:4,
+        gameMode:'breach4'
+      }));
+    };
+    
+    ws.onmessage=function(e){
+      try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
+    };
+    
+    ws.onerror=function(){
+      var ms=document.getElementById('multi-status');
+      if(ms)ms.innerHTML='連線失敗，請確認伺服器已啟動';
+    };
+    
+    ws.onclose=function(){
+      if(breachMode && !breachGameStarted){
+        var ms=document.getElementById('multi-status');
+        if(ms)ms.innerHTML='連線中斷';
+      }
+    };
+  }catch(e){
+    console.error('breachJoinQueue error:', e);
+  }
 }
 
 function processBreachMessage(data){
