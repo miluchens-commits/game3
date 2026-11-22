@@ -6496,6 +6496,7 @@ document.getElementById('play-btn').onclick=function(){
   }
   document.getElementById('menu').style.display='none';
   dailyChallenge=false;bossRushMode=false;ufoMode=false;bombMode=false;
+  var modeVal = selCard ? selCard.dataset.mid : '';
   if(modeVal==='hybrid4'||modeVal==='multi2'||modeVal==='multi4'||modeVal==='solo'){
     // 新角色選擇頁取代「選擇職業」：框框選角色 → 方晶跳出來蹦跳 → 這頁倒數 5 秒 → 直接開打
     ocCsOpen(modeVal);
