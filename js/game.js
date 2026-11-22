@@ -41,6 +41,8 @@ var gameDifficulty='normal';
 var diffMult=1;
 var bombMode=false,ufoMode=false,ufo=null,ufoHP=300,ufoMaxHP=300,ufoTargetIdx=0,ufoAttackTimer=0,ufoLaserCD=0,ufoActive=false,ufoSpawned=false,ufoTargetSwitchCD=0,ufoBeamMesh=null,ufoBeamRing=null,ufoProjectiles=[],requestedPlayerCount=0;
 var rangeMode=false,rangeScore=0,rangeShots=0,rangeHits=0,rangeTime=0,rangeTargets=[],rangeDrones=[],rangeWalkwayTarget=null,rangeWalkwayDir=1,rangeWalkwayPos=2;
+// ================= 爆破模式狀態 =================
+var breachMode=false,breachTeam='A',breachBombPlanted=false,breachBombTime=180,breachBombPos=null,breachDefusing=false,breachDefuseTime=5,breachPlayers=[],breachGameStarted=false,breachWinMessage='';
 updateLevelDisplay();
 (function(){try{
 var canvas=document.getElementById('menu-character-canvas'),parent=document.getElementById('character-stage');
@@ -8739,10 +8741,12 @@ function breachJoinQueue(){
 function processBreachMessage(data){
   if(data.type==='breach_start'){
     breachTeam = data.team;
-    breachBombPos = data.bombPos;
-    document.getElementById('multi-status').innerHTML = '匹配成功，載入地圖中...';
-    // 進入爆破地圖（此處接地圖載入邏輯）
-    // loadBreachMap(data.spawn, data.team, data.players);
+    breachBombPos = data.bombPos || {x:0,z:0};
+    breachPlayers = data.players || [];
+    breachGameStarted = true;
+    document.getElementById('multi-status').innerHTML = '匹配成功 — 進入爆破地圖';
+    // 不選幹員、不選地圖，直接進爆破場景
+    initBreachScene(data.spawn, data.team, data.players);
   }
   else if(data.type==='in_queue'){
     document.getElementById('multi-status').innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">位置：'+data.position+' / 4</small>';
@@ -8751,6 +8755,433 @@ function processBreachMessage(data){
     document.getElementById('multi-status').innerHTML='已離開匹配';
     breachMode = false;
   }
+}
+
+// ================= 爆破模式場景（第三人稱，不選幹員不選地圖） =================
+var breachPlayerMesh=null, breachCamDist=7, breachCamHeight=4, breachCamAngleH=0, breachCamAngleV=-0.35;
+var breachMove={f:false,b:false,l:false,r:false}, breachVel=new THREE.Vector3(), breachJumpVel=0;
+var breachUI=null, breachTimerUI=null, breachDirUI=null, breachActUI=null, breachActBtn=null;
+var breachMinimapCanvas=null, breachMinimapCtx=null;
+
+function initBreachScene(spawn, team, players){
+  breachTeam = team;
+  breachGameStarted = true;
+
+  // 隱藏主選單與選單遮罩
+  var menu=document.getElementById('menu');
+  if(menu) menu.style.display='none';
+  var ov=document.getElementById('menu-mode-overlay');
+  if(ov) ov.style.display='none';
+  var ms=document.getElementById('multi-status');
+  if(ms) ms.style.display='none';
+
+  // 建立爆破 UI
+  createBreachUI();
+
+  // 設定玩家位置
+  var sp = spawn || {x:-25,z:-25};
+  pos.set(sp.x, 1.0, sp.z);
+  vel.set(0,0,0);
+  yaw = 0; pitch = 0;
+
+  // 鎖定滑鼠（第三人稱視角）
+  document.body.requestPointerLock().catch(function(){});
+
+  // 建立玩家角色（方晶）
+  if(breachPlayerMesh) scene.remove(breachPlayerMesh);
+  breachPlayerMesh = new THREE.Group();
+  var body = new THREE.Mesh(new THREE.BoxGeometry(0.6,1.7,0.6), new THREE.MeshStandardMaterial({color:breachTeam==='A'?0xff6b6b:0x4da6ff, metalness:0.4, roughness:0.4}));
+  body.castShadow=true; body.position.y=0.85; breachPlayerMesh.add(body);
+  var head = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xffddbb}));
+  head.position.y=1.75; head.castShadow=true; breachPlayerMesh.add(head);
+  scene.add(breachPlayerMesh);
+  breachPlayerMesh.position.set(sp.x, 0, sp.z);
+
+  // 建立地圖（房子、水道、A/B點、滑索）
+  buildBreachMap();
+
+  // 建立小地圖
+  initBreachMinimap();
+
+  // 綁定按鍵（防止重複綁定）
+  if(!window._breachKeysBound){
+    window._breachKeysBound = true;
+    document.addEventListener('keydown', function(e){
+      switch(e.code){
+        case 'KeyW': breachMove.f=true; break;
+        case 'KeyS': breachMove.b=true; break;
+        case 'KeyA': breachMove.l=true; break;
+        case 'KeyD': breachMove.r=true; break;
+        case 'Space': if(breachPlayerMesh.position.y<=0.5) breachJumpVel=8; break;
+        case 'KeyE': tryBreachInteract(); break;
+      }
+    });
+    document.addEventListener('keyup', function(e){
+      switch(e.code){
+        case 'KeyW': breachMove.f=false; break;
+        case 'KeyS': breachMove.b=false; break;
+        case 'KeyA': breachMove.l=false; break;
+        case 'KeyD': breachMove.r=false; break;
+      }
+    });
+    // 滑鼠轉動視角
+    document.addEventListener('mousemove', function(e){
+      if(document.pointerLockElement===document.body){
+        breachCamAngleH -= e.movementX * 0.003;
+        breachCamAngleV -= e.movementY * 0.003;
+        breachCamAngleV = Math.max(-1.2, Math.min(0.5, breachCamAngleV));
+      }
+    });
+  }
+
+  // 啟動 breach 動畫迴圈（接在原本 animate 之後）
+  if(!window._breachAnimateBound){
+    window._breachAnimateBound = true;
+    var _origAnimate = window.animate;
+    window.animate = function(time){
+      if(_origAnimate) _origAnimate(time);
+      if(breachGameStarted && !window._extActive){
+        updateBreachMovement(time);
+        updateBreachCamera();
+        drawBreachMinimap();
+        updateBreachTimer();
+      }
+    };
+  }
+}
+
+function buildBreachMap(){
+  var wallMat = new THREE.MeshStandardMaterial({color:0xe8e8e8, roughness:0.6, metalness:0.2});
+  var waterMat = new THREE.MeshStandardMaterial({color:0x6fb8e8, roughness:0.3, metalness:0.6, transparent:true, opacity:0.8});
+  var ropeMat = new THREE.MeshBasicMaterial({color:0xffaa00});
+
+  function createBox(x,y,z,w,h,d,mat,cast,rec){
+    var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+    m.position.set(x,y,z);
+    if(cast!==false) m.castShadow=true;
+    if(rec!==false) m.receiveShadow=true;
+    scene.add(m);
+    return m;
+  }
+
+  // 地板
+  var floor = new THREE.Mesh(new THREE.PlaneGeometry(120,120), new THREE.MeshStandardMaterial({color:0xd0d8e0, roughness:0.8, metalness:0.1}));
+  floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+
+  // A 點（右上）、B 點（左下）
+  var poleA=createBox(20,2,0,0.3,4,0.3,new THREE.MeshStandardMaterial({color:0x555555}));
+  var flagA=createBox(20.6,4,0,1.4,0.9,0.1,new THREE.MeshBasicMaterial({color:0xff6b6b}));
+  var poleB=createBox(-20,2,0,0.3,4,0.3,new THREE.MeshStandardMaterial({color:0x555555}));
+  var flagB=createBox(-19.4,4,0,1.4,0.9,0.1,new THREE.MeshBasicMaterial({color:0x4da6ff}));
+
+  // 規律房子
+  function buildHouseGrid(startX,startZ,cols,rows,spacing){
+    for(var i=0;i<cols;i++){
+      for(var j=0;j<rows;j++){
+        var x=startX+(i-(cols-1)/2)*spacing;
+        var z=startZ+(j-(rows-1)/2)*spacing;
+        var nearA=Math.abs(x-20)<7&&Math.abs(z)<7;
+        var nearB=Math.abs(x+20)<7&&Math.abs(z)<7;
+        if(nearA||nearB) continue;
+        var sx=4+Math.floor((i+j)%3);
+        var sy=3+Math.floor((i*j)%3);
+        var h=createBox(x,0,z,sx,sy,sx,wallMat);
+        h.userData={breakable:true,hp:3};
+        createBox(x,sy+0.2,z,sx+0.4,0.4,sx+0.4,new THREE.MeshStandardMaterial({color:0x888888}),true,false);
+      }
+    }
+  }
+  buildHouseGrid(-10,10,4,4,12);
+  buildHouseGrid(10,-10,4,4,12);
+  buildHouseGrid(-10,-10,3,3,14);
+  buildHouseGrid(10,10,3,3,14);
+
+  // 水道
+  function buildWater(x1,z1,x2,z2,width){
+    var dx=x2-x1,dz=z2-z1,len=Math.sqrt(dx*dx+dz*dz);
+    var mx=(x1+x2)/2,mz=(z1+z2)/2,angle=Math.atan2(dz,dx);
+    var w=new THREE.Mesh(new THREE.PlaneGeometry(len+2,width),waterMat);
+    w.rotation.x=-Math.PI/2; w.rotation.z=angle; w.position.set(mx,0.02,mz); w.receiveShadow=true;
+    scene.add(w);
+  }
+  buildWater(-50,-20,50,-20,4);
+  buildWater(-50,20,50,20,4);
+  buildWater(-20,-50,-20,50,4);
+  buildWater(20,-50,20,50,4);
+
+  // 橋
+  function buildBridge(x,z,angle,len,w){
+    var b=createBox(x,0.5,z,len,0.5,w,new THREE.MeshStandardMaterial({color:0xc8b6a0}),true,false);
+    b.rotation.y=angle; scene.add(b);
+  }
+  buildBridge(-15,-20,0,7,4);
+  buildBridge(15,-20,0,7,4);
+  buildBridge(-20,15,Math.PI/2,7,4);
+  buildBridge(20,15,Math.PI/2,7,4);
+
+  // 滑索
+  function buildZipline(s,e){
+    var st=createBox(s.x,9,s.z,1.2,9,1.2,new THREE.MeshStandardMaterial({color:0x555555}));
+    var en=createBox(e.x,9,e.z,1.2,9,1.2,new THREE.MeshStandardMaterial({color:0x555555}));
+    var rope=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,s.distanceTo(e),8),ropeMat);
+    var mid=new THREE.Vector3().addVectors(s,e).multiplyScalar(0.5);
+    rope.position.copy(mid); rope.lookAt(e); rope.rotation.x+=Math.PI/2;
+    rope.userData={zipline:true,start:s,end:e};
+    scene.add(st); scene.add(en); scene.add(rope);
+  }
+  buildZipline(new THREE.Vector3(17,10,-3), new THREE.Vector3(-17,10,3));
+  buildZipline(new THREE.Vector3(-17,10,-3), new THREE.Vector3(17,10,3));
+
+  // 中央廣場
+  createBox(0,0.1,0,10,0.2,10,new THREE.MeshStandardMaterial({color:0xbbbbbb}),false,true);
+
+  // 小山丘
+  for(var i=0;i<10;i++){
+    var hx=-45+Math.random()*90, hz=-45+Math.random()*90;
+    if(Math.abs(hx)<25&&Math.abs(hz)<25) continue;
+    var hill=new THREE.Mesh(new THREE.ConeGeometry(5+Math.random()*3,4+Math.random()*3,8), new THREE.MeshStandardMaterial({color:0x7fb069, roughness:1}));
+    hill.position.set(hx,2+Math.random()*2,hz); hill.castShadow=true; hill.receiveShadow=true; scene.add(hill);
+  }
+}
+
+function createBreachUI(){
+  // 上方：隊伍標示
+  var teamUI=document.createElement('div');
+  teamUI.id='breach-team-ui';
+  teamUI.style.cssText='position:fixed;top:10px;left:10px;color:#fff;font-size:18px;font-weight:bold;padding:8px 16px;border-radius:6px;z-index:100;background:rgba(0,0,0,0.5);';
+  teamUI.textContent = breachTeam==='A' ? '🔴 A 隊 — 安裝炸彈' : '🔵 B 隊 — 防守據點';
+  teamUI.style.background = breachTeam==='A' ? 'rgba(255,107,107,0.7)' : 'rgba(77,166,255,0.7)';
+  document.body.appendChild(teamUI);
+
+  // 上方中央：炸彈倒數（未安裝前隱藏）
+  breachTimerUI=document.createElement('div');
+  breachTimerUI.id='breach-timer-ui';
+  breachTimerUI.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);color:#ff4444;font-size:24px;font-weight:bold;padding:8px 16px;border-radius:6px;z-index:100;background:rgba(0,0,0,0.6);border:2px solid #ff4444;display:none;';
+  breachTimerUI.textContent='💣 炸彈倒數：3:00';
+  document.body.appendChild(breachTimerUI);
+
+  // 上方中央偏下：A隊方向指引（未安裝前顯示）
+  breachDirUI=document.createElement('div');
+  breachDirUI.id='breach-dir-ui';
+  breachDirUI.style.cssText='position:fixed;top:50px;left:50%;transform:translateX(-50%);color:#fff;font-size:16px;padding:6px 14px;border-radius:6px;z-index:100;background:rgba(68,170,255,0.8);';
+  breachDirUI.textContent='前往炸彈安裝點';
+  if(breachTeam!=='A') breachDirUI.style.display='none';
+  document.body.appendChild(breachDirUI);
+
+  // 中央：安裝/解除按鈕
+  breachActUI=document.createElement('div');
+  breachActUI.id='breach-act-ui';
+  breachActUI.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;z-index:200;pointer-events:auto;';
+  breachActUI.style.display='none';
+
+  var actTitle=document.createElement('div');
+  actTitle.id='breach-act-title';
+  actTitle.style.cssText='font-size:24px;font-weight:bold;color:#ffd76a;text-shadow:0 0 10px rgba(0,0,0,1);';
+  actTitle.textContent='安裝炸彈';
+  breachActUI.appendChild(actTitle);
+
+  breachActBtn=document.createElement('button');
+  breachActBtn.id='breach-act-btn';
+  breachActBtn.style.cssText='padding:14px 32px;font-size:18px;font-weight:bold;background:#ff4444;color:#fff;border:none;border-radius:8px;box-shadow:0 0 20px rgba(255,0,0,0.5);cursor:pointer;';
+  breachActBtn.textContent='安裝炸彈';
+  breachActBtn.addEventListener('click', function(){
+    if(breachTeam==='A' && !breachBombPlanted){
+      startBreachPlant();
+    } else if(breachTeam==='B' && breachBombPlanted && !breachDefusing){
+      startBreachDefuse();
+    }
+  });
+  breachActUI.appendChild(breachActBtn);
+
+  var prog=document.createElement('div');
+  prog.id='breach-act-prog';
+  prog.style.cssText='width:200px;height:6px;background:rgba(0,0,0,0.3);border-radius:3px;display:none;';
+  var fill=document.createElement('div');
+  fill.id='breach-act-prog-fill';
+  fill.style.cssText='height:100%;width:0%;background:#0f0;border-radius:3px;';
+  prog.appendChild(fill);
+  breachActUI.appendChild(prog);
+  document.body.appendChild(breachActUI);
+
+  // 右下角：操作說明
+  var ctrl=document.createElement('div');
+  ctrl.style.cssText='position:fixed;bottom:20px;left:24px;color:#333;font-size:13px;background:rgba(255,255,255,0.9);padding:12px 18px;border-radius:8px;z-index:50;line-height:1.7;border:2px solid #ccc;max-width:340px;';
+  ctrl.innerHTML='<span style="color:#e67e22;font-weight:bold;">W</span> 往前 · <span style="color:#e67e22;font-weight:bold;">S</span> 往後 · <span style="color:#e67e22;font-weight:bold;">A</span> 往左 · <span style="color:#e67e22;font-weight:bold;">D</span> 往右<br><span style="color:#e67e22;font-weight:bold;">滑鼠</span> 轉視角 · <span style="color:#e67e22;font-weight:bold;">空白鍵</span> 跳躍<br><span style="color:#e67e22;font-weight:bold;">E</span> 搭乘滑索/互動';
+  document.body.appendChild(ctrl);
+}
+
+function initBreachMinimap(){
+  var wrap=document.createElement('div');
+  wrap.id='breach-minimap-wrap';
+  wrap.style.cssText='position:fixed;bottom:20px;right:24px;width:170px;height:150px;background:rgba(255,255,255,0.9);border:3px solid #333;border-radius:8px;z-index:60;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+  var cv=document.createElement('canvas');
+  cv.id='breach-minimap'; cv.width=170; cv.height=150;
+  wrap.appendChild(cv);
+  document.body.appendChild(wrap);
+  breachMinimapCanvas=cv;
+  breachMinimapCtx=cv.getContext('2d');
+}
+
+function drawBreachMinimap(){
+  if(!breachMinimapCtx) return;
+  var ctx=breachMinimapCtx;
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,170,150);
+  ctx.strokeStyle='#666'; ctx.strokeRect(0,0,170,150);
+  var scale=170/120, ox=85, oy=75;
+  // 水道
+  ctx.strokeStyle='#6fb8e8'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(ox-50*scale, oy-20*scale); ctx.lineTo(ox+50*scale, oy-20*scale); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox-50*scale, oy+20*scale); ctx.lineTo(ox+50*scale, oy+20*scale); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox-20*scale, oy-50*scale); ctx.lineTo(ox-20*scale, oy+50*scale); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox+20*scale, oy-50*scale); ctx.lineTo(ox+20*scale, oy+50*scale); ctx.stroke();
+  // AB點
+  ctx.fillStyle='#ff6b6b'; ctx.beginPath(); ctx.arc(ox+20*scale, oy-0*scale, 5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='#4da6ff'; ctx.beginPath(); ctx.arc(ox-20*scale, oy-0*scale, 5, 0, Math.PI*2); ctx.fill();
+  // 玩家
+  ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(ox+pos.x*scale, oy-pos.z*scale, 4, 0, Math.PI*2); ctx.fill();
+  // 玩家方向
+  ctx.strokeStyle='#222'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(ox+pos.x*scale, oy-pos.z*scale); ctx.lineTo(ox+(pos.x+Math.sin(yaw)*4)*scale, oy-(pos.z+Math.cos(yaw)*4)*scale); ctx.stroke();
+}
+
+function updateBreachMovement(time){
+  if(!breachPlayerMesh) return;
+  var dt = 1/60;
+  // 重力
+  if(breachPlayerMesh.position.y>0.05){
+    breachJumpVel -= 28*dt;
+    breachPlayerMesh.position.y += breachJumpVel*dt;
+    if(breachPlayerMesh.position.y<0.05){breachPlayerMesh.position.y=0.05;breachJumpVel=0;}
+  } else {
+    breachJumpVel=0;
+  }
+  // 移動方向（相對於視角）
+  var forward=new THREE.Vector3(-Math.sin(breachCamAngleH),0,-Math.cos(breachCamAngleH));
+  var right=new THREE.Vector3(Math.cos(breachCamAngleH),0,-Math.sin(breachCamAngleH));
+  var wish=new THREE.Vector3();
+  if(breachMove.f) wish.add(forward);
+  if(breachMove.b) wish.sub(forward);
+  if(breachMove.l) wish.sub(right);
+  if(breachMove.r) wish.add(right);
+  if(wish.length()>0){
+    wish.normalize();
+    breachVel.lerp(wish.clone().multiplyScalar(7), dt*10);
+    breachPlayerMesh.position.add(breachVel.clone().multiplyScalar(dt));
+    yaw = Math.atan2(wish.x, -wish.z);
+    breachPlayerMesh.rotation.y = yaw;
+  }
+  // 邊界
+  var limit=55;
+  breachPlayerMesh.position.x=Math.max(-limit,Math.min(limit,breachPlayerMesh.position.x));
+  breachPlayerMesh.position.z=Math.max(-limit,Math.min(limit,breachPlayerMesh.position.z));
+}
+
+function updateBreachCamera(){
+  if(!breachPlayerMesh) return;
+  var targetPos=breachPlayerMesh.position.clone(); targetPos.y+=1.7;
+  var camOffset=new THREE.Vector3(
+    -Math.sin(breachCamAngleH)*Math.cos(breachCamAngleV)*breachCamDist,
+    Math.sin(breachCamAngleV)*breachCamDist+breachCamHeight,
+    -Math.cos(breachCamAngleH)*Math.cos(breachCamAngleV)*breachCamDist
+  );
+  var camPos=targetPos.clone().add(camOffset);
+  // 簡單射線避免貼牆
+  var dir=new THREE.Vector3().subVectors(camPos,targetPos).normalize();
+  var raycaster=new THREE.Raycaster(targetPos,dir,0,breachCamDist);
+  var hits=raycaster.intersectObjects(scene.children.filter(o=>o.isMesh&&o!==breachPlayerMesh));
+  var cd=breachCamDist;
+  for(var h of hits){ if(h.distance<cd&&h.distance>1) cd=h.distance-0.4; }
+  var finalPos=targetPos.clone().add(new THREE.Vector3(
+    -Math.sin(breachCamAngleH)*Math.cos(breachCamAngleV)*cd,
+    Math.sin(breachCamAngleV)*cd+breachCamHeight,
+    -Math.cos(breachCamAngleH)*Math.cos(breachCamAngleV)*cd
+  ));
+  camera.position.copy(finalPos);
+  camera.lookAt(targetPos);
+}
+
+function updateBreachTimer(){
+  if(!breachTimerUI) return;
+  if(breachBombPlanted && breachBombTime>0){
+    breachTimerUI.style.display='block';
+    breachBombTime -= 1/60;
+    if(breachBombTime<=0){
+      breachBombTime=0;
+      endBreachGame('A');
+    }
+    var m=Math.floor(breachBombTime/60), s=Math.floor(breachBombTime%60);
+    breachTimerUI.textContent='💣 炸彈倒數：'+m+':'+(s<10?'0':'')+s;
+  } else {
+    breachTimerUI.style.display='none';
+  }
+}
+
+function tryBreachInteract(){
+  // 靠近 A/B 點或滑索塔時互動
+  var p=breachPlayerMesh.position;
+  // 滑索
+  // 簡單判斷：靠近滑索塔
+  // (此處可擴充)
+  // 安裝/解除炸彈
+  if(breachTeam==='A' && !breachBombPlanted && p.distanceTo(new THREE.Vector3(20,0,0))<3){
+    startBreachPlant();
+  }
+  if(breachTeam==='B' && breachBombPlanted && !breachDefusing && p.distanceTo(breachBombPos||new THREE.Vector3(0,0,0))<3){
+    startBreachDefuse();
+  }
+}
+
+function startBreachPlant(){
+  if(breachBombPlanted) return;
+  breachActUI.style.display='flex';
+  document.getElementById('breach-act-title').textContent='安裝炸彈';
+  breachActBtn.textContent='安裝中...';
+  breachActBtn.disabled=true;
+  document.getElementById('breach-act-prog').style.display='block';
+  var prog=0;
+  var intv=setInterval(function(){
+    prog+=5;
+    document.getElementById('breach-act-prog-fill').style.width=prog+'%';
+    if(prog>=100){
+      clearInterval(intv);
+      breachBombPlanted=true;
+      breachBombPos={x:breachPlayerMesh.position.x,z:breachPlayerMesh.position.z};
+      breachActUI.style.display='none';
+      breachDirUI.style.display='none';
+      // 通知伺服器
+      if(window.multiWS && window.multiWS.readyState===1){
+        window.multiWS.send(JSON.stringify({type:'breach_plant',team:breachTeam,pos:breachBombPos}));
+      }
+    }
+  },100);
+}
+
+function startBreachDefuse(){
+  if(!breachBombPlanted || breachDefusing) return;
+  breachDefusing=true;
+  breachActUI.style.display='flex';
+  document.getElementById('breach-act-title').textContent='解除炸彈';
+  breachActBtn.textContent='解除中...';
+  breachActBtn.disabled=true;
+  document.getElementById('breach-act-prog').style.display='block';
+  var prog=0;
+  var intv=setInterval(function(){
+    prog+=10;
+    document.getElementById('breach-act-prog-fill').style.width=prog+'%';
+    if(prog>=100){
+      clearInterval(intv);
+      endBreachGame('B');
+    }
+  },100);
+}
+
+function endBreachGame(winner){
+  breachGameStarted=false;
+  breachWinMessage = winner==='A' ? '💣 炸彈爆炸 — A 隊獲勝！' : '🛡️ 炸彈已解除 — B 隊獲勝！';
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font:24px system-ui;';
+  box.innerHTML='<div style="font-size:36px;margin-bottom:20px">'+breachWinMessage+'</div><button onclick="location.reload()" style="margin-top:20px;padding:12px 32px;font-size:18px;background:#4af;color:#fff;border:none;border-radius:8px;cursor:pointer;">回到大廳</button>';
+  document.body.appendChild(box);
 }
 
 function connectMultiplayerHTTP(ip){
