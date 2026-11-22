@@ -6459,23 +6459,23 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 document.getElementById('play-btn').onclick=function(){
   // 優先檢查卡片網格選中的模式
   var selCard = document.querySelector('.mm-card.sel');
-  var match = selCard ? MENU_MODES.find(function(m){return m.id===selCard.dataset.mid;}) : null;
+  var mm = window.MENU_MODES || window._mmSelected;
+  var match = selCard ? mm.find(function(m){return m.id===selCard.dataset.mid;}) : null;
   if(!match){
-    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
+    alert('請先點選一個遊戲模式卡片');
     return;
   }
   var modeVal = match.id;
   var nm = match.name;
-  // 雙人／四人模式本來就是要跟好友一起玩，組隊中不應該封鎖 GO
-  if(currentTeamId && modeVal!=='multi2' && modeVal!=='multi4' && modeVal!=='breach'){window.showTeamBlockTip();return;}
-  if(modeVal==='extraction'){
-    document.getElementById('mode-dropdown').classList.remove('show');
-    if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
-    return;
-  }
+  // 直接進入選中的模式
   if(modeVal==='breach'){
     document.getElementById('mode-dropdown').classList.remove('show');
     breachJoinQueue();
+    return;
+  }
+  if(modeVal==='extraction'){
+    document.getElementById('mode-dropdown').classList.remove('show');
+    if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
   }
   if(modeVal==='party' || modeVal.indexOf('party_')===0){
@@ -8726,6 +8726,16 @@ function connectMultiplayerDirect(ip, mode){
 
 // ================= 爆破模式匹配（4人真人，不補AI） =================
 function breachJoinQueue(){
+  // 顯示匹配 UI
+  var ms=document.getElementById('multi-status');
+  if(!ms){
+    ms=document.createElement('div');
+    ms.id='multi-status';
+    ms.style.cssText='position:fixed;top:10px;left:10px;color:#fff;font-size:16px;padding:10px;background:rgba(0,0,0,0.7);z-index:9999;border-radius:6px;';
+    document.body.appendChild(ms);
+  }
+  ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</small>';
+  
   var url = 'ws://localhost:3000/game';
   if(window.multiWS)try{window.multiWS.close()}catch(e){}
   window.multiWS=new WebSocket(url);
@@ -8734,8 +8744,6 @@ function breachJoinQueue(){
   
   ws.onopen=function(){
     relayReady=true;
-    var ms=document.getElementById('multi-status');
-    if(ms)ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.3)">需要 4 位真人玩家（不補AI）</small>';
     ws.send(JSON.stringify({
       type:'join_queue',
       name:authUser||'Player'+Math.floor(Math.random()*1000),
@@ -8751,14 +8759,12 @@ function breachJoinQueue(){
   };
   
   ws.onerror=function(){
-    var ms=document.getElementById('multi-status');
-    if(ms)ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';
+    ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';
   };
   
   ws.onclose=function(){
     if(breachMode && !breachGameStarted){
-      var ms=document.getElementById('multi-status');
-      if(ms)ms.innerHTML='連線中斷';
+      ms.innerHTML='連線中斷';
     }
   };
 }
