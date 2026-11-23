@@ -6409,22 +6409,21 @@ window._closeMenuOverlay=closeMenuOverlay;
 if(mb)mb.addEventListener('click',function(e){e.stopPropagation();openMenuOverlay();});
 if(goBtn)goBtn.addEventListener('click',function(){
   var selCard = document.querySelector('.mm-card.sel');
-  var mid = selCard ? selCard.dataset.mid : null;
-  if(!mid){
-    if(window._floatMsg)window._floatMsg('⚠ 請先選擇遊戲模式','#f66');
+  if(!selCard){
+    alert('請先點選一個遊戲模式卡片');
     return;
   }
+  var mid = selCard.dataset.mid;
   closeMenuOverlay();
-  document.getElementById('menu-mode-btn-label').innerHTML=selCard.querySelector('.cname').textContent+' <span class="mode-arrow">▶</span>';
+  if(mid==='breach'){
+    breachJoinQueue();
+    return;
+  }
   if(mid==='extraction'){
     if(window._extRequestStart)window._extRequestStart();else startExtractionMatchmaking();
     return;
-   }
-  if(mid==='breach'){
-    closeMenuOverlay();
-    breachJoinQueue();
-    return;
-   }
+  }
+  document.getElementById('menu-mode-btn-label').innerHTML=selCard.querySelector('.cname').textContent+' <span class="mode-arrow">▶</span>';
   if(mid==='range'){var rb=document.getElementById('range-btn');if(rb){rb.click();return;}}
   var opt=document.querySelector('#mode-dropdown .mode-opt[data-mode="'+mid+'"]');
    if(opt){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt.classList.add('selected');document.getElementById('menu-mode-btn-label').innerHTML=(opt.textContent||selCard.querySelector('.cname').textContent)+' <span class="mode-arrow">▶</span>';closeMenuOverlay();return;}
@@ -6450,14 +6449,12 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov&&ov.clas
 
 document.getElementById('play-btn').onclick=function(){
   try{
-    // 優先檢查卡片網格選中的模式
     var selCard = document.querySelector('.mm-card.sel');
     if(!selCard){
       alert('請先點選一個遊戲模式卡片');
       return;
     }
     var mid = selCard.dataset.mid;
-    console.log('play-btn clicked, mid:', mid);
     // 直接進入選中的模式
     if(mid==='breach'){
       document.getElementById('mode-dropdown').classList.remove('show');
@@ -6496,7 +6493,7 @@ document.getElementById('play-btn').onclick=function(){
   }
   document.getElementById('menu').style.display='none';
   dailyChallenge=false;bossRushMode=false;ufoMode=false;bombMode=false;
-  var modeVal = selCard ? selCard.dataset.mid : '';
+  var modeVal = mid;
   if(modeVal==='hybrid4'||modeVal==='multi2'||modeVal==='multi4'||modeVal==='solo'){
     // 新角色選擇頁取代「選擇職業」：框框選角色 → 方晶跳出來蹦跳 → 這頁倒數 5 秒 → 直接開打
     ocCsOpen(modeVal);
