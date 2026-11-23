@@ -6451,7 +6451,8 @@ document.getElementById('play-btn').onclick=function(){
   try{
     var selCard = document.querySelector('.mm-card.sel');
     if(!selCard){
-      alert('請先點選一個遊戲模式卡片');
+      var ov=document.getElementById('menu-mode-overlay');
+      if(ov)ov.classList.add('open');
       return;
     }
     var mid = selCard.dataset.mid;
