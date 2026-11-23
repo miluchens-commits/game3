@@ -6402,7 +6402,46 @@ if(grid){grid.innerHTML='';MENU_MODES.forEach(function(m){
  c.onclick=function(){var prev=grid.querySelector('.sel');if(prev)prev.classList.remove('sel');c.classList.add('sel');_mmSelected=m;goBtn.classList.add('ready');var es=document.getElementById('mm-ext-sub');if(es)es.style.display=(m.extraction?'flex':'none');if(m.extraction){var opt2=document.querySelector('#mode-dropdown .mode-opt[data-mode="extraction"]');if(opt2){document.querySelectorAll('#mode-dropdown .mode-opt').forEach(function(x){x.classList.remove('selected');});opt2.classList.add('selected');}var lbl2=document.getElementById('menu-mode-btn-label');if(lbl2)lbl2.innerHTML='⛏ 摸金模式 <span class="mode-arrow">▶</span>';}};
  grid.appendChild(c);
 });}
-function openMenuOverlay(){if(!ov)return;ov.classList.add('open');if(window.US)window.US.refreshHub();var es=document.getElementById('mm-ext-sub');if(es){es.style.display='none';var btns=es.querySelectorAll('.mm-ext-opt');for(var bi=0;bi<btns.length;bi++)btns[bi].classList.remove('sel');var pk=es.querySelector('.mm-ext-pick');if(pk)pk.textContent='';}var selOpt=document.querySelector('#mode-dropdown .mode-opt.selected');var preId=selOpt?selOpt.dataset.mode:null;if(preId){var match=MENU_MODES.find(function(m){return m.id===preId;});if(match){var card=grid.querySelector('.mm-card[data-mid=\"'+preId+'\"]');if(card){grid.querySelectorAll('.mm-card').forEach(function(x){x.classList.remove('sel');});card.classList.add('sel');_mmSelected=match;goBtn.classList.add('ready');var es2=document.getElementById('mm-ext-sub');if(es2)es2.style.display=(match.extraction?'flex':'none');}}}}
+function openMenuOverlay(){
+  if(!ov)return;
+  ov.classList.add('open');
+  if(window.US)window.US.refreshHub();
+  var es=document.getElementById('mm-ext-sub');
+  if(es){
+    es.style.display='none';
+    var btns=es.querySelectorAll('.mm-ext-opt');
+    for(var bi=0;bi<btns.length;bi++)btns[bi].classList.remove('sel');
+    var pk=es.querySelector('.mm-ext-pick');
+    if(pk)pk.textContent='';
+  }
+  var selCard=grid.querySelector('.mm-card.sel');
+  if(selCard){
+    var match=MENU_MODES.find(function(m){return m.id===selCard.dataset.mid;});
+    if(match){
+      _mmSelected=match;
+      goBtn.classList.add('ready');
+      var es2=document.getElementById('mm-ext-sub');
+      if(es2)es2.style.display=(match.extraction?'flex':'none');
+    }
+  }else{
+    var selOpt=document.querySelector('#mode-dropdown .mode-opt.selected');
+    var preId=selOpt?selOpt.dataset.mode:null;
+    if(preId){
+      var match=MENU_MODES.find(function(m){return m.id===preId;});
+      if(match){
+        var card=grid.querySelector('.mm-card[data-mid="'+preId+'"]');
+        if(card){
+          grid.querySelectorAll('.mm-card').forEach(function(x){x.classList.remove('sel');});
+          card.classList.add('sel');
+          _mmSelected=match;
+          goBtn.classList.add('ready');
+          var es2=document.getElementById('mm-ext-sub');
+          if(es2)es2.style.display=(match.extraction?'flex':'none');
+        }
+      }
+    }
+  }
+}
 function closeMenuOverlay(){if(!ov)return;ov.classList.remove('open');_mmSelected=null;goBtn.classList.remove('ready');}
 window._openMenuOverlay=openMenuOverlay;
 window._closeMenuOverlay=closeMenuOverlay;
@@ -6416,6 +6455,8 @@ if(goBtn)goBtn.addEventListener('click',function(){
   var mid = selCard.dataset.mid;
   closeMenuOverlay();
   if(mid==='breach'){
+    document.getElementById('menu-mode-btn-label').innerHTML='💣 爆破模式 <span class="mode-arrow">▶</span>';
+    closeMenuOverlay();
     breachJoinQueue();
     return;
   }
@@ -6459,6 +6500,7 @@ document.getElementById('play-btn').onclick=function(){
     // 直接進入選中的模式
     if(mid==='breach'){
       document.getElementById('mode-dropdown').classList.remove('show');
+      document.getElementById('menu-mode-btn-label').innerHTML='💣 爆破模式 <span class="mode-arrow">▶</span>';
       var ms=document.getElementById('breach-match-ui');
       if(!ms){
         ms=document.createElement('div');
