@@ -6459,10 +6459,14 @@ document.getElementById('play-btn').onclick=function(){
     // 直接進入選中的模式
     if(mid==='breach'){
       document.getElementById('mode-dropdown').classList.remove('show');
-      var ms=document.getElementById('multi-status');
-      if(!ms){ms=document.createElement('div');ms.id='multi-status';ms.style.cssText='position:fixed;top:10px;left:10px;color:#fff;font-size:18px;padding:15px;background:rgba(0,0,0,0.8);z-index:9999;border-radius:8px;border:3px solid #ffd700;';document.body.appendChild(ms);}
-      ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</small>';
-      try{var url='ws://localhost:3000/game';if(window.multiWS)try{window.multiWS.close()}catch(e){}window.multiWS=new WebSocket(url);var ws=window.multiWS;breachMode=true;ws.onopen=function(){ws.send(JSON.stringify({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:'',mode:4,gameMode:'breach4'}));};ws.onmessage=function(e){try{var d=JSON.parse(e.data);processBreachMessage(d);}catch(ex){}};ws.onerror=function(){ms.innerHTML='WebSocket 連線失敗 — 請確認後端 node server.js 已啟動 (port 3000)';};ws.onclose=function(){if(breachMode&&!breachGameStarted)ms.innerHTML='連線中斷';};}catch(e){ms.innerHTML='錯誤：'+e.message;}
+      var ms=document.getElementById('breach-match-ui');
+      if(!ms){
+        ms=document.createElement('div');
+        ms.id='breach-match-ui';
+        ms.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;';
+        document.body.appendChild(ms);
+      }
+      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:20px">🔴 正在尋找其他玩家...</div><div style="font-size:16px;color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</div><div style="margin-top:30px;font-size:14px;color:#888">按鍵盤 Esc 可取消匹配</div>';
       return;
     }
     if(mid==='extraction'){
