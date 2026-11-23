@@ -6466,7 +6466,23 @@ document.getElementById('play-btn').onclick=function(){
         ms.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;';
         document.body.appendChild(ms);
       }
-      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:20px">🔴 正在尋找其他玩家...</div><div style="font-size:16px;color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</div><div style="margin-top:30px;font-size:14px;color:#888">按鍵盤 Esc 可取消匹配</div>';
+      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:12px">🔴 正在尋找其他玩家...</div><div id="breach-count" style="font-size:20px;color:#ffd700;font-weight:bold">0/4</div><div style="font-size:14px;color:rgba(255,255,255,.6);margin-top:8px">需要 4 位真人玩家（不補AI）</div><div style="margin-top:30px;font-size:13px;color:#888">按鍵盤 Esc 可取消匹配</div>';
+      // 連線 WebSocket（自動判斷本地或 Render 線上伺服器）
+      try{
+        var url=ocMultiWSURL('');
+        if(window.multiWS)try{window.multiWS.close()}catch(e){}
+        window.multiWS=new WebSocket(url);
+        var ws=window.multiWS;
+        breachMode=true;
+        ws.onopen=function(){
+          ws.send(JSON.stringify({type:'join_queue',name:authUser||'Player'+Math.floor(Math.random()*1000),username:authUser||'',teamId:'',mode:4,gameMode:'breach4'}));
+        };
+        ws.onmessage=function(e){
+          try{var d=JSON.parse(e.data);if(d.type==='queue_update'){document.getElementById('breach-count').textContent=d.current+'/'+d.total;}else{processBreachMessage(d);}}catch(ex){}
+        };
+        ws.onerror=function(){ms.innerHTML+='<div style="margin-top:20px;color:#ff4444">WebSocket 連線失敗 — 請確認伺服器已啟動</div>'};
+        ws.onclose=function(){if(breachMode&&!breachGameStarted)ms.innerHTML+='<div style="margin-top:10px;color:#ff4444">連線中斷</div>'};
+      }catch(e){ms.innerHTML+='<div style="margin-top:20px;color:#ff4444">錯誤：'+e.message+'</div>';}
       return;
     }
     if(mid==='extraction'){
