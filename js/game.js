@@ -8722,17 +8722,17 @@ function connectMultiplayerDirect(ip, mode){
 
 // ================= 爆破模式匹配（4人真人，不補AI） =================
 function breachJoinQueue(){
-  // 顯示匹配 UI
+  // 立即顯示匹配 UI
   var ms=document.getElementById('multi-status');
   if(!ms){
     ms=document.createElement('div');
     ms.id='multi-status';
-    ms.style.cssText='position:fixed;top:10px;left:10px;color:#fff;font-size:16px;padding:10px;background:rgba(0,0,0,0.7);z-index:9999;border-radius:6px;';
+    ms.style.cssText='position:fixed;top:10px;left:10px;color:#fff;font-size:18px;padding:15px;background:rgba(0,0,0,0.8);z-index:9999;border-radius:8px;border:3px solid #ffd700;';
     document.body.appendChild(ms);
   }
   ms.innerHTML='正在尋找其他玩家...<br><small style="color:rgba(255,255,255,.7)">需要 4 位真人玩家（不補AI）</small>';
   
-  // 嘗試連 WebSocket（即使失敗也顯示匹配 UI）
+  // 嘗試連 WebSocket
   try{
     var url = 'ws://localhost:3000/game';
     if(window.multiWS)try{window.multiWS.close()}catch(e){}
@@ -8766,7 +8766,7 @@ function breachJoinQueue(){
       }
     };
   }catch(e){
-    ms.innerHTML='WebSocket 建立失敗：'+e.message;
+    ms.innerHTML='錯誤：'+e.message;
   }
 }
 
