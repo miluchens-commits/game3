@@ -8850,6 +8850,15 @@ function processBreachMessage(data){
     document.getElementById('multi-status').innerHTML='已離開匹配';
     breachMode = false;
   }
+  else if(data.type==='queue_update'){
+    var cntEl=document.getElementById('breach-count');
+    if(cntEl)cntEl.textContent=data.current+'/'+data.total;
+    var ms=document.getElementById('breach-match-ui');
+    if(ms && data.current>=data.total){
+      // 所有人都湊齊了，準備進入遊戲
+      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:20px;color:#0f0">✅ 匹配成功 — 進入爆破地圖</div>';
+    }
+  }
 }
 
 // ================= 爆破模式場景（第三人稱，不選幹員不選地圖） =================
