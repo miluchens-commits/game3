@@ -6508,7 +6508,7 @@ document.getElementById('play-btn').onclick=function(){
         ms.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;';
         document.body.appendChild(ms);
       }
-      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:12px">🔴 正在尋找其他玩家...</div><div id="breach-count" style="font-size:20px;color:#ffd700;font-weight:bold">0/4</div><div style="font-size:14px;color:rgba(255,255,255,.6);margin-top:8px">需要 4 位真人玩家（不補AI）</div><div style="margin-top:30px;font-size:13px;color:#888">按鍵盤 Esc 可取消匹配</div>';
+      ms.innerHTML='<div style="font-size:24px;font-weight:bold;margin-bottom:12px">🔴 正在尋找其他玩家...</div><div id="breach-count" style="font-size:20px;color:#ffd700;font-weight:bold">1/4</div><div style="font-size:14px;color:rgba(255,255,255,.6);margin-top:8px">需要 4 位真人玩家（不補AI）</div><div style="margin-top:30px;font-size:13px;color:#888">按鍵盤 Esc 可取消匹配</div>';
       // 連線 WebSocket（自動判斷本地或 Render 線上伺服器）
       try{
         var url=ocMultiWSURL('');
