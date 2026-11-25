@@ -8816,7 +8816,7 @@ function breachJoinQueue(){
     };
     
     ws.onmessage=function(e){
-      try{var data=JSON.parse(e.data);processBreachMessage(data);}catch(ex){}
+      try{var d=JSON.parse(e.data);if(d.type==='in_queue'){document.getElementById('breach-count').textContent=d.position+'/4';}else{processBreachMessage(d);}}catch(ex){}
     };
     
     ws.onerror=function(){
