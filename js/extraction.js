@@ -5044,11 +5044,11 @@ window.stopPartyGame = stopPartyGame;
     pending: function(){ return this.list.filter(function(r){return r.st==='PENDING_OPEN';}); },
     revealed: function(){ return this.list.filter(function(r){return r.st==='REVEALED';}); },
     collected: function(){ return this.list.filter(function(r){return r.st==='COLLECTED';}); },
-    addPending: function(id){
+    addPending: function(id, name){
       if (!id) return false;
       this.refresh();
       if (this.list.some(function(r){return r.id===id;})) return false; // 防重複
-      this.list.push({ id:id, st:'PENDING_OPEN', ts:Date.now() });
+      this.list.push({ id:id, st:'PENDING_OPEN', ts:Date.now(), name:name||'未鑑定小黃石' });
       this.save();
       return true;
     },
@@ -5110,7 +5110,7 @@ window.stopPartyGame = stopPartyGame;
         row.className = 'us-row';
         var when = '';
         try { when = ' · ' + new Date(r.ts).toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e){}
-        row.innerHTML = '<span class="us-id">🟡 未鑑定小黃石 #' + (i+1) + when + '</span><button class="us-btn" data-id="'+r.id+'">✨ 開啟</button>';
+        row.innerHTML = '<span class="us-id">🟡 '+ (r.name||'未鑑定小黃石') + when + '</span><button class="us-btn" data-id="'+r.id+'">✨ 開啟</button>';
         box.appendChild(row);
       }
       var self = this;
@@ -5192,16 +5192,40 @@ window.stopPartyGame = stopPartyGame;
       this.openPending();
     },
     confirmSell: function(){
+      this.refresh();
       var from = this._sellFrom || 'collection';
       var id = this._sellId;
-      var v = this.sell(this._sellId);
+      var r = null;
+      for (var i=0;i<this.list.length;i++){ if (this.list[i].id===id){ r=this.list[i]; break; } }
+      var v = this.sell(id);
       var el = document.getElementById('us-sell-confirm'); if (el) el.style.display='none';
       this._sellId = null; this._sellFrom = null;
       if (v>0){
         if (window._floatMsg) window._floatMsg('🪙 出售成功 +'+v,'#ffd76a');
-        this.openCollection();   // 出售成功 → 回收藏頁看餘額變化
+        if (from === 'reveal' && r && r.roll) {
+          var re = document.getElementById('us-reveal-overlay');
+          if (re) {
+            document.getElementById('us-reveal-name').textContent = r.roll.name;
+            document.getElementById('us-reveal-name').style.color = r.roll.color || '#ffd76a';
+            document.getElementById('us-reveal-sub').textContent = r.roll.purity ? ('純度 ' + r.roll.purity + ' 級') : '';
+            document.getElementById('us-reveal-value').textContent = '💰 ' + r.roll.value;
+            re.dataset.id = id;
+            re.style.display = 'flex';
+          }
+        } else if (from === 'collection') {
+          this.openCollection();
+        } else {
+          this.openPending();
+        }
       } else {
-        if (from==='reveal' && this._showReveal(id)) {} else if (from==='collection'){ this.openCollection(); } else { this.openPending(); }
+        if (from === 'reveal') {
+          var re = document.getElementById('us-reveal-overlay');
+          if (re) re.style.display = 'flex';
+        } else if (from === 'collection') {
+          this.openCollection();
+        } else {
+          this.openPending();
+        }
       }
       this.refreshHub();
     },
