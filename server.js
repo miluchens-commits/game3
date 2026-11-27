@@ -1310,8 +1310,8 @@ function addToQueue(ws) {  // 爆破模式：必須 4 位真人，不補 AI
       return;
     }
     queue.push(ws);
-    // 廣播當前人數給所有 breach4 隊列中的人
-    const curCount = queue.filter(q => q.playerData && q.playerData.gameMode === 'breach4' && q.readyState === WebSocket.OPEN).length;
+    // 廣播當前人數給所有 breach4 隊列中的人（不檢查 readyState，因為剛 push 的 ws 還沒 open）
+    const curCount = queue.filter(q => q.playerData && q.playerData.gameMode === 'breach4').length;
     queue.forEach(q => {
       if (q.playerData && q.playerData.gameMode === 'breach4' && q.readyState === WebSocket.OPEN) {
         try { q.send(JSON.stringify({ type: 'queue_update', current: curCount, total: 4 })); } catch(e) {}
